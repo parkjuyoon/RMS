@@ -151,6 +151,7 @@ $(document).ready(function() {
 					$("#detAttrColumn").attr("data-factor_id", factor.FACTOR_ID);
 					$("#detAttrColumn").attr("data-factor_nm", factor.FACTOR_NM);
 					$("#detAttrColumn").attr("data-factor_nm_en", factor.FACTOR_NM_EN);
+					$("#detAttrColumn").attr("data-data_type", factor.DATA_TYPE);
 				}
 			});
 
@@ -161,12 +162,22 @@ $(document).ready(function() {
 			var factor_grp_nm = $("#detAttrTable").attr("data-factor_grp_nm");
 			var factor_nm = $("#detAttrColumn").attr("data-factor_nm");
 			var factor_nm_en = $("#detAttrColumn").attr("data-factor_nm_en");
-			var factor_val = $("input[name='detAttrChk']:checked");
+			var data_type = $("#detAttrColumn").attr("data-data_type");
+			
+			if(data_type === 'DATE') {
+				applyRuleObj.factor_val = $("input[name='detAttrChk']").eq(0).val() + "~" + $("input[name='detAttrChk']").eq(1).val();
+				
+			} else if(data_type === 'INT') {
+				applyRuleObj.factor_val = $("input[name='detAttrChk']").val();
+			
+			} else {	// dataType === 'STRING'
+				applyRuleObj.factor_val = $("input[name='detAttrChk']:checked").val();
+			}
 			
 			applyRuleObj.factor_grp_nm = factor_grp_nm;
 			applyRuleObj.factor_nm = factor_nm;
 			applyRuleObj.factor_nm_en = factor_nm_en;
-			applyRuleObj.factor_val = factor_val;
+			applyRuleObj.data_type = data_type;
 			
 			console.log(applyRuleObj);
 			
@@ -175,47 +186,51 @@ $(document).ready(function() {
 			var relation = $("input[name='relationRadios']:checked").val();
 			var relation_txt = $("input[name='relationRadios']:checked").siblings("span").text();
 			
-			var detAttrChk = $("input[name='detAttrChk']:checked");
-			var column_dataType = detAttrChk.data("column_data_type");
-				
-			// 관계연산 NONE 뒤에 추가 할 수 없음.
-			var relationChk = whenMapAttr_html[whenMapAttr_html.length-1];
 			
-			if(typeof(relationChk) != "undefined") {
-				if(!relationChk.endsWith("&&") && !relationChk.endsWith("||")) {
-					alert("관계연산이 끝난 Rule 속성 이후 추가 할 수 없습니다.");
-					return;
-				}
-			}
+			console.log(whenMapAttr_html)
 			
-			// 논리연산 IN, NOT IN 선택
-			var detAttrChk_txt = "";
-			
-			if(logical == 'logical6' || logical == 'logical7') {
-				detAttrChk_txt += "("
-					
-				for(var i=0; i<detAttrChk.length; i++) {
-					detAttrChk_txt += (column_dataType == 'int' ? detAttrChk.eq(i).val() : "\""+ detAttrChk.eq(i).val() +"\"") 
-										+ (i+1 == detAttrChk.length ? "" : ", ");
-				}
-				
-				detAttrChk_txt += ")";
-			
-			// 논리연산 IN, NOT IN 이 아닌 값을 선택시
-			} else {
-				if(detAttrChk.length > 1) {
-					alert("상세 속성을 한 가지만 선택하세요.");
-					return;
-				}
-				
-				detAttrChk_txt = (column_dataType == 'int' ? detAttrChk.val() : "\""+ detAttrChk.val() +"\"");
-			}
-			
-			if(relation == 'relation3') {
-				relation_txt = "";
-			}
-			
-			var ruleAttr_txt = "["+ applyRuleObj.factor_grp_nm + " : " + applyRuleObj.factor_nm + "] " + logical_txt + detAttrChk_txt + " " + relation_txt;			
+//			
+//			var detAttrChk = $("input[name='detAttrChk']:checked");
+//			var column_dataType = detAttrChk.data("column_data_type");
+//				
+//			// 관계연산 NONE 뒤에 추가 할 수 없음.
+//			var relationChk = whenMapAttr_html[whenMapAttr_html.length-1];
+//			
+//			if(typeof(relationChk) != "undefined") {
+//				if(!relationChk.endsWith("&&") && !relationChk.endsWith("||")) {
+//					alert("관계연산이 끝난 Rule 속성 이후 추가 할 수 없습니다.");
+//					return;
+//				}
+//			}
+//			
+//			// 논리연산 IN, NOT IN 선택
+//			var detAttrChk_txt = "";
+//			
+//			if(logical == 'logical6' || logical == 'logical7') {
+//				detAttrChk_txt += "("
+//					
+//				for(var i=0; i<detAttrChk.length; i++) {
+//					detAttrChk_txt += (column_dataType == 'int' ? detAttrChk.eq(i).val() : "\""+ detAttrChk.eq(i).val() +"\"") 
+//										+ (i+1 == detAttrChk.length ? "" : ", ");
+//				}
+//				
+//				detAttrChk_txt += ")";
+//			
+//			// 논리연산 IN, NOT IN 이 아닌 값을 선택시
+//			} else {
+//				if(detAttrChk.length > 1) {
+//					alert("상세 속성을 한 가지만 선택하세요.");
+//					return;
+//				}
+//				
+//				detAttrChk_txt = (column_dataType == 'int' ? detAttrChk.val() : "\""+ detAttrChk.val() +"\"");
+//			}
+//			
+//			if(relation == 'relation3') {
+//				relation_txt = "";
+//			}
+//			
+			var ruleAttr_txt = "["+ applyRuleObj.factor_grp_nm + " : " + applyRuleObj.factor_nm + "] " + logical_txt + applyRuleObj.factor_val + " " + relation_txt;			
 			
 			var html = "";
 			html += "<label class='wd100p'>";
@@ -226,34 +241,34 @@ $(document).ready(function() {
 			html += "</label>";
 			
 			$("#ruleAttrData").append(html);
-			
-			// ---------------- applyRuleObj 값 저장 ----------------
-			applyRuleObj.logical = logical;
-			applyRuleObj.relation = relation;
-			applyRuleObj.logical_txt = logical_txt;
-			
-			if(relation == 'relation1') {
-				applyRuleObj.relation_txt = "&&"
-			} else if(relation == 'relation2') {
-				applyRuleObj.relation_txt = "||"
-			} else {
-				applyRuleObj.relation_txt = "";
-			}
-			
-			var detAttrChkArr = new Array();
-			
-			detAttrChk.each(function() {
-				detAttrChkArr.push($(this).val());
-			});
-			
-			applyRuleObj.detAttrChkArr = detAttrChkArr;
-			applyRuleObj.detAttrChk_txt = detAttrChk_txt;
-			
-			// when(Map Object) 구문 생성
-			var whenMap_html = whenGenerator(applyRuleObj);
-			whenMapAttr_html.push(whenMap_html);
-			applyRuleObj.whenMapAttr_html = whenMapAttr_html;
-			// ---------------- applyRuleObj 값 저장 ----------------
+//			
+//			// ---------------- applyRuleObj 값 저장 ----------------
+//			applyRuleObj.logical = logical;
+//			applyRuleObj.relation = relation;
+//			applyRuleObj.logical_txt = logical_txt;
+//			
+//			if(relation == 'relation1') {
+//				applyRuleObj.relation_txt = "&&"
+//			} else if(relation == 'relation2') {
+//				applyRuleObj.relation_txt = "||"
+//			} else {
+//				applyRuleObj.relation_txt = "";
+//			}
+//			
+//			var detAttrChkArr = new Array();
+//			
+//			detAttrChk.each(function() {
+//				detAttrChkArr.push($(this).val());
+//			});
+//			
+//			applyRuleObj.detAttrChkArr = detAttrChkArr;
+//			applyRuleObj.detAttrChk_txt = detAttrChk_txt;
+//			
+//			// when(Map Object) 구문 생성
+//			var whenMap_html = whenGenerator(applyRuleObj);
+//			whenMapAttr_html.push(whenMap_html);
+//			applyRuleObj.whenMapAttr_html = whenMapAttr_html;
+//			// ---------------- applyRuleObj 값 저장 ----------------
 		});
 		
 		// Rule 속성 minus 버튼 클릭 이벤트

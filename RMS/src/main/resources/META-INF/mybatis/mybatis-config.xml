@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<typeAliases>
+<!-- 		<typeAlias type="kr.co.itpartners.vo.ApprovalVO" alias="ApprovalVO"/> -->
+	</typeAliases>
+      
+  <!-- SQL 이 정의된 mapper파일을 등록한다. -->
+	<mappers>
+<!--  		<mapper resource="/META-INF/mybatis/db-queryXML/approval/approval.xml"/> -->
+	</mappers>
+</configuration>

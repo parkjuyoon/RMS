@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.ktds.manager.login.mapper.RuleEditorMapper">
+
+	<select id="getFactorGrpList" resultType="java.util.HashMap">
+		SELECT
+			FACTOR_GRP_ID,
+			FACTOR_GRP_NM,
+		    FACTOR_GRP_DSC,
+		    REG_DTM,
+		    ATTR_USE_YN
+		FROM
+		    targetai.FACTOR_GRP
+		WHERE
+			ATTR_USE_YN = 'Y'
+	</select>
+	
+	<select id="getFactorList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT
+			FACTOR_ID,
+		    FACTOR_NM,
+		    FACTOR_NM_EN,
+		    FACTOR_TYPE,
+		    DATA_TYPE,
+		    NUM_OF_GRP,
+		    CATEGORY_YN,
+		    FACTOR_GRP_ID,
+		    ATTR_USE_YN
+		FROM
+		    targetai.FACTOR
+		WHERE
+			ATTR_USE_YN = 'Y'
+			AND FACTOR_GRP_ID = #{factor_grp_id};
+	</select>
+	
+	<select id="getFactor" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT
+			FG.FACTOR_GRP_ID,
+		    FG.FACTOR_GRP_NM,
+		    F.FACTOR_ID,
+		    F.FACTOR_NM,
+		    F.FACTOR_NM_EN,
+		    F.FACTOR_TYPE,
+		    F.DATA_TYPE,
+		    F.ATTR_USE_YN
+		FROM
+		    targetai.FACTOR F, targetai.FACTOR_GRP FG
+		WHERE
+			F.FACTOR_GRP_ID = FG.FACTOR_GRP_ID
+		    AND F.ATTR_USE_YN = 'Y'
+		    AND F.FACTOR_ID = #{factor_id}
+	</select>
+	
+	<select id="getFactorVal" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT
+			FG.FACTOR_GRP_ID,
+		    FG.FACTOR_GRP_NM,
+		    F.FACTOR_ID,
+		    F.FACTOR_NM,
+		    F.FACTOR_NM_EN,
+		    F.FACTOR_TYPE,
+		    F.DATA_TYPE,
+		    F.ATTR_USE_YN,
+		    FV.VAL
+		FROM
+		    targetai.FACTOR F, targetai.FACTOR_GRP FG, targetai.FACTOR_VAL FV
+		WHERE
+			F.FACTOR_GRP_ID = FG.FACTOR_GRP_ID
+		    AND F.FACTOR_ID = FV.FACTOR_ID
+		    AND F.ATTR_USE_YN = 'Y'
+		    AND F.DATA_TYPE = 'STRING'
+		    AND F.FACTOR_ID = #{factor_id}
+	</select>
+
+	<select id="test" parameterType="string" resultType="java.util.HashMap">
+		SELECT
+			*
+		FROM
+			RULE_EDITOR.EV_CUST_ITEM1_TXN
+		WHERE
+			CUST_ACC_NO = #{value}
+	</select>
+	
+	<select id="getRuleNameCheck" parameterType="java.util.HashMap" resultType="int">
+		SELECT 
+			count(*)
+		FROM
+		    ${schema}.DRL_INFO DI
+		    LEFT JOIN ${schema}.RULE_INFO RI ON (DI.SEQ = RI.DRL_INFO_SEQ)
+		WHERE
+		    DI.SERVICE_ID = #{SERVICE_ID}
+		    AND DI.ROOT_PATH = #{ROOT_PATH}
+		    AND DI.PACKAGE_NM = #{PACKAGE_NM}
+		    AND DI.DRL_FILE_NM = #{DRL_FILE_NM}
+			AND RI.RULE_NAME = #{RULE_NAME}	
+	</select>
+	
+	<select id="gerLastRuleAddCnt" parameterType="java.util.HashMap" resultType="int">
+		SELECT 
+		<![CDATA[
+		   CASE
+				WHEN COUNT(*) < 1 THEN 0
+				ELSE RI.RULE_ADD_CNT
+			END	AS RULE_ADD_CNT
+		]]>
+		FROM
+		    ${drl_info.schema}.DRL_INFO DI
+		    LEFT JOIN ${drl_info.schema}.RULE_INFO RI ON (DI.SEQ = RI.DRL_INFO_SEQ)
+		WHERE
+		    DI.SERVICE_ID = #{drl_info.SERVICE_ID}
+		    AND DI.ROOT_PATH = #{drl_info.ROOT_PATH}
+		    AND DI.PACKAGE_NM = #{drl_info.PACKAGE_NM}
+		    AND DI.DRL_FILE_NM = #{drl_info.DRL_FILE_NM}
+			AND RI.SALIENCE = #{rule_info.SALIANCE}
+		ORDER BY SEQ DESC	
+	</select>
+	
+	<insert id="insertDrlInfo" parameterType="java.util.HashMap">
+		INSERT INTO ${drl_info.schema}.DRL_INFO
+		(
+			SERVICE_ID,
+			ROOT_PATH,
+			PACKAGE_NM,
+			PACKAGE_COMMENT,
+			DRL_FILE_NM,
+			DRL_FILE_COMMENT,
+			REG_USER_ID
+		)
+		VALUES 
+		(
+			#{drl_info.SERVICE_ID},
+			#{drl_info.ROOT_PATH},
+			#{drl_info.PACKAGE_NM},
+			#{drl_info.PACKAGE_COMMNET},
+			#{drl_info.DRL_FILE_NM},
+			#{drl_info.DRL_FILE_COMMENT},
+			#{drl_info.REG_USER_ID}
+		)
+		<selectKey keyProperty="DRL_INFO_SEQ" keyColumn="SEQ" resultType="Integer" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<insert id="insertRuleInfo" parameterType="java.util.HashMap">
+		INSERT INTO ${drl_info.schema}.RULE_INFO
+		(
+			DRL_INFO_SEQ,
+			RULE_NAME,
+			RULE_ADD_CNT,
+			NO_LOOP,
+			LOCK_ON_ACTIVE,
+			AGENDA_GROUP,
+			SALIENCE,
+			ENABLED,
+			DURATION,
+			CONTENTS
+		)
+		VALUES 
+		(
+			#{DRL_INFO_SEQ},
+			#{rule_info.RULE_NAME},
+			#{RULE_ADD_CNT},
+			#{rule_info.NO_LOOP},
+			#{rule_info.LOCK_ON_ACTIVE},
+			#{rule_info.AGENDA_GROUP},
+			#{rule_info.SALIANCE},
+			#{rule_info.ENABLED},
+			#{rule_info.DURATION},
+			#{rule_info.CONTENTS}
+		)
+	</insert>
+</mapper>

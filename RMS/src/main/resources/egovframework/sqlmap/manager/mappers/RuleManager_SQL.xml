@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.ktds.manager.login.mapper.RuleManagerMapper">
+
+	<select id="getRuleList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT
+			DI.SEQ,
+		    DI.SERVICE_ID,
+		    DI.PACKAGE_NM,
+		    DI.DRL_FILE_NM,
+		    RI.RULE_NAME,
+		    RI.SALIENCE,
+		    RI.RULE_ADD_CNT,
+		    RI.REG_DTM
+		FROM 
+			${schema}.DRL_INFO DI,
+			${schema}.RULE_INFO RI
+		WHERE
+			DI.SEQ = RI.DRL_INFO_SEQ
+			
+		LIMIT ${pageInfo.limit}
+		OFFSET ${pageInfo.start}
+	</select>
+	
+	<select id="getRuleListTotalCnt" resultType="int" parameterType="java.util.HashMap">
+		SELECT
+			count(*)
+		FROM 
+			${schema}.DRL_INFO DI,
+			${schema}.RULE_INFO RI
+		WHERE
+			DI.SEQ = RI.DRL_INFO_SEQ
+	</select>
+	
+</mapper>

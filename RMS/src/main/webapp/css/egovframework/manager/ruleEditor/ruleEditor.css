@@ -1,0 +1,154 @@
+@charset "UTF-8";
+
+body {
+	background: #f9f9f9;
+}
+
+#wrapper {
+	padding: 90px 15px;
+}
+
+.navbar-expand-lg .navbar-nav.side-nav {
+	flex-direction: column;
+}
+
+.card {
+	margin-bottom: 15px;
+	border-radius: 0;
+	box-shadow: 0 3px 5px rgba(0, 0, 0, .1);
+}
+
+.header-top {
+	box-shadow: 0 3px 5px rgba(0, 0, 0, .1)
+}
+
+.leftmenutrigger {
+	display: none
+}
+
+.h517 {
+	height: 517px;
+}
+
+.h300 {
+	height: 300px;
+}
+
+.h834 {
+	height: 834px;
+}
+
+.h250 {
+	height: 250px;
+}
+
+.h240 {
+	height: 240px;
+}
+
+.h150 {
+	height: 150px;
+}
+
+.h350 {
+	height: 350px;
+}
+
+#detAttrDiv {
+	position: relative;
+}
+
+#ruleAttDiv {
+	position: relative;
+}
+
+.addDefaultbtn {
+	position: absolute;
+    top: 0;
+    right: 0;
+    margin: 10px;
+}
+
+#ruleSaveBtn {
+	position: absolute;
+    top: 0;
+    right: 0;
+    margin: 10px;
+}
+
+#drlGenBtn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 10px;
+    margin-right: 80px;
+}
+
+@media ( min-width :992px) {
+	.leftmenutrigger {
+		display: block;
+		display: block;
+		margin: 7px 20px 4px 0;
+		cursor: pointer;
+	}
+	#wrapper {
+		padding: 90px 15px 15px 15px;
+	}
+	.navbar-nav.side-nav.open {
+		left: 0;
+	}
+	.navbar-nav.side-nav {
+		background: #585f66;
+		box-shadow: 2px 1px 2px rgba(0, 0, 0, .1);
+		position: fixed;
+		top: 56px;
+		flex-direction: column !important;
+		left: -220px;
+		width: 200px;
+		overflow-y: auto;
+		bottom: 0;
+		overflow-x: hidden;
+		padding-bottom: 40px
+	}
+}
+
+.animate {
+	-webkit-transition: all .3s ease-in-out;
+	-moz-transition: all .3s ease-in-out;
+	-o-transition: all .3s ease-in-out;
+	-ms-transition: all .3s ease-in-out;
+	transition: all .3s ease-in-out
+}
+
+.attViewTree span:hover {
+	color: blue;
+	text-decoration: underline;
+}
+
+.attViewTree {
+	overflow: auto;
+    height: 800px;
+}
+
+._detAttrData {
+	overflow: auto;
+    height: 460px;
+}
+
+.wd100p {
+	width: 100%;
+}
+
+#drlGenData {
+	overflow: scroll;
+}
+
+
+/* ruleTest btn --------------------- */
+#ruleTestBtn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-right: 145px;
+    margin-top: 10px;
+}

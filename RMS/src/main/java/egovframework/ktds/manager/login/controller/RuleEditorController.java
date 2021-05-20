@@ -109,8 +109,10 @@ public class RuleEditorController {
 		param.put("REG_USER_ID", reg_user_id);
 		// 값 받아올 수 있게 변경 필요 -----------------------------------
 		
-		String rule_name = (String) map.get("ruleName");
-		param.put("RULE_NAME", rule_name);
+		String ruleName = (String) map.get("ruleName");
+		String pkgId = (String) map.get("pkgId");
+		param.put("RULE_NM", ruleName);
+		param.put("PKG_ID", pkgId);
 		int ruleNameCnt = ruleEditorService.getRuleNameCheck(param);
 		
 		if(ruleNameCnt > 0) {
@@ -129,7 +131,19 @@ public class RuleEditorController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/ruleSave.do", method = RequestMethod.POST)
-	public String ruleApply(@RequestBody HashMap<String, Object> applyRuleObj) {
+	public String ruleApply(@RequestBody HashMap<String, Object> param) {
+		
+		System.out.println(param);
+		
+		String ruleNm = (String) param.get("ruleNm");
+		HashMap<String, Object> ruleOpt = (HashMap<String, Object>) param.get("ruleOpt");
+		List<HashMap<String, Object>> ruleArr = (List<HashMap<String, Object>>) param.get("ruleArr");
+		
+		System.out.println(ruleNm);
+		System.out.println(ruleOpt);
+		System.out.println(ruleArr);
+		
+		/*
 		try {
 		// 저장될 DRL 파일 컨텐츠
 		String drl_contents = (String) applyRuleObj.get("drl_html");
@@ -218,6 +232,7 @@ public class RuleEditorController {
 //		
 //        System.out.println(user);
 		
+		*/
 		return "true";
 	}
 	

@@ -22,7 +22,7 @@
 
 </head>
 <body>
-
+<input type="hidden" id="pkgId" value="1">
 	<!-- Rule Option 선택 팝업
 	<div id="pjyPopup" class="hide">
 		<div class="container">
@@ -279,7 +279,7 @@
 										<div class="card-body h350" id="ruleAttDiv">
 											<h5 class="card-title">Rule 속성</h5>
 											<h6 class="card-subtitle mb-2 text-muted">Rule Name : <input type="text" placeholder="Rule Name을 입력하세요." id="ruleName"/></h6>
-											<button type="button" class="btn btn-info addDefaultbtn" id="ruleAddBtn">Rule 추가</button>
+<!-- 											<button type="button" class="btn btn-info addDefaultbtn" id="ruleAddBtn">Rule 생성</button> -->
 											<fieldset class="">
 												<legend></legend>
 												<div id="ruleAttrData"></div>
@@ -300,7 +300,7 @@
 									</h6>
 									<button type="button" class="btn btn-info" id="drlGenBtn">DRL 생성</button>
 									<button type="button" class="btn btn-info" id="ruleSaveBtn">Rule 저장</button>
-									<button type="button" class="btn btn-info" id="ruleTestBtn">Rule 테스트</button>
+<!-- 									<button type="button" class="btn btn-info" id="ruleTestBtn">Rule 테스트</button> -->
 									<fieldset class="">
 										<legend></legend>
 										<div>

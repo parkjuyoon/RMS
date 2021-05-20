@@ -83,16 +83,13 @@
 	
 	<select id="getRuleNameCheck" parameterType="java.util.HashMap" resultType="int">
 		SELECT 
-			count(*)
+		    COUNT(*)
 		FROM
-		    ${schema}.DRL_INFO DI
-		    LEFT JOIN ${schema}.RULE_INFO RI ON (DI.SEQ = RI.DRL_INFO_SEQ)
+		    targetai.PKG P, targetai.RULE R
 		WHERE
-		    DI.SERVICE_ID = #{SERVICE_ID}
-		    AND DI.ROOT_PATH = #{ROOT_PATH}
-		    AND DI.PACKAGE_NM = #{PACKAGE_NM}
-		    AND DI.DRL_FILE_NM = #{DRL_FILE_NM}
-			AND RI.RULE_NAME = #{RULE_NAME}	
+			P.ID = R.PKG_ID
+			AND P.ID = #{PKG_ID}
+		    AND R.RULE_NM = #{RULE_NM}
 	</select>
 	
 	<select id="gerLastRuleAddCnt" parameterType="java.util.HashMap" resultType="int">

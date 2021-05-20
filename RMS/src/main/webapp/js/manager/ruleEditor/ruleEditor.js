@@ -4,10 +4,12 @@
 
 $(document).ready(function() {
 		
-		var applyRuleArr = new Array();	// Rule 속성에 정의된 목록
-		var applyRuleObj = {};	// Rule 속성에 추가된 한개의 rule
-		var whenMapAttr_html = new Array();
-		var drl_html = ""; // 최종 생성된 drl rule
+		var pkgId = $("#pkgId").val();
+		var ruleOpt = {};
+		var ruleName = "";
+		var ruleObj = {};	// Rule 속성에 추가된 한개의 rule
+		var ruleArr = new Array();	// Rule 속성에 정의된 목록
+		var drlSource = ""; // 최종 생성된 drl
 			
 		$('.leftmenutrigger').on('click', function(e) {
 			$('.side-nav').toggleClass("open");
@@ -48,9 +50,6 @@ $(document).ready(function() {
 		// 속성 VIEW 테이블 클릭이벤트
 		$('.attViewTree li').click(function(event){
 			var $this = $(this);
-			// global변수 값 세팅
-			applyRuleObj.factor_grp_id = $this.data("factor_grp_id");
-			applyRuleObj.factor_grp_nm = $this.text();
 			
 			if($this.children().is("ul")) {
 				if(this == event.target){
@@ -69,7 +68,7 @@ $(document).ready(function() {
 			}
 			
 			var params = {
-				factor_grp_id : applyRuleObj.factor_grp_id,
+				factor_grp_id : $this.data("factor_grp_id")
 			};
 			
 			$.ajax({
@@ -101,15 +100,15 @@ $(document).ready(function() {
 		
 		// 속성 VIEW 컬럼 클릭 이벤트
 		$(document).on("click", ".attViewTree li span", function(){
-			var factor_id = $(this).data("factor_id");
-			
-			applyRuleObj.factor_id = factor_id;
+			var params = {
+				factor_id : $(this).data("factor_id")
+			};
 					
 			$.ajax({
 				url:"/ruleEditor/getFactorVal.do",
 				type:"POST",
 				dataType:"json",
-				data:applyRuleObj,
+				data:params,
 				success:function(res) {
 					var factor = res.factor;
 					var dataType = factor.DATA_TYPE;
@@ -117,11 +116,8 @@ $(document).ready(function() {
 					
 					if(dataType === 'DATE') {
 						html += "<label class='wd100p'>";
-						html += "<input type='text' name='detAttrChk' placeholder='YYYY-MM-DD'>";
-						html += "</input>";
-						html += " ~ ";
-						html += "<input type='text' name='detAttrChk' placeholder='YYYY-MM-DD'>";
-						html += "</input>";
+						html += "	<input type='date' name='detAttrChk' placeholder='YYYY-MM-DD'>";
+						html += "	</input>";
 						html += "</label>";
 						
 					} else if(dataType === 'INT') {
@@ -159,78 +155,59 @@ $(document).ready(function() {
 		
 		// 속성추가 버튼 클릭 이벤트
 		$("#attrAddBtn").click(function() {
+			var factor_grp_id = $("#detAttrTable").attr("data-factor_grp_id");
+			var factor_id = $("#detAttrColumn").attr("data-factor_id");
 			var factor_grp_nm = $("#detAttrTable").attr("data-factor_grp_nm");
 			var factor_nm = $("#detAttrColumn").attr("data-factor_nm");
 			var factor_nm_en = $("#detAttrColumn").attr("data-factor_nm_en");
 			var data_type = $("#detAttrColumn").attr("data-data_type");
-			
-			if(data_type === 'DATE') {
-				applyRuleObj.factor_val = $("input[name='detAttrChk']").eq(0).val() + "~" + $("input[name='detAttrChk']").eq(1).val();
-				
-			} else if(data_type === 'INT') {
-				applyRuleObj.factor_val = $("input[name='detAttrChk']").val();
-			
-			} else {	// dataType === 'STRING'
-				applyRuleObj.factor_val = $("input[name='detAttrChk']:checked").val();
-			}
-			
-			applyRuleObj.factor_grp_nm = factor_grp_nm;
-			applyRuleObj.factor_nm = factor_nm;
-			applyRuleObj.factor_nm_en = factor_nm_en;
-			applyRuleObj.data_type = data_type;
-			
-			console.log(applyRuleObj);
-			
 			var logical = $("input[name='logicalRadios']:checked").val();
 			var logical_txt = $("input[name='logicalRadios']:checked").siblings("span").text();
 			var relation = $("input[name='relationRadios']:checked").val();
 			var relation_txt = $("input[name='relationRadios']:checked").siblings("span").text();
+			var factorVal_Tag = "";
 			
+			if(data_type === 'STRING') {
+				factorVal_Tag = $("input[name='detAttrChk']:checked");
+				
+			} else {
+				factorVal_Tag = $("input[name='detAttrChk']");
+			}
 			
-			console.log(whenMapAttr_html)
+			// 관계연산 NONE 뒤에 추가 할 수 없음.
+			if(ruleObj.relation_txt == "") {
+				alert("관계연산이 끝난 Rule 속성 이후 추가 할 수 없습니다.");
+				return;
+			}
 			
-//			
-//			var detAttrChk = $("input[name='detAttrChk']:checked");
-//			var column_dataType = detAttrChk.data("column_data_type");
-//				
-//			// 관계연산 NONE 뒤에 추가 할 수 없음.
-//			var relationChk = whenMapAttr_html[whenMapAttr_html.length-1];
-//			
-//			if(typeof(relationChk) != "undefined") {
-//				if(!relationChk.endsWith("&&") && !relationChk.endsWith("||")) {
-//					alert("관계연산이 끝난 Rule 속성 이후 추가 할 수 없습니다.");
-//					return;
-//				}
-//			}
-//			
-//			// 논리연산 IN, NOT IN 선택
-//			var detAttrChk_txt = "";
-//			
-//			if(logical == 'logical6' || logical == 'logical7') {
-//				detAttrChk_txt += "("
-//					
-//				for(var i=0; i<detAttrChk.length; i++) {
-//					detAttrChk_txt += (column_dataType == 'int' ? detAttrChk.eq(i).val() : "\""+ detAttrChk.eq(i).val() +"\"") 
-//										+ (i+1 == detAttrChk.length ? "" : ", ");
-//				}
-//				
-//				detAttrChk_txt += ")";
-//			
-//			// 논리연산 IN, NOT IN 이 아닌 값을 선택시
-//			} else {
-//				if(detAttrChk.length > 1) {
-//					alert("상세 속성을 한 가지만 선택하세요.");
-//					return;
-//				}
-//				
-//				detAttrChk_txt = (column_dataType == 'int' ? detAttrChk.val() : "\""+ detAttrChk.val() +"\"");
-//			}
-//			
-//			if(relation == 'relation3') {
-//				relation_txt = "";
-//			}
-//			
-			var ruleAttr_txt = "["+ applyRuleObj.factor_grp_nm + " : " + applyRuleObj.factor_nm + "] " + logical_txt + applyRuleObj.factor_val + " " + relation_txt;			
+			// 논리연산 IN, NOT IN 선택
+			var factorVal = "";
+			
+			if(logical == 'logical6' || logical == 'logical7') {
+				factorVal += "("
+				
+				for(var i=0; i<factorVal_Tag.length; i++) {
+					factorVal += (data_type == 'INT' ? factorVal_Tag.eq(i).val() : "\""+ factorVal_Tag.eq(i).val() +"\"") 
+					+ (i+1 == factorVal_Tag.length ? "" : ", ");
+				}
+				
+				factorVal += ")";
+			
+			// 논리연산 IN, NOT IN 이 아닌 값을 선택시
+			} else {
+				if(factorVal_Tag.length > 1) {
+					alert("상세 속성을 한 가지만 선택하세요.");
+					return;
+				}
+				
+				factorVal = (data_type == 'INT' ? factorVal_Tag.eq(0).val() : "\""+ factorVal_Tag.eq(0).val() +"\"");
+			}
+			
+			if(relation == 'relation3') {
+				relation_txt = "";
+			}
+			
+			var ruleAttr_txt = "["+ factor_grp_nm + " : " + factor_nm + "] " + logical_txt + factorVal + " " + relation_txt;			
 			
 			var html = "";
 			html += "<label class='wd100p'>";
@@ -241,48 +218,56 @@ $(document).ready(function() {
 			html += "</label>";
 			
 			$("#ruleAttrData").append(html);
-//			
-//			// ---------------- applyRuleObj 값 저장 ----------------
-//			applyRuleObj.logical = logical;
-//			applyRuleObj.relation = relation;
-//			applyRuleObj.logical_txt = logical_txt;
-//			
-//			if(relation == 'relation1') {
-//				applyRuleObj.relation_txt = "&&"
-//			} else if(relation == 'relation2') {
-//				applyRuleObj.relation_txt = "||"
-//			} else {
-//				applyRuleObj.relation_txt = "";
-//			}
-//			
-//			var detAttrChkArr = new Array();
-//			
-//			detAttrChk.each(function() {
-//				detAttrChkArr.push($(this).val());
-//			});
-//			
-//			applyRuleObj.detAttrChkArr = detAttrChkArr;
-//			applyRuleObj.detAttrChk_txt = detAttrChk_txt;
-//			
-//			// when(Map Object) 구문 생성
-//			var whenMap_html = whenGenerator(applyRuleObj);
-//			whenMapAttr_html.push(whenMap_html);
-//			applyRuleObj.whenMapAttr_html = whenMapAttr_html;
-//			// ---------------- applyRuleObj 값 저장 ----------------
-		});
-		
-		// Rule 속성 minus 버튼 클릭 이벤트
-		$(document).on("click", "._ruleAttrMinus", function() {
-			var delIdx = $("._ruleAttrMinus").index(this);
-		
-			whenMapAttr_html.splice(delIdx, 1);
 			
-			$(this).closest("label").remove();
+			// ---------------- ruleObj 값 저장 ----------------
+			ruleObj = {};
+			ruleObj.factor_grp_id = factor_grp_id;
+			ruleObj.factor_id = factor_id;
+			ruleObj.factor_grp_nm = factor_grp_nm;
+			ruleObj.factor_nm = factor_nm;
+			ruleObj.factor_nm_en = factor_nm_en;
+			ruleObj.data_type = data_type;
+			ruleObj.logical = logical;
+			ruleObj.logical_txt = logical_txt;
+			ruleObj.relation = relation;
+			ruleObj.relation_txt = relation_txt;
+			ruleObj.factorVal = factorVal;
+			
+			if(relation == 'relation1') {
+				ruleObj.relation_txt = "&&"
+					
+			} else if(relation == 'relation2') {
+				ruleObj.relation_txt = "||"
+					
+			} else {
+				ruleObj.relation_txt = "";
+			}
+//			
+			var factorValArr = new Array();
+			
+			factorVal_Tag.each(function() {
+				factorValArr.push($(this).val());
+			});
+			
+			ruleObj.factorValArr = factorValArr;
+			ruleArr.push(ruleObj);
+			// ---------------- ruleObj 값 저장 ----------------
+			
 		});
 		
-		// Rule 추가 버튼 이벤트
-		$("#ruleAddBtn").click(function() {
-			var ruleName = $("#ruleName").val();
+		// generate 버튼 클릭 이벤트
+		$("#drlGenBtn").click(function() {
+			// Rule 옵션 추가
+			var opt1 = $("input[name='opt1']:checked").val();
+			var opt2 = $("input[name='opt2']:checked").val();
+			var opt3 = $("input[name='opt3']").val() == "" ? 1 : $("input[name='opt3']").val();
+			
+			ruleOpt.opt1 = opt1;
+			ruleOpt.opt2 = opt2;
+			ruleOpt.opt3 = opt3;
+			
+			// Rule name 추가
+			ruleName = $("#ruleName").val();
 			
 			if(ruleName == '') {
 				alert("Rule Name을 입력하세요.");
@@ -291,6 +276,7 @@ $(document).ready(function() {
 			
 			var param = {};
 			param.ruleName = ruleName;
+			param.pkgId = pkgId;
 			
 			// Rule name 중복 체크
 			$.ajax({
@@ -308,32 +294,60 @@ $(document).ready(function() {
 					return;
 				}
 				
-				applyRuleObj.ruleName = $("#ruleName").val();
-				
-				// Rule 옵션 추가
-				var opt1 = $("input[name='opt1']:checked").val();
-				var opt2 = $("input[name='opt2']:checked").val();
-				var opt3 = $("input[name='opt3']").val() == "" ? 1 : $("input[name='opt3']").val();
-				
-				applyRuleObj.opt1 = opt1;
-				applyRuleObj.opt2 = opt2;
-				applyRuleObj.opt3 = opt3;
-				
-				// rule drl 생성
-				var ruleGenStr = ruleGenerator(applyRuleObj); // (/js/manager/ruleEditor/drlGenerator.js)
-
-				if("-1" == ruleGenStr) {
-					alert("룰 속성 정의가 올바르지 않습니다.\n마지막 속성은 NONE으로 설정하세요.");
-					return;
-					
-				} else if("" == ruleGenStr) {
+				if(ruleArr.length < 1) {
 					alert("룰 속성을 먼저 추가 하세요.");
 					return;
 				}
 				
-				applyRuleObj.ruleGenStr = ruleGenStr;
+				if(ruleObj.relation_txt != "") {
+					alert("룰 속성 정의가 올바르지 않습니다.\n마지막 속성은 NONE으로 설정하세요.");
+					return;
+				}
 				
-				alert("RULE : " + ruleName + " 이 추가 되었습니다.");
+				var drl_html = drlGenerator(ruleOpt, ruleName, ruleArr);	// (/js/manager/ruleEditor/drlGenerator.js)
+				$("#drlGenData").html(drl_html);
+				drlSource = drl_html;
+				
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				console.log("에러")
+				console.log(jqXHR)
+				console.log(textStatus)
+				console.log(errorThrown)
+			});
+		});
+		
+		// Rule 속성 minus 버튼 클릭 이벤트
+		$(document).on("click", "._ruleAttrMinus", function() {
+			var delIdx = $("._ruleAttrMinus").index(this);
+		
+			ruleArr.splice(delIdx, 1);
+			
+			$(this).closest("label").remove();
+		});
+		
+		// 룰 저장 버튼 이벤트
+		$("#ruleSaveBtn").click(function() {
+			if(drlSource === "") {
+				alert("DRL을 먼저 생성한 후 저장하세요.");
+				return;
+			}
+			
+			var param = {};
+			param.ruleNm = ruleName,
+			param.ruleOpt = ruleOpt,
+			param.ruleArr = ruleArr
+			
+			$.ajax({
+				method : "POST",
+				url : "/ruleEditor/ruleSave.do",
+				traditional: true,
+				data : JSON.stringify(param),
+				contentType:'application/json; charset=utf-8',
+				dataType : "json"
+				
+			}).done(function(res) {
+				console.log(res);
+				alert("Rule이 저장되었습니다.");
 				initObj();
 				
 			}).fail(function(jqXHR, textStatus, errorThrown) {
@@ -344,54 +358,18 @@ $(document).ready(function() {
 			});
 		});
 		
-		// generate 버튼 클릭 이벤트
-		$("#drlGenBtn").click(function() {
-			drl_html = drlGenerator(applyRuleObj);	// (/js/manager/ruleEditor/drlGenerator.js)
-			
-			$("#drlGenData").html(drl_html);
-		});
-		
 		function initObj() {
 			$("#ruleAttrData").html("");
 			$("#ruleName").val("");
 			$("#detAttrData").html("");
 			$("#detAttrTable").text("속성을 선택하세요.");
 			$("#detAttrColumn").text("");
-			whenMapAttr_html = [];
+			$("#drlGenData").text("");
+			ruleObj = {};
+			ruleArr = [];
+			ruleName = "";
+			ruleOpt = {};
 		}
-		
-		// 룰 저장 버튼 이벤트
-		$("#ruleSaveBtn").click(function() {
-			drl_html = drlGenerator(applyRuleObj);	// (/js/manager/ruleEditor/drlGenerator.js)
-			applyRuleObj.drl_html = drl_html;
-			
-			$.ajax({
-				method : "POST",
-				url : "/ruleEditor/ruleSave.do",
-				traditional: true,
-				data : JSON.stringify(applyRuleObj),
-				contentType:'application/json; charset=utf-8',
-				dataType : "json"
-				
-			}).done(function(res) {
-				console.log(res);
-				
-			}).fail(function(jqXHR, textStatus, errorThrown) {
-				console.log("에러")
-				console.log(jqXHR)
-				console.log(textStatus)
-				console.log(errorThrown)
-			});
-		});
-
-
-		
-		
-		
-		
-		
-		
-		
 		
 		
 		

@@ -5,7 +5,7 @@ import java.util.List;
 
 import egovframework.rte.psl.dataaccess.mapper.Mapper;
 
-@Mapper("ruleManagerMapper")
+//@Mapper("ruleManagerMapper")
 public interface RuleManagerMapper {
 
 	public List<HashMap<String, Object>> getRuleList(HashMap<String, Object> param);

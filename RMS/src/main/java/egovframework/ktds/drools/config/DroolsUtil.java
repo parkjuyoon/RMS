@@ -3,8 +3,10 @@ package egovframework.ktds.drools.config;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -111,18 +113,20 @@ public class DroolsUtil {
 	 * @param contents
 	 * @return
 	 */
-	public static boolean outputDrl(String root_path, String package_nm, String drl_file_nm, String drl_data) {
-		String drl_output_path = root_path + File.separator + package_nm + File.separator + drl_file_nm;
-		File folder = new File(root_path + File.separator + package_nm);
+	public static boolean outputDrl(String path, String package_nm, String drl_file_nm, String drl_data) {
+		String drl_output_path = path + File.separator + package_nm + File.separator + drl_file_nm;
+		File folder = new File(path + File.separator + package_nm);
 		File drlFile = null;
 		
 		try {
 			if(!folder.exists()) {
-				folder.mkdir();
+				folder.mkdirs();
 			} 
 			
 			drlFile = new File(drl_output_path);
-			BufferedWriter bw = new BufferedWriter(new FileWriter(drlFile));
+			FileOutputStream fos = new FileOutputStream(drlFile);
+			OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+			BufferedWriter bw = new BufferedWriter(osw);
 			
 			bw.write(drl_data);
 			bw.close();

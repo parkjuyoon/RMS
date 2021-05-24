@@ -14,7 +14,7 @@ import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 @Service("ruleManagerService")
 public class RuleManagerServiceImpl extends EgovAbstractServiceImpl implements RuleManagerService {
 
-	@Resource(name = "ruleManagerMapper")
+//	@Resource(name = "ruleManagerMapper")
 	private RuleManagerMapper dao;
 
 	@Override

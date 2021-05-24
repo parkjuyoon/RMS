@@ -14,7 +14,7 @@ import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 @Service("ruleEditorService")
 public class RuleEditorServiceImpl extends EgovAbstractServiceImpl implements RuleEditorService {
 
-	@Resource(name = "ruleEditorMapper")
+//	@Resource(name = "ruleEditorMapper")
 	private RuleEditorMapper dao;
 
 	@Override
@@ -33,32 +33,12 @@ public class RuleEditorServiceImpl extends EgovAbstractServiceImpl implements Ru
 	}
 
 	@Override
-	public String getColumnType(HashMap<String, Object> param) {
-		return dao.getColumnType(param);
-	}
-
-	@Override
-	public HashMap<String, Object> test(String custAccNo) {
-		return dao.test(custAccNo);
-	}
-
-	@Override
 	public void insertRuleInfo(HashMap<String, Object> param) {
 		dao.insertRuleInfo(param);
 	}
 
 	@Override
-	public void insertDrlInfo(HashMap<String, Object> drl_info) {
-		dao.insertDrlInfo(drl_info);
-	}
-
-	@Override
-	public int gerLastRuleAddCnt(HashMap<String, Object> param) {
-		return dao.gerLastRuleAddCnt(param);
-	}
-
-	@Override
-	public int getRuleNameCheck(HashMap<String, Object> param) {
+	public int getRuleNameCheck(HashMap param) {
 		return dao.getRuleNameCheck(param);
 	}
 
@@ -67,4 +47,28 @@ public class RuleEditorServiceImpl extends EgovAbstractServiceImpl implements Ru
 		return dao.getFactor(param);
 	}
 
+	@Override
+	public void insertRuleAttr(HashMap<String, Object> param) {
+		dao.insertRuleAttr(param);
+	}
+
+	@Override
+	public HashMap getPkgById(String pkgId) {
+		return dao.getPkgById(pkgId);
+	}
+
+	@Override
+	public List<HashMap> getRuleList(String pkgId) {
+		return dao.getRuleList(pkgId);
+	}
+
+	@Override
+	public List<HashMap> getWhenList(int ruleId) {
+		return dao.getWhenList(ruleId);
+	}
+
+	@Override
+	public void updateDrlSource(HashMap drlSource) {
+		dao.updateDrlSource(drlSource);
+	}
 }

@@ -323,6 +323,8 @@ $(document).ready(function() {
 			ruleArr.splice(delIdx, 1);
 			
 			$(this).closest("label").remove();
+			
+			ruleObj = {};
 		});
 		
 		// 룰 저장 버튼 이벤트
@@ -333,9 +335,11 @@ $(document).ready(function() {
 			}
 			
 			var param = {};
-			param.ruleNm = ruleName,
-			param.ruleOpt = ruleOpt,
-			param.ruleArr = ruleArr
+			param.pkgId = pkgId;
+			param.ruleNm = ruleName;
+			param.ruleOpt = ruleOpt;
+			param.ruleArr = ruleArr;
+			param.drlSource = drlSource;
 			
 			$.ajax({
 				method : "POST",
@@ -346,7 +350,6 @@ $(document).ready(function() {
 				dataType : "json"
 				
 			}).done(function(res) {
-				console.log(res);
 				alert("Rule이 저장되었습니다.");
 				initObj();
 				
@@ -369,6 +372,7 @@ $(document).ready(function() {
 			ruleArr = [];
 			ruleName = "";
 			ruleOpt = {};
+			drlSource = "";
 		}
 		
 		

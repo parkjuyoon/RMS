@@ -5,27 +5,30 @@ import java.util.List;
 
 import egovframework.rte.psl.dataaccess.mapper.Mapper;
 
-@Mapper("ruleEditorMapper")
+//@Mapper("ruleEditorMapper")
 public interface RuleEditorMapper {
 
-	public List<HashMap<String, Object>> getFactorGrpList();
+	List<HashMap<String, Object>> getFactorGrpList();
 
-	public List<String> getFactorList(HashMap<String, Object> param);
+	List<String> getFactorList(HashMap<String, Object> param);
 
-	public List<HashMap<String, Object>> getFactorVal(HashMap<String, Object> param);
+	List<HashMap<String, Object>> getFactorVal(HashMap<String, Object> param);
 
-	public String getColumnType(HashMap<String, Object> param);
+	void insertRuleInfo(HashMap<String, Object> param);
 
-	public HashMap<String, Object> test(String custAccNo);
+	int getRuleNameCheck(HashMap param);
 
-	public void insertDrlInfo(HashMap<String, Object> drl_info);
+	HashMap<String, Object> getFactor(HashMap<String, Object> param);
 
-	public void insertRuleInfo(HashMap<String, Object> param);
+	void insertRuleAttr(HashMap<String, Object> param);
 
-	public int gerLastRuleAddCnt(HashMap<String, Object> param);
+	HashMap getPkgById(String pkgId);
 
-	public int getRuleNameCheck(HashMap<String, Object> param);
+	List<HashMap> getRuleList(String pkgId);
 
-	public HashMap<String, Object> getFactor(HashMap<String, Object> param);
+	List<HashMap> getWhenList(int ruleId);
+
+	void updateDrlSource(HashMap drlSource);
+
 
 }

@@ -2,7 +2,6 @@
  * Rule Generate 할 때 최종 DRL 파일 내용 생성
  */
 function drlGenerator(ruleOpt, ruleName, ruleArr) {
-	console.log(ruleArr)
 	var drlTxt = "";
 	
 	drlTxt += "package rule\n";

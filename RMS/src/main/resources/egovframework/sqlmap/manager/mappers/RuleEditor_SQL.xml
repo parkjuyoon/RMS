@@ -71,99 +71,128 @@
 		    AND F.DATA_TYPE = 'STRING'
 		    AND F.FACTOR_ID = #{factor_id}
 	</select>
-
-	<select id="test" parameterType="string" resultType="java.util.HashMap">
-		SELECT
-			*
-		FROM
-			RULE_EDITOR.EV_CUST_ITEM1_TXN
-		WHERE
-			CUST_ACC_NO = #{value}
-	</select>
 	
+	<!-- RULE 이름 중복체크 -->
 	<select id="getRuleNameCheck" parameterType="java.util.HashMap" resultType="int">
 		SELECT 
 		    COUNT(*)
 		FROM
 		    targetai.PKG P, targetai.RULE R
 		WHERE
-			P.ID = R.PKG_ID
-			AND P.ID = #{PKG_ID}
+			P.PKG_ID = R.PKG_ID
+			AND P.PKG_ID = #{PKG_ID}
 		    AND R.RULE_NM = #{RULE_NM}
 	</select>
 	
-	<select id="gerLastRuleAddCnt" parameterType="java.util.HashMap" resultType="int">
-		SELECT 
-		<![CDATA[
-		   CASE
-				WHEN COUNT(*) < 1 THEN 0
-				ELSE RI.RULE_ADD_CNT
-			END	AS RULE_ADD_CNT
-		]]>
-		FROM
-		    ${drl_info.schema}.DRL_INFO DI
-		    LEFT JOIN ${drl_info.schema}.RULE_INFO RI ON (DI.SEQ = RI.DRL_INFO_SEQ)
-		WHERE
-		    DI.SERVICE_ID = #{drl_info.SERVICE_ID}
-		    AND DI.ROOT_PATH = #{drl_info.ROOT_PATH}
-		    AND DI.PACKAGE_NM = #{drl_info.PACKAGE_NM}
-		    AND DI.DRL_FILE_NM = #{drl_info.DRL_FILE_NM}
-			AND RI.SALIENCE = #{rule_info.SALIANCE}
-		ORDER BY SEQ DESC	
-	</select>
-	
-	<insert id="insertDrlInfo" parameterType="java.util.HashMap">
-		INSERT INTO ${drl_info.schema}.DRL_INFO
+	<!-- RULE 저장 -->
+	<insert id="insertRuleInfo" parameterType="java.util.HashMap">
+		INSERT INTO targetai.RULE
 		(
-			SERVICE_ID,
-			ROOT_PATH,
-			PACKAGE_NM,
-			PACKAGE_COMMENT,
-			DRL_FILE_NM,
-			DRL_FILE_COMMENT,
-			REG_USER_ID
+			RULE_NM,
+			NO_LOOP,
+			LOCK_ON_ACTIVE,
+			SALIENCE,
+			ATTR_THEN,
+			PKG_ID
 		)
 		VALUES 
 		(
-			#{drl_info.SERVICE_ID},
-			#{drl_info.ROOT_PATH},
-			#{drl_info.PACKAGE_NM},
-			#{drl_info.PACKAGE_COMMNET},
-			#{drl_info.DRL_FILE_NM},
-			#{drl_info.DRL_FILE_COMMENT},
-			#{drl_info.REG_USER_ID}
+			#{RULE_NM},
+			#{NO_LOOP},
+			#{LOCK_ON_ACTIVE},
+			#{SALIENCE},
+			#{ATTR_THEN},
+			#{PKG_ID}
 		)
-		<selectKey keyProperty="DRL_INFO_SEQ" keyColumn="SEQ" resultType="Integer" order="AFTER">
+		<selectKey keyProperty="RULE_ID" keyColumn="SEQ" resultType="Integer" order="AFTER">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
 	</insert>
 	
-	<insert id="insertRuleInfo" parameterType="java.util.HashMap">
-		INSERT INTO ${drl_info.schema}.RULE_INFO
+	<!-- RULE 속성 저장 -->
+	<insert id="insertRuleAttr" parameterType="java.util.HashMap">
+		INSERT INTO targetai.RULE_ATTR
 		(
-			DRL_INFO_SEQ,
-			RULE_NAME,
-			RULE_ADD_CNT,
-			NO_LOOP,
-			LOCK_ON_ACTIVE,
-			AGENDA_GROUP,
-			SALIENCE,
-			ENABLED,
-			DURATION,
-			CONTENTS
-		)
-		VALUES 
+			RULE_ID,
+			ATTR_WHEN,
+			FUNC_YN
+		) VALUES 
+		<foreach collection="ATTR_WHEN_LIST" item="ATTR_WHEN" separator=",">
 		(
-			#{DRL_INFO_SEQ},
-			#{rule_info.RULE_NAME},
-			#{RULE_ADD_CNT},
-			#{rule_info.NO_LOOP},
-			#{rule_info.LOCK_ON_ACTIVE},
-			#{rule_info.AGENDA_GROUP},
-			#{rule_info.SALIANCE},
-			#{rule_info.ENABLED},
-			#{rule_info.DURATION},
-			#{rule_info.CONTENTS}
+			#{RULE_ID},
+			#{ATTR_WHEN},
+			#{FUNC_YN}
 		)
+		</foreach>
 	</insert>
+
+	<!-- PKG 정보 조회 -->
+	<select id="getPkgById" parameterType="String" resultType="java.util.HashMap">
+		SELECT
+			PKG_ID,
+		    PKG_NM,
+		    DRL_NM,
+		    DRL_SOURCE,
+		    DIALECT,
+		    PATH
+		FROM
+			targetai.PKG
+		WHERE
+			PKG_ID = #{pkgId}
+	</select>
+	
+	<!-- RULE 정보 조회 -->
+	<select id="getRuleList" parameterType="String" resultType="java.util.HashMap">
+		SELECT
+			RULE_ID,
+		    RULE_NM,
+		    NO_LOOP,
+		    LOCK_ON_ACTIVE,
+		    AGENDA_GRP,
+		    SALIENCE,
+		    EFFECTIVE_DT,
+		    EXPIRES_DT,
+		    ENABLED,
+		    DURATION,
+		    ATTR_THEN,
+		    NUM_OF_TGT,
+		    PKG_ID,
+		    CAP_ID,
+		    REG_DT
+		FROM
+			targetai.RULE
+		WHERE
+			PKG_ID = #{pkgId}
+	</select>
+	
+	<!-- RULE_ATTR 정보 조회 -->
+	<select id="getWhenList" parameterType="Integer" resultType="java.util.HashMap">
+		SELECT
+			RULE_ATTR_ID,
+		    RULE_ID,
+		    ATTR_WHEN,
+		    FUNC_YN,
+		    FUNC_URL,
+		    FUNC_PARAM,
+		    FUNC_LOGICAL,
+		    FUNC_VAL,
+		    REG_DTM,
+		    REG_USRID
+		FROM
+			targetai.RULE_ATTR
+		WHERE
+			RULE_ID = #{pkgId}
+		ORDER BY 
+			RULE_ATTR_ID ASC
+	</select>
+	
+	<!-- PKG 의 DRL_SOURCE 업데이트 -->
+	<update id="updateDrlSource" parameterType="java.util.HashMap">
+		UPDATE targetai.PKG
+		SET
+			DRL_SOURCE = #{DRL_SOURCE}
+		WHERE
+			PKG_ID = #{PKG_ID}
+	</update>
+	
 </mapper>

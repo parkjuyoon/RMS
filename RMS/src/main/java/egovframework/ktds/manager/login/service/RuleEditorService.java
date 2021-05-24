@@ -9,20 +9,21 @@ public interface RuleEditorService {
 
 	List<String> getFactorList(HashMap<String, Object> param);
 
-	List<HashMap<String, Object>> getFactorVal(HashMap<String, Object> param);
-
-	String getColumnType(HashMap<String, Object> param);
-
-	HashMap<String, Object> test(String custAccNo);
-
-	void insertRuleInfo(HashMap<String, Object> param);
-
-	void insertDrlInfo(HashMap<String, Object> drl_info);
-
-	int gerLastRuleAddCnt(HashMap<String, Object> param);
-
-	int getRuleNameCheck(HashMap<String, Object> param);
-
 	HashMap<String, Object> getFactor(HashMap<String, Object> param);
 
+	List<HashMap<String, Object>> getFactorVal(HashMap<String, Object> param);
+
+	int getRuleNameCheck(HashMap param);
+
+	void insertRuleInfo(HashMap<String, Object> map);
+
+	void insertRuleAttr(HashMap<String, Object> map);
+
+	HashMap getPkgById(String pkgId);
+
+	List<HashMap> getRuleList(String pkgId);
+
+	List<HashMap> getWhenList(int ruleId);
+
+	void updateDrlSource(HashMap pkg);
 }

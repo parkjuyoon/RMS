@@ -10,6 +10,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import egovframework.ktds.targetai.service.PkgService;
@@ -101,6 +102,21 @@ public class PkgController {
 		HashMap<String, Object> rule = pkgService.getRule(param);
 		resultMap.put("rule", rule);
 		
+		return resultMap;
+	}
+	
+	/**
+	 * 속성 view 하위 요소 리스트 조회
+	 * @param factor_grp_id
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getFactorGrpList.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getFactorGrpList(@RequestBody HashMap<String, Object> param) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		List<HashMap<String, Object>> factorGrpList = pkgService.getFactorGrpList();
+		resultMap.put("factorGrpList", factorGrpList);
+			
 		return resultMap;
 	}
 	

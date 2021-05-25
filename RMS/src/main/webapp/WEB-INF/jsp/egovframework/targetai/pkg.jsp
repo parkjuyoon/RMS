@@ -97,6 +97,11 @@
 								</header>
 								<!-- 본문페이지 -->
 								<div class="card-body" style="">
+									<div class="progress_loading">
+										<div id="pkgLoading">
+											<img src="/targetai/images/ajax-loader.gif"/>
+										</div>
+									</div>
 									<!-- 테이블 -->
 									<div class="panel bd_b_none nobordertop">
 										<table class="tb_type01">
@@ -127,13 +132,7 @@
 													<th>등록자</th>
 												</tr>
 											</thead>
-											<tbody id="pkgList">
-												<div class="progress_loading">
-													<div id="pkgLoading">
-														<img src="/targetai/images/ajax-loader.gif"/>
-													</div>
-												</div>
-											</tbody>
+											<tbody id="pkgList"></tbody>
 										</table>
 									</div>
 									<!-- //테이블 -->
@@ -317,6 +316,11 @@
 								</header>
 								<!-- 본문페이지 -->
 								<div class="card-body" id="ruleListCardBody" style="display:none;">
+									<div class="progress_loading">
+										<div id="ruleLoading">
+											<img src="/targetai/images/ajax-loader.gif"/>
+										</div>
+									</div>
 									<!-- 테이블 -->
 									<div class="panel bd_b_none nobordertop">
 										<table class="tb_type01">
@@ -347,13 +351,7 @@
 													<th>등록자</th>
 												</tr>
 											</thead>
-											<tbody id="ruleList">
-												<div class="progress_loading">
-													<div id="ruleLoading">
-														<img src="/targetai/images/ajax-loader.gif"/>
-													</div>
-												</div>
-											</tbody>
+											<tbody id="ruleList"></tbody>
 										</table>
 									</div>
 									<!-- //테이블 -->
@@ -397,7 +395,7 @@
 							<div class="card card-collapsed" id="ruleCard">
 								<header class="card-header card-header-pd-mobile">
 									<div class="card-actions card-header-position-mobile">
-										<button type="button" data-modalclass="modalID_1" class="btn btn-sm btn-sky btnModal" id="ruleEditorPopUp" data-ruleId="">RULE EDITOR</button>
+										<button type="button" style="display: none;" data-modalclass="modalID_1" class="btn btn-sm btn-sky btnModal" id="ruleEditorPopUp" data-ruleId="">RULE EDITOR</button>
 										<a href="#" class="card-action card-action-toggle" data-card-toggle></a>
 
 										<!-- modal_pop -->
@@ -435,8 +433,14 @@
 																					<tbody>
 																						<tr>
 																							<td class="t_left bd_b_none bg01 v_top" rowspan="6">
+																								<div class="progress_loading">
+																									<div id="treeCheckboxLoading">
+																										<img src="/targetai/images/ajax-loader.gif"/>
+																									</div>
+																								</div>
 																								<!-- 트리메뉴 -->
-																								<div id="treeCheckbox" class="treewrap">
+																								<div id="treeBasic" class="treewrap">
+																									<!-- -->
 																									<ul>
 																										<li class="folder">
 																											요금제
@@ -485,478 +489,8 @@
 																												</li>
 																											</ul>
 																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																											<ul>
-																												<li data-jstree='{"type":true}'>
-																													<a href="#">금액</a>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													가입기간
-																													<ul>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																													</ul>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													사용자
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													할인율
-																												</li>
-																											</ul>
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																											<ul>
-																												<li data-jstree='{"type":true}'>
-																													<a href="#">금액</a>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													가입기간
-																													<ul>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																													</ul>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													사용자
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													할인율
-																												</li>
-																											</ul>
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																											<ul>
-																												<li data-jstree='{"type":true}'>
-																													<a href="#">금액</a>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													가입기간
-																													<ul>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																													</ul>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													사용자
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													할인율
-																												</li>
-																											</ul>
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																											<ul>
-																												<li data-jstree='{"type":true}'>
-																													<a href="#">금액</a>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													가입기간
-																													<ul>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																													</ul>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													사용자
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													할인율
-																												</li>
-																											</ul>
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																											<ul>
-																												<li data-jstree='{"type":true}'>
-																													<a href="#">금액</a>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													가입기간
-																													<ul>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																													</ul>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													사용자
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													할인율
-																												</li>
-																											</ul>
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																											<ul>
-																												<li data-jstree='{"type":true}'>
-																													<a href="#">금액</a>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													가입기간
-																													<ul>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																													</ul>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													사용자
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													할인율
-																												</li>
-																											</ul>
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																											<ul>
-																												<li data-jstree='{"type":true}'>
-																													<a href="#">금액</a>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													가입기간
-																													<ul>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																													</ul>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													사용자
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													할인율
-																												</li>
-																											</ul>
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																											<ul>
-																												<li data-jstree='{"type":true}'>
-																													<a href="#">금액</a>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													가입기간
-																													<ul>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																													</ul>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													사용자
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													할인율
-																												</li>
-																											</ul>
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																											<ul>
-																												<li data-jstree='{"type":true}'>
-																													<a href="#">금액</a>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													가입기간
-																													<ul>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																													</ul>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													사용자
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													할인율
-																												</li>
-																											</ul>
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																											<ul>
-																												<li data-jstree='{"type":true}'>
-																													<a href="#">금액</a>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													가입기간
-																													<ul>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																													</ul>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													사용자
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													할인율
-																												</li>
-																											</ul>
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																											<ul>
-																												<li data-jstree='{"type":true}'>
-																													<a href="#">금액</a>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													가입기간
-																													<ul>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																													</ul>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													사용자
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													할인율
-																												</li>
-																											</ul>
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																											<ul>
-																												<li data-jstree='{"type":true}'>
-																													<a href="#">금액</a>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													가입기간
-																													<ul>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																													</ul>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													사용자
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													할인율
-																												</li>
-																											</ul>
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																											<ul>
-																												<li data-jstree='{"type":true}'>
-																													<a href="#">금액</a>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													가입기간
-																													<ul>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																													</ul>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													사용자
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													할인율
-																												</li>
-																											</ul>
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																											<ul>
-																												<li data-jstree='{"type":true}'>
-																													<a href="#">금액</a>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													가입기간
-																													<ul>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																													</ul>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													사용자
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													할인율
-																												</li>
-																											</ul>
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																											<ul>
-																												<li data-jstree='{"type":true}'>
-																													<a href="#">금액</a>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													가입기간
-																													<ul>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																													</ul>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													사용자
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													할인율
-																												</li>
-																											</ul>
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
-																										<li class="folder">
-																											요금제
-																										</li>
 																									</ul>
+																									 
 																								</div>
 																								<!-- //트리메뉴 -->
 																							</td>

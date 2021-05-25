@@ -98,6 +98,7 @@
 	    <if test="ruleNm_search != null and ruleNm_search != ''">AND RULE_NM LIKE CONCAT('%', #{ruleNm_search}, '%')</if>
 	</select>
 	
+	<!-- RULE 상세 조회 -->
 	<select id="getRule" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT 
 			R.RULE_ID,
@@ -126,4 +127,17 @@
 		GROUP BY RULE_ID
 	</select>
 	
+	<!-- 속성 view 하위 요소 리스트 조회 -->
+	<select id="getFactorGrpList" resultType="java.util.HashMap">
+		SELECT
+			FACTOR_GRP_ID,
+			FACTOR_GRP_NM,
+		    FACTOR_GRP_DSC,
+		    REG_DTM,
+		    ATTR_USE_YN
+		FROM
+		    targetai.FACTOR_GRP
+		WHERE
+			ATTR_USE_YN = 'Y'
+	</select>
 </mapper>

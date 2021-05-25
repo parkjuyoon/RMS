@@ -17,4 +17,6 @@ public interface PkgService {
 
 	HashMap<String, Object> getRule(HashMap<String, Object> param);
 
+	List<HashMap<String, Object>> getFactorGrpList();
+
 }

@@ -50,6 +50,7 @@ $(document).ready(function() {
 				searchObj.pkgId = pkg.PKG_ID;
 				getRuleList(searchObj);
 				
+				$("#ruleEditorPopUp").css("display", "none");
 				$("#pkgCardList").removeClass("card-collapsed");
 				$("#pkgCardListBody").css("display", "");
 				
@@ -103,6 +104,7 @@ $(document).ready(function() {
 				$("#ruleWhenCont").val(rule.ATTR_WHEN_CONTENTS);
 				
 				$("#ruleEditorPopUp").attr("data-ruleId", rule.RULE_ID);
+				$("#ruleEditorPopUp").css("display", "");
 				$("#ruleCard").removeClass("card-collapsed");
 				$("#ruleCardBody").css("display", "");
 				
@@ -120,6 +122,11 @@ $(document).ready(function() {
 				console.log(errorThrown);
 			}
 		});
+	});
+	
+	// RULE 상세 > RULE EDITOR 버튼 클릭
+	$("#ruleEditorPopUp").click(function() {
+		getFactorGrpList();
 	});
 });
 
@@ -246,6 +253,48 @@ function getRuleList(searchObj) {
 		},
 		complete : function() {
 			$("#ruleLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			alert("에러 발생.");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
+
+/**
+ * 속성 view 하위 요소 리스트 조회
+ * @returns
+ */ 
+function getFactorGrpList() {
+	var param = {};
+	
+	$.ajax({
+		method : "POST",
+		url : "/targetai/getFactorGrpList.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			var factorGrpList = res.factorGrpList;
+			var html = "";
+			html += "<ul>";
+			for(var i=0; i<factorGrpList.length; i++) {
+				html += "<li class='folder'>";
+				html += 	factorGrpList[i].FACTOR_GRP_NM;
+				html += "</li>";
+			}
+			html += "</ul>";
+			
+//			$("#treeCheckbox").html(html).trigger("create");
+		},
+		beforeSend : function() {
+			$("#treeCheckboxLoading").show();
+		},
+		complete : function() {
+			$("#treeCheckboxLoading").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			alert("에러 발생.");

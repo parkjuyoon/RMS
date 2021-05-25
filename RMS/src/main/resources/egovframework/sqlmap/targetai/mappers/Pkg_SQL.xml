@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.ktds.targetai.mapper.PkgMapper">
+
+	<!-- package 리스트 조회 -->
+	<select id="getPkgList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 
+			PKG_ID,
+		    PKG_NM,
+		    DRL_NM,
+		    DRL_SOURCE,
+		    DIALECT,
+		    PATH,
+		    PKG_ACT_YN,
+		    REG_USRID,
+		    DATE_FORMAT(REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
+		    PKG_DSC,
+		    DATE_FORMAT(UDT_DT, '%Y-%m-%d %h:%i:%s') AS UDT_DT,
+		    UDT_USRID
+		FROM targetai.PKG
+		WHERE 1=1
+		<if test="pkgId_search != null and pkgId_search != ''">AND PKG_ID = #{pkgId_search}</if>
+		<if test="pkgNm_search != null and pkgNm_search != ''">AND PKG_NM LIKE CONCAT('%', #{pkgNm_search}, '%')</if>
+		<if test="pkgActYn_search != null and pkgActYn_search != ''">AND PKG_ACT_YN = #{pkgActYn_search}</if>
+		<if test="regUsrId_search != null and regUsrId_search != ''">AND REG_USRID = #{regUsrId_search}</if>
+	</select>
+	
+	<!-- package 조회된 개수 조회 -->
+	<select id="getPkgCount" parameterType="java.util.HashMap" resultType="int">
+		SELECT 
+			COUNT(*) AS CNT
+		FROM targetai.PKG
+		WHERE 1=1
+		<if test="pkgId_search != null and pkgId_search != ''">AND PKG_ID = #{pkgId_search}</if>
+		<if test="pkgNm_search != null and pkgNm_search != ''">AND PKG_NM LIKE CONCAT('%', #{pkgNm_search}, '%')</if>
+		<if test="pkgActYn_search != null and pkgActYn_search != ''">AND PKG_ACT_YN = #{pkgActYn_search}</if>
+		<if test="regUsrId_search != null and regUsrId_search != ''">AND REG_USRID = #{regUsrId_search}</if>
+	
+	</select>
+	
+	<!-- package 상세 조회 -->
+	<select id="getPkg" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 
+			P.PKG_ID,
+			P.PKG_NM,
+			P.DRL_NM,
+			P.DRL_SOURCE,
+			P.DIALECT,
+			P.PATH,
+			P.PKG_ACT_YN,
+			P.REG_USRID,
+			DATE_FORMAT(P.REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
+			P.PKG_DSC,
+			DATE_FORMAT(UDT_DT, '%Y-%m-%d %h:%i:%s') AS UDT_DT,
+			P.UDT_USRID,
+		    (SELECT COUNT(*) FROM targetai.RULE WHERE PKG_ID = P.PKG_ID) AS RULE_COUNT_IN_PKG
+		FROM targetai.PKG P
+		WHERE
+			PKG_ID = #{pkgId}
+	</select>
+	
+	<!-- RULE 리스트 조회 -->
+	<select id="getRuleList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 
+			RULE_ID,
+		    RULE_NM,
+		    NO_LOOP,
+		    LOCK_ON_ACTIVE,
+		    AGENDA_GRP,
+		    SALIENCE,
+		    EFFECTIVE_DT,
+		    EXPIRES_DT,
+		    ENABLED,
+		    DURATION,
+		    ATTR_THEN,
+		    NUM_OF_TGT,
+		    PKG_ID,
+		    CAP_ID,
+		    DATE_FORMAT(REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
+		    REG_USRID,
+		    DATE_FORMAT(UDT_DT, '%Y-%m-%d %h:%i:%s') AS UDT_DT,
+		    UDT_USRID
+		FROM targetai.RULE
+		WHERE PKG_ID = #{pkgId}
+		<if test="ruleId_search != null and ruleId_search != ''">AND RULE_ID = #{ruleId_search}</if>
+	    <if test="regUsrId_search != null and regUsrId_search != ''">AND REG_USRID = #{regUsrId_search}</if>
+	    <if test="ruleNm_search != null and ruleNm_search != ''">AND RULE_NM LIKE CONCAT('%', #{ruleNm_search}, '%')</if>
+	</select>
+	
+	<!-- RULE 조회된 개수 조회 -->
+	<select id="getRuleCount"  parameterType="java.util.HashMap" resultType="int">
+		SELECT 
+			COUNT(*) AS CNT
+		FROM targetai.RULE
+		WHERE PKG_ID = #{pkgId}
+		<if test="ruleId_search != null and ruleId_search != ''">AND RULE_ID = #{ruleId_search}</if>
+	    <if test="regUsrId_search != null and regUsrId_search != ''">AND REG_USRID = #{regUsrId_search}</if>
+	    <if test="ruleNm_search != null and ruleNm_search != ''">AND RULE_NM LIKE CONCAT('%', #{ruleNm_search}, '%')</if>
+	</select>
+	
+	<select id="getRule" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 
+			R.RULE_ID,
+		    R.RULE_NM,
+		    R.NO_LOOP,
+		    R.LOCK_ON_ACTIVE,
+		    R.AGENDA_GRP,
+		    R.SALIENCE,
+		    R.EFFECTIVE_DT,
+		    R.EXPIRES_DT,
+		    R.ENABLED,
+		    R.DURATION,
+		    R.ATTR_THEN,
+		    R.NUM_OF_TGT,
+		    R.PKG_ID,
+		    R.CAP_ID,
+		    R.REG_DT,
+		    R.REG_USRID,
+		    R.UDT_DT,
+		    R.UDT_USRID,
+		    GROUP_CONCAT(RA.ATTR_WHEN_CONTENTS ORDER BY RULE_ATTR_ID ASC SEPARATOR '\n') AS ATTR_WHEN_CONTENTS
+		FROM targetai.RULE R, targetai.RULE_ATTR RA
+		WHERE
+			R.RULE_ID = #{ruleId}
+		    AND R.RULE_ID = RA.RULE_ID
+		GROUP BY RULE_ID
+	</select>
+	
+</mapper>

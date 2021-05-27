@@ -22,4 +22,6 @@ public interface PkgMapper {
 
 	List<HashMap<String, Object>> getFactorGrpList();
 
+	List<String> getFactorList(HashMap<String, Object> param);
+
 }

@@ -106,7 +106,7 @@ public class PkgController {
 	}
 	
 	/**
-	 * 속성 view 하위 요소 리스트 조회
+	 * 속성 view 리스트 조회
 	 * @param factor_grp_id
 	 * @return
 	 */
@@ -116,8 +116,24 @@ public class PkgController {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		List<HashMap<String, Object>> factorGrpList = pkgService.getFactorGrpList();
 		resultMap.put("factorGrpList", factorGrpList);
-			
+		
 		return resultMap;
+	}
+	
+	/**
+	 * 속성 view 하위 요소 리스트 조회
+	 * @param factor_grp_id
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getFactorList.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getFactorList(@RequestBody HashMap<String, Object> param) {
+		HashMap<String, Object> factor = new HashMap<String, Object>();
+		List<String> factorList = pkgService.getFactorList(param);
+		
+		factor.put("factorList", factorList);
+			
+		return factor;
 	}
 	
 }

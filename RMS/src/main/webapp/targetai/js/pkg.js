@@ -128,6 +128,20 @@ $(document).ready(function() {
 	$("#ruleEditorPopUp").click(function() {
 		getFactorGrpList();
 	});
+	
+	// RULE 상세 > RULE EDITOR 취소버튼
+	$("#ruleEditorCancel").click(function() {
+		// jstree 종료할땐 항상 destroy 해주어야 함. 안하면 다음 실행할때 에러
+		$("#factorTree").jstree("destroy");
+		
+		// RULE EDITOR 팝업 닫기
+		close_layerPop('modalID_1');
+	});
+	
+	// RULE EDITOR 팝업 X버튼 클릭
+	$("#modalID_1 .close").click(function() {
+		$("#factorTree").jstree("destroy");
+	});
 });
 
 /**
@@ -279,16 +293,87 @@ function getFactorGrpList() {
 		dataType : "json",
 		success : function(res) {
 			var factorGrpList = res.factorGrpList;
-			var html = "";
-			html += "<ul>";
-			for(var i=0; i<factorGrpList.length; i++) {
-				html += "<li class='folder'>";
-				html += 	factorGrpList[i].FACTOR_GRP_NM;
-				html += "</li>";
-			}
-			html += "</ul>";
+			var factorGrpArr = [];
 			
-//			$("#treeCheckbox").html(html).trigger("create");
+			$.each(factorGrpList, function(idx, factorGrp) {
+				var factorGrpObj = {};
+				factorGrpObj.id = factorGrp.FACTOR_GRP_ID;
+				factorGrpObj.text = factorGrp.FACTOR_GRP_NM;
+				factorGrpObj.state = { 'opened' : false, 'selected' : false };
+				
+				factorGrpArr.push(factorGrpObj);
+			});
+			
+			// RULE EDITOR 트리뷰 생성
+			$("#factorTree").jstree({ 
+				'core' : {
+							'check_callback' : true, // check_callback 이 없으면 create_node가 실행되지않는다
+				 			'data' : factorGrpArr
+				 		},
+				'types' : {
+					'default' : {
+						'icon' : 'fas fa-folder'
+					},
+					'file' : {
+						'icon' : 'fas fa-file'
+					}
+				},
+				'themes' : {
+					'responsive': false
+				}, 
+				"plugins" : [ 'types' ]
+			})
+			.bind("select_node.jstree", function (e, data) {	// 노드 선택시 실행되는 이벤트
+				
+				if(data.node.parent != "#") {	// factor 클릭시 동작할 내용 (ROOT 폴더는 factorGrp)
+					var parentNode = $("#factorTree").jstree().get_node(data.node.parent);
+					var childNode = data.node;
+					
+					var factorGrpNm = parentNode.text;
+					var factorId = childNode.id;
+					var factorNm = childNode.text;
+					
+					
+					return;
+				}
+				
+				if(!data.node.state.opened) {	// factorGrp 가 열려있을 경우는 실행하지 않음
+					var grpParam = {};
+					grpParam.factor_grp_id = data.node.id;
+					
+					$.ajax({
+						method : "POST",
+						url : "/targetai/getFactorList.do",
+						traditional: true,
+						data : JSON.stringify(grpParam),
+						contentType:'application/json; charset=utf-8',
+						dataType : "json",
+						success:function(res) {
+							var factorList = res.factorList;
+							var factorArr = [];
+							
+							$.each(factorList, function(idx, factor) {
+								var factorObj = {};
+								factorObj.id = factor.FACTOR_ID;
+								factorObj.text = factor.FACTOR_NM;
+								factorObj.state = { 'opened' : false, 'selected' : false };
+								
+								$('#factorTree').jstree("create_node", data.node.id, factorObj, "first", false);
+							});
+							
+							$("#factorTree").jstree("toggle_node", $("#factorTree").jstree("get_selected"));
+						}
+					});
+					
+				} else {	// factgorGrp 가 열려있을 경우 닫음.
+					$("#factorTree").jstree("toggle_node", $("#factorTree").jstree("get_selected"));
+				}
+			})
+			.bind("open_node.jstree", function(e, data) {})
+			.bind("close_node.jstree", function(e, data) {
+				// factorGrp 닫을때 factor 요소 delete
+				$("#factorTree").jstree("delete_node", data.node.children);
+			});
 		},
 		beforeSend : function() {
 			$("#treeCheckboxLoading").show();

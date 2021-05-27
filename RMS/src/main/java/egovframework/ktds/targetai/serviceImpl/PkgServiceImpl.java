@@ -51,4 +51,9 @@ public class PkgServiceImpl extends EgovAbstractServiceImpl implements PkgServic
 	public List<HashMap<String, Object>> getFactorGrpList() {
 		return dao.getFactorGrpList();
 	}
+
+	@Override
+	public List<String> getFactorList(HashMap<String, Object> param) {
+		return dao.getFactorList(param);
+	}
 }

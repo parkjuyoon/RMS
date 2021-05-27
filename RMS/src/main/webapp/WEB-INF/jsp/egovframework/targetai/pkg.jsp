@@ -344,7 +344,7 @@
 													</th>
 													<th>ID</th>
 													<th>RULE 명</th>
-													<th>SALENCE</th>
+													<th>SALIENCE</th>
 													<th>수정일시</th>
 													<th>수정자</th>
 													<th>등록일시</th>
@@ -439,59 +439,7 @@
 																									</div>
 																								</div>
 																								<!-- 트리메뉴 -->
-																								<div id="treeBasic" class="treewrap">
-																									<!-- -->
-																									<ul>
-																										<li class="folder">
-																											요금제
-																											<ul>
-																												<li data-jstree='{"type":true}'>
-																													옵션(하위기본)
-																													<ul>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																													</ul>
-																												</li>
-																												<li data-jstree='{"opened":true}'>
-																													옵션(열기)
-																													<ul>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																													</ul>
-																												</li>
-																												<li data-jstree='{"selected":true}'>
-																													옵션(체크)
-																													<ul>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																														<li data-jstree='{"type":true}'>
-																															기타
-																														</li>
-																													</ul>
-																												</li>
-																												<li data-jstree='{"disabled":true}'>
-																													옵션(비활성)
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													<a href="#"> 옵션(링크)</a>
-																												</li>
-																												<li data-jstree='{"type":true}'>
-																													옵션(기본)
-																												</li>
-																											</ul>
-																										</li>
-																									</ul>
-																									 
-																								</div>
+																								<div id="factorTree" class="treewrap"></div>
 																								<!-- //트리메뉴 -->
 																							</td>
 																							<th class="t_left icon01">
@@ -599,7 +547,7 @@
 
 																		<!-- 버튼 -->
 																		<div class="card-actions-foot">
-																			<button type="button" class="btn btn-sm btn-gray"><i class="far fa-times-circle custom-btn-i"></i> 취소</button>
+																			<button type="button" class="btn btn-sm btn-gray" id="ruleEditorCancel"><i class="far fa-times-circle custom-btn-i"></i> 취소</button>
 																			<button type="button" class="btn btn-sm btn-green"><i class="far fa-check-circle custom-btn-i"></i> 적용</button>
 																		</div>
 																		<!-- //버튼 -->

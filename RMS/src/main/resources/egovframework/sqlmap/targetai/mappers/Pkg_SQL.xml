@@ -127,7 +127,7 @@
 		GROUP BY RULE_ID
 	</select>
 	
-	<!-- 속성 view 하위 요소 리스트 조회 -->
+	<!-- 속성 view 리스트 조회 -->
 	<select id="getFactorGrpList" resultType="java.util.HashMap">
 		SELECT
 			FACTOR_GRP_ID,
@@ -139,5 +139,24 @@
 		    targetai.FACTOR_GRP
 		WHERE
 			ATTR_USE_YN = 'Y'
+	</select>
+	
+	<!-- 속성 view 하위 요소 리스트 조회 -->
+	<select id="getFactorList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT
+			FACTOR_ID,
+		    FACTOR_NM,
+		    FACTOR_NM_EN,
+		    FACTOR_TYPE,
+		    DATA_TYPE,
+		    NUM_OF_GRP,
+		    CATEGORY_YN,
+		    FACTOR_GRP_ID,
+		    ATTR_USE_YN
+		FROM
+		    targetai.FACTOR
+		WHERE
+			ATTR_USE_YN = 'Y'
+			AND FACTOR_GRP_ID = #{factor_grp_id};
 	</select>
 </mapper>

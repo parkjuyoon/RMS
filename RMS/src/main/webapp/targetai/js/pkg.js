@@ -100,14 +100,15 @@ $(document).ready(function() {
 				$("#ruleNm").val(rule.RULE_NM);
 				$("input:radio[name='noLoop']:radio[value='"+ rule.NO_LOOP +"']").prop("checked", true);
 				$("input:radio[name='lockOnActive']:radio[value='"+ rule.LOCK_ON_ACTIVE +"']").prop("checked", true);
-				$("#salience").text(rule.SALIENCE);
+				$("#salience").val(rule.SALIENCE);
 				$("#ruleWhenCont").val(rule.ATTR_WHEN_CONTENTS);
 				
 				$("#ruleEditorPopUp").attr("data-ruleId", rule.RULE_ID);
 				$("#ruleEditorPopUp").css("display", "");
 				$("#ruleCard").removeClass("card-collapsed");
 				$("#ruleCardBody").css("display", "");
-				
+				$("#ruleNm").focus();
+				initRuleEditor();				
 			},
 			beforeSend : function() {
 				$("#ruleLoading").show();
@@ -126,7 +127,7 @@ $(document).ready(function() {
 	
 	// RULE 상세 > RULE EDITOR 버튼 클릭
 	$("#ruleEditorPopUp").click(function() {
-		getFactorGrpList();
+		treeFactorGrpList();
 	});
 	
 	// RULE 상세 > RULE EDITOR 취소버튼
@@ -136,11 +137,97 @@ $(document).ready(function() {
 		
 		// RULE EDITOR 팝업 닫기
 		close_layerPop('modalID_1');
+		initRuleEditor();
 	});
 	
 	// RULE EDITOR 팝업 X버튼 클릭
 	$("#modalID_1 .close").click(function() {
 		$("#factorTree").jstree("destroy");
+		initRuleEditor();
+	});
+	
+	// RULE 목록 > 신규 RULE 생성 버튼 클릭
+	$("#addNewRuleBtn").click(function() {
+		initRuleDetail();	// RULE 상세 초기화
+		initRuleEditor();	// RULE EDITOR 초기화
+		
+		$("#ruleEditorPopUp").css("display", "");
+		$("#ruleCard").removeClass("card-collapsed");
+		$("#ruleCardBody").css("display", "");
+		$("#ruleNm").focus();
+	});
+	
+	// RULE 상세 > 저장 버튼 클릭
+	$("#saveRuleBtn").click(function() {
+		// RULE 명 중복 체크
+		var isDup = $("#ruleNmDupBtn").data("isDup");
+		if(isDup != 'Y') {
+			alert("RULE 명 중복체크가 필요합니다.");
+			$("#ruleNm").focus();
+			return;
+		}
+		
+		// SALIENCE 체크
+		var salience = $("#salience").val();
+		var pattern_num = /^[0-9]+$/;
+		if(salience == '') {
+			alert("SALIENCE 값을 입력하세요.");
+			$("#salience").focus();
+			return;
+		}
+		
+		if(!pattern_num.test(salience)) {
+			alert("SALIENCE 값은 숫자만 입력할 수 있습니다.");
+			$("#salience").focus();
+			return;
+		}
+		
+		// CONTENTS 체크
+		var contents = $("#ruleWhenCont").val();
+		if(contents == '')  {
+			alert("RULE EDITOR를 통해 CONTENTS를 생성하세요.");
+			return;
+		}
+		
+		if(confirm("변경사항을 저장하시겠습니까?")) {
+			alert("RULE이 저장되었습니다.");
+		}
+		
+	});
+	
+	// RULE 상세 > 중복체크 버튼 클릭
+	$("#ruleNmDupBtn").click(function(){
+		var ruleNm = $("#ruleNm").val();
+		
+		if(ruleNm == '') {
+			alert("RULE 명을 입력하세요.");
+			$("#ruleNm").focus();
+			return;
+		}
+		
+		var param = {};
+		param.ruleNm = ruleNm;
+		param.pkgId = $("#pkgId").text();
+		
+		$.ajax({
+			method : "POST",
+			url : "/targetai/ruleNmCheck.do",
+			traditional: true,
+			data : JSON.stringify(param),
+			contentType:'application/json; charset=utf-8',
+			dataType : "json",
+			success : function(res) {
+				if(res == false) {	// RULE 명 중복
+					$("#ruleDupYn").css("display", "");
+					$("#ruleNmDupBtn").data("isDup", "N");
+					$("#ruleNm").focus();
+					return;
+				}
+				
+				$("#ruleDupYn").css("display", "none");
+				$("#ruleNmDupBtn").data("isDup", "Y");
+			}
+		});
 	});
 });
 
@@ -278,10 +365,120 @@ function getRuleList(searchObj) {
 }
 
 /**
- * 속성 view 하위 요소 리스트 조회
+ * Factor Group List 조회 후 트리 생성
+ * @returns
+ */
+function treeFactorGrpList() {
+	
+	var param = {};
+	
+	$.ajax({
+		method : "POST",
+		url : "/targetai/getFactorGrpList.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			var factorGrpList = res.factorGrpList;
+			var factorGrpArr = [];
+			
+			$.each(factorGrpList, function(idx, factorGrp) {
+				var factorGrpObj = {};
+				factorGrpObj.id = factorGrp.FACTOR_GRP_ID;
+				factorGrpObj.name = factorGrp.FACTOR_GRP_NM;
+				factorGrpObj.isParent = true;
+				factorGrpObj.open = false;
+				
+				factorGrpArr.push(factorGrpObj);
+			});
+			
+			// zTree 설정 
+			var setting = {
+				data: {
+					simpleData: {
+						enable: true
+					}
+				},
+				callback: {
+					onExpand: function(event, treeId, treeNode) {
+						var selectedFactorGrpId = treeNode.id;
+						// Factor Group 하위 Factor List 조회 후 트리생성
+						treeFactorList(selectedFactorGrpId, treeId, treeNode);
+					}
+				}
+			};
+			// zTree 초기화 후 생성
+			$.fn.zTree.init($("#factorTree"), setting, factorGrpArr);
+		},
+		beforeSend : function() {
+			$("#factorTreeLoading").show();
+		},
+		complete : function() {
+			$("#factorTreeLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			alert("에러 발생.");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
+
+/**
+ * Factor Group 하위 Factor List 조회 후 트리생성
  * @returns
  */ 
-function getFactorGrpList() {
+function treeFactorList(factorGrpId, treeId, treeNode) {
+	var param = {};
+	param.factorGrpId = factorGrpId;
+	
+	$.ajax({
+		method : "POST",
+		url : "/targetai/getFactorList.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success:function(res) {
+			var factorList = res.factorList;
+			var factorArr = [];
+			
+			$.each(factorList, function(idx, factor) {
+				var factorObj = {};
+				factorObj.id = factor.FACTOR_ID;
+				factorObj.pId = factorGrpId;
+				factorObj.name = factor.FACTOR_NM;
+
+				factorArr.push(factorObj);
+			});
+			
+			// Factor 트리 추가
+			var treeObj = $.fn.zTree.getZTreeObj(treeId);
+			treeObj.addNodes(treeNode, factorArr);
+			
+		},
+		beforeSend : function() {
+			$("#factorTreeLoading").show();
+		},
+		complete : function() {
+			$("#factorTreeLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			alert("에러 발생.");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
+
+/**
+ * 속성 view 하위 요소 리스트 조회
+ * @returns
+ 
+function getFactorGrpList2() {
 	var param = {};
 	
 	$.ajax({
@@ -329,17 +526,19 @@ function getFactorGrpList() {
 					var parentNode = $("#factorTree").jstree().get_node(data.node.parent);
 					var childNode = data.node;
 					
-					var factorGrpNm = parentNode.text;
-					var factorId = childNode.id;
-					var factorNm = childNode.text;
-					
+					// Factor Value 조회
+					var factorObj = {};
+					factorObj.factorGrpNm = parentNode.text;
+					factorObj.factorId = childNode.id;
+					factorObj.factorNm = childNode.text;
+					getFactorVal(factorObj);
 					
 					return;
 				}
 				
 				if(!data.node.state.opened) {	// factorGrp 가 열려있을 경우는 실행하지 않음
 					var grpParam = {};
-					grpParam.factor_grp_id = data.node.id;
+					grpParam.factorGrpId = data.node.id;
 					
 					$.ajax({
 						method : "POST",
@@ -388,4 +587,74 @@ function getFactorGrpList() {
 			console.log(errorThrown);
 		}
 	});
+}
+ */
+
+/**
+ * Factor Value 조회
+ * @param factorValObj
+ * @returns
+ */
+function getFactorVal(factorObj) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/getFactorVal.do",
+		traditional: true,
+		data : JSON.stringify(factorObj),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			var factor = res.factor;
+			var dataType = factor.DATA_TYPE;
+			var html = "";
+			
+			if(dataType === 'DATE') {
+				html += "<input type='date' name='detAttrChk' placeholder='YYYY-MM-DD'/>";
+				
+			} else if(dataType === 'INT') {
+				html += "<input type='text' name='detAttrChk' placeholder='숫자만 입력가능합니다.'/>";
+				
+			} else {	// dataType === 'STRING'
+				var factorVal = res.factorVal;
+				
+				for(var i in factorVal) {
+					html += "<input type='checkbox' name='detAttrChk' value='"+ factorVal[i].VAL +"'> ";
+					html += "	<label for='detAttrChk' class='mg_r10'>";
+					html += 		factorVal[i].VAL;
+					html += "	</label>";
+					html += "</input>";
+					html += "<br />";
+				}
+			}
+			
+			$("#factorValData").html(html);
+		}
+	});
+}
+
+/**
+ * RULE 상세 초기화
+ * @returns
+ */
+function initRuleDetail() {
+	$("#ruleId").text("");
+	$("#ruleNm").val("");
+	$("#ruleNmDupBtn").data("isDup", "N");
+	$("#ruleDupYn").css("display", "none");
+	$("input:radio[name='noLoop']:radio[value='true']").prop("checked", true);
+	$("input:radio[name='lockOnActive']:radio[value='true']").prop("checked", true);
+	$("#salience").val("");
+	$("#ruleWhenCont").val("");
+}
+
+/**
+ * RULE EDITOR 초기화
+ * @returns
+ */
+function initRuleEditor() {
+	$("#ruleEditorPopUp").attr("data-ruleId", "");
+	$("#factorValData").html("");
+	$("#ruleAttrData").html("");
+	$("#logicalRadio1").prop("checked", true);
+	$("#relationRadio1").prop("checked", true);
 }

@@ -136,4 +136,38 @@ public class PkgController {
 		return factor;
 	}
 	
+	/**
+	 * Rule name 중복 체크
+	 * @param param
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/ruleNmCheck.do", method = RequestMethod.POST)
+	public boolean ruleNmCheck(@RequestBody HashMap<String, Object> map) {
+		int ruleNameCnt = pkgService.ruleNmCheck(map);
+		
+		if(ruleNameCnt > 0) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Factor Value 조회
+	 * @param param
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getFactorVal.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getFactorVal(@RequestBody HashMap<String, Object> param) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		HashMap<String, Object> factor = pkgService.getFactor(param);
+		List<HashMap<String, Object>> factorVal = pkgService.getFactorVal(param);
+		resultMap.put("factor", factor);
+		resultMap.put("factorVal", factorVal);
+			
+		return resultMap;
+	}
+	
 }

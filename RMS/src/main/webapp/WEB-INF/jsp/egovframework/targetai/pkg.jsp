@@ -378,7 +378,7 @@
 									<!-- 버튼 -->
 									<div class="card-actions-foot">
 										<button type="button" class="btn btn-sm btn-gray"><i class="far fa-trash-alt custom-btn-i"></i> 삭제</button>
-										<button type="button" class="btn btn-sm btn-green"><i class="el el-file-new custom-btn-i"></i> 신규 RULE 생성</button>
+										<button type="button" class="btn btn-sm btn-green" id="addNewRuleBtn"><i class="el el-file-new custom-btn-i"></i> 신규 RULE 생성</button>
 									</div>
 									<!-- //버튼 -->
 								</div>
@@ -399,167 +399,196 @@
 										<a href="#" class="card-action card-action-toggle" data-card-toggle></a>
 
 										<!-- modal_pop -->
-										<div id="modalID_1" class="modal_pop">
-											<div class="modal_content" style="width:1400px;">
-												<div class="modal_header">
-													<span class="close" onclick="close_layerPop('modalID_1');">&times;</span>
-													<h2>Package 관리</h2>
-												</div>
-												<!-- 본문 -->
-												<div class="modal_body" style="height:calc(100% - 25vh); overflow-x:hidden; overflow-y:scroll;">
-													<div class="modal_wrap">
-														<!-- 상세영역 -->
-														<div class="row">
-															<div class="col">
-																<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
-																<div class="card">
-																	<header class="card-header card-header-pd-mobile">
-																		<div class="card-actions card-header-position-mobile">
-																		</div>
-																		<h2 class="card-title_txt">RULE EDITOR</h2>
-																	</header>
-																	<!-- 본문페이지 -->
-																	<div class="card-body" style="">
-																		<!-- 테이블 -->
-																		<div class="panel nobordertop">
-																			<div class="sform_head">
-																				<table class="sform_type_pop modal_table">
-																					<colgroup>
-																						<col style="width:250px" />
-																						<col style="width:auto" />
-																						<col style="width:400px" />
-																						<col style="width:400px" />
-																					</colgroup>
-																					<tbody>
-																						<tr>
-																							<td class="t_left bd_b_none bg01 v_top" rowspan="6">
-																								<div class="progress_loading">
-																									<div id="treeCheckboxLoading">
-																										<img src="/targetai/images/ajax-loader.gif"/>
-																									</div>
-																								</div>
-																								<!-- 트리메뉴 -->
-																								<div id="factorTree" class="treewrap"></div>
-																								<!-- //트리메뉴 -->
-																							</td>
-																							<th class="t_left icon01">
-																								논리연산 VIEW
-																							</th>
-																							<th class="t_left icon02">
-																								상세 속성 VIEW
-																								<button type="button" class="btn btn-sm btn-sky btn_right">속성추가</button>
-																							</th>
-																							<th class="t_left icon03">
-																								RULE 속성
-																							</th>
-																						</tr>
-																						<tr>
-																							<td class="t_left pd_t20 pd_r20 pd_b20 pd_l20 v_top">
-																								<input type="radio" name="mradio_01" id="mradio_01" checked />
-																								<label for="mradio_01" class="mg_r10">==</label>
-																								<br />
-																								<input type="radio" name="mradio_02" id="mradio_02" />
-																								<label for="mradio_02" class="mg_r10">&gt;</label>
-																								<br />
-																								<input type="radio" name="mradio_02" id="mradio_02" />
-																								<label for="mradio_02" class="mg_r10">&lt;</label>
-																								<br />
-																								<input type="radio" name="mradio_02" id="mradio_02" />
-																								<label for="mradio_02" class="mg_r10">&gt;=</label>
-																								<br />
-																								<input type="radio" name="mradio_02" id="mradio_02" />
-																								<label for="mradio_02" class="mg_r10">&lt;=</label>
-																								<br />
-																								<input type="radio" name="mradio_02" id="mradio_02" />
-																								<label for="mradio_02" class="mg_r10">IN</label>
-																								<br />
-																								<input type="radio" name="mradio_02" id="mradio_02" />
-																								<label for="mradio_02" class="mg_r10">NOT IN</label>
-																							</td>
-																							<td class="t_left pd_t20 pd_r20 pd_b20 pd_l20 v_top" rowspan="3">
-																								<input type="radio" name="mradio_05" id="mradio_05" />
-																								<label for="mradio_05" class="mg_r10">X</label>
-																								<br />
-																								<input type="radio" name="mradio_06" id="mradio_06" />
-																								<label for="mradio_06" class="mg_r10">여자</label>
-																								<br />
-																								<input type="radio" name="mradio_06" id="mradio_06" checked />
-																								<label for="mradio_06" class="mg_r10">남자</label>
-																							</td>
-																							<td class="t_left pd_t20 pd_r20 pd_b20 pd_l20 v_top" rowspan="3">
-																								[고객 : 성별] == "여자" AND
-																								<br />
-																								[고객 : 스마트폰 사용여부] == "Y"
-																							</td>
-																						</tr>
-																						<tr>
-																							<th class="t_left icon04">
-																								관계연산 VIEW
-																							</th>
-																						</tr>
-																						<tr>
-																							<td class="t_left pd_t20 pd_r20 pd_b20 pd_l20 v_top">
-																								<input type="radio" name="mradio_03" id="mradio_03" />
-																								<label for="mradio_03" class="mg_r10">AND</label>
-																								<br />
-																								<input type="radio" name="mradio_04" id="mradio_04" />
-																								<label for="mradio_04" class="mg_r10">OR</label>
-																								<br />
-																								<input type="radio" name="mradio_04" id="mradio_04" checked />
-																								<label for="mradio_04" class="mg_r10">NONE</label>
-																							</td>
-																						</tr>
-																						<tr>
-																							<th class="t_left icon05">
-																								통계 VIEW
-																							</th>
-																							<td class="t_left pd_t20 pd_r20 pd_b20 pd_l20 v_top bd_b_none" rowspan="2">
-																								<div class="graph_left">
-																									<img src="/targetai/images/modal_graph_ex01.png" alt="" />
-																								</div>
-																								<div class="graph_right">
-																									<img src="/targetai/images/modal_graph_ex02.png" alt="" />
-																								</div>
-																								<div class="clear"></div>
-																							</td>
-																							<th class="t_left icon06">
-																								속성의 유형값
-																							</th>
-																						</tr>
-																						<tr>
-																							<td class="t_left pd_t20 pd_r20 pd_b20 pd_l20 v_top">
-																								
-																							</td>
-																							<td class="t_left pd_t20 pd_r20 pd_b20 pd_l20 v_top">
-																								<ul class="ulvalue">
-																									<li>최대값 :</li>
-																									<li>최소값 :</li>
-																									<li>평균값 :</li>
-																									<li>etc :</li>
-																								</ul>
-																							</td>
-																						</tr>
-																					</tbody>
-																				</table>
+										<div id="modalID_1" class="modal_pop rule_pop">
+											<div class="modal_content" style="width:1850px;">
+												<!-- 팝업항상중앙띄우기 -->
+												<div class="modla_center">
+													<div class="modal_header">
+														<span class="close" onclick="close_layerPop('modalID_1');">&times;</span>
+														<h2>Package 관리</h2>
+													</div>
+													<!-- 본문 -->
+													<div class="modal_body" style="height:calc(100% - 25vh); overflow-x:hidden; overflow-y:auto;">
+														<div class="modal_wrap">
+															<!-- 상세영역 -->
+															<div class="row">
+																<div class="col">
+																	<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
+																	<div class="card mg_b0">
+																		<header class="card-header card-header-pd-mobile">
+																			<div class="card-actions card-header-position-mobile">
 																			</div>
-																		</div>
-																		<!-- //테이블 -->
+																			<h2 class="card-title_txt">RULE EDITOR</h2>
+																		</header>
+																		<!-- 본문페이지 -->
+																		<div class="card-body" style="">
+																			<!-- 테이블 -->
+																			<div class="panel nobordertop">
+																				<div class="sform_head">
+																					<table class="sform_type_pop modal_table">
+																						<colgroup>
+																							<col style="width:280px" />
+																							<col style="width:auto" />
+																							<col style="width:800px" />
+																							<col style="width:500px" />
+																						</colgroup>
+																						<tbody>
+																							<tr>
+																								<td class="t_left bd_b_none bg01 v_top" rowspan="6">
+																									<div class="progress_loading">
+																										<div id="factorTreeLoading" style="display:none;">
+																											<img src="/targetai/images/ajax-loader.gif"/>
+																										</div>
+																									</div>
+																									<!-- 트리메뉴 -->
+																									<ul id="factorTree" class="ztree treewrap"></ul>
+																									<!-- <div id="factorTree" class="treewrap"></div> -->
+																									<!-- //트리메뉴 -->
+																								</td>
+																								<th class="t_left icon01">
+																									논리 연산
+																								</th>
+																								<th class="t_left icon02">
+																									요소 값
+																									<button type="button" class="btn btn-lg btn-sky btn_right">Add Value</button>
+																								</th>
+																								<th class="t_left icon03">
+																									RULE 속성
+																								</th>
+																							</tr>
+																							<tr>
+																								<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top">
+																									<input type="radio" name="logicalRadio" id="logicalRadio1" checked />
+																									<label for="logicalRadio" class="mg_r10">==</label>
+																									<br />
+																									<input type="radio" name="logicalRadio" id="logicalRadio2" />
+																									<label for="logicalRadio" class="mg_r10">&gt;</label>
+																									<br />
+																									<input type="radio" name="logicalRadio" id="logicalRadio3" />
+																									<label for="logicalRadio" class="mg_r10">&lt;</label>
+																									<br />
+																									<input type="radio" name="logicalRadio" id="logicalRadio4" />
+																									<label for="logicalRadio" class="mg_r10">&gt;=</label>
+																									<br />
+																									<input type="radio" name="logicalRadio" id="logicalRadio5" />
+																									<label for="logicalRadio" class="mg_r10">&lt;=</label>
+																									<br />
+																									<input type="radio" name="logicalRadio" id="logicalRadio6" />
+																									<label for="logicalRadio" class="mg_r10">IN</label>
+																									<br />
+																									<input type="radio" name="logicalRadio" id="logicalRadio7" />
+																									<label for="logicalRadio" class="mg_r10">NOT IN</label>
+																								</td>
+																								<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3" id="factorValData">
+																									<div class="alert fade show mg_b10" role="alert">
+																										<button type="button" class="btn-del" data-bs-dismiss="alert" aria-label="Close"></button>
+																										<input type="radio" name="mradio_05" id="mradio_05" />
+																										<label for="mradio_05" class="mg_l10">X</label>
+																										<br />
+																										<input type="radio" name="mradio_06" id="mradio_06" />
+																										<label for="mradio_06" class="mg_l10">여자</label>
+																										<br />
+																										<input type="radio" name="mradio_06" id="mradio_06" checked="checked" />
+																										<label for="mradio_06" class="mg_l10">남자</label>
+																									</div>
+																									<div class="alert fade show mg_b10" role="alert">
+																										<button type="button" class="btn-del" data-bs-dismiss="alert" aria-label="Close"></button>
+																										<input type="text" class="wd250px" value="" placeholder="숫자만 입력가능합니다" />
+																									</div>
+																									<div class="alert fade show mg_b10" role="alert">
+																										<button type="button" class="btn-del" data-bs-dismiss="alert" aria-label="Close"></button>
+																										<input type="text" id="DateId_ex01" class="date" value="2021-01-01" />
+																										<span>~</span>
+																										<input type="text" id="DateId_ex02" class="date" value="2021-01-30" />
+																									</div>
 
-																		<!-- 버튼 -->
-																		<div class="card-actions-foot">
-																			<button type="button" class="btn btn-sm btn-gray" id="ruleEditorCancel"><i class="far fa-times-circle custom-btn-i"></i> 취소</button>
-																			<button type="button" class="btn btn-sm btn-green"><i class="far fa-check-circle custom-btn-i"></i> 적용</button>
+																									<div class="alert fade show mg_b10" role="alert">
+																										<button type="button" class="btn-del" data-bs-dismiss="alert" aria-label="Close"></button>
+																										<label for="" class="view_label">전달값</label>
+																										<input type="text" class="wd150px" value="" placeholder="성공건수" />
+																									</div>
+																									<div class="alert fade show mg_b10" role="alert">
+																										<button type="button" class="btn-del" data-bs-dismiss="alert" aria-label="Close"></button>
+																										<label for="" class="view_label">비교값</label>
+																										<input type="text" class="wd150px" value="" placeholder="30" />
+																									</div>
+																								</td>
+																								<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3" id="ruleAttrData"></td>
+																							</tr>
+																							<tr>
+																								<th class="t_left icon04">
+																									관계 연산
+																								</th>
+																							</tr>
+																							<tr>
+																								<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top">
+																									<input type="radio" name="relationRadio" id="relationRadio1" />
+																									<label for="relationRadio" class="mg_r10">AND</label>
+																									<br />
+																									<input type="radio" name="relationRadio" id="relationRadio2" />
+																									<label for="relationRadio" class="mg_r10">OR</label>
+																									<br />
+																									<input type="radio" name="relationRadio" id="relationRadio3" checked />
+																									<label for="relationRadio" class="mg_r10">NONE</label>
+																								</td>
+																							</tr>
+																							<tr>
+																								<th class="t_left icon05">
+																									통계 VIEW
+																								</th>
+																								<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_middle bd_b_none" rowspan="2">
+																									<div class="graph_left">
+																										<div style="width:100%;">
+																											<img src="/targetai/images/modal_graph_ex01.png" alt="" />
+																										</div>
+																									</div>
+																									<div class="graph_right">
+																										<div style="width:100%;">
+																											<img src="/targetai/images/modal_graph_ex02.png" alt="" />
+																										</div>
+																									</div>
+																									<div class="clear"></div>
+																								</td>
+																								<th class="t_left icon06">
+																									속성의 유형값
+																								</th>
+																							</tr>
+																							<tr>
+																								<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top">
+																									
+																								</td>
+																								<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top">
+																									<ul class="ulvalue">
+																										<li>최대값 :</li>
+																										<li>최소값 :</li>
+																										<li>평균값 :</li>
+																										<li>etc :</li>
+																									</ul>
+																								</td>
+																							</tr>
+																						</tbody>
+																					</table>
+																				</div>
+																			</div>
+																			<!-- //테이블 -->
+
+																			<!-- 버튼 -->
+																			<div class="card-actions-foot">
+																				<button type="button" class="btn btn-lg btn-gray" id="ruleEditorCancel"><i class="far fa-times-circle custom-btn-i"></i> 취소</button>
+																				<button type="button" class="btn btn-lg btn-green"><i class="far fa-check-circle custom-btn-i"></i> 적용</button>
+																			</div>
+																			<!-- //버튼 -->
 																		</div>
-																		<!-- //버튼 -->
+																		<!-- //본문페이지 -->
 																	</div>
-																	<!-- //본문페이지 -->
 																</div>
 															</div>
+															<!-- //상세영역 -->
 														</div>
-														<!-- //상세영역 -->
 													</div>
+													<!-- //본문 -->
 												</div>
-												<!-- //본문 -->
+												<!-- //팝업항상중앙띄우기 -->
 											</div>
 										</div>
 										<!-- //modal_pop -->
@@ -585,8 +614,8 @@
 														<th class="t_left">RULE 명</th>
 														<td class="t_left">
 															<input type="text" class="wd250px" id="ruleNm" value="" />
-															<button type="button" class="btn btn-sm btn-gray">중복체크</button>
-															<span class="custom-red mg_l15" style="display:none;" data-dup="N"><i class="el el-idea"></i> 중복된 RULE 명이 있습니다.</span>
+															<button type="button" data-isDup="N" id="ruleNmDupBtn" class="btn btn-sm btn-gray">중복체크</button>
+															<span class="custom-red mg_l15" style="display:none;" id="ruleDupYn"><i class="el el-idea"></i> 중복된 RULE 명이 있습니다.</span>
 														</td>
 													</tr>
 													<tr>
@@ -604,16 +633,18 @@
 														<th class="t_left">LOCK-ON-ACTIVE</th>
 														<td class="t_left">
 															<div class="radio-container mg_r0">
-																<input type="radio" name="lockOnActive" value="true" id="" />
+																<input type="radio" name="lockOnActive" value="true" id="" checked/>
 																<label for="lockOnActive" class="mg_r10">TRUE</label>
-																<input type="radio" name="lockOnActive" value="false" id="" checked />
+																<input type="radio" name="lockOnActive" value="false" id="" />
 																<label for="lockOnActive" class="mg_r10">FALSE</label>
 															</div>
 														</td>
 													</tr>
 													<tr>
 														<th class="t_left">SALIENCE</th>
-														<td class="t_left" id="salience"></td>
+														<td class="t_left">
+															<input type="text" class="wd250px" id="salience" value="" />
+														</td>
 													</tr>
 													<tr>
 														<th class="t_left">CONTENTS</th>
@@ -629,7 +660,7 @@
 
 									<!-- 버튼 -->
 									<div class="card-actions-foot">
-										<button type="button" class="btn btn-sm btn-green"><i class="fas fa-save custom-btn-i"></i> 저장</button>
+										<button type="button" class="btn btn-sm btn-green" id="saveRuleBtn"><i class="fas fa-save custom-btn-i"></i> 저장</button>
 									</div>
 									<!-- //버튼 -->
 								</div>
@@ -644,13 +675,9 @@
 		<!-- //본문영역 -->
 	</div>
 
-	<!-- Default js -->
-	<script src="/targetai/js/vendor.min.js"></script>
-
 	<!-- App js-->
 	<script src="/targetai/js/pkg.js"></script>
-	<script src="/targetai/js/app.js"></script>
-	<script src="/targetai/libs/jstree/jstree.js"></script>
-	<script src="/targetai/js/examples.treeview.js"></script>
+	<script src="/targetai/js/app.js" type="text/javascript"></script>
+	<script src="/targetai/libs/jquery-ui/jquery-ui.js" type="text/javascript"></script>
 </body>
 </html>

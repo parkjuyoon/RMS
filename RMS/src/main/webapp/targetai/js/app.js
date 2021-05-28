@@ -69,9 +69,6 @@
 })(jQuery);
 
 /* modal */
-(function ($) {
-}(jQuery));
-
 $(document).ready(function () {
 
     /* modal */
@@ -90,7 +87,7 @@ $(document).ready(function () {
         }
     });
     
-    /* 메뉴 이외의 영역 클릭시 메뉴 닫기 */
+    /* 메뉴 이외의 영역 클릭시 메뉴 닫기
 	$(document.body).click(function (event) {
         if (event.target.id == viewModalID) {
             if (viewModal != '') viewModal.hide();
@@ -103,6 +100,7 @@ $(document).ready(function () {
 			container.css('display','none');
 		}
 	});
+	*/
 });
 
 /* modal close */
@@ -912,7 +910,7 @@ function ($) {
 
     Components.prototype.initTippyTooltips = function () {
         
-//        console.log($('[data-plugin="tippy"]').length);
+        console.log($('[data-plugin="tippy"]').length);
         if($('[data-plugin="tippy"]').length > 0){
             tippy('[data-plugin="tippy"]');
         }
@@ -1147,3 +1145,54 @@ Waves.init();
 
 // Feather Icons
 feather.replace()
+
+/* datepicker */
+$(function () {
+	$("input[id^='DateId_']").each(function() {
+		var _this = this.id;
+
+		$('#'+_this).datepicker({
+			inline: true,
+			dateFormat: 'yy-mm-dd',
+			monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+			dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+			changeMonth: true, // 월변경가능
+			changeYear: true, // 년변경가능
+			showMonthAfterYear: true, //년 뒤에 월표시
+			showOtherMonths: true,
+			/*
+			showOn: "both", //버튼이미지 사용
+			buttonText: "show date",
+			buttonImage: "../../comn/images/common/bg_date.png",
+			buttonImageOnly: true,
+			*/
+		});
+	});
+	
+    $('img.ui-datepicker-trigger').css({ 'cursor': 'pointer', 'margin-left': '-3px', 'vertical-align': 'top' });
+});
+
+$(function () {
+	$("input[id^='YearId_']").each(function() {
+		var _this = this.id;
+
+		$('#'+_this).datepicker({
+			inline: true,
+			dateFormat: 'yy',
+			monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+			dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+			changeMonth: true, // 월변경가능
+			changeYear: true, // 년변경가능
+			showMonthAfterYear: true, //년 뒤에 월표시
+			showOtherMonths: true,
+			/*
+			showOn: "both", //버튼이미지 사용
+			buttonText: "show date",
+			buttonImage: "../../comn/images/common/bg_date.png",
+			buttonImageOnly: true,
+			*/
+		});
+	});
+	
+    $('img.ui-datepicker-trigger').css({ 'cursor': 'pointer', 'margin-left': '-3px', 'vertical-align': 'top' });
+});

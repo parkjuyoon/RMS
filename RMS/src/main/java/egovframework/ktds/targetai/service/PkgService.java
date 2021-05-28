@@ -21,4 +21,10 @@ public interface PkgService {
 
 	List<String> getFactorList(HashMap<String, Object> param);
 
+	int ruleNmCheck(HashMap<String, Object> param);
+
+	HashMap<String, Object> getFactor(HashMap<String, Object> param);
+
+	List<HashMap<String, Object>> getFactorVal(HashMap<String, Object> param);
+
 }

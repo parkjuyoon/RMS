@@ -2296,6 +2296,13 @@ table[data-toggle="table"] {display:none;}
 .btn-gray:active, .btn-gray.active, .show > .btn-gray.dropdown-toggle {background-color:#2e2e2e; color:#fff;}
 .show > .btn-gray.dropdown-toggle {background-color:#31b0d5; background-image:none;	border-color:#31b0d5 #31b0d5 #2390b0;}
 
+.btn-red {background-color:#d2322d; color:#fff;}
+.btn-red:hover, .btn-red.hover {background-color:#d9514d;	color:#fff;}
+.btn-red:focus, .btn-red.focus {box-shadow: 0 0 0 0px rgba(46, 53, 62, 0.5);}
+.btn-red.disabled, .btn-red:disabled {background-color:#171717; border-color:#171717 #171717 black;}
+.btn-red:active, .btn-red.active, .show > .btn-red.dropdown-toggle {background-color:#bd2130; color:#fff;}
+.show > .btn-red.dropdown-toggle {background-color:#31b0d5; background-image:none;	border-color:#31b0d5 #31b0d5 #2390b0;}
+
 .btn-sky {background-color:#3ea9ee; color:#fff;}
 .btn-sky:hover, .btn-sky.hover {background-color:#269ce9; color:#fff;}
 .btn-sky:focus, .btn-sky.focus {box-shadow: 0 0 0 0px rgba(46, 53, 62, 0.5);}
@@ -2414,7 +2421,7 @@ select:not([multiple]) {-moz-appearance:none; appearance:none; -webkit-appearanc
 .sform_type > tbody > tr:last-child > td, .sform_type > tbody > tr:last-child > th {border-bottom:0;}
 .sform_type .formtit {font-weight:700; background-color:#f6f6f6; color:#444;}
 .sform_type tr > th + th[scope="row"], .sform_type .innertit {background-color:#f6f6f6;}
-.sform_type table {margin:-5px;}
+.sform_type table {}
 .sform_type.nonetopline {margin-top:0;}
 .sform_type.nonetopline  > thead > tr:first-child > th,
 .sform_type.nonetopline  > tbody > tr:first-child > td,
@@ -2545,8 +2552,8 @@ body *[class^="btn_onlyico_"]:hover {border:1px solid #d4d4d4 !important; backgr
 .modal_wrap {padding:15px 15px 15px 15px;}
 .modal_wrap .row {min-width:100% !important;}
 .modal_wrap label {font-weight:normal !important;}
-.modal_pop {display:none; overflow:auto; position:fixed; z-index:9999; padding-top:5%; width:100%; height:100%; top:0; left:0; background-color:rgba(0,0,0,0.6);}
-.modal_content {position:relative ;margin:auto; padding:0; border:1px solid #4b4b4b; background-color:#fefefe; box-shadow:0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19); -ms-box-shadow:0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);}
+.modal_pop {display:none; overflow:auto; position:fixed; z-index:9999; /*padding-top:5%;*/ width:100%; height:100%; top:0; left:0; background-color:rgba(0,0,0,0.6);}
+.modal_content {position:relative; margin:1.75rem auto; padding:0; min-height:calc(100% - 3.5rem); display:flex; align-items:center; /*border:1px solid #4b4b4b; background-color:#fefefe; box-shadow:0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19); -ms-box-shadow:0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);*/}
 .modal_header {height:45px; padding:0 0 0 20px; font-size:1rem; background:#3a3a3a; color:#ffffff; line-height:45px;}
 .modal_header h2 {margin:0 0 0 0; font-size:1.2rem; font-weight:500; line-height:42px; color:#ffffff;}
 .modal_header:after {content:""; display:block; clear:both;}
@@ -2559,7 +2566,7 @@ a.btnModal {text-decoration:none;}
 .modal_pop_search button.btn-darkblue {top:-1px ! important; right:0px !important}
 
 @media (max-width: 1500px) {
-	.modal_content {max-width:1000px;}
+	.modal_content {max-width:1850px;}
 }
 
 .graph_left {float:left; width:49%; text-align:center;}
@@ -2608,8 +2615,18 @@ a.btnModal {text-decoration:none;}
 .sform_type_pop input,select,textarea,button:focus {outline:none;}
 .sform_type_pop {padding:0 0 0 0; width:100%; color:#313131;}
 .sform_type_pop label {margin-left:0px; margin-bottom:0;}
+.sform_type_pop input[type="text"].date {width:100px; border-radius:4px; background:#fff url("../../../images/icons/bg_date.png") no-repeat 95% 6px; cursor:pointer;}
+.sform_type_pop input[type="text"].date[readonly] {background:#ecf5f7 url("../../../images/icons/bg_date.png") no-repeat 95% 5px;}
+.sform_type_pop input[type="text"].date[disabled] {background:#ecf5f7 url("../../../images/icons/bg_date.png") no-repeat 95% 5px;}
+.sform_type_pop input[type="text"].month {width:140px; border-radius:4px; background:#fff url("../images/icons/bg_date.png") no-repeat 95% 6px;}
+.sform_type_pop input[type="text"].month[readonly] {background:#ecf5f7 url("../../../images/icons/bg_date.png") no-repeat 95% 5px;}
+.sform_type_pop input[type="text"].month[disabled] {background:#ecf5f7 url("../../../images/icons/bg_date.png") no-repeat 95% 5px;}
+.sform_type_pop input[type="text"]:focus {border-color:#356eff; background-color:#f2f6ff; color:#454545 !important;}
+.sform_type_pop input[type="text"] {margin:1px 0 1px 0; padding:0 5px 0 3px; font-size:13px; border:1px solid #b7b7b7; font-weight:400; color:#3d3d3d; height:27px; line-height:27px; border-radius:5px; vertical-align:middle;}
+.sform_type_pop input[type="text"] {-webkit-appearance:none; -moz-appearance:none; appearance:none;}
+.sform_type_pop input[type="text"]::-ms-clear{display:none;}
 
-.modal_table ul.ulvalue {margin:0px 10px 0px 10px; padding:0;}
+.modal_table ul.ulvalue {margin:0px 10px 0px 10px; padding:0 0 0 10px;}
 .modal_table ul.ulvalue li {margin:0; padding:0;}
 .modal_table th.icon01 {background:#f6f6f6 url("../../../images/icons/modal_table_icon01.png") no-repeat 15px center; padding-left:45px !important;}
 .modal_table th.icon02 {background:#f6f6f6 url("../../../images/icons/modal_table_icon02.png") no-repeat 15px center; padding-left:45px !important; position:relative;}
@@ -2618,7 +2635,42 @@ a.btnModal {text-decoration:none;}
 .modal_table th.icon05 {background:#f6f6f6 url("../../../images/icons/modal_table_icon05.png") no-repeat 15px center; padding-left:45px !important;}
 .modal_table th.icon06 {background:#f6f6f6 url("../../../images/icons/modal_table_icon06.png") no-repeat 15px center; padding-left:45px !important;}
 
-.treewrap {margin:3px 0 0 0; height:513px; overflow-y:auto;}
-.treewrap::-webkit-scrollbar {width:5px;}
+.treewrap {margin:3px 0 0 0; width:270px; height:700px; overflow:auto;}
+.treewrap::-webkit-scrollbar {width:5px; height:5px;}
 .treewrap::-webkit-scrollbar-thumb {background-color:#a7a7a7; border-radius:10px;}
 .treewrap::-webkit-scrollbar-track {background-color:#d5d5d5; border-radius:10px; box-shadow:inset 0px 0px 5px white;}
+
+/* 경고팝업 */
+.body-header {border-top:1px solid #dddddd; border-radius:5px !important;}
+.message_box {text-align:center; padding:170px 0 0 0; background:url("../../../images/icons/icon_warning.png") no-repeat center 30px;}
+.message_box .message_tit {font-size:26px; font-weight:700;}
+.message_box .message_txt {margin:10px 0 0 0; padding:0px 30px 30px 30px;}
+
+/* 속성닫기 */
+.btn-del {box-sizing:content-box; width:13px; height:13px; padding:0; color:#000; border:0; border-radius:0; background:url("../../../images/icons/icon_btn_del.png") no-repeat 0 0;}
+.btn-del:hover {color:#000; text-decoration:none; opacity:0.75;}
+.btn-del:focus {outline:0; box-shadow:0 0 0 0.15rem rgba(40, 146, 253, 0.25); opacity:1;}
+.btn-del:disabled, .btn-close.disabled {pointer-events:none; -webkit-user-select:none; user-select:none; opacity:0.25;}
+.alert button.btn-del{position:absolute; top:6px; left:0;}
+td .alert {padding:0 0 0 20px !important;}
+.alert label.view_label {font-weight:700 !important; margin-right:10px; position:relative; top:2px;}
+
+/* Rule Editor custom */
+.rule_pop .modal_header h2 {font-size:22px !important;}
+.rule_pop h2.card-title_txt {font-size:20px !important;}
+.rule_pop table.modal_table th {font-size:20px !important;}
+.rule_pop table.modal_table th button.btn_right {top:4px !important;}
+.rule_pop table.modal_table th button.btn-lg {padding:0.4rem 0.9rem 0.3rem 0.9rem !important;}
+.rule_pop table.modal_table td {font-size:17px !important;}
+.rule_pop table.modal_table td label {font-size:17px !important;}
+.rule_pop table.modal_table td div {font-size:17px !important;}
+.rule_pop table.modal_table td ul li {font-size:17px !important;}
+.rule_pop .card-actions-foot button.btn-lg {padding:0.4rem 0.9rem 0.3rem 0.9rem !important;}
+.rule_pop .card-actions-foot {height:37px; line-height:37px;}
+.rule_pop .card-actions-foot button {margin-left:3px;}
+
+.card-actions .rule_pop ul.treewrap li a span.node_name {font-size:15px !important;}
+
+
+/* 팝업항상중앙띄우기 */
+.modla_center {width:100%;}

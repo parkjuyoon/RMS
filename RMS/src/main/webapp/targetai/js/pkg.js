@@ -218,13 +218,15 @@ $(document).ready(function() {
 			dataType : "json",
 			success : function(res) {
 				if(res == false) {	// RULE 명 중복
-					$("#ruleDupYn").css("display", "");
+					$("#ruleDupY").css("display", "none");
+					$("#ruleDupN").css("display", "");
 					$("#ruleNmDupBtn").data("isDup", "N");
 					$("#ruleNm").focus();
 					return;
 				}
 				
-				$("#ruleDupYn").css("display", "none");
+				$("#ruleDupY").css("display", "");
+				$("#ruleDupN").css("display", "none");
 				$("#ruleNmDupBtn").data("isDup", "Y");
 			}
 		});
@@ -401,10 +403,12 @@ function treeFactorGrpList() {
 					}
 				},
 				callback: {
-					onExpand: function(event, treeId, treeNode) {
-						var selectedFactorGrpId = treeNode.id;
-						// Factor Group 하위 Factor List 조회 후 트리생성
-						treeFactorList(selectedFactorGrpId, treeId, treeNode);
+					beforeExpand: function(treeId, treeNode) {
+						if(typeof treeNode.children === 'undefined') {
+							var selectedFactorGrpId = treeNode.id;
+//							// Factor Group 하위 Factor List 조회 후 트리생성
+							treeFactorList(selectedFactorGrpId, treeId, treeNode);
+						}
 					}
 				}
 			};
@@ -640,7 +644,8 @@ function initRuleDetail() {
 	$("#ruleId").text("");
 	$("#ruleNm").val("");
 	$("#ruleNmDupBtn").data("isDup", "N");
-	$("#ruleDupYn").css("display", "none");
+	$("#ruleDupY").css("display", "none");
+	$("#ruleDupN").css("display", "none");
 	$("input:radio[name='noLoop']:radio[value='true']").prop("checked", true);
 	$("input:radio[name='lockOnActive']:radio[value='true']").prop("checked", true);
 	$("#salience").val("");

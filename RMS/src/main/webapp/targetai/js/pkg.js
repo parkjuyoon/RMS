@@ -62,7 +62,7 @@ $(document).ready(function() {
 				$("#pkgLoading").hide();
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
-				alert("에러 발생.");
+				alertPop("에러발생", "관리자에게 문의하세요", "");
 				console.log(jqXHR);
 				console.log(textStatus);
 				console.log(errorThrown);
@@ -117,7 +117,7 @@ $(document).ready(function() {
 				$("#ruleLoading").hide();
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
-				alert("에러 발생.");
+				alertPop("에러발생", "관리자에게 문의하세요", "");
 				console.log(jqXHR);
 				console.log(textStatus);
 				console.log(errorThrown);
@@ -132,9 +132,6 @@ $(document).ready(function() {
 	
 	// RULE 상세 > RULE EDITOR 취소버튼
 	$("#ruleEditorCancel").click(function() {
-		// jstree 종료할땐 항상 destroy 해주어야 함. 안하면 다음 실행할때 에러
-		$("#factorTree").jstree("destroy");
-		
 		// RULE EDITOR 팝업 닫기
 		close_layerPop('modalID_1');
 		initRuleEditor();
@@ -142,7 +139,6 @@ $(document).ready(function() {
 	
 	// RULE EDITOR 팝업 X버튼 클릭
 	$("#modalID_1 .close").click(function() {
-		$("#factorTree").jstree("destroy");
 		initRuleEditor();
 	});
 	
@@ -157,13 +153,18 @@ $(document).ready(function() {
 		$("#ruleNm").focus();
 	});
 	
+	// RULE 명 변경시 중복체크  요청
+	$("#ruleNm").change(function() {
+		$("#ruleDupY").hide();
+		$("#ruleNmDupBtn").data("isDup", "N");
+	});
+	
 	// RULE 상세 > 저장 버튼 클릭
 	$("#saveRuleBtn").click(function() {
 		// RULE 명 중복 체크
 		var isDup = $("#ruleNmDupBtn").data("isDup");
 		if(isDup != 'Y') {
-			alert("RULE 명 중복체크가 필요합니다.");
-			$("#ruleNm").focus();
+			alertPop("RULE 명 중복체크", "RULE 명 중복체크를 먼저 해주세요.", "#ruleNm");
 			return;
 		}
 		
@@ -171,26 +172,24 @@ $(document).ready(function() {
 		var salience = $("#salience").val();
 		var pattern_num = /^[0-9]+$/;
 		if(salience == '') {
-			alert("SALIENCE 값을 입력하세요.");
-			$("#salience").focus();
+			alertPop("SALIENCE 공백체크", "SALIENCE 값을 입력하세요.", "#salience");
 			return;
 		}
 		
 		if(!pattern_num.test(salience)) {
-			alert("SALIENCE 값은 숫자만 입력할 수 있습니다.");
-			$("#salience").focus();
+			alertPop("SALIENCE 정합성 체크", "SALIENCE 값은 숫자만 입력할 수 있습니다.", "#salience");
 			return;
 		}
 		
 		// CONTENTS 체크
 		var contents = $("#ruleWhenCont").val();
 		if(contents == '')  {
-			alert("RULE EDITOR를 통해 CONTENTS를 생성하세요.");
+			alertPop("CONTENTS 생성 체크", "RULE EDITOR를 통해 CONTENTS를 생성하세요.", "");
 			return;
 		}
 		
 		if(confirm("변경사항을 저장하시겠습니까?")) {
-			alert("RULE이 저장되었습니다.");
+			alertPop("RULE이 저장되었습니다.", "", "");
 		}
 		
 	});
@@ -200,8 +199,7 @@ $(document).ready(function() {
 		var ruleNm = $("#ruleNm").val();
 		
 		if(ruleNm == '') {
-			alert("RULE 명을 입력하세요.");
-			$("#ruleNm").focus();
+			alertPop("RULE 명 공백체크.", "RULE 명을 입력하세요.", "#ruleNm");
 			return;
 		}
 		
@@ -289,7 +287,7 @@ function getPkgList(searchObj) {
 			$("#pkgLoading").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			alert("에러 발생.");
+			alertPop("에러발생", "관리자에게 문의하세요", "");
 			console.log(jqXHR);
 			console.log(textStatus);
 			console.log(errorThrown);
@@ -358,7 +356,7 @@ function getRuleList(searchObj) {
 			$("#ruleLoading").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			alert("에러 발생.");
+			alertPop("에러발생", "관리자에게 문의하세요", "");
 			console.log(jqXHR);
 			console.log(textStatus);
 			console.log(errorThrown);
@@ -409,7 +407,8 @@ function treeFactorGrpList() {
 //							// Factor Group 하위 Factor List 조회 후 트리생성
 							treeFactorList(selectedFactorGrpId, treeId, treeNode);
 						}
-					}
+					},
+					onClick: getFactorVal
 				}
 			};
 			// zTree 초기화 후 생성
@@ -422,7 +421,7 @@ function treeFactorGrpList() {
 			$("#factorTreeLoading").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			alert("에러 발생.");
+			alertPop("에러발생", "관리자에게 문의하세요", "");
 			console.log(jqXHR);
 			console.log(textStatus);
 			console.log(errorThrown);
@@ -470,136 +469,24 @@ function treeFactorList(factorGrpId, treeId, treeNode) {
 			$("#factorTreeLoading").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			alert("에러 발생.");
+			alertPop("에러발생", "관리자에게 문의하세요", "");
 			console.log(jqXHR);
 			console.log(textStatus);
 			console.log(errorThrown);
 		}
 	});
 }
-
-/**
- * 속성 view 하위 요소 리스트 조회
- * @returns
- 
-function getFactorGrpList2() {
-	var param = {};
-	
-	$.ajax({
-		method : "POST",
-		url : "/targetai/getFactorGrpList.do",
-		traditional: true,
-		data : JSON.stringify(param),
-		contentType:'application/json; charset=utf-8',
-		dataType : "json",
-		success : function(res) {
-			var factorGrpList = res.factorGrpList;
-			var factorGrpArr = [];
-			
-			$.each(factorGrpList, function(idx, factorGrp) {
-				var factorGrpObj = {};
-				factorGrpObj.id = factorGrp.FACTOR_GRP_ID;
-				factorGrpObj.text = factorGrp.FACTOR_GRP_NM;
-				factorGrpObj.state = { 'opened' : false, 'selected' : false };
-				
-				factorGrpArr.push(factorGrpObj);
-			});
-			
-			// RULE EDITOR 트리뷰 생성
-			$("#factorTree").jstree({ 
-				'core' : {
-							'check_callback' : true, // check_callback 이 없으면 create_node가 실행되지않는다
-				 			'data' : factorGrpArr
-				 		},
-				'types' : {
-					'default' : {
-						'icon' : 'fas fa-folder'
-					},
-					'file' : {
-						'icon' : 'fas fa-file'
-					}
-				},
-				'themes' : {
-					'responsive': false
-				}, 
-				"plugins" : [ 'types' ]
-			})
-			.bind("select_node.jstree", function (e, data) {	// 노드 선택시 실행되는 이벤트
-				
-				if(data.node.parent != "#") {	// factor 클릭시 동작할 내용 (ROOT 폴더는 factorGrp)
-					var parentNode = $("#factorTree").jstree().get_node(data.node.parent);
-					var childNode = data.node;
-					
-					// Factor Value 조회
-					var factorObj = {};
-					factorObj.factorGrpNm = parentNode.text;
-					factorObj.factorId = childNode.id;
-					factorObj.factorNm = childNode.text;
-					getFactorVal(factorObj);
-					
-					return;
-				}
-				
-				if(!data.node.state.opened) {	// factorGrp 가 열려있을 경우는 실행하지 않음
-					var grpParam = {};
-					grpParam.factorGrpId = data.node.id;
-					
-					$.ajax({
-						method : "POST",
-						url : "/targetai/getFactorList.do",
-						traditional: true,
-						data : JSON.stringify(grpParam),
-						contentType:'application/json; charset=utf-8',
-						dataType : "json",
-						success:function(res) {
-							var factorList = res.factorList;
-							var factorArr = [];
-							
-							$.each(factorList, function(idx, factor) {
-								var factorObj = {};
-								factorObj.id = factor.FACTOR_ID;
-								factorObj.text = factor.FACTOR_NM;
-								factorObj.state = { 'opened' : false, 'selected' : false };
-								
-								$('#factorTree').jstree("create_node", data.node.id, factorObj, "first", false);
-							});
-							
-							$("#factorTree").jstree("toggle_node", $("#factorTree").jstree("get_selected"));
-						}
-					});
-					
-				} else {	// factgorGrp 가 열려있을 경우 닫음.
-					$("#factorTree").jstree("toggle_node", $("#factorTree").jstree("get_selected"));
-				}
-			})
-			.bind("open_node.jstree", function(e, data) {})
-			.bind("close_node.jstree", function(e, data) {
-				// factorGrp 닫을때 factor 요소 delete
-				$("#factorTree").jstree("delete_node", data.node.children);
-			});
-		},
-		beforeSend : function() {
-			$("#treeCheckboxLoading").show();
-		},
-		complete : function() {
-			$("#treeCheckboxLoading").hide();
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-			alert("에러 발생.");
-			console.log(jqXHR);
-			console.log(textStatus);
-			console.log(errorThrown);
-		}
-	});
-}
- */
 
 /**
  * Factor Value 조회
  * @param factorValObj
  * @returns
  */
-function getFactorVal(factorObj) {
+function getFactorVal(event, treeId, treeNode) {
+	var factorObj = {
+		factorId : treeNode.id
+	};
+	
 	$.ajax({
 		method : "POST",
 		url : "/targetai/getFactorVal.do",
@@ -610,28 +497,31 @@ function getFactorVal(factorObj) {
 		success : function(res) {
 			var factor = res.factor;
 			var dataType = factor.DATA_TYPE;
-			var html = "";
+			
+			$("#factorVal_string").css("display", "none");
+			$("#factorVal_int").css("display", "none");
+			$("#factorVal_date").css("display", "none");
 			
 			if(dataType === 'DATE') {
-				html += "<input type='date' name='detAttrChk' placeholder='YYYY-MM-DD'/>";
+				$("#factorVal_date").css("display", "");
 				
 			} else if(dataType === 'INT') {
-				html += "<input type='text' name='detAttrChk' placeholder='숫자만 입력가능합니다.'/>";
+				$("#factorVal_int").css("display", "");
 				
 			} else {	// dataType === 'STRING'
+				$("#factorVal_string").css("display", "");
+				var html = "";
 				var factorVal = res.factorVal;
 				
 				for(var i in factorVal) {
-					html += "<input type='checkbox' name='detAttrChk' value='"+ factorVal[i].VAL +"'> ";
-					html += "	<label for='detAttrChk' class='mg_r10'>";
-					html += 		factorVal[i].VAL;
-					html += "	</label>";
-					html += "</input>";
+					html += "<input type='radio' name='fvRadio' value='"+ factorVal[i].VAL +"'/>";
+					html += "<label for='fvRadio' class='mg_l10'>"+ factorVal[i].VAL +"</label>";
 					html += "<br />";
 				}
+				
+				$("#factorVal_string").html(html);
 			}
 			
-			$("#factorValData").html(html);
 		}
 	});
 }
@@ -658,8 +548,10 @@ function initRuleDetail() {
  */
 function initRuleEditor() {
 	$("#ruleEditorPopUp").attr("data-ruleId", "");
-	$("#factorValData").html("");
 	$("#ruleAttrData").html("");
+	$("#factorVal_string").css("display", "none");
+	$("#factorVal_int").css("display", "none");
+	$("#factorVal_date").css("display", "none");
 	$("#logicalRadio1").prop("checked", true);
 	$("#relationRadio1").prop("checked", true);
 }

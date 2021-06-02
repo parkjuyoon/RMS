@@ -9,6 +9,7 @@
 	<div id="wrapper">
 		<%@ include file="../targetai/comm/navbar.jsp" %>
 		<%@ include file="../targetai/comm/side_menu.jsp" %>
+		<%@ include file="../targetai/comm/alertPop.jsp" %>
 
 		<!-- 본문영역 -->
 		<div class="content-page">
@@ -479,38 +480,16 @@
 																									<input type="radio" name="logicalRadio" id="logicalRadio7" />
 																									<label for="logicalRadio" class="mg_r10">NOT IN</label>
 																								</td>
-																								<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3" id="factorValData">
-																									<div class="alert fade show mg_b10" role="alert">
-																										<button type="button" class="btn-del" data-bs-dismiss="alert" aria-label="Close"></button>
-																										<input type="radio" name="mradio_05" id="mradio_05" />
-																										<label for="mradio_05" class="mg_l10">X</label>
-																										<br />
-																										<input type="radio" name="mradio_06" id="mradio_06" />
-																										<label for="mradio_06" class="mg_l10">여자</label>
-																										<br />
+																								<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3">
+																									<div class="alert fade show mg_b10" role="alert" id="factorVal_string">
 																										<input type="radio" name="mradio_06" id="mradio_06" checked="checked" />
 																										<label for="mradio_06" class="mg_l10">남자</label>
 																									</div>
-																									<div class="alert fade show mg_b10" role="alert">
-																										<button type="button" class="btn-del" data-bs-dismiss="alert" aria-label="Close"></button>
+																									<div class="alert fade show mg_b10" role="alert" id="factorVal_int">
 																										<input type="text" class="wd250px" value="" placeholder="숫자만 입력가능합니다" />
 																									</div>
-																									<div class="alert fade show mg_b10" role="alert">
-																										<button type="button" class="btn-del" data-bs-dismiss="alert" aria-label="Close"></button>
+																									<div class="alert fade show mg_b10" role="alert" id="factorVal_date">
 																										<input type="text" id="DateId_ex01" class="date" value="2021-01-01" />
-																										<span>~</span>
-																										<input type="text" id="DateId_ex02" class="date" value="2021-01-30" />
-																									</div>
-
-																									<div class="alert fade show mg_b10" role="alert">
-																										<button type="button" class="btn-del" data-bs-dismiss="alert" aria-label="Close"></button>
-																										<label for="" class="view_label">전달값</label>
-																										<input type="text" class="wd150px" value="" placeholder="성공건수" />
-																									</div>
-																									<div class="alert fade show mg_b10" role="alert">
-																										<button type="button" class="btn-del" data-bs-dismiss="alert" aria-label="Close"></button>
-																										<label for="" class="view_label">비교값</label>
-																										<input type="text" class="wd150px" value="" placeholder="30" />
 																									</div>
 																								</td>
 																								<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3" id="ruleAttrData"></td>

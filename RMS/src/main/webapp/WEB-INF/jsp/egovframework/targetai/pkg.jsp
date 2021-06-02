@@ -451,7 +451,7 @@
 																								</th>
 																								<th class="t_left icon02">
 																									요소 값
-																									<button type="button" class="btn btn-lg btn-sky btn_right">Add Value</button>
+																									<button type="button" class="btn btn-lg btn-sky btn_right" id="addValBtn">Add Value</button>
 																								</th>
 																								<th class="t_left icon03">
 																									RULE 속성

@@ -229,6 +229,18 @@ $(document).ready(function() {
 			}
 		});
 	});
+	
+	// RULE 상세 > RULE EDITOR > ADD VALUE 버튼 클릭
+	$("#addValBtn").click(function() {
+		var treeObj = $.fn.zTree.getZTreeObj("factorTree");
+		var node = treeObj.getSelectedNodes()[0];
+		
+		var factorId = node.id;
+		var factorNm = node.name;
+		
+		console.log(factorNm);
+		
+	});
 });
 
 /**
@@ -521,7 +533,6 @@ function getFactorVal(event, treeId, treeNode) {
 				
 				$("#factorVal_string").html(html);
 			}
-			
 		}
 	});
 }

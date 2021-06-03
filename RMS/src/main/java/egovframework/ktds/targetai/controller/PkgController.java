@@ -29,7 +29,7 @@ public class PkgController {
 	/**
 	 * package 관리 화면 이동
 	 * @param model
-	 * @return
+	 * @return /targetai/pkg.jsp
 	 */
 	@RequestMapping(value = "/pkg.do")
 	public String main(ModelMap model) {
@@ -39,7 +39,7 @@ public class PkgController {
 	/**
 	 * package 리스트 조회
 	 * @param searchObj
-	 * @return
+	 * @return pkgList, pkgCount
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getPkgList.do", method = RequestMethod.POST)
@@ -56,7 +56,7 @@ public class PkgController {
 	/**
 	 * package 상세 조회
 	 * @param PKG_ID
-	 * @return
+	 * @return pkg
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getPkg.do", method = RequestMethod.POST)
@@ -71,7 +71,7 @@ public class PkgController {
 	/**
 	 * Rule 리스트 조회
 	 * @param searchObj
-	 * @return
+	 * @return ruleList, ruleCount
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getRuleList.do", method = RequestMethod.POST)
@@ -88,7 +88,7 @@ public class PkgController {
 	/**
 	 * RULE 상세 조회
 	 * @param RULE_ID
-	 * @return
+	 * @return rule
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getRule.do", method = RequestMethod.POST)
@@ -103,7 +103,7 @@ public class PkgController {
 	/**
 	 * 속성 view 리스트 조회
 	 * @param factor_grp_id
-	 * @return
+	 * @return factorGrpList
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getFactorGrpList.do", method = RequestMethod.POST)
@@ -118,7 +118,7 @@ public class PkgController {
 	/**
 	 * 속성 view 하위 요소 리스트 조회
 	 * @param factor_grp_id
-	 * @return
+	 * @return factorList
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getFactorList.do", method = RequestMethod.POST)
@@ -134,7 +134,7 @@ public class PkgController {
 	/**
 	 * Rule name 중복 체크
 	 * @param param
-	 * @return
+	 * @return boolean
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/ruleNmCheck.do", method = RequestMethod.POST)
@@ -151,7 +151,7 @@ public class PkgController {
 	/**
 	 * Factor Value 조회
 	 * @param param
-	 * @return
+	 * @return factor, factorVal
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getFactorVal.do", method = RequestMethod.POST)
@@ -163,6 +163,32 @@ public class PkgController {
 		resultMap.put("factorVal", factorVal);
 			
 		return resultMap;
+	}
+	
+	/**
+	 * RULE 저장
+	 * @param param
+	 * @return resultMap
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/ruleSave.do", method = RequestMethod.POST)
+	public boolean ruleSave(@RequestBody HashMap<String, Object> param) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		param.put("ATTR_THEN", "$map.put(\"RESULT\", \"Y\");");
+		
+//		{ruleNm=1r1, noLoop=true, salience=1, 
+//		ruleObjArr=[{factorGrpNm=고객, factorId=4, factorNm=인터넷결합여부, factorNmEn=INET_COMB_YN, factorValType=STRING, logical=logical1, logical_txt===, relation=relation1, relation_txt=&&, factorVal=N, ruleAttr_txt=[고객 : 인터넷결합여부] =="N" AND}, 
+//		{factorGrpNm=고객, factorId=4, factorNm=인터넷결합여부, factorNmEn=INET_COMB_YN, factorValType=STRING, logical=logical1, logical_txt===, relation=relation1, relation_txt=&&, factorVal=N, ruleAttr_txt=[고객 : 인터넷결합여부] =="N" AND}, 
+//		{factorGrpNm=고객, factorId=4, factorNm=인터넷결합여부, factorNmEn=INET_COMB_YN, factorValType=STRING, logical=logical1, logical_txt===, relation=relation3, relation_txt=, factorVal=N, ruleAttr_txt=[고객 : 인터넷결합여부] =="N" }]
+//		, lockOnActive=true}
+		
+		// RULE 저장
+		pkgService.ruleSave(param);
+		// RULE_ATTR 저장
+		pkgService.ruleAttrSave(param);
+		
+		return true;
 	}
 	
 }

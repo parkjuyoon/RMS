@@ -31,7 +31,7 @@
 </script>
 
 <!-- modal_pop -->
-<div id="modalID_warning" class="modal_pop">
+<div id="modalID_warning" class="modal_pop" style="z-index: 10000;">
 	<div class="modal_content" style="width: 500px;">
 		<!-- 팝업항상중앙띄우기 -->
 		<div class="modla_center">

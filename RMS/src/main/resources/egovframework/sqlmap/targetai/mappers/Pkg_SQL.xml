@@ -212,4 +212,33 @@
 		    AND F.DATA_TYPE = 'STRING'
 		    AND F.FACTOR_ID = #{factorId}
 	</select>
+	
+	<!-- RULE 저장 -->
+	<insert id="ruleSave" parameterType="java.util.HashMap">
+		INSERT INTO targetai.RULE (
+			RULE_NM,
+			NO_LOOP,
+			LOCK_ON_ACTIVE,
+			SALIENCE,
+			ATTR_THEN,
+			PKG_ID
+		) VALUES (
+			#{ruleNm},
+			#{noLoop},
+			#{lockOnActive},
+			#{ATTR_THEN},
+			#{pkgId}
+		)
+	</insert>
+	
+	<insert id="ruleAttrSave" parameterType="java.util.HashMap">
+		INSERT INTO targetai.RULE_ATTR (
+			RULE_ID,
+			ATTR_WHEN,
+			ATTR_WHEN_CONTENTS,
+			FUNC_YN
+		) VALUES (
+			
+		)
+	</insert>
 </mapper>

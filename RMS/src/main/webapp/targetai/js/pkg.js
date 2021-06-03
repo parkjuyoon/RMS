@@ -127,23 +127,48 @@ $(document).ready(function() {
 	
 	// RULE 상세 > RULE EDITOR 버튼 클릭
 	$("#ruleEditorPopUp").click(function() {
+		// ruleObjArr 안에 저장된 RULE 속성이 있다면 표시
+		var html = "";
+		
+		$.each(ruleObjArr, function(idx, ruleObj) {
+			html += "<div class='alert fade show mg_b10' role='alert'>";
+			html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
+			html += 		ruleObj.ruleAttr_txt;
+			html += "</div>";
+		});
+		$("#ruleAttrData").append(html);
+		
 		treeFactorGrpList();
 	});
 	
 	// RULE 상세 > RULE EDITOR 취소버튼
 	$("#ruleEditorCancel").click(function() {
-		// RULE EDITOR 팝업 닫기
-		close_layerPop('modalID_1');
-		initRuleEditor();
+		if(confirm("작성한 RULE 속성이 초기화 됩니다. 취소하시겠습니까?")) {
+			// RULE EDITOR 팝업 닫기
+			close_layerPop('modalID_1');
+			initRuleEditor();
+			ruleObjArr = [];
+			ruleObj = {};
+			$("#ruleWhenCont").val("");
+		}
 	});
 	
 	// RULE EDITOR 팝업 X버튼 클릭
 	$("#modalID_1 .close").click(function() {
-		initRuleEditor();
+		if(confirm("작성한 RULE 속성이 초기화 됩니다. 취소하시겠습니까?")) {
+			// RULE EDITOR 팝업 닫기
+			close_layerPop('modalID_1');
+			initRuleEditor();
+			ruleObjArr = [];
+			ruleObj = {};
+			$("#ruleWhenCont").val("");
+		}
 	});
 	
 	// RULE 목록 > 신규 RULE 생성 버튼 클릭
 	$("#addNewRuleBtn").click(function() {
+		ruleObjArr = [];
+		ruleObj = {};
 		initRuleDetail();	// RULE 상세 초기화
 		initRuleEditor();	// RULE EDITOR 초기화
 		
@@ -189,9 +214,18 @@ $(document).ready(function() {
 		}
 		
 		if(confirm("변경사항을 저장하시겠습니까?")) {
-			alertPop("RULE이 저장되었습니다.", "", "");
+			var param = {};
+			param.pkgId = $("#ruleSearchBtn").attr("data-pkgId");
+			param.ruleNm = $("#ruleNm").val();
+			param.noLoop = $("input[name='noLoop']:checked").val();
+			param.lockOnActive = $("input[name='noLoop']:checked").val();
+			param.salience = $("#salience").val();
+			param.ruleObjArr = ruleObjArr;
+			
+			fnRuleSave(param);
+			ruleObj = {};
+			ruleObjArr = [];
 		}
-		
 	});
 	
 	// RULE 상세 > 중복체크 버튼 클릭
@@ -231,15 +265,156 @@ $(document).ready(function() {
 	});
 	
 	// RULE 상세 > RULE EDITOR > ADD VALUE 버튼 클릭
+	var ruleObj = {};
+	var ruleObjArr = [];
+	
 	$("#addValBtn").click(function() {
 		var treeObj = $.fn.zTree.getZTreeObj("factorTree");
 		var node = treeObj.getSelectedNodes()[0];
 		
-		var factorId = node.id;
-		var factorNm = node.name;
+		if(typeof node === "undefined" || node.isParent) {
+			alertPop("요소값 체크","요소값을 입력 후 추가하세요","");
+			return;
+		}
 		
-		console.log(factorNm);
+		// 관계연산 NONE 뒤에 추가 할 수 없음.
+		if(ruleObjArr.length > 0) {
+			if(ruleObjArr[ruleObjArr.length-1].relation_txt == "") {
+				alertPop("속성추가 체크", "관계연산이 끝난 Rule 속성 이후 추가 할 수 없습니다.", "");
+				return;
+			}
+		}
 		
+		ruleObj = {};
+		ruleObj.factorGrpNm = node.getParentNode().name;
+		ruleObj.factorId = node.id;
+		ruleObj.factorNm = node.name;
+		ruleObj.factorNmEn = node.name_en;
+		ruleObj.factorValType = $("#factorVal").attr("data-type");
+		
+		ruleObj.logical = $("input[name='logicalRadios']:checked").val();
+		ruleObj.logical_txt = $("input[name='logicalRadios']:checked").next().text();
+		ruleObj.relation = $("input[name='relationRadios']:checked").val();
+		ruleObj.relation_txt = $("input[name='relationRadios']:checked").next().text();
+		
+		// RULE 속성 추가시 제약조건 체크
+		var factorVal_Tag = "";
+		
+		// 요소 값 입력 여부 체크
+		if(ruleObj.factorValType === "STRING") {
+			ruleObj.factorVal = $("#factorVal_string>input:checked").val();
+			factorVal_Tag = $("input[name='detAttrChk']:checked");
+			
+			if(typeof ruleObj.factorVal === "undefined" || ruleObj.factorVal == "") {
+				alertPop("요소값 체크","요소값을 입력 후 추가하세요","");
+				return;
+			}
+			
+		} else if(ruleObj.factorValType === "INT") {
+			ruleObj.factorVal = $("#factorVal_int>input").val();
+			factorVal_Tag = $("#factorVal_int input[name='detAttrChk']");
+			
+			if(typeof ruleObj.factorVal === "undefined" || ruleObj.factorVal == "") {
+				alertPop("요소값 체크","요소값을 입력 후 추가하세요","");
+				return;
+			}
+			
+		} else if(ruleObj.factorValType === "DATE") {
+			ruleObj.factorVal = $("#factorVal_date>input").val();
+			factorVal_Tag = $("#factorVal_date input[name='detAttrChk']");
+			
+			if(typeof ruleObj.factorVal === "undefined" || ruleObj.factorVal == "") {
+				alertPop("요소값 체크","요소값을 입력 후 추가하세요","");
+				return;
+			}
+			
+		} else {
+			alertPop("요소값 체크","요소값을 선택 후 추가하세요","");
+		}
+		
+		// 논리연산 IN, NOT IN 선택
+		var factorVal = "";
+		
+		if(ruleObj.logical == 'logical6' || ruleObj.logical == 'logical7') {
+			factorVal += "("
+			
+			for(var i=0; i<factorVal_Tag.length; i++) {
+				factorVal += (ruleObj.factorValType == 'INT' ? factorVal_Tag.eq(i).val() : "\""+ factorVal_Tag.eq(i).val() +"\"") 
+				+ (i+1 == factorVal_Tag.length ? "" : ", ");
+			}
+			
+			factorVal += ")";
+		
+		// 논리연산 IN, NOT IN 이 아닌 값을 선택시
+		} else {
+			if(factorVal_Tag.length > 1) {
+				alertPop("요소값 체크","상세 속성을 한 가지만 선택하세요.","");
+				return;
+			}
+			
+			factorVal = (ruleObj.factorValType == 'INT' ? factorVal_Tag.eq(0).val() : "\""+ factorVal_Tag.eq(0).val() +"\"");
+		}
+		
+		if(ruleObj.relation == 'relation3') {
+			ruleObj.relation_txt = "";
+		}
+		
+		ruleObj.ruleAttr_txt = "["+ ruleObj.factorGrpNm + " : " + ruleObj.factorNm + "] " + ruleObj.logical_txt + factorVal + " " + ruleObj.relation_txt;			
+		
+		var html = "";
+		html += "<div class='alert fade show mg_b10' role='alert'>";
+		html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
+		html += 		ruleObj.ruleAttr_txt;
+		html += "</div>";
+		
+		$("#ruleAttrData").append(html);
+		
+		if(ruleObj.relation == 'relation1') {
+			ruleObj.relation_txt = "&&"
+				
+		} else if(ruleObj.relation == 'relation2') {
+			ruleObj.relation_txt = "||"
+				
+		} else {
+			ruleObj.relation_txt = "";
+		}
+		
+		ruleObjArr.push(ruleObj);
+	});
+	
+	// Rule 속성 minus 버튼 클릭 이벤트
+	$(document).on("click", "._ruleAttrMinus", function() {
+		var delIdx = $("._ruleAttrMinus").index(this);
+	
+		ruleObjArr.splice(delIdx, 1);
+		
+		$(this).closest("label").remove();
+		
+		ruleObj = {};
+	});
+	
+	// RULE 상세 > RULE EDITOR 팝업 > 적용 버튼 클릭
+	$("#ruleEditorSave").click(function() {
+		// 관계연산 NONE 으로 끝나야 적용가능
+		if(ruleObjArr.length > 0) {
+			if(ruleObjArr[ruleObjArr.length-1].relation_txt != "") {
+				alertPop("RULE 적용체크", "관계연산이 끝난 Rule 속성만 추가 할 수 있습니다.", "");
+				return;
+			}
+			
+		} else {
+			alertPop("RULE 적용체크", "RULE 속성을 추가하세요.", "");
+			return;
+		}
+		
+		var contents = ""
+		$.each(ruleObjArr, function(idx, ruleObj) {
+			contents += ruleObj.ruleAttr_txt + "\n";
+		});
+		
+		$("#ruleWhenCont").val(contents);
+		close_layerPop('modalID_1');
+		initRuleEditor();
 	});
 });
 
@@ -465,6 +640,7 @@ function treeFactorList(factorGrpId, treeId, treeNode) {
 				factorObj.id = factor.FACTOR_ID;
 				factorObj.pId = factorGrpId;
 				factorObj.name = factor.FACTOR_NM;
+				factorObj.name_en = factor.FACTOR_NM_EN;
 
 				factorArr.push(factorObj);
 			});
@@ -495,6 +671,10 @@ function treeFactorList(factorGrpId, treeId, treeNode) {
  * @returns
  */
 function getFactorVal(event, treeId, treeNode) {
+	if(treeNode.isParent) {
+		return;
+	}
+	
 	var factorObj = {
 		factorId : treeNode.id
 	};
@@ -516,23 +696,88 @@ function getFactorVal(event, treeId, treeNode) {
 			
 			if(dataType === 'DATE') {
 				$("#factorVal_date").css("display", "");
+				$("#factorVal_date>input").val("")
+				$("#factorVal").attr("data-type", "DATE");
 				
 			} else if(dataType === 'INT') {
 				$("#factorVal_int").css("display", "");
+				$("#factorVal_int>input").val("");
+				$("#factorVal").attr("data-type", "INT");
 				
 			} else {	// dataType === 'STRING'
 				$("#factorVal_string").css("display", "");
+				$("#factorVal").attr("data-type", "STRING");
 				var html = "";
 				var factorVal = res.factorVal;
 				
 				for(var i in factorVal) {
-					html += "<input type='radio' name='fvRadio' value='"+ factorVal[i].VAL +"'/>";
-					html += "<label for='fvRadio' class='mg_l10'>"+ factorVal[i].VAL +"</label>";
+					html += "<input type='checkbox' name='detAttrChk' value='"+ factorVal[i].VAL +"'/>";
+					html += "<label for='detAttrChk' class='mg_l10'>"+ factorVal[i].VAL +"</label>";
 					html += "<br />";
 				}
 				
 				$("#factorVal_string").html(html);
+				$("#factorVal_string>input").prop("checked",false);
 			}
+		},
+		beforeSend : function() {
+			$("#factorTreeLoading").show();
+		},
+		complete : function() {
+			$("#factorTreeLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			alertPop("에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
+
+/**
+ * RULE 상세 > 저장
+ * @param param
+ * @returns
+ */
+function fnRuleSave(param) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/ruleSave.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			console.log(res);
+			
+			var searchObj = {};
+			searchObj.pkgId = $("#ruleSearchBtn").attr("data-pkgId");
+			searchObj.ruleId_search = $("#ruleId_search").val();
+			searchObj.regUsrId_search = $("#ruleRegUsrId_search").val();
+			searchObj.ruleNm_search = $("#ruleNm_search").val();
+			
+			getRuleList(searchObj);
+			
+			alertPop("RULE이 저장되었습니다.", "", "");
+			
+			$("#ruleEditorPopUp").css("display", "none");
+			$("#ruleCard").addClass("card-collapsed");
+			$("#ruleCardBody").css("display", "none");
+			initRuleDetail();
+			initRuleEditor();
+		},
+		beforeSend : function() {
+			$("#ruleLoading").show();
+		},
+		complete : function() {
+			$("#ruleLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			alertPop("에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
 		}
 	});
 }

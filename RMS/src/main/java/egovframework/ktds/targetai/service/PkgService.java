@@ -27,4 +27,8 @@ public interface PkgService {
 
 	List<HashMap<String, Object>> getFactorVal(HashMap<String, Object> param);
 
+	void ruleSave(HashMap<String, Object> param);
+
+	void ruleAttrSave(HashMap<String, Object> param);
+
 }

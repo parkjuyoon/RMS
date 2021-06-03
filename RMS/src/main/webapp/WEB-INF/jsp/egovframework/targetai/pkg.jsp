@@ -459,37 +459,34 @@
 																							</tr>
 																							<tr>
 																								<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top">
-																									<input type="radio" name="logicalRadio" id="logicalRadio1" checked />
-																									<label for="logicalRadio" class="mg_r10">==</label>
+																									<input type="radio" name="logicalRadios" id="logicalRadio1" value="logical1" checked />
+																									<label for="logicalRadio1" class="mg_r10">==</label>
 																									<br />
-																									<input type="radio" name="logicalRadio" id="logicalRadio2" />
-																									<label for="logicalRadio" class="mg_r10">&gt;</label>
+																									<input type="radio" name="logicalRadios" id="logicalRadio2" value="logical2"/>
+																									<label for="logicalRadio2" class="mg_r10">&gt;</label>
 																									<br />
-																									<input type="radio" name="logicalRadio" id="logicalRadio3" />
-																									<label for="logicalRadio" class="mg_r10">&lt;</label>
+																									<input type="radio" name="logicalRadios" id="logicalRadio3" value="logical3"/>
+																									<label for="logicalRadio3" class="mg_r10">&lt;</label>
 																									<br />
-																									<input type="radio" name="logicalRadio" id="logicalRadio4" />
-																									<label for="logicalRadio" class="mg_r10">&gt;=</label>
+																									<input type="radio" name="logicalRadios" id="logicalRadio4" value="logical4"/>
+																									<label for="logicalRadio4" class="mg_r10">&gt;=</label>
 																									<br />
-																									<input type="radio" name="logicalRadio" id="logicalRadio5" />
-																									<label for="logicalRadio" class="mg_r10">&lt;=</label>
+																									<input type="radio" name="logicalRadios" id="logicalRadio5" value="logical5"/>
+																									<label for="logicalRadio5" class="mg_r10">&lt;=</label>
 																									<br />
-																									<input type="radio" name="logicalRadio" id="logicalRadio6" />
-																									<label for="logicalRadio" class="mg_r10">IN</label>
+																									<input type="radio" name="logicalRadios" id="logicalRadio6" value="logical6"/>
+																									<label for="logicalRadio6" class="mg_r10">IN</label>
 																									<br />
-																									<input type="radio" name="logicalRadio" id="logicalRadio7" />
-																									<label for="logicalRadio" class="mg_r10">NOT IN</label>
+																									<input type="radio" name="logicalRadios" id="logicalRadio7" value="logical7"/>
+																									<label for="logicalRadio7" class="mg_r10">NOT IN</label>
 																								</td>
-																								<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3">
-																									<div class="alert fade show mg_b10" role="alert" id="factorVal_string">
-																										<input type="radio" name="mradio_06" id="mradio_06" checked="checked" />
-																										<label for="mradio_06" class="mg_l10">남자</label>
-																									</div>
+																								<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3" id="factorVal" data-type="">
+																									<div class="alert fade show mg_b10" role="alert" id="factorVal_string"></div>
 																									<div class="alert fade show mg_b10" role="alert" id="factorVal_int">
-																										<input type="text" class="wd250px" value="" placeholder="숫자만 입력가능합니다" />
+																										<input type="text" class="wd250px" name="detAttrChk" value="" placeholder="숫자만 입력가능합니다" />
 																									</div>
 																									<div class="alert fade show mg_b10" role="alert" id="factorVal_date">
-																										<input type="text" id="DateId_ex01" class="date" value="2021-01-01" />
+																										<input type="text" id="DateId_ex01" name="detAttrChk" class="date" value="" />
 																									</div>
 																								</td>
 																								<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3" id="ruleAttrData"></td>
@@ -501,14 +498,14 @@
 																							</tr>
 																							<tr>
 																								<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top">
-																									<input type="radio" name="relationRadio" id="relationRadio1" />
-																									<label for="relationRadio" class="mg_r10">AND</label>
+																									<input type="radio" name="relationRadios" id="relationRadio1" value="relation1"/>
+																									<label for="relationRadio1" class="mg_r10">AND</label>
 																									<br />
-																									<input type="radio" name="relationRadio" id="relationRadio2" />
-																									<label for="relationRadio" class="mg_r10">OR</label>
+																									<input type="radio" name="relationRadios" id="relationRadio2" value="relation2"/>
+																									<label for="relationRadio2" class="mg_r10">OR</label>
 																									<br />
-																									<input type="radio" name="relationRadio" id="relationRadio3" checked />
-																									<label for="relationRadio" class="mg_r10">NONE</label>
+																									<input type="radio" name="relationRadios" id="relationRadio3" value="relation3" checked />
+																									<label for="relationRadio3" class="mg_r10">NONE</label>
 																								</td>
 																							</tr>
 																							<tr>
@@ -554,7 +551,7 @@
 																			<!-- 버튼 -->
 																			<div class="card-actions-foot">
 																				<button type="button" class="btn btn-lg btn-gray" id="ruleEditorCancel"><i class="far fa-times-circle custom-btn-i"></i> 취소</button>
-																				<button type="button" class="btn btn-lg btn-green"><i class="far fa-check-circle custom-btn-i"></i> 적용</button>
+																				<button type="button" class="btn btn-lg btn-green" id="ruleEditorSave"><i class="far fa-check-circle custom-btn-i"></i> 적용</button>
 																			</div>
 																			<!-- //버튼 -->
 																		</div>

@@ -62,7 +62,42 @@ $(document).ready(function() {
 				$("#pkgLoading").hide();
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
-				alertPop("에러발생", "관리자에게 문의하세요", "");
+				messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+				console.log(jqXHR);
+				console.log(textStatus);
+				console.log(errorThrown);
+			}
+		});
+	});
+	
+	// 패키지 목록 > DRL 파일명 클릭
+	$(document).on("click", "._drlNmLink", function(e) {
+		e.preventDefault();	// a링크 클릭이벤트 제거
+		var param = {};
+		param.pkgId = $(this).attr("data-pkgId");
+		
+		$.ajax({
+			method : "POST",
+			url : "/targetai/getPkg.do",
+			traditional: true,
+			data : JSON.stringify(param),
+			contentType:'application/json; charset=utf-8',
+			dataType : "json",
+			success : function(res) {
+				var pkg = res.pkg;
+				
+				$("#drlSourcePop_title").text(pkg.DRL_NM);
+				$("#drlSourcePop_contents").text(pkg.DRL_SOURCE);
+				$("#drlSourcePop").show();
+			},
+			beforeSend : function() {
+				$("#drlSourcePopLoading").show();
+			},
+			complete : function() {
+				$("#drlSourcePopLoading").hide();
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
 				console.log(jqXHR);
 				console.log(textStatus);
 				console.log(errorThrown);
@@ -117,7 +152,7 @@ $(document).ready(function() {
 				$("#ruleLoading").hide();
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
-				alertPop("에러발생", "관리자에게 문의하세요", "");
+				messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
 				console.log(jqXHR);
 				console.log(textStatus);
 				console.log(errorThrown);
@@ -189,7 +224,7 @@ $(document).ready(function() {
 		// RULE 명 중복 체크
 		var isDup = $("#ruleNmDupBtn").data("isDup");
 		if(isDup != 'Y') {
-			alertPop("RULE 명 중복체크", "RULE 명 중복체크를 먼저 해주세요.", "#ruleNm");
+			messagePop("warning", "RULE 명 중복체크", "RULE 명 중복체크를 먼저 해주세요.", "#ruleNm");
 			return;
 		}
 		
@@ -197,19 +232,19 @@ $(document).ready(function() {
 		var salience = $("#salience").val();
 		var pattern_num = /^[0-9]+$/;
 		if(salience == '') {
-			alertPop("SALIENCE 공백체크", "SALIENCE 값을 입력하세요.", "#salience");
+			messagePop("warning", "SALIENCE 공백체크", "SALIENCE 값을 입력하세요.", "#salience");
 			return;
 		}
 		
 		if(!pattern_num.test(salience)) {
-			alertPop("SALIENCE 정합성 체크", "SALIENCE 값은 숫자만 입력할 수 있습니다.", "#salience");
+			messagePop("warning", "SALIENCE 정합성 체크", "SALIENCE 값은 숫자만 입력할 수 있습니다.", "#salience");
 			return;
 		}
 		
 		// CONTENTS 체크
 		var contents = $("#ruleWhenCont").val();
 		if(contents == '')  {
-			alertPop("CONTENTS 생성 체크", "RULE EDITOR를 통해 CONTENTS를 생성하세요.", "");
+			messagePop("warning", "CONTENTS 생성 체크", "RULE EDITOR를 통해 CONTENTS를 생성하세요.", "");
 			return;
 		}
 		
@@ -233,7 +268,7 @@ $(document).ready(function() {
 		var ruleNm = $("#ruleNm").val();
 		
 		if(ruleNm == '') {
-			alertPop("RULE 명 공백체크.", "RULE 명을 입력하세요.", "#ruleNm");
+			messagePop("warning", "RULE 명 공백체크.", "RULE 명을 입력하세요.", "#ruleNm");
 			return;
 		}
 		
@@ -273,14 +308,14 @@ $(document).ready(function() {
 		var node = treeObj.getSelectedNodes()[0];
 		
 		if(typeof node === "undefined" || node.isParent) {
-			alertPop("요소값 체크","요소값을 입력 후 추가하세요","");
+			messagePop("warning", "요소값 체크","요소값을 입력 후 추가하세요","");
 			return;
 		}
 		
 		// 관계연산 NONE 뒤에 추가 할 수 없음.
 		if(ruleObjArr.length > 0) {
 			if(ruleObjArr[ruleObjArr.length-1].relation_txt == "") {
-				alertPop("속성추가 체크", "관계연산이 끝난 Rule 속성 이후 추가 할 수 없습니다.", "");
+				messagePop("warning", "속성추가 체크", "관계연산이 끝난 Rule 속성 이후 추가 할 수 없습니다.", "");
 				return;
 			}
 		}
@@ -306,7 +341,7 @@ $(document).ready(function() {
 			factorVal_Tag = $("input[name='detAttrChk']:checked");
 			
 			if(typeof ruleObj.factorVal === "undefined" || ruleObj.factorVal == "") {
-				alertPop("요소값 체크","요소값을 입력 후 추가하세요","");
+				messagePop("warning", "요소값 체크","요소값을 입력 후 추가하세요","");
 				return;
 			}
 			
@@ -315,7 +350,7 @@ $(document).ready(function() {
 			factorVal_Tag = $("#factorVal_int input[name='detAttrChk']");
 			
 			if(typeof ruleObj.factorVal === "undefined" || ruleObj.factorVal == "") {
-				alertPop("요소값 체크","요소값을 입력 후 추가하세요","");
+				messagePop("warning", "요소값 체크","요소값을 입력 후 추가하세요","");
 				return;
 			}
 			
@@ -324,12 +359,12 @@ $(document).ready(function() {
 			factorVal_Tag = $("#factorVal_date input[name='detAttrChk']");
 			
 			if(typeof ruleObj.factorVal === "undefined" || ruleObj.factorVal == "") {
-				alertPop("요소값 체크","요소값을 입력 후 추가하세요","");
+				messagePop("warning", "요소값 체크","요소값을 입력 후 추가하세요","");
 				return;
 			}
 			
 		} else {
-			alertPop("요소값 체크","요소값을 선택 후 추가하세요","");
+			messagePop("warning", "요소값 체크","요소값을 선택 후 추가하세요","");
 		}
 		
 		// 논리연산 IN, NOT IN 선택
@@ -348,7 +383,7 @@ $(document).ready(function() {
 		// 논리연산 IN, NOT IN 이 아닌 값을 선택시
 		} else {
 			if(factorVal_Tag.length > 1) {
-				alertPop("요소값 체크","상세 속성을 한 가지만 선택하세요.","");
+				messagePop("warning", "요소값 체크","상세 속성을 한 가지만 선택하세요.","");
 				return;
 			}
 			
@@ -379,6 +414,9 @@ $(document).ready(function() {
 			ruleObj.relation_txt = "";
 		}
 		
+		// DRL 파일에 저장될 소스
+		ruleObj.ruleAttr_source = "this[\""+ ruleObj.factorNmEn +"\"]" + ruleObj.logical_txt + factorVal + " " + ruleObj.relation_txt + "\n";
+		
 		ruleObjArr.push(ruleObj);
 	});
 	
@@ -398,12 +436,12 @@ $(document).ready(function() {
 		// 관계연산 NONE 으로 끝나야 적용가능
 		if(ruleObjArr.length > 0) {
 			if(ruleObjArr[ruleObjArr.length-1].relation_txt != "") {
-				alertPop("RULE 적용체크", "관계연산이 끝난 Rule 속성만 추가 할 수 있습니다.", "");
+				messagePop("warning", "RULE 적용체크", "관계연산이 끝난 Rule 속성만 추가 할 수 있습니다.", "");
 				return;
 			}
 			
 		} else {
-			alertPop("RULE 적용체크", "RULE 속성을 추가하세요.", "");
+			messagePop("warning", "RULE 적용체크", "RULE 속성을 추가하세요.", "");
 			return;
 		}
 		
@@ -454,6 +492,7 @@ function getPkgList(searchObj) {
 					html += "	</td>";
 					html += "	<td class='t_center'>" + pkgList[i].PKG_ID + "</td>";
 					html += "	<td class='t_center'><a href='#' class='_pkgNmLink' data-pkgId='"+ pkgList[i].PKG_ID +"'>" + pkgList[i].PKG_NM + "</a></td>";
+					html += "	<td class='t_center'><a href='#' class='_drlNmLink' data-pkgId='"+ pkgList[i].PKG_ID +"'>" + pkgList[i].DRL_NM + "</a></td>";
 					html += "	<td class='t_center'>" + pkgList[i].PKG_ACT_YN + "</td>";
 					html += "	<td class='t_center'>" + pkgList[i].REG_DT + "</td>";
 					html += "	<td class='t_center'>" + pkgList[i].REG_USRID + "</td>";
@@ -474,7 +513,7 @@ function getPkgList(searchObj) {
 			$("#pkgLoading").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			alertPop("에러발생", "관리자에게 문의하세요", "");
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
 			console.log(jqXHR);
 			console.log(textStatus);
 			console.log(errorThrown);
@@ -522,8 +561,8 @@ function getRuleList(searchObj) {
 					html += "	<td class='t_center'>" + ruleList[i].RULE_ID + "</td>";
 					html += "	<td class='t_center'><a href='#' class='_ruleNmLink' data-ruleId='"+ ruleList[i].RULE_ID +"'>" + ruleList[i].RULE_NM + "</a></td>";
 					html += "	<td class='t_center'>" + ruleList[i].SALIENCE + "</td>";
-					html += "	<td class='t_center'>" + ruleList[i].UDT_DT + "</td>";
-					html += "	<td class='t_center'>" + ruleList[i].UDT_USRID + "</td>";
+					html += "	<td class='t_center'>" + (typeof ruleList[i].UDT_DT == 'undefined' ? "-" : ruleList[i].UDT_DT) + "</td>";
+					html += "	<td class='t_center'>" + (typeof ruleList[i].UDT_USRID == 'undefined' ? "-" : ruleList[i].UDT_DT) + "</td>";
 					html += "	<td class='t_center'>" + ruleList[i].REG_DT + "</td>";
 					html += "	<td class='t_center'>" + ruleList[i].REG_USRID + "</td>";
 					html += "</tr>";
@@ -543,7 +582,7 @@ function getRuleList(searchObj) {
 			$("#ruleLoading").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			alertPop("에러발생", "관리자에게 문의하세요", "");
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
 			console.log(jqXHR);
 			console.log(textStatus);
 			console.log(errorThrown);
@@ -608,7 +647,7 @@ function treeFactorGrpList() {
 			$("#factorTreeLoading").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			alertPop("에러발생", "관리자에게 문의하세요", "");
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
 			console.log(jqXHR);
 			console.log(textStatus);
 			console.log(errorThrown);
@@ -657,7 +696,7 @@ function treeFactorList(factorGrpId, treeId, treeNode) {
 			$("#factorTreeLoading").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			alertPop("에러발생", "관리자에게 문의하세요", "");
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
 			console.log(jqXHR);
 			console.log(textStatus);
 			console.log(errorThrown);
@@ -727,7 +766,7 @@ function getFactorVal(event, treeId, treeNode) {
 			$("#factorTreeLoading").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			alertPop("에러발생", "관리자에게 문의하세요", "");
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
 			console.log(jqXHR);
 			console.log(textStatus);
 			console.log(errorThrown);
@@ -749,8 +788,6 @@ function fnRuleSave(param) {
 		contentType:'application/json; charset=utf-8',
 		dataType : "json",
 		success : function(res) {
-			console.log(res);
-			
 			var searchObj = {};
 			searchObj.pkgId = $("#ruleSearchBtn").attr("data-pkgId");
 			searchObj.ruleId_search = $("#ruleId_search").val();
@@ -759,7 +796,7 @@ function fnRuleSave(param) {
 			
 			getRuleList(searchObj);
 			
-			alertPop("RULE이 저장되었습니다.", "", "");
+			messagePop("success", "RULE이 저장되었습니다.", "", "");
 			
 			$("#ruleEditorPopUp").css("display", "none");
 			$("#ruleCard").addClass("card-collapsed");
@@ -774,7 +811,7 @@ function fnRuleSave(param) {
 			$("#ruleLoading").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			alertPop("에러발생", "관리자에게 문의하세요", "");
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
 			console.log(jqXHR);
 			console.log(textStatus);
 			console.log(errorThrown);

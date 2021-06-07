@@ -20,7 +20,7 @@
 		<div class="logo-box">
 			<a href="login.html" class="logo logo-dark text-center">
 				<span class="logo-lg">
-					<img src="/targetai/images/logo.png" alt="Target AI" />
+					<img src="/targetai_publish/images/logo.png" alt="Target AI" />
 				</span>
 			</a>
 		</div>

@@ -2555,7 +2555,7 @@ body *[class^="btn_onlyico_"]:hover {border:1px solid #d4d4d4 !important; backgr
 .modal_pop {display:none; overflow:auto; position:fixed; z-index:9999; /*padding-top:5%;*/ width:100%; height:100%; top:0; left:0; background-color:rgba(0,0,0,0.6);}
 .modal_content {position:relative; margin:1.75rem auto; padding:0; min-height:calc(100% - 3.5rem); display:flex; align-items:center; /*border:1px solid #4b4b4b; background-color:#fefefe; box-shadow:0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19); -ms-box-shadow:0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);*/}
 .modal_header {height:45px; padding:0 0 0 20px; font-size:1rem; background:#3a3a3a; color:#ffffff; line-height:45px;}
-.modal_header h2 {margin:0 0 0 0; font-size:1.2rem; font-weight:500; line-height:42px; color:#ffffff;}
+.modal_header h2 {margin:0 0 0 0; font-size:1.2rem; font-weight:500; line-height:42px; color:#ffffff; text-align:left;}
 .modal_header:after {content:""; display:block; clear:both;}
 .close {float:right; width:40px; height:39px; line-height:39px; font-size:2.143em; font-weight:lighter; background-color:#222; color:#9c9c9c; text-align:center;}
 .close:hover, .close:focus {color:#fff; text-decoration:none; cursor:pointer;}
@@ -2598,7 +2598,7 @@ a.btnModal {text-decoration:none;}
 .sform_type_pop {width:100%; height:auto; clear:both;}
 .sform_type_pop tr > th,
 .sform_type_pop tr > td {z-index:1; height:34px; padding:2px 5px 2px 5px; border-right:1px solid #dedede; border-bottom:1px solid #dedede;}
-.sform_type_pop tr > td:last-child {border-right:0;}
+.sform_type_pop tr > td:last-child {/*border-right:0;*/}
 .sform_type_pop tr > th {padding:5px 10px; font-weight:700; background-color:#f6f6f6; color:#3d3d3d; text-align:center;}
 .sform_type_pop tr > th * {font-weight:700; color:#3d3d3d; text-align:center;}
 .sform_type_pop tr > th .btn-sky {color:#ffffff;}
@@ -2635,14 +2635,17 @@ a.btnModal {text-decoration:none;}
 .modal_table th.icon05 {background:#f6f6f6 url("../../../images/icons/modal_table_icon05.png") no-repeat 15px center; padding-left:45px !important;}
 .modal_table th.icon06 {background:#f6f6f6 url("../../../images/icons/modal_table_icon06.png") no-repeat 15px center; padding-left:45px !important;}
 
-.treewrap {margin:3px 0 0 0; width:270px; height:700px; overflow:auto;}
+.treewrap {margin:3px 0 0 0; width:270px; height:689px; overflow:auto;}
 .treewrap::-webkit-scrollbar {width:5px; height:5px;}
 .treewrap::-webkit-scrollbar-thumb {background-color:#a7a7a7; border-radius:10px;}
 .treewrap::-webkit-scrollbar-track {background-color:#d5d5d5; border-radius:10px; box-shadow:inset 0px 0px 5px white;}
 
 /* 경고팝업 */
 .body-header {border-top:1px solid #dddddd; border-radius:5px !important;}
-.message_box {text-align:center; padding:170px 0 0 0; background:url("../../../images/icons/icon_warning.png") no-repeat center 30px;}
+.message_box {text-align:center; padding:170px 0 0 0;}
+.icon_alert {background:url("../../../images/icons/icon_warning.png") no-repeat center 30px;}
+.icon_success {background:url("../../../images/icons/icon_success.png") no-repeat center 30px;}
+.icon_confirm {background:url("../../../images/icons/icon_confirm.png") no-repeat center 30px;}
 .message_box .message_tit {font-size:26px; font-weight:700;}
 .message_box .message_txt {margin:10px 0 0 0; padding:0px 30px 30px 30px;}
 
@@ -2658,10 +2661,10 @@ td .alert {padding:0 0 0 20px !important;}
 /* Rule Editor custom */
 .rule_pop .modal_header h2 {font-size:22px !important;}
 .rule_pop h2.card-title_txt {font-size:20px !important;}
-.rule_pop table.modal_table th {font-size:20px !important;}
-.rule_pop table.modal_table th button.btn_right {top:4px !important;}
+.rule_pop table.modal_table th {font-size:20px !important; height:50px !important;}
+.rule_pop table.modal_table th button.btn_right {top:6px !important;}
 .rule_pop table.modal_table th button.btn-lg {padding:0.4rem 0.9rem 0.3rem 0.9rem !important;}
-.rule_pop table.modal_table td {font-size:17px !important;}
+.rule_pop table.modal_table td {font-size:17px !important; height:170px !important;}
 .rule_pop table.modal_table td label {font-size:17px !important;}
 .rule_pop table.modal_table td div {font-size:17px !important;}
 .rule_pop table.modal_table td ul li {font-size:17px !important;}
@@ -2674,3 +2677,7 @@ td .alert {padding:0 0 0 20px !important;}
 
 /* 팝업항상중앙띄우기 */
 .modla_center {width:100%;}
+
+/* RULE EDITOR overflow */
+.overflow_detail {max-width:769px; max-height:395px; overflow:auto;}
+.overflow_rule {max-width:469px; max-height:395px; overflow:auto;}

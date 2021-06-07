@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
+<%@ include file="../rule_test.jsp"%>
+
 <!-- 좌측영역 -->
 <div class="left-side-menu">
 	<div class="h-100" >
@@ -9,7 +11,7 @@
 				<!-- CI -->
 				<a href="#" class="logo">
 					<span>
-						<img src="/targetai/images/logo-sm-light.png" alt="Target AI CI" />
+						<img src="/targetai_publish/images/logo-sm-light.png" alt="Target AI CI" />
 					</span>
 				</a>
 				<!-- //CI -->
@@ -39,7 +41,7 @@
 									<a class="nav-link" href="/targetai/pkg.do">Package</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" href="#">API</a>
+									<a class="nav-link" href="#" id="ruleTestPopBtn">RULE TEST</a>
 								</li>
 							</ul>
 						</div>
@@ -52,4 +54,3 @@
 	</div>
 </div>
 <!-- //좌측영역 -->
-

@@ -31,4 +31,15 @@ public interface PkgService {
 
 	void ruleAttrSave(HashMap<String, Object> param);
 
+	String getDrlSource(String pkgId);
+
+	HashMap<String, Object> getPkgById(String pkgId);
+
+	List<HashMap<String, Object>> getRuleListByPkgId(String pkgId);
+
+	List<HashMap<String, Object>> getWhenList(int ruleId);
+
+	void updateDrlSource(HashMap<String, Object> pkg);
+
+	void updateAttrThen(HashMap<String, Object> param);
 }

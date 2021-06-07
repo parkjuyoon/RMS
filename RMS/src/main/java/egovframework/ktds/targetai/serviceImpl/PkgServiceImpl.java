@@ -81,4 +81,34 @@ public class PkgServiceImpl extends EgovAbstractServiceImpl implements PkgServic
 	public void ruleAttrSave(HashMap<String, Object> param) {
 		dao.ruleAttrSave(param);
 	}
+
+	@Override
+	public String getDrlSource(String pkgId) {
+		return dao.getDrlSource(pkgId);
+	}
+
+	@Override
+	public HashMap<String, Object> getPkgById(String pkgId) {
+		return dao.getPkgById(pkgId);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> getRuleListByPkgId(String pkgId) {
+		return dao.getRuleListByPkgId(pkgId);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> getWhenList(int ruleId) {
+		return dao.getWhenList(ruleId);
+	}
+
+	@Override
+	public void updateDrlSource(HashMap<String, Object> pkg) {
+		dao.updateDrlSource(pkg);
+	}
+
+	@Override
+	public void updateAttrThen(HashMap<String, Object> param) {
+		dao.updateAttrThen(param);
+	}
 }

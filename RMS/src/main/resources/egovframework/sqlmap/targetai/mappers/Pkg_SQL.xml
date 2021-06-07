@@ -220,25 +220,124 @@
 			NO_LOOP,
 			LOCK_ON_ACTIVE,
 			SALIENCE,
-			ATTR_THEN,
-			PKG_ID
+			PKG_ID,
+			REG_USRID
 		) VALUES (
 			#{ruleNm},
 			#{noLoop},
 			#{lockOnActive},
-			#{ATTR_THEN},
-			#{pkgId}
+			#{salience},
+			#{pkgId},
+			#{REG_USER_ID}
 		)
+		<selectKey keyProperty="RULE_ID" resultType="int" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
 	</insert>
 	
+	<!-- RULE ATTR 저장 -->
 	<insert id="ruleAttrSave" parameterType="java.util.HashMap">
 		INSERT INTO targetai.RULE_ATTR (
 			RULE_ID,
 			ATTR_WHEN,
 			ATTR_WHEN_CONTENTS,
+			FACTOR_GRP_NM,
+			FACTOR_NM,
+			FACTOR_NM_EN,
+			FACTOR_VAL,
+			LOGICAL,
+			RELATION,
 			FUNC_YN
-		) VALUES (
-			
+		) VALUES 
+		<foreach collection="ruleObjArr" item="ruleAttr" separator=",">
+		(
+			#{RULE_ID},
+			#{ruleAttr.ruleAttr_source},
+			#{ruleAttr.ruleAttr_txt},
+			#{ruleAttr.factorGrpNm},
+			#{ruleAttr.factorNm},
+			#{ruleAttr.factorNmEn},
+			#{ruleAttr.factorVal},
+			#{ruleAttr.logical_txt},
+			#{ruleAttr.relation_txt},
+			'N'
 		)
+		</foreach>
 	</insert>
+	
+	<!-- PKG 정보 조회 -->
+	<select id="getPkgById" parameterType="string" resultType="java.util.HashMap">
+		SELECT
+			PKG_ID,
+		    PKG_NM,
+		    DRL_NM,
+		    DRL_SOURCE,
+		    DIALECT,
+		    PATH
+		FROM
+			targetai.PKG
+		WHERE
+			PKG_ID = #{pkgId}
+	</select>
+	
+	<!-- RULE 정보 조회 -->
+	<select id="getRuleListByPkgId" parameterType="string" resultType="java.util.HashMap">
+		SELECT
+			RULE_ID,
+		    RULE_NM,
+		    NO_LOOP,
+		    LOCK_ON_ACTIVE,
+		    AGENDA_GRP,
+		    SALIENCE,
+		    EFFECTIVE_DT,
+		    EXPIRES_DT,
+		    ENABLED,
+		    DURATION,
+		    ATTR_THEN,
+		    NUM_OF_TGT,
+		    PKG_ID,
+		    CAP_ID,
+		    REG_DT
+		FROM
+			targetai.RULE
+		WHERE
+			PKG_ID = #{pkgId}
+	</select>
+	
+	<!-- RULE_ATTR 정보 조회 -->
+	<select id="getWhenList" parameterType="int" resultType="java.util.HashMap">
+		SELECT
+			RULE_ATTR_ID,
+		    RULE_ID,
+		    ATTR_WHEN,
+		    FUNC_YN,
+		    FUNC_URL,
+		    FUNC_PARAM,
+		    FUNC_LOGICAL,
+		    FUNC_VAL
+		FROM
+			targetai.RULE_ATTR
+		WHERE
+			RULE_ID = #{pkgId}
+		ORDER BY 
+			RULE_ATTR_ID ASC
+	</select>
+	
+	<!-- PKG 의 DRL_SOURCE 업데이트 -->
+	<update id="updateDrlSource" parameterType="java.util.HashMap">
+		UPDATE targetai.PKG
+		SET
+			DRL_SOURCE = #{DRL_SOURCE}
+		WHERE
+			PKG_ID = #{PKG_ID}
+	</update>
+	
+	<!-- RULE 의 ATTR_WHEN 업데이트 -->
+	<update id="updateAttrThen" parameterType="java.util.HashMap">
+		UPDATE targetai.RULE
+		SET
+			ATTR_THEN = #{ATTR_THEN}
+		WHERE
+			RULE_ID = #{RULE_ID}
+	</update>
 </mapper>

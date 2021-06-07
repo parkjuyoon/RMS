@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.ktds.targetai.mapper.RuleTestMapper">
+
+	<!-- 모든 패키지 목록 조회 -->
+	<select id="getAllPkgList" resultType="java.util.HashMap">
+		SELECT
+			PKG_ID,
+			PKG_NM,
+		    DRL_NM,
+		    PATH
+		FROM
+		    targetai.PKG
+	</select>
+	
+	<select id="getRuleAttrByPkgId" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT
+			R.RULE_ID,
+			R.RULE_NM,
+		    R.SALIENCE,
+			RA.FACTOR_GRP_NM,
+			RA.FACTOR_NM,
+			RA.FACTOR_NM_EN,
+			RA.FACTOR_VAL,
+			RA.LOGICAL,
+			RA.RELATION
+		FROM
+			targetai.PKG P
+		    LEFT JOIN targetai.RULE R ON (P.PKG_ID = R.PKG_ID)
+		    LEFT JOIN targetai.RULE_ATTR RA ON (R.RULE_ID = RA.RULE_ID)
+		WHERE
+			R.PKG_ID = #{pkgId}
+	</select>
+</mapper>

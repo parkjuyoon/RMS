@@ -46,4 +46,10 @@ public interface PkgMapper {
 
 	void updateAttrThen(HashMap<String, Object> param);
 
+	int pkgNmCheck(HashMap<String, Object> param);
+
+	void pkgSave(HashMap<String, Object> param);
+
+	void updateDrlFileNm(HashMap<String, Object> param);
+
 }

@@ -149,7 +149,7 @@
 					<div class="row">
 						<div class="col">
 							<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
-							<div class="card">
+							<div class="card" id="pkgCardList">
 								<header class="card-header card-header-pd-mobile">
 									<div class="card-actions card-header-position-mobile">
 										<span class="infonum"> <span class="txt_color_blue mg_l5 mg_r5" id="pkgCountBySearch"></span>건
@@ -159,7 +159,7 @@
 									<h2 class="card-title_txt">패키지 목록</h2>
 								</header>
 								<!-- 본문페이지 -->
-								<div class="card-body" style="">
+								<div class="card-body" id="pkgCardListBody" style="">
 									<div class="progress_loading">
 										<div id="pkgLoading">
 											<img src="/targetai_publish/images/ajax-loader.gif" />
@@ -225,7 +225,7 @@
 										<button type="button" class="btn btn-sm btn-gray">
 											<i class="far fa-trash-alt custom-btn-i"></i> 삭제
 										</button>
-										<button type="button" class="btn btn-sm btn-green">
+										<button type="button" class="btn btn-sm btn-green" id="addNewPkgBtn">
 											<i class="el el-file-new custom-btn-i"></i> 신규 패키지 생성
 										</button>
 									</div>
@@ -241,7 +241,7 @@
 					<div class="row">
 						<div class="col">
 							<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
-							<div class="card card-collapsed" id="pkgCardList">
+							<div class="card card-collapsed" id="pkgCard">
 								<header class="card-header card-header-pd-mobile">
 									<div class="card-actions card-header-position-mobile">
 										<a href="#" class="card-action card-action-toggle" data-card-toggle></a>
@@ -249,7 +249,7 @@
 									<h2 class="card-title_txt">패키지 상세</h2>
 								</header>
 								<!-- 본문페이지 -->
-								<div class="card-body" id="pkgCardListBody" style="display: none;">
+								<div class="card-body" id="pkgCardBody" style="display: none;">
 									<!-- 테이블 -->
 									<div class="panel nobordertop">
 										<div class="sform_head">
@@ -265,9 +265,12 @@
 													</tr>
 													<tr>
 														<th class="t_left">패키지 명</th>
-														<td class="t_left"><input type="text" class="wd250px" id="pkgNm" value="" />
-															<button type="button" class="btn btn-sm btn-gray">중복체크</button> <span class="custom-red mg_l15" style="display: none;" data-dup="N"><i
-																class="el el-idea"></i> 중복된 패키지 명이 있습니다.</span></td>
+														<td class="t_left">
+															<input type="text" class="wd250px" id="pkgNm" value="" />
+															<button type="button" data-isDup="N" id="pkgNmDupBtn" class="btn btn-sm btn-gray">중복체크</button> 
+															<span class="custom-red mg_l15" style="display: none;" id="pkgDupN"><i class="el el-idea"></i> 중복된 Package 명이 있습니다.</span> 
+															<span class="custom-green mg_l15" style="display: none;" id="pkgDupY"><i class="el el-idea"></i> 사용가능 한 Package 명입니다.</span>
+														</td>
 													</tr>
 													<tr>
 														<th class="t_left">RULE</th>
@@ -275,10 +278,12 @@
 													</tr>
 													<tr>
 														<th class="t_left">활성여부</th>
-														<td class="t_left"><select id="pkg_act_yn" class="wd150px">
+														<td class="t_left">
+															<select id="pkgActYn" class="wd150px">
 																<option value="Y">활성</option>
 																<option value="N">비활성</option>
-														</select></td>
+															</select>
+														</td>
 													</tr>
 													<tr>
 														<th class="t_left">설명</th>
@@ -300,7 +305,7 @@
 
 									<!-- 버튼 -->
 									<div class="card-actions-foot">
-										<button type="button" class="btn btn-sm btn-green">
+										<button type="button" class="btn btn-sm btn-green" id="savePkgBtn">
 											<i class="fas fa-save custom-btn-i"></i> 저장
 										</button>
 									</div>
@@ -623,9 +628,10 @@
 													<tr>
 														<th class="t_left">RULE 명</th>
 														<td class="t_left"><input type="text" class="wd250px" id="ruleNm" value="" />
-															<button type="button" data-isDup="N" id="ruleNmDupBtn" class="btn btn-sm btn-gray">중복체크</button> <span class="custom-red mg_l15"
-															style="display: none;" id="ruleDupN"><i class="el el-idea"></i> 중복된 RULE 명이 있습니다.</span> <span class="custom-green mg_l15"
-															style="display: none;" id="ruleDupY"><i class="el el-idea"></i> 사용가능 한 서비스 명입니다.</span></td>
+															<button type="button" data-isDup="N" id="ruleNmDupBtn" class="btn btn-sm btn-gray">중복체크</button> 
+															<span class="custom-red mg_l15" style="display: none;" id="ruleDupN"><i class="el el-idea"></i> 중복된 RULE 명이 있습니다.</span> 
+															<span class="custom-green mg_l15" style="display: none;" id="ruleDupY"><i class="el el-idea"></i> 사용가능 RULE 명입니다.</span>
+														</td>
 													</tr>
 													<tr>
 														<th class="t_left">NO-LOOP</th>

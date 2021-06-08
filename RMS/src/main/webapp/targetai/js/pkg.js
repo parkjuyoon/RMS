@@ -40,9 +40,13 @@ $(document).ready(function() {
 				$("#pkgNm").val(pkg.PKG_NM);
 				$("#ruleCntInPkg").text(pkg.RULE_COUNT_IN_PKG + "개");
 				$("#pkgDsc").val(pkg.PKG_DSC);
-				$("#pkg_act_yn").val(pkg.PKG_ACT_YN);
+				$("#pkgActYn").val(pkg.PKG_ACT_YN);
 				$("#pkgRegDt").text(pkg.REG_DT + "에 " + pkg.REG_USRID + "(님)이 등록함.");
-				$("#pkgUdtDt").text(pkg.UDT_DT + "에 " + pkg.UDT_USRID + "(님)이 수정함.");
+				if(typeof pkg.UDT_USRID == 'undefined') {
+					$("#pkgUdtDt").text("수정 이력이 없습니다.");
+				} else {
+					$("#pkgUdtDt").text(pkg.UDT_DT + "에 " + pkg.UDT_USRID + "(님)이 수정함.");
+				}
 				
 				$("#ruleSearchBtn").attr("data-pkgId", pkg.PKG_ID);
 				
@@ -51,8 +55,8 @@ $(document).ready(function() {
 				getRuleList(searchObj);
 				
 				$("#ruleEditorPopUp").css("display", "none");
-				$("#pkgCardList").removeClass("card-collapsed");
-				$("#pkgCardListBody").css("display", "");
+				$("#pkgCard").removeClass("card-collapsed");
+				$("#pkgCardBody").css("display", "");
 				
 			},
 			beforeSend : function() {
@@ -85,6 +89,10 @@ $(document).ready(function() {
 			dataType : "json",
 			success : function(res) {
 				var pkg = res.pkg;
+
+				if(typeof pkg.DRL_SOURCE == 'undefined') {
+					pkg.DRL_SOURCE = "내용이 없습니다.";
+				}
 				
 				$("#drlSourcePop_title").text(pkg.DRL_NM);
 				$("#drlSourcePop_contents").text(pkg.DRL_SOURCE);
@@ -103,6 +111,98 @@ $(document).ready(function() {
 				console.log(errorThrown);
 			}
 		});
+	});
+	
+	// 신규 PKG 생성 버튼
+	$("#addNewPkgBtn").click(function() {
+		// PKG 관련 초기화
+		initPkgDetail();	// PKG 상세 초기화
+		
+		$("#ruleEditorPopUp").css("display", "none");
+		$("#pkgCard").removeClass("card-collapsed");
+		$("#pkgCardBody").css("display", "");
+		$("#pkgNm").focus();
+		
+		// RULE 관련 초기화
+		ruleObjArr = [];
+		ruleObj = {};
+		initRuleDetail();	// RULE 상세 초기화
+		initRuleEditor();	// RULE EDITOR 초기화
+		
+		$("#ruleEditorPopUp").css("display", "none");	// RULE EDITOR 팝업 버튼 사라짐
+		$("#ruleCard").addClass("card-collapsed");	// RULE 상세 닫기
+		$("#ruleCardBody").css("display", "none");	// RULE 상세 닫기
+		$("#ruleListCard").addClass("card-collapsed");	// RULE 목록 닫기
+		$("#ruleListCardBody").css("display", "none");	// RULE 목록 닫기
+		$("#ruleCntInPkgBySearch").text("");	// RULE 목록 건수 초기화
+	});
+	
+	// PKG 상세 > PKG 명 변경시 중복체크  요청
+	$("#pkgNm").change(function() {
+		$("#pkgDupY").hide();
+		$("#pkgNmDupBtn").data("isDup", "N");
+	});
+	
+	// PKG 상세 > 중복체크 버튼 클릭
+	$("#pkgNmDupBtn").click(function(){
+		var pkgNm = $("#pkgNm").val();
+		
+		if(pkgNm == '') {
+			messagePop("warning", "Package 명 공백체크.", "Package 명을 입력하세요.", "#pkgNm");
+			return;
+		}
+		
+		// PKG 명은 영문만 가능
+		var pattern = /^[a-z]+[A-Za-z0-9+]*$/;
+		
+		if(!pattern.test(pkgNm)) {
+			messagePop("warning", "Package 명 정합성 체크", "1. 영문소문자로 시작해야합니다.<br/>2. 공백을 포함할 수 없습니다.<br/>3. 한글 및 특수문자를 사용할 수 없습니다.", "#pkgNm");
+			return;
+		}
+		
+		var param = {};
+		param.pkgNm = pkgNm;
+		
+		$.ajax({
+			method : "POST",
+			url : "/targetai/pkgNmCheck.do",
+			traditional: true,
+			data : JSON.stringify(param),
+			contentType:'application/json; charset=utf-8',
+			dataType : "json",
+			success : function(res) {
+				if(res == false) {	// RULE 명 중복
+					$("#pkgDupY").css("display", "none");
+					$("#pkgDupN").css("display", "");
+					$("#pkgNmDupBtn").data("isDup", "N");
+					$("#pkgNm").focus();
+					return;
+				}
+				
+				$("#pkgDupY").css("display", "");
+				$("#pkgDupN").css("display", "none");
+				$("#pkgNmDupBtn").data("isDup", "Y");
+			}
+		});
+	});
+	
+	// 신규 패키지 생성 > PKG 상세 > 저장 버튼
+	$("#savePkgBtn").click(function() {
+		// PKG 명 중복 체크
+		var isDup = $("#pkgNmDupBtn").data("isDup");
+		if(isDup != 'Y') {
+			messagePop("warning", "Package 명 중복체크", "Package 명 중복체크를 먼저 해주세요.", "#pkgNm");
+			return;
+		}
+		
+		if(confirm("변경사항을 저장하시겠습니까?")) {
+			var param = {};
+			param.pkgNm = $("#pkgNm").val();
+			param.pkgActYn = $("#pkgActYn").val();
+			param.pkgDsc = $("#pkgDsc").val();
+			
+			fnPkgSave(param);
+		}
 	});
 	
 	// RULE 검색 > 조회 버튼 클릭
@@ -354,6 +454,13 @@ $(document).ready(function() {
 				return;
 			}
 			
+			// 숫자만 입력했는지 체크
+			var pattern_num = /^[0-9]+$/;
+			if(!pattern_num.test(ruleObj.factorVal)) {
+				messagePop("warning", "요소값 체크","숫자만 입력할 수 있습니다.","");
+				return;
+			}
+			
 		} else if(ruleObj.factorValType === "DATE") {
 			ruleObj.factorVal = $("#factorVal_date>input").val();
 			factorVal_Tag = $("#factorVal_date input[name='detAttrChk']");
@@ -368,17 +475,16 @@ $(document).ready(function() {
 		}
 		
 		// 논리연산 IN, NOT IN 선택
-		var factorVal = "";
-		
 		if(ruleObj.logical == 'logical6' || ruleObj.logical == 'logical7') {
-			factorVal += "("
+			var factorVal = "";
 			
 			for(var i=0; i<factorVal_Tag.length; i++) {
 				factorVal += (ruleObj.factorValType == 'INT' ? factorVal_Tag.eq(i).val() : "\""+ factorVal_Tag.eq(i).val() +"\"") 
 				+ (i+1 == factorVal_Tag.length ? "" : ", ");
 			}
 			
-			factorVal += ")";
+			ruleObj.factorVal = factorVal;
+			factorVal = "(" + factorVal + ")";
 		
 		// 논리연산 IN, NOT IN 이 아닌 값을 선택시
 		} else {
@@ -462,7 +568,6 @@ $(document).ready(function() {
  * @returns
  */
 function getPkgList(searchObj) {
-	
 	$.ajax({
 		method : "POST",
 		url : "/targetai/getPkgList.do",
@@ -478,7 +583,7 @@ function getPkgList(searchObj) {
 			
 			if(pkgList.length == 0) {
 				html += "<tr>";
-				html += "	<td colspan='8' class='t_center'>조회된 내용이 없습니다.</td>";
+				html += "	<td colspan='9' class='t_center'>조회된 내용이 없습니다.</td>";
 				html += "</tr>";
 				
 			} else {
@@ -494,8 +599,8 @@ function getPkgList(searchObj) {
 					html += "	<td class='t_center'><a href='#' class='_pkgNmLink' data-pkgId='"+ pkgList[i].PKG_ID +"'>" + pkgList[i].PKG_NM + "</a></td>";
 					html += "	<td class='t_center'><a href='#' class='_drlNmLink' data-pkgId='"+ pkgList[i].PKG_ID +"'>" + pkgList[i].DRL_NM + "</a></td>";
 					html += "	<td class='t_center'>" + pkgList[i].PKG_ACT_YN + "</td>";
-					html += "	<td class='t_center'>" + pkgList[i].REG_DT + "</td>";
-					html += "	<td class='t_center'>" + pkgList[i].REG_USRID + "</td>";
+					html += "	<td class='t_center'>" + (typeof pkgList[i].UDT_DT == 'undefined' ? '-' : pkgList[i].UDT_DT) + "</td>";
+					html += "	<td class='t_center'>" + (typeof pkgList[i].UDT_USRID == 'undefined' ? '-' : pkgList[i].UDT_USRID) + "</td>";
 					html += "	<td class='t_center'>" + pkgList[i].REG_DT + "</td>";
 					html += "	<td class='t_center'>" + pkgList[i].REG_USRID + "</td>";
 					html += "</tr>";
@@ -511,6 +616,54 @@ function getPkgList(searchObj) {
 		},
 		complete : function() {
 			$("#pkgLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
+
+/**
+ * PKG 상세 > 저장
+ * @param param
+ * @returns
+ */
+function fnPkgSave(param) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/pkgSave.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			var searchObj = {};
+			searchObj.pkgId_search = $("#pkgId_search").val();
+			searchObj.pkgActYn_search = $("#pkgActYn_search option:selected").val();
+			searchObj.regUsrId_search = $("#pkgRegUsrId_search").val();
+			searchObj.pkgNm_search = $("#pkgNm_search").val();
+			
+			getPkgList(searchObj);
+			
+			messagePop("success", "Package가 저장되었습니다.", "", "");
+			initPkgDetail();
+			$("#pkgCard").addClass("card-collapsed");
+			$("#pkgCardBody").css("display", "none");
+// --------------------------------------------------------------------------------------------------------------------------------------------------- 여기 봐야함			
+			$("#ruleEditorPopUp").css("display", "none");
+			$("#ruleCard").addClass("card-collapsed");
+			$("#ruleCardBody").css("display", "none");
+			initRuleDetail();
+			initRuleEditor();
+		},
+		beforeSend : function() {
+			$("#ruleLoading").show();
+		},
+		complete : function() {
+			$("#ruleLoading").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
@@ -801,6 +954,7 @@ function fnRuleSave(param) {
 			$("#ruleEditorPopUp").css("display", "none");
 			$("#ruleCard").addClass("card-collapsed");
 			$("#ruleCardBody").css("display", "none");
+			$("#ruleCntInPkg").text(res.ruleCount + "개");
 			initRuleDetail();
 			initRuleEditor();
 		},
@@ -833,6 +987,27 @@ function initRuleDetail() {
 	$("input:radio[name='lockOnActive']:radio[value='true']").prop("checked", true);
 	$("#salience").val("");
 	$("#ruleWhenCont").val("");
+}
+
+/**
+ * PKG 상세 초기화
+ * @returns
+ */
+function initPkgDetail() {
+	$("#pkgId").text("");
+	$("#pkgNm").val("");
+	$("#pkgDsc").val("");
+	$("#pkgRegDt").text("");
+	$("#pkgUdtDt").text("");
+	$("#pkgDupY").css("display", "none");
+	$("#pkgDupN").css("display", "none");
+	$("#pkgNmDupBtn").data("isDup", "N");
+	
+	
+//	$("input:radio[name='noLoop']:radio[value='true']").prop("checked", true);
+//	$("input:radio[name='lockOnActive']:radio[value='true']").prop("checked", true);
+//	$("#salience").val("");
+//	$("#ruleWhenCont").val("");
 }
 
 /**

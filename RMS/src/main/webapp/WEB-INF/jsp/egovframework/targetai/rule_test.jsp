@@ -70,11 +70,6 @@
 															<div class="row">
 																<div class="col">
 																	<div class="card mg_b0">
-																		<div class="progress_loading">
-																			<div id="ruleTestResPopLoading">
-																				<img src="/targetai_publish/images/ajax-loader.gif" />
-																			</div>
-																		</div>
 																		<!-- 경고 -->
 																		<div class="card-body">
 																			<textarea rows="30" cols="60" class="txtsize_100 wd100" id="ruleTestResPop_res" style="white-space: pre;" readonly="readonly">JSON 내용</textarea>

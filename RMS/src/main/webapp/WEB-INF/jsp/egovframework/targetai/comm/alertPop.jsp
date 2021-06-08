@@ -37,8 +37,8 @@
 			return;
 		}
 
-		$("#messagePop_title").text(title);
-		$("#messagePop_contents").text(contents);
+		$("#messagePop_title").html(title);
+		$("#messagePop_contents").html(contents);
 
 		var viewModal = $("#modalID_message");
 
@@ -69,10 +69,8 @@
 								<div class="card-body body-header" style="">
 									<!-- 경고 -->
 									<div class="message_box" id="messagePop_img">
-										<div class="message_tit" id="messagePop_title">페이지를 찾을 수 없습니다.</div>
-										<div class="message_txt" id="messagePop_contents">경고창입니다. 페이지를 찾을 수 없습니다. 경고창입니다. 페이지를 찾을 수 없습니다. 경고창입니다. 페이지를 찾을 수 없습니다. 경고창입니다. 페이지를
-											찾을 수 없습니다. 경고창입니다. 페이지를 찾을 수 없습니다. 경고창입니다. 페이지를 찾을 수 없습니다. 경고창입니다. 페이지를 찾을 수 없습니다. 경고창입니다. 페이지를 찾을 수 없습니다. 경고창입니다. 페이지를 찾을 수 없습니다. 경고창입니다.
-											페이지를 찾을 수 없습니다.</div>
+										<div class="message_tit" id="messagePop_title"></div>
+										<div class="message_txt" id="messagePop_contents"></div>
 										<div class="mg_b30" id="messagePop_btn">
 											<button type="button" data-modalclass="modalID_success" class="btn btn-sm btn-sky btnModal">
 												<i class="far fa-check-circle custom-btn-i"></i> 확인 (success 띄우기 샘플)

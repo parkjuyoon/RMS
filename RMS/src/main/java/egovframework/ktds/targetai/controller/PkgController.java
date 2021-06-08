@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.kie.api.runtime.KieSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,11 +46,19 @@ public class PkgController {
 	@ResponseBody
 	@RequestMapping(value = "/getPkgList.do", method = RequestMethod.POST)
 	public HashMap<String, Object> getPkgList(@RequestBody HashMap<String, Object> searchObj) {
-		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		List<HashMap<String, Object>> pkgList = pkgService.getPkgList(searchObj);
-		int pkgCount = pkgService.getPkgCount(searchObj);
-		resultMap.put("pkgList", pkgList);
-		resultMap.put("pkgCount", pkgCount);
+		HashMap<String, Object> resultMap = null;
+
+		try {
+			
+			resultMap = new HashMap<String, Object>();
+			List<HashMap<String, Object>> pkgList = pkgService.getPkgList(searchObj);
+			int pkgCount = pkgService.getPkgCount(searchObj);
+			resultMap.put("pkgList", pkgList);
+			resultMap.put("pkgCount", pkgCount);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		return resultMap;
 	}
@@ -69,6 +76,49 @@ public class PkgController {
 		resultMap.put("pkg", pkg);
 		
 		return resultMap;
+	}
+	
+	/**
+	 * package 명 중복 체크
+	 * @param param
+	 * @return boolean
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/pkgNmCheck.do", method = RequestMethod.POST)
+	public boolean pkgNmCheck(@RequestBody HashMap<String, Object> map) {
+		int pkgNameCnt = pkgService.pkgNmCheck(map);
+		
+		if(pkgNameCnt > 0) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * PKG 저장
+	 * @param param
+	 * @return resultMap
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/pkgSave.do", method = RequestMethod.POST)
+	public boolean pkgSave(@RequestBody HashMap<String, Object> param) {
+		try {
+		param.put("REG_USER_ID", 1);
+		param.put("PATH", "/drl_files");
+		
+		// PKG 저장
+		pkgService.pkgSave(param);
+		// DRL 파일명 업데이트
+		String drlNm = param.get("pkgNm") + "_" + param.get("PKG_ID") + ".drl";
+		param.put("drlNm", drlNm);
+		pkgService.updateDrlFileNm(param);
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -175,7 +225,7 @@ public class PkgController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/ruleSave.do", method = RequestMethod.POST)
-	public boolean ruleSave(@RequestBody HashMap<String, Object> param) {
+	public HashMap<String, Object> ruleSave(@RequestBody HashMap<String, Object> param) {
 		param.put("REG_USER_ID", 1);
 		
 		// RULE 저장
@@ -187,11 +237,17 @@ public class PkgController {
 		param.put("ATTR_THEN", attrThen);
 		pkgService.updateAttrThen(param);
 		
+		// 해당 패키지에 등록된 RULE 개수 조회
+		HashMap<String, Object> resultMap = new HashMap<>();
+		resultMap.put("pkgId", param.get("pkgId"));
+		int ruleCount = pkgService.getRuleCount(resultMap);
+		resultMap.put("ruleCount", ruleCount);
+		
 		// RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
 		String pkgId = (String) param.get("pkgId");
 		saveDRL(pkgId);
 		
-		return true;
+		return resultMap;
 	}
 	
 	/**

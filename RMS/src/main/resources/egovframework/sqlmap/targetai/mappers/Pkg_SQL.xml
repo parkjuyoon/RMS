@@ -127,6 +127,45 @@
 		GROUP BY RULE_ID
 	</select>
 	
+	<!-- PKG 이름 중복체크 -->
+	<select id="pkgNmCheck" parameterType="java.util.HashMap" resultType="int">
+		SELECT 
+		    COUNT(*)
+		FROM
+		    targetai.PKG P
+		WHERE
+		    P.PKG_NM = #{pkgNm}
+	</select>
+	
+	<!-- PKG 저장 -->
+	<insert id="pkgSave" parameterType="java.util.HashMap">
+		INSERT INTO targetai.PKG (
+			PKG_NM,
+			PKG_ACT_YN,
+			PKG_DSC,
+			PATH,
+			REG_USRID
+		) VALUES (
+			#{pkgNm},
+			#{pkgActYn},
+			#{pkgDsc},
+			#{PATH},
+			#{REG_USER_ID}
+		)
+		<selectKey keyProperty="PKG_ID" resultType="int" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<!-- PKG 저장시 DRL 파일명 업데이트 -->
+	<update id="updateDrlFileNm" parameterType="java.util.HashMap">
+		UPDATE targetai.PKG
+		SET
+			DRL_NM = #{drlNm}
+		WHERE
+			PKG_ID = #{PKG_ID}
+	</update>
+	
 	<!-- 속성 view 리스트 조회 -->
 	<select id="getFactorGrpList" resultType="java.util.HashMap">
 		SELECT

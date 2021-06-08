@@ -69,94 +69,101 @@ public class RuleTestController {
 		return resultMap;
 	}
 	
-	
-	
 	/**
 	 * RULE 테스트
 	 * @param param
 	 * @return resultMap
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/ruleTest.do", method = RequestMethod.POST)
+	@RequestMapping(value = "/ruleTest.do", method = RequestMethod.POST, produces="application/text; charset=UTF-8")
 	public String ruleTest(@RequestBody HashMap<String, Object> param) {
-		HashMap<String, Object> paramMap = new HashMap<String, Object>();
-		List<String> keyValueArr = (List<String>) param.get("keyValueArr");
 		
-		for(String s : keyValueArr) {
-			String key = s.split(":")[0];
-			String value = s.split(":")[1];
-			paramMap.put(key, value);
-		}
-		
-		// 물리 DRL파일 path
-		String path = (String) param.get("drlPath");
-		path = System.getProperty("user.home") + path;
-		path = path.replace("/", File.separator).replace("\\", File.separator);
-		
-		// Drools 실행
-		KieSession kieSession = DroolsUtil.getKieSession(path);
-		
-		kieSession.insert(paramMap);
-		kieSession.fireAllRules();
-		kieSession.dispose();
-		
-		HashMap<String, Object> resultMap = new HashMap<>();
-		
-		// 결과화면에 정렬되게 보이기 위해 변환
-		JSONArray resJsonArr = new JSONArray();
-		
-		Set<String> keySet = paramMap.keySet();
-		Iterator<String> iter = keySet.iterator();
-		
-		while(iter.hasNext()) {
-			String key = (String) iter.next();
-			String value = (String) paramMap.get(key);
+		try {
 			
-			if(key.startsWith("res_")) {
-				key = key.replaceAll("res_", "");
-				String ruleId = key.split("_")[0];
-				String salience = key.split("_")[1];
-				
-				JSONObject resJson = new JSONObject();
-//				resJson.put("ruleId", ruleId);
-				resJson.put("salience", salience);
-				resJson.put("rule_name", value);
-				
-				resJsonArr.add(resJson);
+			HashMap<String, Object> paramMap = new HashMap<String, Object>();
+			List<String> keyValueArr = (List<String>) param.get("keyValueArr");
+			
+			for(String s : keyValueArr) {
+				String key = s.split(":")[0];
+				String value = s.split(":")[1];
+				paramMap.put(key, value);
 			}
-		}
-		
-		List<JSONObject> jsonValues = new ArrayList<>();
-		for(int i=0; i<resJsonArr.size(); i++) {
-			jsonValues.add((JSONObject)resJsonArr.get(i));
-		}
-		
-		Collections.sort(jsonValues, new Comparator<JSONObject>() {
-
-			@Override
-			public int compare(JSONObject a, JSONObject b) {
-				String valA = new String();
-	            String valB = new String();
-
-	            try {
-	                valA = (String) a.get("salience");
-	                valB = (String) b.get("salience");
-	            } 
-	            catch (JSONException e) {
-	                e.printStackTrace();
-	            }
-
-	            return valA.compareTo(valB);
+			
+			// 물리 DRL파일 path
+			String path = (String) param.get("drlPath");
+			path = System.getProperty("user.home") + path;
+			path = path.replace("/", File.separator).replace("\\", File.separator);
+			
+			// Drools 실행
+			KieSession kieSession = DroolsUtil.getKieSession(path);
+			
+			kieSession.insert(paramMap);
+			kieSession.fireAllRules();
+			kieSession.dispose();
+			
+			// 결과화면에 정렬되게 보이기 위해 변환
+			JSONArray resJsonArr = new JSONArray();
+			
+			Set<String> keySet = paramMap.keySet();
+			Iterator<String> iter = keySet.iterator();
+			
+			while(iter.hasNext()) {
+				String key = (String) iter.next();
+				String value = (String) paramMap.get(key);
+				
+				if(key.startsWith("res_")) {
+					key = key.replaceAll("res_", "");
+					String ruleId = key.split("_")[0];
+					String salience = key.split("_")[1];
+					
+					JSONObject resJson = new JSONObject();
+	//				resJson.put("ruleId", ruleId);
+					resJson.put("salience", salience);
+					resJson.put("rule_name", value);
+					
+					resJsonArr.add(resJson);
+				}
 			}
-		});
+			
+			List<JSONObject> jsonValues = new ArrayList<>();
+			for(int i=0; i<resJsonArr.size(); i++) {
+				jsonValues.add((JSONObject)resJsonArr.get(i));
+			}
+			
+			Collections.sort(jsonValues, new Comparator<JSONObject>() {
+	
+				@Override
+				public int compare(JSONObject a, JSONObject b) {
+					String valA = new String();
+		            String valB = new String();
+	
+		            try {
+		                valA = (String) a.get("salience");
+		                valB = (String) b.get("salience");
+		            } 
+		            catch (JSONException e) {
+		                e.printStackTrace();
+		            }
+	
+		            return valA.compareTo(valB);
+				}
+			});
+			
+			JSONArray sortResJsonArr = new JSONArray();
+			
+			for(int i=0; i<resJsonArr.size(); i++) {
+				jsonValues.get(i).put("order", i+1);
+				String salience = (String) jsonValues.get(i).get("salience"); 
+				jsonValues.get(i).put("salience", Integer.parseInt(salience));
+				sortResJsonArr.add(jsonValues.get(i));
+			}
+			
+			return sortResJsonArr.toJSONString();
 		
-		JSONArray sortResJsonArr = new JSONArray();
-		
-		for(int i=0; i<resJsonArr.size(); i++) {
-			jsonValues.get(i).put("order", i+1);
-			sortResJsonArr.add(jsonValues.get(i));
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
 		
-		return sortResJsonArr.toJSONString();
+		return null;
 	}
 }

@@ -42,4 +42,10 @@ public interface PkgService {
 	void updateDrlSource(HashMap<String, Object> pkg);
 
 	void updateAttrThen(HashMap<String, Object> param);
+
+	int pkgNmCheck(HashMap<String, Object> map);
+
+	void pkgSave(HashMap<String, Object> param);
+
+	void updateDrlFileNm(HashMap<String, Object> param);
 }

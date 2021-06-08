@@ -72,8 +72,14 @@ $(document).on("change", "#ruleTestPop_drlList", function() {
 					html += "\""+ ruleAttr.RULE_NM +"\"";
 					html += "\n";
 				}
+				
 				// [고객 : 인터넷결합여부] =="N"&& 형식으로 출력
-				html += "	["+ ruleAttr.FACTOR_GRP_NM +" : <a href='#' class='_ruleTestPop_factorNm' data-factorNmEn='"+ ruleAttr.FACTOR_NM_EN +"'>"+ ruleAttr.FACTOR_NM +"</a>] "+ ruleAttr.LOGICAL +"\""+ ruleAttr.FACTOR_VAL +"\"" + ruleAttr.RELATION;
+				if(ruleAttr.LOGICAL == 'in' || ruleAttr.LOGICAL == 'not in') {
+					html += "	["+ ruleAttr.FACTOR_GRP_NM +" : <a href='#' class='_ruleTestPop_factorNm' data-factorNmEn='"+ ruleAttr.FACTOR_NM_EN +"'>"+ ruleAttr.FACTOR_NM +"</a>] "+ ruleAttr.LOGICAL +"("+ ruleAttr.FACTOR_VAL +")" + ruleAttr.RELATION;
+				} else {
+					html += "	["+ ruleAttr.FACTOR_GRP_NM +" : <a href='#' class='_ruleTestPop_factorNm' data-factorNmEn='"+ ruleAttr.FACTOR_NM_EN +"'>"+ ruleAttr.FACTOR_NM +"</a>] "+ ruleAttr.LOGICAL +"\""+ ruleAttr.FACTOR_VAL +"\"" + ruleAttr.RELATION;
+				}
+				
 				html += "\n";
 			});
 			
@@ -141,6 +147,11 @@ $(document).on("click", "#ruleTestPop_resBtn", function() {
 		var key = keyArr.eq(i).val();
 		var val = keyVal.eq(i).val();
 		
+		if(key == '' || val == '') {
+			messagePop("warning", "KEY / VALUE 체크", "빈값을 포함할 수 없습니다.", "");
+			return;
+		}
+		
 		var keyValue = key + ":" + val;
 		
 		keyValueArr.push(keyValue);
@@ -158,14 +169,20 @@ $(document).on("click", "#ruleTestPop_resBtn", function() {
 		contentType:'application/json; charset=utf-8',
 		dataType : "json",
 		success : function(res) {
+			if(res.length < 1) {
+				$("#ruleTestResPop_res").val("Output 결과가 없습니다.");
+				
+			} else {
+				$("#ruleTestResPop_res").val(JSON.stringify(res, null, 4));
+			}
+			
 			$("#ruleTestResPop").show();
-			$("#ruleTestResPop_res").val(JSON.stringify(res, null, 4));
 		},
 		beforeSend : function() {
-			$("#ruleTestResPopLoading").show();
+			$("#ruleTestPopLoading").show();
 		},
 		complete : function() {
-			$("#ruleTestResPopLoading").hide();
+			$("#ruleTestPopLoading").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");

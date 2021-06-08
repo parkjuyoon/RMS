@@ -57,7 +57,8 @@ public class DroolsUtil {
 	        
 	        // 3. 외부 지정위치 package drl 파일 직접 지정
  			File file = new File(RULES_PATH);
- 			kieFileSystem.write(kieServices.getResources().newFileSystemResource(file).setResourceType(ResourceType.DRL));
+// 			kieFileSystem.write(kieServices.getResources().newFileSystemResource(file).setResourceType(ResourceType.DRL));
+ 			kieFileSystem.write(kieServices.getResources().newFileSystemResource(file, "UTF-8").setResourceType(ResourceType.DRL));	// UTF-8 설정
 	        
 	        final KieRepository kieRepository = KieServices.Factory.get().getRepository();
 	        kieRepository.addKieModule(new KieModule() {

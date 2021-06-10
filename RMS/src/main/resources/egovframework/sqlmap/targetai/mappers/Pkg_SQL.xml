@@ -118,13 +118,10 @@
 		    R.REG_DT,
 		    R.REG_USRID,
 		    R.UDT_DT,
-		    R.UDT_USRID,
-		    GROUP_CONCAT(RA.ATTR_WHEN_CONTENTS ORDER BY RULE_ATTR_ID ASC SEPARATOR '\n') AS ATTR_WHEN_CONTENTS
-		FROM targetai.RULE R, targetai.RULE_ATTR RA
+		    R.UDT_USRID
+		FROM targetai.RULE R
 		WHERE
 			R.RULE_ID = #{ruleId}
-		    AND R.RULE_ID = RA.RULE_ID
-		GROUP BY RULE_ID
 	</select>
 	
 	<!-- PKG 이름 중복체크 -->
@@ -209,6 +206,7 @@
 			P.PKG_ID = R.PKG_ID
 			AND P.PKG_ID = #{pkgId}
 		    AND R.RULE_NM = #{ruleNm}
+		    <if test="ruleId != ''">AND R.RULE_ID != #{ruleId}</if>
 	</select>
 	
 	<!-- Factor 조회 -->
@@ -281,6 +279,7 @@
 			ATTR_WHEN,
 			ATTR_WHEN_CONTENTS,
 			FACTOR_GRP_NM,
+			FACTOR_ID,
 			FACTOR_NM,
 			FACTOR_NM_EN,
 			FACTOR_VAL,
@@ -294,6 +293,7 @@
 			#{ruleAttr.ruleAttr_source},
 			#{ruleAttr.ruleAttr_txt},
 			#{ruleAttr.factorGrpNm},
+			#{ruleAttr.factorId},
 			#{ruleAttr.factorNm},
 			#{ruleAttr.factorNmEn},
 			#{ruleAttr.factorVal},
@@ -346,18 +346,28 @@
 	<!-- RULE_ATTR 정보 조회 -->
 	<select id="getWhenList" parameterType="int" resultType="java.util.HashMap">
 		SELECT
-			RULE_ATTR_ID,
-		    RULE_ID,
-		    ATTR_WHEN,
-		    FUNC_YN,
-		    FUNC_URL,
-		    FUNC_PARAM,
-		    FUNC_LOGICAL,
-		    FUNC_VAL
+			RA.RULE_ATTR_ID,
+			RA.RULE_ID,
+			RA.ATTR_WHEN,
+		    RA.ATTR_WHEN_CONTENTS,
+		    RA.FACTOR_GRP_NM,
+		    RA.FACTOR_ID,
+		    RA.FACTOR_NM,
+		    RA.FACTOR_NM_EN,
+		    RA.FACTOR_VAL,
+		    RA.LOGICAL,
+		    RA.RELATION,
+			RA.FUNC_YN,
+			RA.FUNC_URL,
+			RA.FUNC_PARAM,
+			RA.FUNC_LOGICAL,
+			RA.FUNC_VAL,
+		    F.DATA_TYPE
 		FROM
-			targetai.RULE_ATTR
+			targetai.RULE_ATTR RA
+		    LEFT JOIN targetai.FACTOR F ON (RA.FACTOR_ID = F.FACTOR_ID)
 		WHERE
-			RULE_ID = #{pkgId}
+			RA.RULE_ID = #{pkgId}
 		ORDER BY 
 			RULE_ATTR_ID ASC
 	</select>

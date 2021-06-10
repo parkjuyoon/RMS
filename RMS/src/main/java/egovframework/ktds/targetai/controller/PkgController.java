@@ -150,6 +150,10 @@ public class PkgController {
 		HashMap<String, Object> rule = pkgService.getRule(param);
 		resultMap.put("rule", rule);
 		
+		int ruleId = (int) rule.get("RULE_ID");
+		List<HashMap<String, Object>> ruleAttrList = pkgService.getWhenList(ruleId);
+		resultMap.put("ruleAttrList", ruleAttrList);
+		
 		return resultMap;
 	}
 	
@@ -215,6 +219,25 @@ public class PkgController {
 		resultMap.put("factor", factor);
 		resultMap.put("factorVal", factorVal);
 			
+		return resultMap;
+	}
+	
+	/**
+	 * RULE 상세 > 상세정보 조회
+	 * @param param
+	 * @return resultMap
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getRuleAttrByRuleId.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getRuleAttrByRuleId(@RequestBody HashMap<String, Object> param) {
+		
+		HashMap<String, Object> resultMap = new HashMap<>();
+		
+		int ruleId = Integer.parseInt((String) param.get("ruleId"));
+		List<HashMap<String, Object>> ruleAttrList = pkgService.getWhenList(ruleId);
+		
+		resultMap.put("ruleAttrList", ruleAttrList);
+		
 		return resultMap;
 	}
 	

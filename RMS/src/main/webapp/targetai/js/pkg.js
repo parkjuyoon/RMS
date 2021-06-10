@@ -5,6 +5,8 @@
  */
 
 $(document).ready(function() {
+	var ruleObj = {};
+	var ruleObjArr = [];
 	
 	// 패키지 리스트 조회
 	var searchObj = {};
@@ -124,8 +126,8 @@ $(document).ready(function() {
 		$("#pkgNm").focus();
 		
 		// RULE 관련 초기화
-		ruleObjArr = [];
-		ruleObj = {};
+		ruleObj = {};	tmpObj = {};
+		ruleObjArr = [];	tmpArr = [];
 		initRuleDetail();	// RULE 상세 초기화
 		initRuleEditor();	// RULE EDITOR 초기화
 		
@@ -231,19 +233,66 @@ $(document).ready(function() {
 			dataType : "json",
 			success : function(res) {
 				var rule = res.rule;
+				
+				// -- RULE 상세페이지 초기화 시작 --
 				$("#ruleId").text(rule.RULE_ID);
 				$("#ruleNm").val(rule.RULE_NM);
 				$("input:radio[name='noLoop']:radio[value='"+ rule.NO_LOOP +"']").prop("checked", true);
 				$("input:radio[name='lockOnActive']:radio[value='"+ rule.LOCK_ON_ACTIVE +"']").prop("checked", true);
 				$("#salience").val(rule.SALIENCE);
-				$("#ruleWhenCont").val(rule.ATTR_WHEN_CONTENTS);
-				
-				$("#ruleEditorPopUp").attr("data-ruleId", rule.RULE_ID);
-				$("#ruleEditorPopUp").css("display", "");
+//				$("#ruleWhenCont").val(rule.ATTR_WHEN_CONTENTS);
 				$("#ruleCard").removeClass("card-collapsed");
 				$("#ruleCardBody").css("display", "");
+				$("#ruleDupY").css("display", "none");
+				$("#ruleDupN").css("display", "none");
+				$("#ruleNmDupBtn").data("isDup", "Y");
+				$("#saveRuleBtn").attr("data-query", "update");
+				// -- RULE 상세페이지 초기화 끝 --
+				
+				// -- RULE EDITOR 초기화 시작 --
+				$("#ruleEditorPopUp").css("display", "");
+				// -- RULE EDITOR 초기화 끝 --
+				
 				$("#ruleNm").focus();
-				initRuleEditor();				
+				initRuleEditor();	
+				
+				// -- RULE 속성 객체 세팅 --
+				ruleObjArr = [];
+				var ruleAttrList = res.ruleAttrList;
+				$.each(ruleAttrList, function(idx, ruleAttr) {
+					ruleObj = {};
+					ruleObj.factorGrpNm = ruleAttr.FACTOR_GRP_NM;
+					ruleObj.factorId = ruleAttr.FACTOR_ID;
+					ruleObj.factorNm = ruleAttr.FACTOR_NM;
+					ruleObj.factorNmEn = ruleAttr.FACTOR_NM_EN;
+					ruleObj.factorValType = ruleAttr.DATA_TYPE;
+					
+//				ruleObj.logical = ruleAttr.;
+					ruleObj.logical_txt = ruleAttr.LOGICAL;
+//				ruleObj.relation = ruleAttr.;
+					ruleObj.relation_txt = ruleAttr.RELATION;
+					ruleObj.ruleAttr_txt = ruleAttr.ATTR_WHEN_CONTENTS;
+					ruleObj.ruleAttr_source = ruleAttr.ATTR_WHEN;
+					
+					ruleObjArr.push(ruleObj);
+				});
+				
+				var contents = "";
+				html = "";
+				$.each(ruleObjArr, function(idx, ruleObj) {
+					html += "<div class='alert fade show mg_b10' role='alert'>";
+					html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
+					html += 		ruleObj.ruleAttr_txt;
+					html += "</div>";
+					
+					contents += ruleObj.ruleAttr_txt + "\n";
+				});
+				
+				$("#ruleAttrData").append(html);
+				$("#ruleWhenCont").val(contents);
+				
+				tmpArr = cloneArr(ruleObjArr);	// 취소시 되돌리기 위한 변수에도 초기값 세팅
+				
 			},
 			beforeSend : function() {
 				$("#ruleLoading").show();
@@ -262,30 +311,30 @@ $(document).ready(function() {
 	
 	// RULE 상세 > RULE EDITOR 버튼 클릭
 	$("#ruleEditorPopUp").click(function() {
-		// ruleObjArr 안에 저장된 RULE 속성이 있다면 표시
 		var html = "";
-		
 		$.each(ruleObjArr, function(idx, ruleObj) {
 			html += "<div class='alert fade show mg_b10' role='alert'>";
 			html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
 			html += 		ruleObj.ruleAttr_txt;
 			html += "</div>";
+			
 		});
-		$("#ruleAttrData").append(html);
 		
-		treeFactorGrpList();
+		$("#ruleAttrData").html(html);
+		treeFactorGrpList();	// RULE EDITOR 트리 생성
 	});
 	
 	// RULE 상세 > RULE EDITOR 취소버튼
 	$("#ruleEditorCancel").click(function() {
-		if(confirm("작성한 RULE 속성이 초기화 됩니다. 취소하시겠습니까?")) {
-			// RULE EDITOR 팝업 닫기
-			close_layerPop('modalID_1');
-			initRuleEditor();
-			ruleObjArr = [];
-			ruleObj = {};
-			$("#ruleWhenCont").val("");
-		}
+		tmpArr = cloneArr(ruleObjArr);
+		
+		var contents = "";
+		$.each(ruleObjArr, function(idx, ruleObj) {
+			contents += ruleObj.ruleAttr_txt + "\n";
+		});
+		
+		$("#ruleWhenCont").val(contents);
+		close_layerPop('modalID_1');
 	});
 	
 	// RULE EDITOR 팝업 X버튼 클릭
@@ -310,6 +359,8 @@ $(document).ready(function() {
 		$("#ruleEditorPopUp").css("display", "");
 		$("#ruleCard").removeClass("card-collapsed");
 		$("#ruleCardBody").css("display", "");
+		$("#ruleNmDupBtn").data("isDup", "N");
+		$("#saveRuleBtn").attr("data-query", "insert");
 		$("#ruleNm").focus();
 	});
 	
@@ -321,6 +372,19 @@ $(document).ready(function() {
 	
 	// RULE 상세 > 저장 버튼 클릭
 	$("#saveRuleBtn").click(function() {
+		var pkgId = $("#ruleSearchBtn").attr("data-pkgId");
+		var query = $(this).attr("data-query");
+		
+		if(query == '') {
+			messagePop("warning", "정상적인 경로가 아닙니다.", "", "");
+			return;
+		} 
+		
+		if(typeof pkgId === 'undefined' || pkgId == '') {
+			messagePop("warning", "Package 선택 체크", "패키지를 먼저 선택하세요.", "");
+			return;
+		}
+		
 		// RULE 명 중복 체크
 		var isDup = $("#ruleNmDupBtn").data("isDup");
 		if(isDup != 'Y') {
@@ -348,24 +412,30 @@ $(document).ready(function() {
 			return;
 		}
 		
-		if(confirm("변경사항을 저장하시겠습니까?")) {
-			var param = {};
-			param.pkgId = $("#ruleSearchBtn").attr("data-pkgId");
-			param.ruleNm = $("#ruleNm").val();
-			param.noLoop = $("input[name='noLoop']:checked").val();
-			param.lockOnActive = $("input[name='noLoop']:checked").val();
-			param.salience = $("#salience").val();
-			param.ruleObjArr = ruleObjArr;
-			
+		var param = {};
+		param.pkgId = pkgId;
+		param.ruleId = $("#ruleId").text();
+		param.ruleNm = $("#ruleNm").val();
+		param.noLoop = $("input[name='noLoop']:checked").val();
+		param.lockOnActive = $("input[name='noLoop']:checked").val();
+		param.salience = $("#salience").val();
+		param.ruleObjArr = ruleObjArr;
+		
+		if(query == 'insert') {
 			fnRuleSave(param);
-			ruleObj = {};
-			ruleObjArr = [];
+		} else {
+			alert("업데이트 작업중입니다.\n업데이트 쿼리 작성 해야함.query data-query 할필요 없음.");
 		}
+		
+		ruleObj = {};	tmpObj = {};
+		ruleObjArr = [];	tmpArr = [];
 	});
 	
 	// RULE 상세 > 중복체크 버튼 클릭
 	$("#ruleNmDupBtn").click(function(){
 		var ruleNm = $("#ruleNm").val();
+		var pkgId = $("#pkgId").text();
+		var ruleId = $("#ruleId").text();
 		
 		if(ruleNm == '') {
 			messagePop("warning", "RULE 명 공백체크.", "RULE 명을 입력하세요.", "#ruleNm");
@@ -374,7 +444,8 @@ $(document).ready(function() {
 		
 		var param = {};
 		param.ruleNm = ruleNm;
-		param.pkgId = $("#pkgId").text();
+		param.pkgId = pkgId;
+		param.ruleId = ruleId;
 		
 		$.ajax({
 			method : "POST",
@@ -400,8 +471,8 @@ $(document).ready(function() {
 	});
 	
 	// RULE 상세 > RULE EDITOR > ADD VALUE 버튼 클릭
-	var ruleObj = {};
-	var ruleObjArr = [];
+	var tmpObj = {};
+	var tmpArr = [];
 	
 	$("#addValBtn").click(function() {
 		var treeObj = $.fn.zTree.getZTreeObj("factorTree");
@@ -413,59 +484,59 @@ $(document).ready(function() {
 		}
 		
 		// 관계연산 NONE 뒤에 추가 할 수 없음.
-		if(ruleObjArr.length > 0) {
-			if(ruleObjArr[ruleObjArr.length-1].relation_txt == "") {
+		if(tmpArr.length > 0) {
+			if(tmpArr[tmpArr.length-1].relation_txt == "") {
 				messagePop("warning", "속성추가 체크", "관계연산이 끝난 Rule 속성 이후 추가 할 수 없습니다.", "");
 				return;
 			}
 		}
 		
-		ruleObj = {};
-		ruleObj.factorGrpNm = node.getParentNode().name;
-		ruleObj.factorId = node.id;
-		ruleObj.factorNm = node.name;
-		ruleObj.factorNmEn = node.name_en;
-		ruleObj.factorValType = $("#factorVal").attr("data-type");
+		tmpObj = {};
+		tmpObj.factorGrpNm = node.getParentNode().name;
+		tmpObj.factorId = node.id;
+		tmpObj.factorNm = node.name;
+		tmpObj.factorNmEn = node.name_en;
+		tmpObj.factorValType = $("#factorVal").attr("data-type");
 		
-		ruleObj.logical = $("input[name='logicalRadios']:checked").val();
-		ruleObj.logical_txt = $("input[name='logicalRadios']:checked").next().text();
-		ruleObj.relation = $("input[name='relationRadios']:checked").val();
-		ruleObj.relation_txt = $("input[name='relationRadios']:checked").next().text();
+		tmpObj.logical = $("input[name='logicalRadios']:checked").val();
+		tmpObj.logical_txt = $("input[name='logicalRadios']:checked").next().text();
+		tmpObj.relation = $("input[name='relationRadios']:checked").val();
+		tmpObj.relation_txt = $("input[name='relationRadios']:checked").next().text();
 		
 		// RULE 속성 추가시 제약조건 체크
 		var factorVal_Tag = "";
 		
 		// 요소 값 입력 여부 체크
-		if(ruleObj.factorValType === "STRING") {
-			ruleObj.factorVal = $("#factorVal_string>input:checked").val();
+		if(tmpObj.factorValType === "STRING") {
+			tmpObj.factorVal = $("#factorVal_string>input:checked").val();
 			factorVal_Tag = $("input[name='detAttrChk']:checked");
 			
-			if(typeof ruleObj.factorVal === "undefined" || ruleObj.factorVal == "") {
+			if(typeof tmpObj.factorVal === "undefined" || tmpObj.factorVal == "") {
 				messagePop("warning", "요소값 체크","요소값을 입력 후 추가하세요","");
 				return;
 			}
 			
-		} else if(ruleObj.factorValType === "INT") {
-			ruleObj.factorVal = $("#factorVal_int>input").val();
+		} else if(tmpObj.factorValType === "INT") {
+			tmpObj.factorVal = $("#factorVal_int>input").val();
 			factorVal_Tag = $("#factorVal_int input[name='detAttrChk']");
 			
-			if(typeof ruleObj.factorVal === "undefined" || ruleObj.factorVal == "") {
+			if(typeof tmpObj.factorVal === "undefined" || tmpObj.factorVal == "") {
 				messagePop("warning", "요소값 체크","요소값을 입력 후 추가하세요","");
 				return;
 			}
 			
 			// 숫자만 입력했는지 체크
 			var pattern_num = /^[0-9]+$/;
-			if(!pattern_num.test(ruleObj.factorVal)) {
+			if(!pattern_num.test(tmpObj.factorVal)) {
 				messagePop("warning", "요소값 체크","숫자만 입력할 수 있습니다.","");
 				return;
 			}
 			
-		} else if(ruleObj.factorValType === "DATE") {
-			ruleObj.factorVal = $("#factorVal_date>input").val();
+		} else if(tmpObj.factorValType === "DATE") {
+			tmpObj.factorVal = $("#factorVal_date>input").val();
 			factorVal_Tag = $("#factorVal_date input[name='detAttrChk']");
 			
-			if(typeof ruleObj.factorVal === "undefined" || ruleObj.factorVal == "") {
+			if(typeof tmpObj.factorVal === "undefined" || tmpObj.factorVal == "") {
 				messagePop("warning", "요소값 체크","요소값을 입력 후 추가하세요","");
 				return;
 			}
@@ -475,15 +546,15 @@ $(document).ready(function() {
 		}
 		
 		// 논리연산 IN, NOT IN 선택
-		if(ruleObj.logical == 'logical6' || ruleObj.logical == 'logical7') {
+		if(tmpObj.logical == 'logical6' || tmpObj.logical == 'logical7') {
 			var factorVal = "";
 			
 			for(var i=0; i<factorVal_Tag.length; i++) {
-				factorVal += (ruleObj.factorValType == 'INT' ? factorVal_Tag.eq(i).val() : "\""+ factorVal_Tag.eq(i).val() +"\"") 
+				factorVal += (tmpObj.factorValType == 'INT' ? factorVal_Tag.eq(i).val() : "\""+ factorVal_Tag.eq(i).val() +"\"") 
 				+ (i+1 == factorVal_Tag.length ? "" : ", ");
 			}
 			
-			ruleObj.factorVal = factorVal;
+			tmpObj.factorVal = factorVal;
 			factorVal = "(" + factorVal + ")";
 		
 		// 논리연산 IN, NOT IN 이 아닌 값을 선택시
@@ -493,55 +564,55 @@ $(document).ready(function() {
 				return;
 			}
 			
-			factorVal = (ruleObj.factorValType == 'INT' ? factorVal_Tag.eq(0).val() : "\""+ factorVal_Tag.eq(0).val() +"\"");
+			factorVal = (tmpObj.factorValType == 'INT' ? factorVal_Tag.eq(0).val() : "\""+ factorVal_Tag.eq(0).val() +"\"");
 		}
 		
-		if(ruleObj.relation == 'relation3') {
-			ruleObj.relation_txt = "";
+		if(tmpObj.relation == 'relation3') {
+			tmpObj.relation_txt = "";
 		}
 		
-		ruleObj.ruleAttr_txt = "["+ ruleObj.factorGrpNm + " : " + ruleObj.factorNm + "] " + ruleObj.logical_txt + factorVal + " " + ruleObj.relation_txt;			
+		tmpObj.ruleAttr_txt = "["+ tmpObj.factorGrpNm + " : " + tmpObj.factorNm + "] " + tmpObj.logical_txt + factorVal + " " + tmpObj.relation_txt;			
 		
 		var html = "";
 		html += "<div class='alert fade show mg_b10' role='alert'>";
 		html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
-		html += 		ruleObj.ruleAttr_txt;
+		html += 		tmpObj.ruleAttr_txt;
 		html += "</div>";
 		
 		$("#ruleAttrData").append(html);
 		
-		if(ruleObj.relation == 'relation1') {
-			ruleObj.relation_txt = "&&"
+		if(tmpObj.relation == 'relation1') {
+			tmpObj.relation_txt = "&&"
 				
-		} else if(ruleObj.relation == 'relation2') {
-			ruleObj.relation_txt = "||"
+		} else if(tmpObj.relation == 'relation2') {
+			tmpObj.relation_txt = "||"
 				
 		} else {
-			ruleObj.relation_txt = "";
+			tmpObj.relation_txt = "";
 		}
 		
 		// DRL 파일에 저장될 소스
-		ruleObj.ruleAttr_source = "this[\""+ ruleObj.factorNmEn +"\"]" + ruleObj.logical_txt + factorVal + " " + ruleObj.relation_txt + "\n";
+		tmpObj.ruleAttr_source = "this[\""+ tmpObj.factorNmEn +"\"]" + tmpObj.logical_txt + factorVal + " " + tmpObj.relation_txt + "\n";
 		
-		ruleObjArr.push(ruleObj);
+		tmpArr.push(tmpObj);
 	});
 	
 	// Rule 속성 minus 버튼 클릭 이벤트
 	$(document).on("click", "._ruleAttrMinus", function() {
 		var delIdx = $("._ruleAttrMinus").index(this);
 	
-		ruleObjArr.splice(delIdx, 1);
+		tmpArr.splice(delIdx, 1);
 		
 		$(this).closest("label").remove();
 		
-		ruleObj = {};
+		tmpObj = {};
 	});
 	
 	// RULE 상세 > RULE EDITOR 팝업 > 적용 버튼 클릭
 	$("#ruleEditorSave").click(function() {
 		// 관계연산 NONE 으로 끝나야 적용가능
-		if(ruleObjArr.length > 0) {
-			if(ruleObjArr[ruleObjArr.length-1].relation_txt != "") {
+		if(tmpArr.length > 0) {
+			if(tmpArr[tmpArr.length-1].relation_txt != "") {
 				messagePop("warning", "RULE 적용체크", "관계연산이 끝난 Rule 속성만 추가 할 수 있습니다.", "");
 				return;
 			}
@@ -550,6 +621,8 @@ $(document).ready(function() {
 			messagePop("warning", "RULE 적용체크", "RULE 속성을 추가하세요.", "");
 			return;
 		}
+		
+		ruleObjArr = cloneArr(tmpArr);
 		
 		var contents = ""
 		$.each(ruleObjArr, function(idx, ruleObj) {
@@ -1015,7 +1088,6 @@ function initPkgDetail() {
  * @returns
  */
 function initRuleEditor() {
-	$("#ruleEditorPopUp").attr("data-ruleId", "");
 	$("#ruleAttrData").html("");
 	$("#factorVal_string").css("display", "none");
 	$("#factorVal_int").css("display", "none");
@@ -1023,3 +1095,46 @@ function initRuleEditor() {
 	$("#logicalRadio1").prop("checked", true);
 	$("#relationRadio1").prop("checked", true);
 }
+
+/**
+ * Obj 복사
+ */
+function cloneObj(obj) {
+	var newObj = {};
+	
+	for(const property in obj) {
+		newObj[`${property}`] = `${obj[property]}`;
+	}
+	
+	return newObj;
+}
+
+/**
+ * Array 복사
+ */
+function cloneArr(arr) {
+	var newArr = [];
+	
+	$.each(arr, function(idx, obj) {
+		var newObj = {};
+		
+		for(const property in obj) {
+			newObj[`${property}`] = `${obj[property]}`;
+		}
+		
+		newArr.push(newObj);
+	});
+	
+	return newArr;
+}
+
+
+
+
+
+
+
+
+
+
+

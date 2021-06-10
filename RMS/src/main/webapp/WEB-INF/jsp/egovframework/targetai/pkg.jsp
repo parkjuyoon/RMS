@@ -461,8 +461,7 @@
 							<div class="card card-collapsed" id="ruleCard">
 								<header class="card-header card-header-pd-mobile">
 									<div class="card-actions card-header-position-mobile">
-										<button type="button" style="display: none;" data-modalclass="modalID_1" class="btn btn-sm btn-sky btnModal" id="ruleEditorPopUp"
-											data-ruleId="">RULE EDITOR</button>
+										<button type="button" style="display: none;" data-modalclass="modalID_1" class="btn btn-sm btn-sky btnModal" id="ruleEditorPopUp" data-ruleId="">RULE EDITOR</button>
 										<a href="#" class="card-action card-action-toggle" data-card-toggle></a>
 
 										<!-- modal_pop -->
@@ -668,7 +667,7 @@
 
 									<!-- 버튼 -->
 									<div class="card-actions-foot">
-										<button type="button" class="btn btn-sm btn-green" id="saveRuleBtn">
+										<button type="button" class="btn btn-sm btn-green" id="saveRuleBtn" data-query="">
 											<i class="fas fa-save custom-btn-i"></i> 저장
 										</button>
 									</div>

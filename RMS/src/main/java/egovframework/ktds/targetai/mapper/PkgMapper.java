@@ -52,4 +52,16 @@ public interface PkgMapper {
 
 	void updateDrlFileNm(HashMap<String, Object> param);
 
+	void ruleUpdate(HashMap<String, Object> param);
+
+	void deleteRuleAttrById(HashMap<String, Object> param);
+
+	void deleteRuleById(HashMap<String, Object> param);
+
+	void deleteRuleAttrByIds(HashMap<String, Object> param);
+
+	void deletePkgById(HashMap<String, Object> param);
+
+	List<String> getRuleIdsByPkgId(HashMap<String, Object> param);
+
 }

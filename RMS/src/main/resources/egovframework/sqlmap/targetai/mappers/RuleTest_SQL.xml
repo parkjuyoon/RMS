@@ -30,5 +30,6 @@
 		    LEFT JOIN targetai.RULE_ATTR RA ON (R.RULE_ID = RA.RULE_ID)
 		WHERE
 			R.PKG_ID = #{pkgId}
+		ORDER BY SALIENCE ASC, RULE_ID ASC, RULE_ATTR_ID ASC
 	</select>
 </mapper>

@@ -183,7 +183,7 @@
 												<tr>
 													<th>
 														<div class="checkbox-container">
-															<input type="checkbox" id="checkbox_11" /> <label for="checkbox_11"></label>
+															<input type="checkbox" id="pkgListAllChkBox" /> <label for="pkgListAllChkBox"></label>
 														</div>
 													</th>
 													<th>ID</th>
@@ -222,7 +222,7 @@
 
 									<!-- 버튼 -->
 									<div class="card-actions-foot">
-										<button type="button" class="btn btn-sm btn-gray">
+										<button type="button" class="btn btn-sm btn-gray" id="deletePkgBtn">
 											<i class="far fa-trash-alt custom-btn-i"></i> 삭제
 										</button>
 										<button type="button" class="btn btn-sm btn-green" id="addNewPkgBtn">
@@ -401,7 +401,7 @@
 												<tr>
 													<th>
 														<div class="checkbox-container">
-															<input type="checkbox" id="checkbox_11" /> <label for="checkbox_11"></label>
+															<input type="checkbox" id="ruleListAllChkBox" /> <label for="ruleListAllChkBox"></label>
 														</div>
 													</th>
 													<th>ID</th>
@@ -439,7 +439,7 @@
 
 									<!-- 버튼 -->
 									<div class="card-actions-foot">
-										<button type="button" class="btn btn-sm btn-gray">
+										<button type="button" class="btn btn-sm btn-gray" id="delRuleBtn">
 											<i class="far fa-trash-alt custom-btn-i"></i> 삭제
 										</button>
 										<button type="button" class="btn btn-sm btn-green" id="addNewRuleBtn">
@@ -667,7 +667,7 @@
 
 									<!-- 버튼 -->
 									<div class="card-actions-foot">
-										<button type="button" class="btn btn-sm btn-green" id="saveRuleBtn" data-query="">
+										<button type="button" class="btn btn-sm btn-green" id="saveRuleBtn">
 											<i class="fas fa-save custom-btn-i"></i> 저장
 										</button>
 									</div>

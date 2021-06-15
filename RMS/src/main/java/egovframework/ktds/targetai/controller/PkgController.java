@@ -249,16 +249,85 @@ public class PkgController {
 	@ResponseBody
 	@RequestMapping(value = "/ruleSave.do", method = RequestMethod.POST)
 	public HashMap<String, Object> ruleSave(@RequestBody HashMap<String, Object> param) {
-		param.put("REG_USER_ID", 1);
+		String ruleId = (String) param.get("ruleId");
 		
-		// RULE 저장
-		pkgService.ruleSave(param);
-		// RULE_ATTR 저장
-		pkgService.ruleAttrSave(param);
+		param.put("USER_ID", 1);
+		
+		if("".equals(ruleId)) {	// 신규 등록
+			// RULE 저장
+			pkgService.ruleSave(param);
+			ruleId = String.valueOf((int) param.get("RULE_ID"));
+			param.put("ruleId", (int) param.get("RULE_ID"));
+			// RULE_ATTR 저장
+			pkgService.ruleAttrSave(param);
+			
+		} else {	// 수정
+			param.put("ruleId", Integer.parseInt(ruleId));
+			// RULE 수정
+			pkgService.ruleUpdate(param);
+			List<HashMap<String, Object>> ruleObjList = (List<HashMap<String, Object>>) param.get("ruleObjArr");
+			
+			if(ruleObjList.size() > 0) {
+				// RULE_ATTR 삭제
+				pkgService.deleteRuleAttrById(param);
+				// RULE_ATTR 저장
+				pkgService.ruleAttrSave(param);
+			}
+		}
+		
 		// RULE 의 ATTR_WHEN 업데이트
-		String attrThen = "$map.put(\"res_"+ param.get("RULE_ID") +"_"+ param.get("salience") +"\", \""+ param.get("ruleNm") +"\");";
+		String attrThen = "$map.put(\"res_"+ ruleId +"_"+ param.get("salience") +"\", \""+ param.get("ruleNm") +"\");";
 		param.put("ATTR_THEN", attrThen);
 		pkgService.updateAttrThen(param);
+		
+		// 해당 패키지에 등록된 RULE 개수 조회
+		HashMap<String, Object> resultMap = new HashMap<>();
+		resultMap.put("pkgId", param.get("pkgId"));
+		int ruleCount = pkgService.getRuleCount(resultMap);
+		resultMap.put("ruleCount", ruleCount);
+		
+		// RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
+		String pkgId = (String) param.get("pkgId");
+		saveDRL(pkgId);
+		
+		return resultMap;
+	}
+	
+	/**
+	 * PKG 삭제
+	 * @param param
+	 * @return resultMap
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/deletePkgById.do", method = RequestMethod.POST)
+	public boolean deletePkgById(@RequestBody HashMap<String, Object> param) {
+		// PKG 삭제
+		pkgService.deletePkgById(param);
+		// PKG_ID에 속한 RULE_ID 조회
+		List<String> ruleIds = pkgService.getRuleIdsByPkgId(param);
+		if(ruleIds.size() > 0) {
+			param.put("ruleIdArr", ruleIds);
+			// RULE 삭제
+			pkgService.deleteRuleById(param);
+			// RULE_ATTR 삭제
+			pkgService.deleteRuleAttrByIds(param);
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * RULE 삭제
+	 * @param param
+	 * @return resultMap
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/deleteRuleById.do", method = RequestMethod.POST)
+	public HashMap<String, Object> deleteRuleById(@RequestBody HashMap<String, Object> param) {
+		// RULE 삭제
+		pkgService.deleteRuleById(param);
+		// RULE_ATTR 삭제
+		pkgService.deleteRuleAttrByIds(param);
 		
 		// 해당 패키지에 등록된 RULE 개수 조회
 		HashMap<String, Object> resultMap = new HashMap<>();
@@ -285,8 +354,10 @@ public class PkgController {
 		
 		String drlSource = "";
 		
-		drlSource += "package " + pkg.get("PKG_NM") + "\n";
-		drlSource += "import java.util.Map\n\n";
+		if(ruleList.size() > 0) {
+			drlSource += "package " + pkg.get("PKG_NM") + "\n";
+			drlSource += "import java.util.Map\n\n";
+		}
 		
 		for(HashMap<String, Object> m : ruleList) {
 			drlSource += "rule \"" + m.get("RULE_NM") + "\"\n";

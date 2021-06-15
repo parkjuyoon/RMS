@@ -92,7 +92,7 @@ $(document).ready(function() {
 			success : function(res) {
 				var pkg = res.pkg;
 
-				if(typeof pkg.DRL_SOURCE == 'undefined') {
+				if(typeof pkg.DRL_SOURCE == 'undefined' || pkg.DRL_SOURCE == '') {
 					pkg.DRL_SOURCE = "내용이 없습니다.";
 				}
 				
@@ -113,6 +113,30 @@ $(document).ready(function() {
 				console.log(errorThrown);
 			}
 		});
+	});
+	
+	// PKG 삭제 버튼
+	$("#deletePkgBtn").click(function() {
+		var pkgListChkBox = $("._pkgListChkBox:checked");
+		
+		var pkgIdArr = [];
+		$.each(pkgListChkBox, function(idx, pkgChkBox){
+			var pkgId = pkgListChkBox.eq(idx).attr("data-pkgId");
+		
+			pkgIdArr.push(pkgId);
+		});
+		
+		if(pkgIdArr.length > 0) {
+			if(confirm(pkgIdArr.length + "건의 Package가 삭제되고\n하위에 속한 모든 RULE이 삭제됩니다.\n정말 삭제하시겠습니까?")) {
+				var param = {};
+				param.pkgIdArr = pkgIdArr;
+				
+				fnDeletePkg(param);
+			}
+			
+		} else {
+			messagePop("warning", "Package 삭제", "삭제할 Package를 선택하세요.", "");
+		}
 	});
 	
 	// 신규 PKG 생성 버튼
@@ -137,6 +161,7 @@ $(document).ready(function() {
 		$("#ruleListCard").addClass("card-collapsed");	// RULE 목록 닫기
 		$("#ruleListCardBody").css("display", "none");	// RULE 목록 닫기
 		$("#ruleCntInPkgBySearch").text("");	// RULE 목록 건수 초기화
+		$("#ruleSearchBtn").attr("data-pkgId", "");	// RULE 검색 조회 버튼 PKG_ID 초기화
 	});
 	
 	// PKG 상세 > PKG 명 변경시 중복체크  요청
@@ -246,7 +271,6 @@ $(document).ready(function() {
 				$("#ruleDupY").css("display", "none");
 				$("#ruleDupN").css("display", "none");
 				$("#ruleNmDupBtn").data("isDup", "Y");
-				$("#saveRuleBtn").attr("data-query", "update");
 				// -- RULE 상세페이지 초기화 끝 --
 				
 				// -- RULE EDITOR 초기화 시작 --
@@ -266,6 +290,7 @@ $(document).ready(function() {
 					ruleObj.factorNm = ruleAttr.FACTOR_NM;
 					ruleObj.factorNmEn = ruleAttr.FACTOR_NM_EN;
 					ruleObj.factorValType = ruleAttr.DATA_TYPE;
+					ruleObj.factorVal = ruleAttr.FACTOR_VAL;
 					
 //				ruleObj.logical = ruleAttr.;
 					ruleObj.logical_txt = ruleAttr.LOGICAL;
@@ -351,8 +376,8 @@ $(document).ready(function() {
 	
 	// RULE 목록 > 신규 RULE 생성 버튼 클릭
 	$("#addNewRuleBtn").click(function() {
-		ruleObjArr = [];
-		ruleObj = {};
+		ruleObj = {};	tmpObj = {};
+		ruleObjArr = [];	tmpArr = [];
 		initRuleDetail();	// RULE 상세 초기화
 		initRuleEditor();	// RULE EDITOR 초기화
 		
@@ -360,8 +385,57 @@ $(document).ready(function() {
 		$("#ruleCard").removeClass("card-collapsed");
 		$("#ruleCardBody").css("display", "");
 		$("#ruleNmDupBtn").data("isDup", "N");
-		$("#saveRuleBtn").attr("data-query", "insert");
 		$("#ruleNm").focus();
+	});
+	
+	// PKG 목록 > 전체선택 버튼 클릭
+	$("#pkgListAllChkBox").click(function() {
+		var chked = $(this).prop("checked");
+		
+		if(chked) {
+			$(this).closest("table").find("._pkgListChkBox").prop("checked", true);
+			
+		} else {
+			$(this).closest("table").find("._pkgListChkBox").prop("checked", false);
+		}
+	});
+	
+	// RULE 목록 > 전체선택 버튼 클릭
+	$("#ruleListAllChkBox").click(function() {
+		var chked = $(this).prop("checked");
+		
+		if(chked) {
+			$(this).closest("table").find("._ruleListChkBox").prop("checked", true);
+			
+		} else {
+			$(this).closest("table").find("._ruleListChkBox").prop("checked", false);
+		}
+	});
+	
+	// RULE 목록 > 삭제 버튼 클릭
+	$("#delRuleBtn").click(function() {
+		var pkgId = $("#ruleSearchBtn").attr("data-pkgId");
+		var ruleListChkBox = $("._ruleListChkBox:checked");
+		
+		var ruleIdArr = [];
+		$.each(ruleListChkBox, function(idx, ruleChkBox){
+			var ruleId = ruleListChkBox.eq(idx).attr("data-ruleId");
+		
+			ruleIdArr.push(ruleId);
+		});
+		
+		if(ruleIdArr.length > 0) {
+			if(confirm(ruleIdArr.length + "건의 RULE이 삭제됩니다.\n정말 삭제하시겠습니까?")) {
+				var param = {};
+				param.ruleIdArr = ruleIdArr;
+				param.pkgId = pkgId;
+				
+				fnDeleteRule(param);
+			}
+			
+		} else {
+			messagePop("warning", "RULE 삭제", "삭제할 RULE을 선택하세요.", "");
+		}
 	});
 	
 	// RULE 명 변경시 중복체크  요청
@@ -373,12 +447,6 @@ $(document).ready(function() {
 	// RULE 상세 > 저장 버튼 클릭
 	$("#saveRuleBtn").click(function() {
 		var pkgId = $("#ruleSearchBtn").attr("data-pkgId");
-		var query = $(this).attr("data-query");
-		
-		if(query == '') {
-			messagePop("warning", "정상적인 경로가 아닙니다.", "", "");
-			return;
-		} 
 		
 		if(typeof pkgId === 'undefined' || pkgId == '') {
 			messagePop("warning", "Package 선택 체크", "패키지를 먼저 선택하세요.", "");
@@ -421,11 +489,7 @@ $(document).ready(function() {
 		param.salience = $("#salience").val();
 		param.ruleObjArr = ruleObjArr;
 		
-		if(query == 'insert') {
-			fnRuleSave(param);
-		} else {
-			alert("업데이트 작업중입니다.\n업데이트 쿼리 작성 해야함.query data-query 할필요 없음.");
-		}
+		fnRuleSave(param);
 		
 		ruleObj = {};	tmpObj = {};
 		ruleObjArr = [];	tmpArr = [];
@@ -664,8 +728,8 @@ function getPkgList(searchObj) {
 					html += "<tr>";
 					html += "	<td class='t_center'>";
 					html += "		<div class='checkbox-container'>";
-					html += "			<input type='checkbox' id='checkbox_12' />";
-					html += "			<label for='checkbox_12'></label>";
+					html += "			<input type='checkbox' class='_pkgListChkBox' data-pkgId='"+ pkgList[i].PKG_ID +"'/>";
+					html += "			<label for='_pkgListChkBox'></label>";
 					html += "		</div>";
 					html += "	</td>";
 					html += "	<td class='t_center'>" + pkgList[i].PKG_ID + "</td>";
@@ -682,6 +746,9 @@ function getPkgList(searchObj) {
 			
 			$("#pkgList").html(html);
 			$("#pkgCountBySearch").text(pkgCount);
+			
+			// 전체 체크 해제
+			$("#pkgListAllChkBox").prop("checked", false);
 			
 		},
 		beforeSend : function() {
@@ -780,15 +847,15 @@ function getRuleList(searchObj) {
 					html += "<tr>";
 					html += "	<td class='t_center'>";
 					html += "		<div class='checkbox-container'>";
-					html += "			<input type='checkbox' id='checkbox_12' />";
-					html += "			<label for='checkbox_12'></label>";
+					html += "			<input type='checkbox' class='_ruleListChkBox' data-ruleId='"+ ruleList[i].RULE_ID +"'/>";
+					html += "			<label for='_ruleListChkBox'></label>";
 					html += "		</div>";
 					html += "	</td>";
 					html += "	<td class='t_center'>" + ruleList[i].RULE_ID + "</td>";
 					html += "	<td class='t_center'><a href='#' class='_ruleNmLink' data-ruleId='"+ ruleList[i].RULE_ID +"'>" + ruleList[i].RULE_NM + "</a></td>";
 					html += "	<td class='t_center'>" + ruleList[i].SALIENCE + "</td>";
 					html += "	<td class='t_center'>" + (typeof ruleList[i].UDT_DT == 'undefined' ? "-" : ruleList[i].UDT_DT) + "</td>";
-					html += "	<td class='t_center'>" + (typeof ruleList[i].UDT_USRID == 'undefined' ? "-" : ruleList[i].UDT_DT) + "</td>";
+					html += "	<td class='t_center'>" + (typeof ruleList[i].UDT_USRID == 'undefined' ? "-" : ruleList[i].UDT_USRID) + "</td>";
 					html += "	<td class='t_center'>" + ruleList[i].REG_DT + "</td>";
 					html += "	<td class='t_center'>" + ruleList[i].REG_USRID + "</td>";
 					html += "</tr>";
@@ -799,6 +866,9 @@ function getRuleList(searchObj) {
 			$("#ruleCntInPkgBySearch").text(ruleCount);
 			$("#ruleListCard").removeClass("card-collapsed");
 			$("#ruleListCardBody").css("display", "");
+			
+			// 전체 체크 해제
+			$("#ruleListAllChkBox").prop("checked", false);
 			
 		},
 		beforeSend : function() {
@@ -1047,6 +1117,107 @@ function fnRuleSave(param) {
 }
 
 /**
+ * PKG 목록 > 삭제
+ * @param param
+ * @returns
+ */
+function fnDeletePkg(param) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/deletePkgById.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			if(res) {
+				var searchObj = {};
+				searchObj.pkgId_search = $("#pkgId_search").val();
+				searchObj.pkgActYn_search = $("#pkgActYn_search option:selected").val();
+				searchObj.regUsrId_search = $("#pkgRegUsrId_search").val();
+				searchObj.pkgNm_search = $("#pkgNm_search").val();
+				
+				getPkgList(searchObj);
+				
+				messagePop("success", "Package가 삭제되었습니다.", "", "");
+				
+				$("#ruleEditorPopUp").css("display", "none");
+				$("#ruleCard").addClass("card-collapsed");
+				$("#ruleCardBody").css("display", "none");
+				$("#ruleListCard").addClass("card-collapsed");
+				$("#ruleListCardBody").css("display", "none");
+				$("#ruleCntInPkg").text("");
+				$("#pkgCard").addClass("card-collapsed");
+				$("#pkgCardBody").css("display", "none");
+				$("#ruleList").html("");
+				$("#ruleCntInPkgBySearch").text("");
+				initRuleDetail();
+				initRuleEditor();
+				initPkgDetail();
+			}
+		},
+		beforeSend : function() {
+			$("#pkgLoading").show();
+		},
+		complete : function() {
+			$("#pkgLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
+
+/**
+ * RULE 목록 > 삭제
+ * @param param
+ * @returns
+ */
+function fnDeleteRule(param) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/deleteRuleById.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			var searchObj = {};
+			searchObj.pkgId = $("#ruleSearchBtn").attr("data-pkgId");
+			searchObj.ruleId_search = $("#ruleId_search").val();
+			searchObj.regUsrId_search = $("#ruleRegUsrId_search").val();
+			searchObj.ruleNm_search = $("#ruleNm_search").val();
+			
+			getRuleList(searchObj);
+			
+			messagePop("success", "RULE이 삭제되었습니다.", "", "");
+			
+			$("#ruleEditorPopUp").css("display", "none");
+			$("#ruleCard").addClass("card-collapsed");
+			$("#ruleCardBody").css("display", "none");
+			$("#ruleCntInPkg").text(res.ruleCount + "개");
+			initRuleDetail();
+			initRuleEditor();
+		},
+		beforeSend : function() {
+			$("#ruleLoading").show();
+		},
+		complete : function() {
+			$("#ruleLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
+
+/**
  * RULE 상세 초기화
  * @returns
  */
@@ -1075,12 +1246,6 @@ function initPkgDetail() {
 	$("#pkgDupY").css("display", "none");
 	$("#pkgDupN").css("display", "none");
 	$("#pkgNmDupBtn").data("isDup", "N");
-	
-	
-//	$("input:radio[name='noLoop']:radio[value='true']").prop("checked", true);
-//	$("input:radio[name='lockOnActive']:radio[value='true']").prop("checked", true);
-//	$("#salience").val("");
-//	$("#ruleWhenCont").val("");
 }
 
 /**
@@ -1127,14 +1292,5 @@ function cloneArr(arr) {
 	
 	return newArr;
 }
-
-
-
-
-
-
-
-
-
 
 

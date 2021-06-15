@@ -59,6 +59,29 @@
 			PKG_ID = #{pkgId}
 	</select>
 	
+	<!-- package 삭제 -->
+	<delete id="deletePkgById" parameterType="java.util.HashMap">
+		DELETE FROM targetai.PKG
+		WHERE
+			PKG_ID IN 
+		<foreach collection="pkgIdArr" item="pkgId" separator="," open="(" close=")">
+			#{pkgId}
+		</foreach>
+	</delete>
+	
+	<!-- PKG_ID에 속한 RULE_ID 조회 -->
+	<select id="getRuleIdsByPkgId" parameterType="java.util.HashMap" resultType="string">
+		SELECT
+			RULE_ID
+		FROM
+			targetai.RULE
+		WHERE
+			PKG_ID IN 
+		<foreach collection="pkgIdArr" item="pkgId" separator="," open="(" close=")">
+			#{pkgId}
+		</foreach>
+	</select>
+	
 	<!-- RULE 리스트 조회 -->
 	<select id="getRuleList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT 
@@ -265,7 +288,7 @@
 			#{lockOnActive},
 			#{salience},
 			#{pkgId},
-			#{REG_USER_ID}
+			#{USER_ID}
 		)
 		<selectKey keyProperty="RULE_ID" resultType="int" order="AFTER">
 			SELECT LAST_INSERT_ID()
@@ -289,7 +312,7 @@
 		) VALUES 
 		<foreach collection="ruleObjArr" item="ruleAttr" separator=",">
 		(
-			#{RULE_ID},
+			#{ruleId},
 			#{ruleAttr.ruleAttr_source},
 			#{ruleAttr.ruleAttr_txt},
 			#{ruleAttr.factorGrpNm},
@@ -303,6 +326,54 @@
 		)
 		</foreach>
 	</insert>
+	
+	<!-- RULE 수정 -->
+	<update id="ruleUpdate" parameterType="java.util.HashMap">
+		UPDATE targetai.RULE
+		SET
+			RULE_NM = #{ruleNm},
+			NO_LOOP = #{noLoop},
+			LOCK_ON_ACTIVE = #{lockOnActive},
+			SALIENCE = #{salience},
+			PKG_ID = #{pkgId},
+			UDT_DT = NOW(),
+			UDT_USRID = #{USER_ID}
+		WHERE
+			RULE_ID = #{ruleId}
+	</update>
+	
+	<!-- RULE ATTR 삭제 -->
+	<delete id="deleteRuleAttrById" parameterType="java.util.HashMap">
+		DELETE FROM targetai.RULE_ATTR
+		WHERE RULE_ID = #{ruleId}
+	</delete>
+	
+	<!-- RULE 삭제 -->
+	<delete id="deleteRuleById" parameterType="java.util.HashMap">
+		DELETE FROM targetai.RULE
+		WHERE RULE_ID IN 
+		<foreach collection="ruleIdArr" item="ruleId" separator="," open="(" close=")">
+			#{ruleId}
+		</foreach>
+	</delete>
+	
+	<!-- RULE ATTR 삭제 -->
+	<delete id="deleteRuleAttrByIds" parameterType="java.util.HashMap">
+		DELETE FROM targetai.RULE_ATTR
+		WHERE RULE_ID IN 
+		<foreach collection="ruleIdArr" item="ruleId" separator="," open="(" close=")">
+			#{ruleId}
+		</foreach>
+	</delete>
+	
+	<!-- RULE 의 ATTR_WHEN 업데이트 -->
+	<update id="updateAttrThen" parameterType="java.util.HashMap">
+		UPDATE targetai.RULE
+		SET
+			ATTR_THEN = #{ATTR_THEN}
+		WHERE
+			RULE_ID = #{ruleId}
+	</update>
 	
 	<!-- PKG 정보 조회 -->
 	<select id="getPkgById" parameterType="string" resultType="java.util.HashMap">
@@ -381,12 +452,5 @@
 			PKG_ID = #{PKG_ID}
 	</update>
 	
-	<!-- RULE 의 ATTR_WHEN 업데이트 -->
-	<update id="updateAttrThen" parameterType="java.util.HashMap">
-		UPDATE targetai.RULE
-		SET
-			ATTR_THEN = #{ATTR_THEN}
-		WHERE
-			RULE_ID = #{RULE_ID}
-	</update>
+	
 </mapper>

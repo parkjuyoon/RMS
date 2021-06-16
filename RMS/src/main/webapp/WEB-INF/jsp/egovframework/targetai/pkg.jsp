@@ -120,19 +120,23 @@
 										<div class="search_input">
 											<div class="search_col">
 												<div class="form_group">
-													<label for="">패키지 ID</label> <input type="text" id="pkgId_search" class="wd150px" value="" />
+													<label for="">패키지 ID</label> 
+													<input type="text" id="pkgId_search" class="wd150px" value="" />
 												</div>
 												<div class="form_group">
-													<label for="">활성여부</label> <select id="pkgActYn_search" class="wd150px">
+													<label for="">활성여부</label> 
+													<select id="pkgActYn_search" class="wd150px">
 														<option value="Y" selected="selected">활성</option>
 														<option value="N">비활성</option>
 													</select>
 												</div>
 												<div class="form_group">
-													<label for="">등록자</label> <input type="text" id="pkgRegUsrId_search" class="wd150px" value="" />
+													<label for="">등록자</label> 
+													<input type="text" id="pkgRegUsrId_search" class="wd150px" value="" />
 												</div>
 												<div class="oneline_group">
-													<label for="">패키지 명</label> <input type="text" id="pkgNm_search" class="wd90" value="" />
+													<label for="">패키지 명</label> 
+													<input type="text" id="pkgNm_search" class="wd90" value="" />
 												</div>
 											</div>
 										</div>
@@ -183,7 +187,8 @@
 												<tr>
 													<th>
 														<div class="checkbox-container">
-															<input type="checkbox" id="pkgListAllChkBox" /> <label for="pkgListAllChkBox"></label>
+															<input type="checkbox" id="pkgListAllChkBox"/> 
+															<label for="pkgListAllChkBox"></label>
 														</div>
 													</th>
 													<th>ID</th>
@@ -268,8 +273,12 @@
 														<td class="t_left">
 															<input type="text" class="wd250px" id="pkgNm" value="" />
 															<button type="button" data-isDup="N" id="pkgNmDupBtn" class="btn btn-sm btn-gray">중복체크</button> 
-															<span class="custom-red mg_l15" style="display: none;" id="pkgDupN"><i class="el el-idea"></i> 중복된 Package 명이 있습니다.</span> 
-															<span class="custom-green mg_l15" style="display: none;" id="pkgDupY"><i class="el el-idea"></i> 사용가능 한 Package 명입니다.</span>
+															<span class="custom-red mg_l15" style="display: none;" id="pkgDupN">
+																<i class="el el-idea"></i> 중복된 Package 명이 있습니다.
+															</span> 
+															<span class="custom-green mg_l15" style="display: none;" id="pkgDupY">
+																<i class="el el-idea"></i> 사용가능 한 Package 명입니다.
+															</span>
 														</td>
 													</tr>
 													<tr>
@@ -287,7 +296,9 @@
 													</tr>
 													<tr>
 														<th class="t_left">설명</th>
-														<td class="t_left"><textarea rows="4" cols="7" class="txtsize_100 wd100" id="pkgDsc" placeholder="상세설명을 입력하세요."></textarea></td>
+														<td class="t_left">
+															<textarea rows="4" cols="7" class="txtsize_100 wd100" id="pkgDsc" placeholder="상세설명을 입력하세요."></textarea>
+														</td>
 													</tr>
 													<tr>
 														<th class="t_left">최초 등록</th>

@@ -1,5 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
+<style type="text/css">
+
+.progress_loading {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	background: #ffffff;
+}
+
+</style>
+
 <script type="text/javascript">
 	$(document).on("click", "#modalID_message .close", function(e) {
 		e.preventDefault();

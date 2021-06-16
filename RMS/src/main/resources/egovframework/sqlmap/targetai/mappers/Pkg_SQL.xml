@@ -22,7 +22,7 @@
 		<if test="pkgId_search != null and pkgId_search != ''">AND PKG_ID = #{pkgId_search}</if>
 		<if test="pkgNm_search != null and pkgNm_search != ''">AND PKG_NM LIKE CONCAT('%', #{pkgNm_search}, '%')</if>
 		<if test="pkgActYn_search != null and pkgActYn_search != ''">AND PKG_ACT_YN = #{pkgActYn_search}</if>
-		<if test="regUsrId_search != null and regUsrId_search != ''">AND REG_USRID = #{regUsrId_search}</if>
+		<if test="pkgRegUsrId_search != null and pkgRegUsrId_search != ''">AND REG_USRID = #{pkgRegUsrId_search}</if>
 	</select>
 	
 	<!-- package 조회된 개수 조회 -->
@@ -34,7 +34,7 @@
 		<if test="pkgId_search != null and pkgId_search != ''">AND PKG_ID = #{pkgId_search}</if>
 		<if test="pkgNm_search != null and pkgNm_search != ''">AND PKG_NM LIKE CONCAT('%', #{pkgNm_search}, '%')</if>
 		<if test="pkgActYn_search != null and pkgActYn_search != ''">AND PKG_ACT_YN = #{pkgActYn_search}</if>
-		<if test="regUsrId_search != null and regUsrId_search != ''">AND REG_USRID = #{regUsrId_search}</if>
+		<if test="pkgRegUsrId_search != null and pkgRegUsrId_search != ''">AND REG_USRID = #{pkgRegUsrId_search}</if>
 	
 	</select>
 	
@@ -106,7 +106,7 @@
 		FROM targetai.RULE
 		WHERE PKG_ID = #{pkgId}
 		<if test="ruleId_search != null and ruleId_search != ''">AND RULE_ID = #{ruleId_search}</if>
-	    <if test="regUsrId_search != null and regUsrId_search != ''">AND REG_USRID = #{regUsrId_search}</if>
+	    <if test="ruleRegUsrId_search != null and ruleRegUsrId_search != ''">AND REG_USRID = #{ruleRegUsrId_search}</if>
 	    <if test="ruleNm_search != null and ruleNm_search != ''">AND RULE_NM LIKE CONCAT('%', #{ruleNm_search}, '%')</if>
 	</select>
 	
@@ -117,7 +117,7 @@
 		FROM targetai.RULE
 		WHERE PKG_ID = #{pkgId}
 		<if test="ruleId_search != null and ruleId_search != ''">AND RULE_ID = #{ruleId_search}</if>
-	    <if test="regUsrId_search != null and regUsrId_search != ''">AND REG_USRID = #{regUsrId_search}</if>
+	    <if test="ruleRegUsrId_search != null and ruleRegUsrId_search != ''">AND REG_USRID = #{ruleRegUsrId_search}</if>
 	    <if test="ruleNm_search != null and ruleNm_search != ''">AND RULE_NM LIKE CONCAT('%', #{ruleNm_search}, '%')</if>
 	</select>
 	

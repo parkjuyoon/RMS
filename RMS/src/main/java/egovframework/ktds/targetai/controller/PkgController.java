@@ -47,19 +47,12 @@ public class PkgController {
 	@RequestMapping(value = "/getPkgList.do", method = RequestMethod.POST)
 	public HashMap<String, Object> getPkgList(@RequestBody HashMap<String, Object> searchObj) {
 		HashMap<String, Object> resultMap = null;
-
-		try {
+		resultMap = new HashMap<String, Object>();
+		List<HashMap<String, Object>> pkgList = pkgService.getPkgList(searchObj);
+		int pkgCount = pkgService.getPkgCount(searchObj);
+		resultMap.put("pkgList", pkgList);
+		resultMap.put("pkgCount", pkgCount);
 			
-			resultMap = new HashMap<String, Object>();
-			List<HashMap<String, Object>> pkgList = pkgService.getPkgList(searchObj);
-			int pkgCount = pkgService.getPkgCount(searchObj);
-			resultMap.put("pkgList", pkgList);
-			resultMap.put("pkgCount", pkgCount);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
 		return resultMap;
 	}
 	
@@ -85,8 +78,8 @@ public class PkgController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/pkgNmCheck.do", method = RequestMethod.POST)
-	public boolean pkgNmCheck(@RequestBody HashMap<String, Object> map) {
-		int pkgNameCnt = pkgService.pkgNmCheck(map);
+	public boolean pkgNmCheck(@RequestBody HashMap<String, Object> param) {
+		int pkgNameCnt = pkgService.pkgNmCheck(param);
 		
 		if(pkgNameCnt > 0) {
 			return false;

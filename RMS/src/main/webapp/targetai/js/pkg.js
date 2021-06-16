@@ -17,7 +17,7 @@ $(document).ready(function() {
 		var searchObj = {};
 		searchObj.pkgId_search = $("#pkgId_search").val();
 		searchObj.pkgActYn_search = $("#pkgActYn_search option:selected").val();
-		searchObj.regUsrId_search = $("#pkgRegUsrId_search").val();
+		searchObj.pkgRegUsrId_search = $("#pkgRegUsrId_search").val();
 		searchObj.pkgNm_search = $("#pkgNm_search").val();
 		
 		getPkgList(searchObj);
@@ -237,7 +237,7 @@ $(document).ready(function() {
 		var searchObj = {};
 		searchObj.pkgId = $(this).attr("data-pkgId");
 		searchObj.ruleId_search = $("#ruleId_search").val();
-		searchObj.regUsrId_search = $("#ruleRegUsrId_search").val();
+		searchObj.ruleRegUsrId_search = $("#ruleRegUsrId_search").val();
 		searchObj.ruleNm_search = $("#ruleNm_search").val();
 		
 		getRuleList(searchObj);
@@ -783,7 +783,7 @@ function fnPkgSave(param) {
 			var searchObj = {};
 			searchObj.pkgId_search = $("#pkgId_search").val();
 			searchObj.pkgActYn_search = $("#pkgActYn_search option:selected").val();
-			searchObj.regUsrId_search = $("#pkgRegUsrId_search").val();
+			searchObj.pkgRegUsrId_search = $("#pkgRegUsrId_search").val();
 			searchObj.pkgNm_search = $("#pkgNm_search").val();
 			
 			getPkgList(searchObj);
@@ -1087,7 +1087,7 @@ function fnRuleSave(param) {
 			var searchObj = {};
 			searchObj.pkgId = $("#ruleSearchBtn").attr("data-pkgId");
 			searchObj.ruleId_search = $("#ruleId_search").val();
-			searchObj.regUsrId_search = $("#ruleRegUsrId_search").val();
+			searchObj.ruleRegUsrId_search = $("#ruleRegUsrId_search").val();
 			searchObj.ruleNm_search = $("#ruleNm_search").val();
 			
 			getRuleList(searchObj);
@@ -1134,7 +1134,7 @@ function fnDeletePkg(param) {
 				var searchObj = {};
 				searchObj.pkgId_search = $("#pkgId_search").val();
 				searchObj.pkgActYn_search = $("#pkgActYn_search option:selected").val();
-				searchObj.regUsrId_search = $("#pkgRegUsrId_search").val();
+				searchObj.pkgRegUsrId_search = $("#pkgRegUsrId_search").val();
 				searchObj.pkgNm_search = $("#pkgNm_search").val();
 				
 				getPkgList(searchObj);
@@ -1188,7 +1188,7 @@ function fnDeleteRule(param) {
 			var searchObj = {};
 			searchObj.pkgId = $("#ruleSearchBtn").attr("data-pkgId");
 			searchObj.ruleId_search = $("#ruleId_search").val();
-			searchObj.regUsrId_search = $("#ruleRegUsrId_search").val();
+			searchObj.ruleRegUsrId_search = $("#ruleRegUsrId_search").val();
 			searchObj.ruleNm_search = $("#ruleNm_search").val();
 			
 			getRuleList(searchObj);

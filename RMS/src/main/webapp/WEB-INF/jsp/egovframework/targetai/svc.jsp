@@ -88,7 +88,7 @@
 					<div class="row">
 						<div class="col">
 							<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
-							<div class="card">
+							<div class="card" id="svcListCard">
 								<header class="card-header card-header-pd-mobile">
 									<div class="card-actions card-header-position-mobile">
 										<span class="infonum">
@@ -99,7 +99,7 @@
 									<h2 class="card-title_txt">서비스 목록</h2>
 								</header>
 								<!-- 본문페이지 -->
-								<div class="card-body" style="">
+								<div class="card-body" id="svcListCardBody" style="">
 									<div class="progress_loading">
 										<div id="svcLoading">
 											<img src="/targetai_publish/images/ajax-loader.gif" />
@@ -220,10 +220,10 @@
 														</td>
 													</tr>
 													<tr>
-														<th class="t_left">연결된 채널</th>
+														<th class="t_left">채널 연결</th>
 														<td class="t_left">
-															<input type="text" class="wd150px" id="svcConnChannel" data-channelId="" value="" readonly="readonly"/>
-															<button type="button" data-modalclass="modal_svcConnChannel" class="btn_onlyico_search btnModal" title="조회">새창 열기</button>
+															<input type="text" class="wd150px" id="svcConnChannel" data-channel_id="" value="" readonly="readonly"/>
+															<button type="button" id="svcConnChannelBtn" data-modalclass="modal_svcConnChannel" class="btn_onlyico_search btnModal" title="조회">새창 열기</button>
 
 															<!-- modal_pop -->
 															<div id="modal_svcConnChannel" class="modal_pop">
@@ -248,16 +248,23 @@
 																							</header>
 																							<!-- 본문페이지 -->
 																							<div class="card-body" style="">
+																								<div class="progress_loading">
+																									<div id="modal_svcConnChannelLoading">
+																										<img src="/targetai_publish/images/ajax-loader.gif" />
+																									</div>
+																								</div>
 																								<!-- 조회 -->
 																								<div class="searcharea">
 																									<div class="search_btn-bottom">
-																										<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-darkblue"><i class="fas fa-search custom-btn-i"></i>조회</button>
+																										<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-darkblue" id="modal_channelSearchBtn">
+																											<i class="fas fa-search custom-btn-i"></i>조회
+																										</button>
 																									</div>
 																									<div class="search_input">
 																										<div class="search_col">
 																											<div class="form_group">
 																												<label for="">채널 명</label>
-																												<input type="text" class="wd150px" value="KOS" />
+																												<input type="text" class="wd150px" id="modal_channelNm_search" value="" />
 																											</div>
 																										</div>
 																									</div>
@@ -281,63 +288,7 @@
 																												<th>설명</th>
 																											</tr>
 																										</thead>
-																										<tbody>
-																											<tr>
-																												<td class="t_center">
-																													<div class="checkbox-container">
-																														<input type="radio" id="radio_01" />
-																														<label for="radio_01"></label>
-																													</div>
-																												</td>
-																												<td class="t_center">C-001</td>
-																												<td class="t_center">KOS</td>
-																												<td class="t_center">KOS 에서 쓰이는...</td>
-																											</tr>
-																											<tr>
-																												<td class="t_center">
-																													<div class="checkbox-container">
-																														<input type="radio" id="radio_01" checked="checked" />
-																														<label for="radio_01"></label>
-																													</div>
-																												</td>
-																												<td class="t_center">C-002</td>
-																												<td class="t_center">KT</td>
-																												<td class="t_center">KT 닷컴에서 쓰이는 채널...</td>
-																											</tr>
-																											<tr>
-																												<td class="t_center">
-																													<div class="checkbox-container">
-																														<input type="radio" id="radio_01" />
-																														<label for="radio_01"></label>
-																													</div>
-																												</td>
-																												<td class="t_center">C-003</td>
-																												<td class="t_center">SHOP</td>
-																												<td class="t_center">SHOP 에서 쓰이는 채널...</td>
-																											</tr>
-																											<tr>
-																												<td class="t_center">
-																													<div class="checkbox-container">
-																														<input type="radio" id="radio_01" />
-																														<label for="radio_01"></label>
-																													</div>
-																												</td>
-																												<td class="t_center">C-004</td>
-																												<td class="t_center">KOS</td>
-																												<td class="t_center">KOS 에서 쓰이는...</td>
-																											</tr>
-																											<tr>
-																												<td class="t_center">
-																													<div class="checkbox-container">
-																														<input type="radio" id="radio_01" />
-																														<label for="radio_01"></label>
-																													</div>
-																												</td>
-																												<td class="t_center">C-005</td>
-																												<td class="t_center">KT</td>
-																												<td class="t_center">KT 닷컴에서 쓰이는 채널...</td>
-																											</tr>
-																										</tbody>
+																										<tbody id="modal_svcConnChannelList"></tbody>
 																									</table>
 																								</div>
 																								<!-- //테이블 -->
@@ -363,8 +314,8 @@
 
 																								<!-- 버튼 -->
 																								<div class="card-actions-foot">
-																									<button type="button" class="btn btn-sm btn-gray"><i class="far fa-times-circle custom-btn-i"></i> 취소</button>
-																									<button type="button" class="btn btn-sm btn-green"><i class="far fa-check-circle custom-btn-i"></i> 적용</button>
+																									<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('modal_svcConnChannel');"><i class="far fa-times-circle custom-btn-i"></i> 취소</button>
+																									<button type="button" class="btn btn-sm btn-green" id="modal_svcConnChannelSaveBtn"><i class="far fa-check-circle custom-btn-i"></i> 적용</button>
 																								</div>
 																								<!-- //버튼 -->
 																							</div>
@@ -384,10 +335,10 @@
 														</td>
 													</tr>
 													<tr>
-														<th class="t_left">연결된 패키지</th>
+														<th class="t_left">패키지 연결</th>
 														<td class="t_left">
-															<input type="text" class="wd150px" id="svcConnPkg" data-pkgId="" value="" readonly="readonly"/>
-															<button type="button" data-modalclass="modal_svcConnPkg" class="btn_onlyico_search btnModal" title="조회">새창 열기</button>
+															<input type="text" class="wd150px" id="svcConnPkg" data-pkg_id="" value="" readonly="readonly"/>
+															<button type="button" id="svcConnPkgBtn" data-modalclass="modal_svcConnPkg" class="btn_onlyico_search btnModal" title="조회">새창 열기</button>
 
 															<!-- modal_pop -->
 															<div id="modal_svcConnPkg" class="modal_pop">
@@ -412,16 +363,23 @@
 																							</header>
 																							<!-- 본문페이지 -->
 																							<div class="card-body" style="">
+																								<div class="progress_loading">
+																									<div id="modal_svcConnPkgLoading">
+																										<img src="/targetai_publish/images/ajax-loader.gif" />
+																									</div>
+																								</div>
 																								<!-- 조회 -->
 																								<div class="searcharea">
 																									<div class="search_btn-bottom">
-																										<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-darkblue"><i class="fas fa-search custom-btn-i"></i>조회</button>
+																										<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-darkblue" id="modal_pkgSearchBtn">
+																											<i class="fas fa-search custom-btn-i"></i>조회
+																										</button>
 																									</div>
 																									<div class="search_input">
 																										<div class="search_col">
 																											<div class="form_group">
 																												<label for="">패키지 명</label>
-																												<input type="text" class="wd150px" value="5G 가입" />
+																												<input type="text" class="wd150px" id="modal_pkgNm_search" value="" />
 																											</div>
 																										</div>
 																									</div>
@@ -445,63 +403,7 @@
 																												<th>DRL 명</th>
 																											</tr>
 																										</thead>
-																										<tbody>
-																											<tr>
-																												<td class="t_center">
-																													<div class="checkbox-container">
-																														<input type="radio" id="radio_01" checked="checked" />
-																														<label for="radio_01"></label>
-																													</div>
-																												</td>
-																												<td class="t_center">P-001</td>
-																												<td class="t_center">5G 가입 패키지</td>
-																												<td class="t_center">dGruleSample.drl</td>
-																											</tr>
-																											<tr>
-																												<td class="t_center">
-																													<div class="checkbox-container">
-																														<input type="radio" id="radio_01" />
-																														<label for="radio_01"></label>
-																													</div>
-																												</td>
-																												<td class="t_center">P-002</td>
-																												<td class="t_center">5G 가입에 관련</td>
-																												<td class="t_center">dGruleSample2.drl</td>
-																											</tr>
-																											<tr>
-																												<td class="t_center">
-																													<div class="checkbox-container">
-																														<input type="radio" id="radio_01" />
-																														<label for="radio_01"></label>
-																													</div>
-																												</td>
-																												<td class="t_center">P-003</td>
-																												<td class="t_center">5G 가입/탈퇴 관리</td>
-																												<td class="t_center">dGruleSample3.drl</td>
-																											</tr>
-																											<tr>
-																												<td class="t_center">
-																													<div class="checkbox-container">
-																														<input type="radio" id="radio_01" />
-																														<label for="radio_01"></label>
-																													</div>
-																												</td>
-																												<td class="t_center">P-004</td>
-																												<td class="t_center">5G 가입 패키지</td>
-																												<td class="t_center">dGruleSample.drl</td>
-																											</tr>
-																											<tr>
-																												<td class="t_center">
-																													<div class="checkbox-container">
-																														<input type="radio" id="radio_01"/>
-																														<label for="radio_01"></label>
-																													</div>
-																												</td>
-																												<td class="t_center">P-005</td>
-																												<td class="t_center">5G 가입에 관련</td>
-																												<td class="t_center">dGruleSample2.drl</td>
-																											</tr>
-																										</tbody>
+																										<tbody id="modal_svcConnPkgList"></tbody>
 																									</table>
 																								</div>
 																								<!-- //테이블 -->
@@ -527,8 +429,8 @@
 
 																								<!-- 버튼 -->
 																								<div class="card-actions-foot">
-																									<button type="button" class="btn btn-sm btn-gray"><i class="far fa-times-circle custom-btn-i"></i> 취소</button>
-																									<button type="button" class="btn btn-sm btn-green"><i class="far fa-check-circle custom-btn-i"></i> 적용</button>
+																									<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('modal_svcConnPkg');"><i class="far fa-times-circle custom-btn-i"></i> 취소</button>
+																									<button type="button" class="btn btn-sm btn-green" id="modal_svcConnPkgSaveBtn"><i class="far fa-check-circle custom-btn-i"></i> 적용</button>
 																								</div>
 																								<!-- //버튼 -->
 																							</div>
@@ -564,11 +466,11 @@
 													</tr>
 													<tr>
 														<th class="t_left">최초 등록</th>
-														<td class="t_left" id="svcRegDt">2021-04-01 11:30:29에 홍길동(님)이 등록함.</td>
+														<td class="t_left" id="svcRegDt"></td>
 													</tr>
 													<tr>
 														<th class="t_left">마지막 수정</th>
-														<td class="t_left" id="svcUdtDt">2021-04-01 11:30:29에 홍길동(님)이 등록함.</td>
+														<td class="t_left" id="svcUdtDt"></td>
 													</tr>
 												</tbody>
 											</table>

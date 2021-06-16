@@ -84,4 +84,51 @@ public class SvcController {
 		
 		return true;
 	}
+	
+	/**
+	 * 서비스 저장
+	 * @param param
+	 * @return resultMap
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/addSvc.do", method = RequestMethod.POST)
+	public HashMap<String, Object> addSvc(@RequestBody HashMap<String, Object> param) {
+		param.put("EVENT_ID", 1);
+		param.put("REG_USER_ID", 1);
+		// 서비스 저장
+		svcService.addSvc(param);
+		HashMap<String, Object> svc = svcService.getSvc(param);
+		
+		return svc;
+	}
+	
+	/**
+	 * 서비스 수정
+	 * @param param
+	 * @return resultMap
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/updateSvc.do", method = RequestMethod.POST)
+	public HashMap<String, Object> updateSvc(@RequestBody HashMap<String, Object> param) {
+		param.put("REG_USER_ID", 1);
+		// 서비스 저장
+		svcService.updateSvc(param);
+		HashMap<String, Object> svc = svcService.getSvc(param);
+		
+		return svc;
+	}
+	
+	/**
+	 * 서비스 삭제
+	 * @param param
+	 * @return resultMap
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/deleteSvcById.do", method = RequestMethod.POST)
+	public boolean deleteSvcById(@RequestBody HashMap<String, Object> param) {
+		// PKG 삭제
+		svcService.deleteSvcById(param);
+		
+		return true;
+	}
 }

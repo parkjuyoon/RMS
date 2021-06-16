@@ -44,17 +44,41 @@ $(document).ready(function() {
 		// 서비스 명 중복 체크
 		var isDup = $("#svcNmDupBtn").data("isDup");
 		if(isDup != 'Y') {
-			messagePop("warning", "서비스명 중복체크", "서비스명 중복체크를 먼저 해주세요.", "#svcNm");
+			messagePop("warning", "서비스명 중복체크", "서비스명 중복체크를 먼저 하세요.", "#svcNm");
+			return;
+		}
+		
+		// 연결된 채널 체크
+		var svcConnChannel = $("#svcConnChannel").val();
+		if(svcConnChannel == '') {
+			messagePop("warning", "서비스 연결 체크", "채널을 연결하세요.", "#svcConnChannel");
+			return;
+		}
+		
+		// 연결된 패키지 체크
+		var svcConnPkg = $("#svcConnPkg").val();
+		if(svcConnPkg == '') {
+			messagePop("warning", "서비스 연결 체크", "패키지를 연결하세요.", "#svcConnPkg");
 			return;
 		}
 		
 		if(confirm("변경사항을 저장하시겠습니까?")) {
 			var param = {};
+			param.svcId = $("#svcId").text();
 			param.svcNm = $("#svcNm").val();
+			param.channelId = $("#svcConnChannel").data("channel_id");
+			param.pkgId = $("#svcConnPkg").data("pkg_id");
 			param.svcActYn = $("#svcActYn").val();
 			param.svcDsc = $("#svcDsc").val();
 			
-			fnAddSvc(param);
+			if(param.svcId != '') {
+				// 수정
+				fnUpdateSvc(param);
+				
+			} else {
+				// 신규등록
+				fnAddSvc(param);
+			}
 		}
 	});
 	
@@ -79,6 +103,90 @@ $(document).ready(function() {
 	$("#svcNm").change(function() {
 		$("#svcDupY").hide();
 		$("#svcNmDupBtn").data("isDup", "N");
+	});
+	
+	// 서비스 상세 > 채널 연결 버튼 클릭
+	$("#svcConnChannelBtn").click(function() {
+		var searchObj = {};
+		fnChannelList(searchObj);
+	});
+	
+	// 서비스 상세 > 채널 연결 > 팝업 조회 버튼
+	$("#modal_channelSearchBtn").click(function() {
+		var searchObj = {};
+		searchObj.channelNm_search = $("#modal_channelNm_search").val();
+		fnChannelList(searchObj);
+	});
+	
+	// 서비스 상세 > 패키지 연결 버튼 클릭
+	$("#svcConnPkgBtn").click(function() {
+		var searchObj = {};
+		fnPkgList(searchObj);
+	});
+	
+	// 서비스 상세 > 패키지 연결 > 팝업 조회 버튼
+	$("#modal_pkgSearchBtn").click(function() {
+		var searchObj = {};
+		searchObj.pkgNm_search = $("#modal_pkgNm_search").val();
+		fnPkgList(searchObj);
+	});
+	
+	// 서비스 상세 > 채널 연결 > 팝업 적용 버튼
+	$("#modal_svcConnChannelSaveBtn").click(function() {
+		var channelId = $("._channelListRadio:checked").data("channel_id");
+		var channelNm = $("._channelListRadio:checked").data("channel_nm");
+		
+		$("#svcConnChannel").val(channelNm);
+		$("#svcConnChannel").attr("data-channel_id", channelId);
+		
+		close_layerPop('modal_svcConnChannel');
+	});
+	
+	// 서비스 상세 > 패키지 연결 > 팝업 적용 버튼
+	$("#modal_svcConnPkgSaveBtn").click(function() {
+		var pkgId = $("._pkgListRadio:checked").data("pkg_id");
+		var pkgNm = $("._pkgListRadio:checked").data("pkg_nm");
+		
+		$("#svcConnPkg").val(pkgNm);
+		$("#svcConnPkg").attr("data-pkg_id", pkgId);
+		
+		close_layerPop('modal_svcConnPkg');
+	});
+	
+	// 서비스 삭제 버튼
+	$("#deleteSvcBtn").click(function() {
+		var svcListChkBox = $("._svcListChkBox:checked");
+		
+		var svcIdArr = [];
+		$.each(svcListChkBox, function(idx, svcChkBox){
+			var svcId = svcListChkBox.eq(idx).attr("data-svc_id");
+		
+			svcIdArr.push(svcId);
+		});
+		
+		if(svcIdArr.length > 0) {
+			if(confirm(svcIdArr.length + "건의 서비스가 삭제됩니다.\n정말 삭제하시겠습니까?")) {
+				var param = {};
+				param.svcIdArr = svcIdArr;
+				
+				fnDeleteSvc(param);
+			}
+			
+		} else {
+			messagePop("warning", "서비스 삭제", "삭제할 서비스를 선택하세요.", "");
+		}
+	});
+	
+	// 서비스 목록 > 전체선택 체크박스
+	$("#svcListAllChkBox").click(function() {
+		var chked = $(this).prop("checked");
+		
+		if(chked) {
+			$(this).closest("table").find("._svcListChkBox").prop("checked", true);
+			
+		} else {
+			$(this).closest("table").find("._svcListChkBox").prop("checked", false);
+		}
 	});
 });
 
@@ -111,7 +219,7 @@ function fnSvcList(searchObj) {
 					html += "<tr>";
 					html += "	<td class='t_center'>";
 					html += "		<div class='checkbox-container'>";
-					html += "			<input type='checkbox' class='_svcListChkBox' data-svcId='"+ svc.SVC_ID +"'/>";
+					html += "			<input type='checkbox' class='_svcListChkBox' data-svc_id='"+ svc.SVC_ID +"'/>";
 					html += "			<label for='_svcListChkBox'></label>";
 					html += "		</div>";
 					html += "	</td>";
@@ -168,9 +276,9 @@ function fnSvcDetail(param) {
 			$("#svcId").text(svc.SVC_ID);
 			$("#svcNm").val(svc.SVC_NM);
 			$("#svcConnChannel").val(svc.CHANNEL_NM);
-			$("#svcConnChannel").attr("data-channelId", svc.CHANNEL_ID);
+			$("#svcConnChannel").attr("data-channel_id", svc.CHANNEL_ID);
 			$("#svcConnPkg").val(svc.PKG_NM);
-			$("#svcConnPkg").attr("data-pkgId", svc.PKG_ID);
+			$("#svcConnPkg").attr("data-pkg_id", svc.PKG_ID);
 			$("#svcActYn").val(svc.SVC_ACT_YN);
 			$("#svcDsc").val(svc.SVC_DSC);
 			$("#svcRegDt").text(svc.REG_DT + "에 " + svc.REG_USRID + "(님)이 등록함.");
@@ -205,7 +313,39 @@ function fnSvcDetail(param) {
  * @returns
  */
 function fnAddSvc(param) {
-	
+	$.ajax({
+		method : "POST",
+		url : "/targetai/addSvc.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			var searchObj = {};
+			searchObj.svcId_search = $("#svcId_search").val();
+			searchObj.svcActYn_search = $("#svcActYn_search option:selected").val();
+			searchObj.svcRegUsrId_search = $("#svcRegUsrId_search").val();
+			searchObj.svcNm_search = $("#svcNm_search").val();
+			
+			fnSvcList(searchObj);
+			
+			messagePop("success", "서비스가 저장되었습니다.", "", "");
+			$("#svcId").text(res.SVC_ID);
+			$("#svcRegDt").text(res.REG_DT + "에 " + res.REG_USRID + "(님)이 등록함.");
+		},
+		beforeSend : function() {
+			$("#svcLoading").show();
+		},
+		complete : function() {
+			$("#svcLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
 }
 
 /**
@@ -214,7 +354,38 @@ function fnAddSvc(param) {
  * @returns
  */
 function fnUpdateSvc(param) {
-	
+	$.ajax({
+		method : "POST",
+		url : "/targetai/updateSvc.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			var searchObj = {};
+			searchObj.svcId_search = $("#svcId_search").val();
+			searchObj.svcActYn_search = $("#svcActYn_search option:selected").val();
+			searchObj.svcRegUsrId_search = $("#svcRegUsrId_search").val();
+			searchObj.svcNm_search = $("#svcNm_search").val();
+			
+			fnSvcList(searchObj);
+			
+			messagePop("success", "서비스가 수정되었습니다.", "", "");
+			$("#svcUdtDt").text(res.UDT_DT + "에 " + res.UDT_USRID + "(님)이 수정함.");
+		},
+		beforeSend : function() {
+			$("#svcLoading").show();
+		},
+		complete : function() {
+			$("#svcLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
 }
 
 /**
@@ -242,6 +413,161 @@ function fnSvcNmCheck(param) {
 			$("#svcDupY").css("display", "");
 			$("#svcDupN").css("display", "none");
 			$("#svcNmDupBtn").data("isDup", "Y");
+		}
+	});
+}
+
+/**
+ * 서비스 상세 > 패키지 연결 > 패키지 목록
+ * @returns
+ */
+function fnPkgList(searchObj) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/getPkgList.do",
+		traditional: true,
+		data : JSON.stringify(searchObj),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			var pkgList = res.pkgList;
+			var pkgCount = res.pkgCount;
+			
+			var html = "";
+			
+			if(pkgList.length == 0) {
+				html += "<tr>";
+				html += "	<td colspan='4' class='t_center'>조회된 내용이 없습니다.</td>";
+				html += "</tr>";
+				
+			} else {
+				$.each(pkgList, function(idx, pkg){
+					html += "<tr>";
+					html += "	<td class='t_center'>";
+					html += "		<div class='checkbox-container'>";
+					html += "			<input type='radio' class='_pkgListRadio' data-pkg_id='"+ pkg.PKG_ID +"' data-pkg_nm='"+ pkg.PKG_NM +"'/>";
+					html += "			<label for='_pkgListRadio'></label>";
+					html += "		</div>";
+					html += "	</td>";
+					html += "	<td class='t_center'>" + pkg.PKG_ID + "</td>";
+					html += "	<td class='t_center'>" + pkg.PKG_NM + "</td>";
+					html += "	<td class='t_center'>" + pkg.DRL_NM + "</td>";
+					html += "</tr>";
+				});
+			}
+			
+			$("#modal_svcConnPkgList").html(html);
+		},
+		beforeSend : function() {
+			$("#modal_svcConnPkgLoading").show();
+		},
+		complete : function() {
+			$("#modal_svcConnPkgLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
+
+/**
+ * 서비스 상세 > 채널 연결 > 채널 목록
+ * @returns
+ */
+function fnChannelList(searchObj) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/getChannelList.do",
+		traditional: true,
+		data : JSON.stringify(searchObj),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			var channelList = res.channelList;
+			var channelCount = res.channelCount;
+			
+			var html = "";
+			
+			if(channelList.length == 0) {
+				html += "<tr>";
+				html += "	<td colspan='4' class='t_center'>조회된 내용이 없습니다.</td>";
+				html += "</tr>";
+				
+			} else {
+				$.each(channelList, function(idx, channel){
+					html += "<tr>";
+					html += "	<td class='t_center'>";
+					html += "		<div class='checkbox-container'>";
+					html += "			<input type='radio' class='_channelListRadio' data-channel_id='"+ channel.CHANNEL_ID +"' data-channel_nm='"+ channel.CHANNEL_NM +"'/>";
+					html += "			<label for='_channelListRadio'></label>";
+					html += "		</div>";
+					html += "	</td>";
+					html += "	<td class='t_center'>" + channel.CHANNEL_ID + "</td>";
+					html += "	<td class='t_center'>" + channel.CHANNEL_NM + "</td>";
+					html += "	<td class='t_center'>" + channel.CHANNEL_DSC + "</td>";
+					html += "</tr>";
+				});
+			}
+			
+			$("#modal_svcConnChannelList").html(html);
+		},
+		beforeSend : function() {
+			$("#modal_svcConnChannelLoading").show();
+		},
+		complete : function() {
+			$("#modal_svcConnChannelLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
+
+/**
+ * 서비스 목록 > 삭제
+ * @returns
+ */
+function fnDeleteSvc(param) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/deleteSvcById.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			if(res) {
+				var searchObj = {};
+				searchObj.svcId_search = $("#svcId_search").val();
+				searchObj.svcActYn_search = $("#svcActYn_search option:selected").val();
+				searchObj.svcRegUsrId_search = $("#svcRegUsrId_search").val();
+				searchObj.svcNm_search = $("#svcNm_search").val();
+				
+				fnSvcList(searchObj);
+				
+				messagePop("success", "서비스가 삭제되었습니다.", "", "");
+				fnInitSvcDetail();
+				$("#svcCard").addClass("card-collapsed");
+				$("#svcCardBody").css("display", "none");
+			}
+		},
+		beforeSend : function() {
+			$("#svcLoading").show();
+		},
+		complete : function() {
+			$("#svcLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
 		}
 	});
 }

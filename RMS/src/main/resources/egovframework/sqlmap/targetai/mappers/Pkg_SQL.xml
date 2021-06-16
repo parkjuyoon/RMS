@@ -23,6 +23,7 @@
 		<if test="pkgNm_search != null and pkgNm_search != ''">AND PKG_NM LIKE CONCAT('%', #{pkgNm_search}, '%')</if>
 		<if test="pkgActYn_search != null and pkgActYn_search != ''">AND PKG_ACT_YN = #{pkgActYn_search}</if>
 		<if test="pkgRegUsrId_search != null and pkgRegUsrId_search != ''">AND REG_USRID = #{pkgRegUsrId_search}</if>
+		ORDER BY PKG_ID DESC
 	</select>
 	
 	<!-- package 조회된 개수 조회 -->
@@ -108,6 +109,7 @@
 		<if test="ruleId_search != null and ruleId_search != ''">AND RULE_ID = #{ruleId_search}</if>
 	    <if test="ruleRegUsrId_search != null and ruleRegUsrId_search != ''">AND REG_USRID = #{ruleRegUsrId_search}</if>
 	    <if test="ruleNm_search != null and ruleNm_search != ''">AND RULE_NM LIKE CONCAT('%', #{ruleNm_search}, '%')</if>
+	    ORDER BY RULE_ID DESC
 	</select>
 	
 	<!-- RULE 조회된 개수 조회 -->

@@ -46,8 +46,7 @@ public class PkgController {
 	@ResponseBody
 	@RequestMapping(value = "/getPkgList.do", method = RequestMethod.POST)
 	public HashMap<String, Object> getPkgList(@RequestBody HashMap<String, Object> searchObj) {
-		HashMap<String, Object> resultMap = null;
-		resultMap = new HashMap<String, Object>();
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		List<HashMap<String, Object>> pkgList = pkgService.getPkgList(searchObj);
 		int pkgCount = pkgService.getPkgCount(searchObj);
 		resultMap.put("pkgList", pkgList);
@@ -96,7 +95,6 @@ public class PkgController {
 	@ResponseBody
 	@RequestMapping(value = "/pkgSave.do", method = RequestMethod.POST)
 	public boolean pkgSave(@RequestBody HashMap<String, Object> param) {
-		try {
 		param.put("REG_USER_ID", 1);
 		param.put("PATH", "/drl_files");
 		
@@ -106,10 +104,6 @@ public class PkgController {
 		String drlNm = param.get("pkgNm") + "_" + param.get("PKG_ID") + ".drl";
 		param.put("drlNm", drlNm);
 		pkgService.updateDrlFileNm(param);
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		
 		return true;
 	}

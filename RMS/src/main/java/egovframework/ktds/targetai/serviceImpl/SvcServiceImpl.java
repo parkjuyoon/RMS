@@ -37,4 +37,19 @@ public class SvcServiceImpl extends EgovAbstractServiceImpl implements SvcServic
 		return dao.svcNmCheck(param);
 	}
 
+	@Override
+	public void addSvc(HashMap<String, Object> param) {
+		dao.addSvc(param);		
+	}
+
+	@Override
+	public void updateSvc(HashMap<String, Object> param) {
+		dao.updateSvc(param);		
+	}
+
+	@Override
+	public void deleteSvcById(HashMap<String, Object> param) {
+		dao.deleteSvcById(param);		
+	}
+
 }

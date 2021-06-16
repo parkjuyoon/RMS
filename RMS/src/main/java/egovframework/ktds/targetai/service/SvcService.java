@@ -13,4 +13,10 @@ public interface SvcService {
 
 	int svcNmCheck(HashMap<String, Object> param);
 
+	void addSvc(HashMap<String, Object> param);
+
+	void updateSvc(HashMap<String, Object> param);
+
+	void deleteSvcById(HashMap<String, Object> param);
+
 }

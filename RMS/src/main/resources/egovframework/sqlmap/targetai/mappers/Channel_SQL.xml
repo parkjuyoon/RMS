@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.ktds.targetai.mapper.ChannelMapper">
+
+	<!-- 서비스 리스트 조회 -->
+	<select id="getChannelList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 
+			CHANNEL_ID,
+			CHANNEL_NM,
+			CHANNEL_DSC
+		FROM targetai.CHANNEL
+		WHERE 1=1
+		<if test="channelNm_search != null and channelNm_search != ''">AND CHANNEL_NM LIKE CONCAT('%', #{channelNm_search}, '%')</if>
+	</select>
+	
+	<!-- RULE 조회된 개수 조회 -->
+	<select id="getChannelCount"  parameterType="java.util.HashMap" resultType="int">
+		SELECT 
+			COUNT(*) AS CNT
+		FROM targetai.CHANNEL
+		WHERE 1=1
+		<if test="channelNm_search != null and channelNm_search != ''">AND CHANNEL_NM LIKE CONCAT('%', #{channelNm_search}, '%')</if>
+	</select>
+	
+</mapper>

@@ -27,6 +27,7 @@
 		<if test="svcNm_search != null and svcNm_search != ''">AND SVC_NM LIKE CONCAT('%', #{svcNm_search}, '%')</if>
 		<if test="svcActYn_search != null and svcActYn_search != ''">AND SVC_ACT_YN = #{svcActYn_search}</if>
 		<if test="svcRegUsrId_search != null and svcRegUsrId_search != ''">AND REG_USRID = #{svcRegUsrId_search}</if>
+		ORDER BY SVC_ID DESC
 	</select>
 	
 	<!-- 서비스 조회된 개수 조회 -->
@@ -76,4 +77,52 @@
 		<if test="svcId != ''">AND S.SVC_ID != #{svcId}</if>
 	</select>
 	
+	<!-- 서비스 저장 -->
+	<insert id="addSvc" parameterType="java.util.HashMap">
+		INSERT INTO targetai.SVC (
+			SVC_NM,
+			EVENT_ID,
+			SVC_ACT_YN,
+			SVC_DSC,
+			CHANNEL_ID,
+			PKG_ID,
+			REG_USRID
+		) VALUES (
+			#{svcNm},
+			#{EVENT_ID},
+			#{svcActYn},
+			#{svcDsc},
+			#{channelId},
+			#{pkgId},
+			#{REG_USER_ID}
+		)
+		<selectKey keyProperty="svcId" resultType="int" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<!-- 서비스 수정 -->
+	<insert id="updateSvc" parameterType="java.util.HashMap">
+		UPDATE targetai.SVC
+		SET
+			SVC_NM = #{svcNm},
+			CHANNEL_ID = #{channelId},
+			PKG_ID = #{pkgId},
+			SVC_ACT_YN = #{svcActYn},
+			SVC_DSC = #{svcDsc},
+			UDT_USRID = #{REG_USER_ID},
+			UDT_DT = NOW()
+		WHERE
+			SVC_ID = #{svcId}
+	</insert>
+	
+	<!-- 서비스 삭제 -->
+	<delete id="deleteSvcById" parameterType="java.util.HashMap">
+		DELETE FROM targetai.SVC
+		WHERE
+			SVC_ID IN 
+		<foreach collection="svcIdArr" item="svcId" separator="," open="(" close=")">
+			#{svcId}
+		</foreach>
+	</delete>
 </mapper>

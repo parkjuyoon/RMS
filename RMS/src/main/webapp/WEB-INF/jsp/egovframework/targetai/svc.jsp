@@ -46,7 +46,7 @@
 									<!-- 조회 -->
 									<div class="searcharea">
 										<div class="reset_btn-bottom">
-											<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-gray">초기화</button>
+											<button type="button" id="svcResetBtn" class="mg_t4 mg_r4 btn btn-sm btn-gray">초기화</button>
 										</div>
 										<div class="search_btn-bottom">
 											<button type="button" id="svcSearchBtn" class="mg_t4 mg_r4 btn btn-sm btn-darkblue">
@@ -62,7 +62,8 @@
 												<div class="form_group">
 													<label for="">활성여부</label>
 													<select id="svcActYn_search" class="wd150px">
-														<option value="" selected="selected">활성</option>
+														<option value="Y">활성</option>
+														<option value="N">비활성</option>
 													</select>
 												</div>
 												<div class="form_group">

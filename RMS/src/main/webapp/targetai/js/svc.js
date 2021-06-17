@@ -20,6 +20,11 @@ $(document).ready(function() {
 		fnSvcList(searchObj);
 	});
 	
+	// 서비스 검색 > 초기화 버튼 클릭
+	$("#svcResetBtn").click(function() {
+		fnInitSvcSearch();
+	});
+	
 	// 서비스 목록 > 서비스명 링크 클릭
 	$(document).on("click", "._svcNmLink", function(e) {
 		e.preventDefault();	// a링크 클릭이벤트 제거
@@ -49,27 +54,29 @@ $(document).ready(function() {
 		}
 		
 		// 연결된 채널 체크
-		var svcConnChannel = $("#svcConnChannel").val();
-		if(svcConnChannel == '') {
-			messagePop("warning", "서비스 연결 체크", "채널을 연결하세요.", "#svcConnChannel");
-			return;
-		}
+//		var svcConnChannel = $("#svcConnChannel").val();
+//		if(svcConnChannel == '') {
+//			messagePop("warning", "서비스 연결 체크", "채널을 연결하세요.", "#svcConnChannel");
+//			return;
+//		}
 		
 		// 연결된 패키지 체크
-		var svcConnPkg = $("#svcConnPkg").val();
-		if(svcConnPkg == '') {
-			messagePop("warning", "서비스 연결 체크", "패키지를 연결하세요.", "#svcConnPkg");
-			return;
-		}
+//		var svcConnPkg = $("#svcConnPkg").val();
+//		if(svcConnPkg == '') {
+//			messagePop("warning", "서비스 연결 체크", "패키지를 연결하세요.", "#svcConnPkg");
+//			return;
+//		}
 		
 		if(confirm("변경사항을 저장하시겠습니까?")) {
 			var param = {};
 			param.svcId = $("#svcId").text();
 			param.svcNm = $("#svcNm").val();
-			param.channelId = $("#svcConnChannel").data("channel_id");
-			param.pkgId = $("#svcConnPkg").data("pkg_id");
+			param.channelId = $("#svcConnChannel").attr("data-channel_id");
+			param.pkgId = $("#svcConnPkg").attr("data-pkg_id");
 			param.svcActYn = $("#svcActYn").val();
 			param.svcDsc = $("#svcDsc").val();
+			
+			console.log(param);
 			
 			if(param.svcId != '') {
 				// 수정
@@ -134,7 +141,9 @@ $(document).ready(function() {
 	// 서비스 상세 > 채널 연결 > 팝업 적용 버튼
 	$("#modal_svcConnChannelSaveBtn").click(function() {
 		var channelId = $("._channelListRadio:checked").data("channel_id");
+		channelId = (typeof channelId == 'undefined' ? "" : channelId);
 		var channelNm = $("._channelListRadio:checked").data("channel_nm");
+		channelNm = (typeof channelNm == 'undefined' ? "" : channelNm);
 		
 		$("#svcConnChannel").val(channelNm);
 		$("#svcConnChannel").attr("data-channel_id", channelId);
@@ -145,7 +154,9 @@ $(document).ready(function() {
 	// 서비스 상세 > 패키지 연결 > 팝업 적용 버튼
 	$("#modal_svcConnPkgSaveBtn").click(function() {
 		var pkgId = $("._pkgListRadio:checked").data("pkg_id");
+		pkgId = (typeof pkgId == 'undefined' ? "" : pkgId);
 		var pkgNm = $("._pkgListRadio:checked").data("pkg_nm");
+		pkgNm = (typeof pkgId == 'undefined' ? "" : pkgNm);
 		
 		$("#svcConnPkg").val(pkgNm);
 		$("#svcConnPkg").attr("data-pkg_id", pkgId);
@@ -224,9 +235,9 @@ function fnSvcList(searchObj) {
 					html += "		</div>";
 					html += "	</td>";
 					html += "	<td class='t_center'>" + svc.SVC_ID + "</td>";
-					html += "	<td class='t_center'>" + svc.CHANNEL_NM + "</td>";
+					html += "	<td class='t_center'>" + (typeof svc.CHANNEL_NM == 'undefined' ? '-' : svc.CHANNEL_NM) + "</td>";
 					html += "	<td class='t_center'><a href='#' class='_svcNmLink' data-svcId='"+ svc.SVC_ID +"'>" + svc.SVC_NM + "</a></td>";
-					html += "	<td class='t_center'>" + svc.PKG_NM + "</td>";
+					html += "	<td class='t_center'>" + (typeof svc.PKG_NM == 'undefined' ? '-' : svc.PKG_NM) + "</td>";
 					html += "	<td class='t_center'>" + svc.SVC_ACT_YN + "</td>";
 					html += "	<td class='t_center'>" + (typeof svc.UDT_DT == 'undefined' ? '-' : svc.UDT_DT) + "</td>";
 					html += "	<td class='t_center'>" + (typeof svc.UDT_USRID == 'undefined' ? '-' : svc.UDT_USRID) + "</td>";
@@ -570,6 +581,17 @@ function fnDeleteSvc(param) {
 			console.log(errorThrown);
 		}
 	});
+}
+
+/**
+ * 서비스 검색 초기화
+ * @returns
+ */
+function fnInitSvcSearch() {
+	$("#svcId_search").val("");
+	$("#svcRegUsrId_search").val("");
+	$("#svcActYn_search").val("Y");
+	$("#svcNm_search").val("");
 }
 
 /**

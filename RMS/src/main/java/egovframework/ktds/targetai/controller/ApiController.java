@@ -113,6 +113,14 @@ public class ApiController {
 		}
 	}
 	
+	/**
+	 * RULE 적용할 객체 조회
+	 * @param source
+	 * @param key
+	 * @param val
+	 * @return
+	 * @throws SQLException
+	 */
 	private JSONObject getMap(String source, String key, String val) throws SQLException {
 		JSONObject rsObj = new JSONObject();
 		DataSource dbSource = (DataSource) context.getBean("dataSource");
@@ -151,6 +159,12 @@ public class ApiController {
 		return rsObj;
 	}
 	
+	/**
+	 * RULE 실행 후 SALIENCE, ORDER 순으로 ASC 정렬하여 리턴
+	 * @param path
+	 * @param obj
+	 * @return
+	 */
 	private JSONArray resultJSON(String path, JSONObject obj) {
 		
 		// Drools 실행

@@ -103,7 +103,7 @@
 								<div class="card-body" id="svcListCardBody" style="">
 									<div class="progress_loading">
 										<div id="svcLoading">
-											<img src="/targetai_publish/images/ajax-loader.gif" />
+											<img src="/targetai_publish/images/ajax-loader1.gif" />
 										</div>
 									</div>
 									<!-- 테이블 -->
@@ -146,22 +146,7 @@
 									<!-- //테이블 -->
 
 									<!-- 페이징 -->
-									<div class="custom-paging">
-										<a href="#" class="prev_start">맨앞</a>
-										<a href="#" class="prev">이전</a>
-										<a href="#" class="active">1</a>
-										<a href="#">2</a>
-										<a href="#">3</a>
-										<a href="#">4</a>
-										<a href="#">5</a>
-										<a href="#">6</a>
-										<a href="#">7</a>
-										<a href="#">8</a>
-										<a href="#">9</a>
-										<a href="#">10</a>
-										<a href="#" class="next">다음</a>
-										<a href="#" class="next_end">맨뒤</a>
-									</div>
+									<div class="custom-paging" id="svcListPaging"></div>
 									<!-- //페이징 -->
 
 									<!-- 버튼 -->
@@ -251,7 +236,7 @@
 																							<div class="card-body" style="">
 																								<div class="progress_loading">
 																									<div id="modal_svcConnChannelLoading">
-																										<img src="/targetai_publish/images/ajax-loader.gif" />
+																										<img src="/targetai_publish/images/ajax-loader1.gif" />
 																									</div>
 																								</div>
 																								<!-- 조회 -->
@@ -295,22 +280,7 @@
 																								<!-- //테이블 -->
 
 																								<!-- 페이징 -->
-																								<div class="custom-paging">
-																									<a href="#" class="prev_start">맨앞</a>
-																									<a href="#" class="prev">이전</a>
-																									<a href="#" class="active">1</a>
-																									<a href="#">2</a>
-																									<a href="#">3</a>
-																									<a href="#">4</a>
-																									<a href="#">5</a>
-																									<a href="#">6</a>
-																									<a href="#">7</a>
-																									<a href="#">8</a>
-																									<a href="#">9</a>
-																									<a href="#">10</a>
-																									<a href="#" class="next">다음</a>
-																									<a href="#" class="next_end">맨뒤</a>
-																								</div>
+																								<div class="custom-paging" id="modal_svcConnChannelPaging"></div>
 																								<!-- //페이징 -->
 
 																								<!-- 버튼 -->
@@ -366,7 +336,7 @@
 																							<div class="card-body" style="">
 																								<div class="progress_loading">
 																									<div id="modal_svcConnPkgLoading">
-																										<img src="/targetai_publish/images/ajax-loader.gif" />
+																										<img src="/targetai_publish/images/ajax-loader1.gif" />
 																									</div>
 																								</div>
 																								<!-- 조회 -->
@@ -410,22 +380,7 @@
 																								<!-- //테이블 -->
 
 																								<!-- 페이징 -->
-																								<div class="custom-paging">
-																									<a href="#" class="prev_start">맨앞</a>
-																									<a href="#" class="prev">이전</a>
-																									<a href="#" class="active">1</a>
-																									<a href="#">2</a>
-																									<a href="#">3</a>
-																									<a href="#">4</a>
-																									<a href="#">5</a>
-																									<a href="#">6</a>
-																									<a href="#">7</a>
-																									<a href="#">8</a>
-																									<a href="#">9</a>
-																									<a href="#">10</a>
-																									<a href="#" class="next">다음</a>
-																									<a href="#" class="next_end">맨뒤</a>
-																								</div>
+																								<div class="custom-paging" id="modal_svcConnPkgPaging"></div>
 																								<!-- //페이징 -->
 
 																								<!-- 버튼 -->
@@ -500,6 +455,7 @@
 
 <!-- App js-->
 <script src="/targetai/js/svc.js"></script>
+<script src="/targetai/js/common.js"></script>
 <script src="/targetai_publish/js/app.js" type="text/javascript"></script>
 <script src="/targetai_publish/libs/jquery-ui/jquery-ui.js" type="text/javascript"></script>
 

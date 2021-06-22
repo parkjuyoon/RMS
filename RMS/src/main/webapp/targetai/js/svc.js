@@ -7,6 +7,7 @@
 $(document).ready(function() {
 	// 서비스 리스트 조회
 	var searchObj = {};
+	searchObj.currentPage = 1;
 	fnSvcList(searchObj);
 	
 	// 서비스 검색 > 조회 버튼 클릭
@@ -16,6 +17,7 @@ $(document).ready(function() {
 		searchObj.svcActYn_search = $("#svcActYn_search option:selected").val();
 		searchObj.svcRegUsrId_search = $("#svcRegUsrId_search").val();
 		searchObj.svcNm_search = $("#svcNm_search").val();
+		searchObj.currentPage = 1;
 		
 		fnSvcList(searchObj);
 	});
@@ -45,7 +47,8 @@ $(document).ready(function() {
 	});
 	
 	// 신규 서비스 생성 > 서비스 상세 > 저장 버튼
-	$("#saveSvcBtn").click(function() {
+	$("#saveSvcBtn").on("click", function() {
+		$(":focus").blur();
 		// 서비스 명 중복 체크
 		var isDup = $("#svcNmDupBtn").data("isDup");
 		if(isDup != 'Y') {
@@ -54,18 +57,18 @@ $(document).ready(function() {
 		}
 		
 		// 연결된 채널 체크
-//		var svcConnChannel = $("#svcConnChannel").val();
-//		if(svcConnChannel == '') {
-//			messagePop("warning", "서비스 연결 체크", "채널을 연결하세요.", "#svcConnChannel");
-//			return;
-//		}
+		var svcConnChannel = $("#svcConnChannel").val();
+		if(svcConnChannel == '') {
+			messagePop("warning", "서비스 연결 체크", "채널을 연결하세요.", "#svcConnChannel");
+			return;
+		}
 		
 		// 연결된 패키지 체크
-//		var svcConnPkg = $("#svcConnPkg").val();
-//		if(svcConnPkg == '') {
-//			messagePop("warning", "서비스 연결 체크", "패키지를 연결하세요.", "#svcConnPkg");
-//			return;
-//		}
+		var svcConnPkg = $("#svcConnPkg").val();
+		if(svcConnPkg == '') {
+			messagePop("warning", "서비스 연결 체크", "패키지를 연결하세요.", "#svcConnPkg");
+			return;
+		}
 		
 		if(confirm("변경사항을 저장하시겠습니까?")) {
 			var param = {};
@@ -75,8 +78,6 @@ $(document).ready(function() {
 			param.pkgId = $("#svcConnPkg").attr("data-pkg_id");
 			param.svcActYn = $("#svcActYn").val();
 			param.svcDsc = $("#svcDsc").val();
-			
-			console.log(param);
 			
 			if(param.svcId != '') {
 				// 수정
@@ -115,6 +116,7 @@ $(document).ready(function() {
 	// 서비스 상세 > 채널 연결 버튼 클릭
 	$("#svcConnChannelBtn").click(function() {
 		var searchObj = {};
+		searchObj.currentPage = 1;
 		fnChannelList(searchObj);
 	});
 	
@@ -122,12 +124,14 @@ $(document).ready(function() {
 	$("#modal_channelSearchBtn").click(function() {
 		var searchObj = {};
 		searchObj.channelNm_search = $("#modal_channelNm_search").val();
+		searchObj.currentPage = 1;
 		fnChannelList(searchObj);
 	});
 	
 	// 서비스 상세 > 패키지 연결 버튼 클릭
 	$("#svcConnPkgBtn").click(function() {
 		var searchObj = {};
+		searchObj.currentPage = 1;
 		fnPkgList(searchObj);
 	});
 	
@@ -135,6 +139,7 @@ $(document).ready(function() {
 	$("#modal_pkgSearchBtn").click(function() {
 		var searchObj = {};
 		searchObj.pkgNm_search = $("#modal_pkgNm_search").val();
+		searchObj.currentPage = 1;
 		fnPkgList(searchObj);
 	});
 	
@@ -166,6 +171,7 @@ $(document).ready(function() {
 	
 	// 서비스 삭제 버튼
 	$("#deleteSvcBtn").click(function() {
+		$(":focus").blur();
 		var svcListChkBox = $("._svcListChkBox:checked");
 		
 		var svcIdArr = [];
@@ -199,6 +205,45 @@ $(document).ready(function() {
 			$(this).closest("table").find("._svcListChkBox").prop("checked", false);
 		}
 	});
+	
+	// 서비스 리스트 페이지 번호 클릭
+	$("#svcListPaging").on("click", "._paging", function(e) {
+		var cls = $(this).attr("class");
+		const pageNum = $(this).attr("data-page_num");
+		
+		var searchObj = {};
+		searchObj.svcId_search = $("#svcId_search").val();
+		searchObj.svcActYn_search = $("#svcActYn_search option:selected").val();
+		searchObj.svcRegUsrId_search = $("#svcRegUsrId_search").val();
+		searchObj.svcNm_search = $("#svcNm_search").val();
+		searchObj.currentPage = parseInt(pageNum);
+		
+		fnSvcList(searchObj);
+	});
+	
+	// 채널 연결 팝업 > 리스트 페이지 번호 클릭
+	$("#modal_svcConnChannelPaging").on("click", "._paging", function(e) {
+		var cls = $(this).attr("class");
+		const pageNum = $(this).attr("data-page_num");
+		
+		var searchObj = {};
+		searchObj.channelNm_search = $("#modal_channelNm_search").val();
+		searchObj.currentPage = parseInt(pageNum);
+		
+		fnChannelList(searchObj);
+	});
+	
+	// 패키지 연결 팝업 > 리스트 페이지 번호 클릭
+	$("#modal_svcConnPkgPaging").on("click", "._paging", function(e) {
+		var cls = $(this).attr("class");
+		const pageNum = $(this).attr("data-page_num");
+		
+		var searchObj = {};
+		searchObj.pkgNm_search = $("#modal_pkgNm_search").val();
+		searchObj.currentPage = parseInt(pageNum);
+		
+		fnPkgList(searchObj);
+	});
 });
 
 /**
@@ -207,6 +252,9 @@ $(document).ready(function() {
  * @returns
  */
 function fnSvcList(searchObj) {
+	searchObj.limit = 10;
+	searchObj.offset = searchObj.currentPage*searchObj.limit-searchObj.limit;
+	
 	$.ajax({
 		method : "POST",
 		url : "/targetai/getSvcList.do",
@@ -216,7 +264,7 @@ function fnSvcList(searchObj) {
 		dataType : "json",
 		success : function(res) {
 			var svcList = res.svcList;
-			var svcCount = res.svcCount;
+			searchObj.totalCount = res.svcCount;
 			
 			var html = "";
 			
@@ -248,7 +296,8 @@ function fnSvcList(searchObj) {
 			}
 			
 			$("#svcList").html(html);
-			$("#svcCountBySearch").text(svcCount);
+			$("#svcCountBySearch").text(searchObj.totalCount);
+			fnPaging("#svcListPaging", searchObj);
 			
 			// 전체 체크 해제
 			$("#svcListAllChkBox").prop("checked", false);
@@ -333,11 +382,8 @@ function fnAddSvc(param) {
 		dataType : "json",
 		success : function(res) {
 			var searchObj = {};
-			searchObj.svcId_search = $("#svcId_search").val();
-			searchObj.svcActYn_search = $("#svcActYn_search option:selected").val();
-			searchObj.svcRegUsrId_search = $("#svcRegUsrId_search").val();
-			searchObj.svcNm_search = $("#svcNm_search").val();
-			
+			searchObj.currentPage = 1;
+			fnInitSvcSearch();
 			fnSvcList(searchObj);
 			
 			messagePop("success", "서비스가 저장되었습니다.", "", "");
@@ -374,11 +420,8 @@ function fnUpdateSvc(param) {
 		dataType : "json",
 		success : function(res) {
 			var searchObj = {};
-			searchObj.svcId_search = $("#svcId_search").val();
-			searchObj.svcActYn_search = $("#svcActYn_search option:selected").val();
-			searchObj.svcRegUsrId_search = $("#svcRegUsrId_search").val();
-			searchObj.svcNm_search = $("#svcNm_search").val();
-			
+			searchObj.currentPage = 1;
+			fnInitSvcSearch();
 			fnSvcList(searchObj);
 			
 			messagePop("success", "서비스가 수정되었습니다.", "", "");
@@ -433,6 +476,9 @@ function fnSvcNmCheck(param) {
  * @returns
  */
 function fnPkgList(searchObj) {
+	searchObj.limit = 10;
+	searchObj.offset = searchObj.currentPage*searchObj.limit-searchObj.limit;
+	
 	$.ajax({
 		method : "POST",
 		url : "/targetai/getPkgList.do",
@@ -442,7 +488,7 @@ function fnPkgList(searchObj) {
 		dataType : "json",
 		success : function(res) {
 			var pkgList = res.pkgList;
-			var pkgCount = res.pkgCount;
+			searchObj.totalCount = res.pkgCount;
 			
 			var html = "";
 			
@@ -468,6 +514,7 @@ function fnPkgList(searchObj) {
 			}
 			
 			$("#modal_svcConnPkgList").html(html);
+			fnPaging("#modal_svcConnPkgPaging", searchObj);
 		},
 		beforeSend : function() {
 			$("#modal_svcConnPkgLoading").show();
@@ -489,6 +536,9 @@ function fnPkgList(searchObj) {
  * @returns
  */
 function fnChannelList(searchObj) {
+	searchObj.limit = 10;
+	searchObj.offset = searchObj.currentPage*searchObj.limit-searchObj.limit;
+	
 	$.ajax({
 		method : "POST",
 		url : "/targetai/getChannelList.do",
@@ -498,7 +548,7 @@ function fnChannelList(searchObj) {
 		dataType : "json",
 		success : function(res) {
 			var channelList = res.channelList;
-			var channelCount = res.channelCount;
+			searchObj.totalCount = res.channelCount;
 			
 			var html = "";
 			
@@ -524,6 +574,7 @@ function fnChannelList(searchObj) {
 			}
 			
 			$("#modal_svcConnChannelList").html(html);
+			fnPaging("#modal_svcConnChannelPaging", searchObj);
 		},
 		beforeSend : function() {
 			$("#modal_svcConnChannelLoading").show();
@@ -555,11 +606,8 @@ function fnDeleteSvc(param) {
 		success : function(res) {
 			if(res) {
 				var searchObj = {};
-				searchObj.svcId_search = $("#svcId_search").val();
-				searchObj.svcActYn_search = $("#svcActYn_search option:selected").val();
-				searchObj.svcRegUsrId_search = $("#svcRegUsrId_search").val();
-				searchObj.svcNm_search = $("#svcNm_search").val();
-				
+				searchObj.currentPage = 1;
+				fnInitSvcSearch();
 				fnSvcList(searchObj);
 				
 				messagePop("success", "서비스가 삭제되었습니다.", "", "");

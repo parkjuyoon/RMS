@@ -11,6 +11,9 @@
 		FROM targetai.CHANNEL
 		WHERE 1=1
 		<if test="channelNm_search != null and channelNm_search != ''">AND CHANNEL_NM LIKE CONCAT('%', #{channelNm_search}, '%')</if>
+		ORDER BY CHANNEL_ID DESC
+		LIMIT #{limit}
+		OFFSET #{offset}
 	</select>
 	
 	<!-- RULE 조회된 개수 조회 -->

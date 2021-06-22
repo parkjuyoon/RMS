@@ -28,6 +28,8 @@
 		<if test="svcActYn_search != null and svcActYn_search != ''">AND SVC_ACT_YN = #{svcActYn_search}</if>
 		<if test="svcRegUsrId_search != null and svcRegUsrId_search != ''">AND REG_USRID = #{svcRegUsrId_search}</if>
 		ORDER BY SVC_ID DESC
+		LIMIT #{limit}
+		OFFSET #{offset}
 	</select>
 	
 	<!-- 서비스 조회된 개수 조회 -->

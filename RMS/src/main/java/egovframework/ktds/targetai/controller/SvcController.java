@@ -46,9 +46,9 @@ public class SvcController {
 	public HashMap<String, Object> getPkgList(@RequestBody HashMap<String, Object> searchObj) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		List<HashMap<String, Object>> pkgList = svcService.getSvcList(searchObj);
-		int pkgCount = svcService.getSvcCount(searchObj);
+		int totalCount = svcService.getSvcCount(searchObj);
 		resultMap.put("svcList", pkgList);
-		resultMap.put("svcCount", pkgCount);
+		resultMap.put("svcCount", totalCount);
 		
 		return resultMap;
 	}

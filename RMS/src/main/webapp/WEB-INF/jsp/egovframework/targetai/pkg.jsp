@@ -32,7 +32,7 @@
 										<div class="card-body body-header" style="">
 											<div class="progress_loading">
 												<div id="drlSourcePopLoading">
-													<img src="/targetai_publish/images/ajax-loader.gif" />
+													<img src="/targetai_publish/images/ajax-loader1.gif" />
 												</div>
 											</div>
 											<header class="card-header card-header-pd-mobile">
@@ -110,7 +110,7 @@
 									<!-- 조회 -->
 									<div class="searcharea">
 										<div class="reset_btn-bottom">
-											<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-gray">초기화</button>
+											<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-gray" id="pkgResetBtn">초기화</button>
 										</div>
 										<div class="search_btn-bottom">
 											<button type="button" id="pkgSearchBtn" class="mg_t4 mg_r4 btn btn-sm btn-darkblue">
@@ -166,7 +166,7 @@
 								<div class="card-body" id="pkgCardListBody" style="">
 									<div class="progress_loading">
 										<div id="pkgLoading">
-											<img src="/targetai_publish/images/ajax-loader.gif" />
+											<img src="/targetai_publish/images/ajax-loader1.gif" />
 										</div>
 									</div>
 									<!-- 테이블 -->
@@ -207,22 +207,7 @@
 									<!-- //테이블 -->
 
 									<!-- 페이징 -->
-									<div class="custom-paging">
-										<a href="#" class="prev_start">맨앞</a>
-										<a href="#" class="prev">이전</a>
-										<a href="#" class="active">1</a>
-										<a href="#">2</a>
-										<a href="#">3</a>
-										<a href="#">4</a>
-										<a href="#">5</a>
-										<a href="#">6</a>
-										<a href="#">7</a>
-										<a href="#">8</a>
-										<a href="#">9</a>
-										<a href="#">10</a>
-										<a href="#" class="next">다음</a>
-										<a href="#" class="next_end">맨뒤</a>
-									</div>
+									<div class="custom-paging" id="pkgListPaging"></div>
 									<!-- //페이징 -->
 
 									<!-- 버튼 -->
@@ -346,7 +331,7 @@
 									<!-- 조회 -->
 									<div class="searcharea">
 										<div class="reset_btn-bottom">
-											<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-gray">초기화</button>
+											<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-gray" id="ruleResetBtn">초기화</button>
 										</div>
 										<div class="search_btn-bottom">
 											<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-darkblue" id="ruleSearchBtn" data-pkgId="">
@@ -392,7 +377,7 @@
 								<div class="card-body" id="ruleListCardBody" style="display: none;">
 									<div class="progress_loading">
 										<div id="ruleLoading">
-											<img src="/targetai_publish/images/ajax-loader.gif" />
+											<img src="/targetai_publish/images/ajax-loader1.gif" />
 										</div>
 									</div>
 									<!-- 테이블 -->
@@ -430,22 +415,7 @@
 									<!-- //테이블 -->
 
 									<!-- 페이징 -->
-									<div class="custom-paging">
-										<a href="#" class="prev_start">맨앞</a>
-										<a href="#" class="prev">이전</a>
-										<a href="#" class="active">1</a>
-										<a href="#">2</a>
-										<a href="#">3</a>
-										<a href="#">4</a>
-										<a href="#">5</a>
-										<a href="#">6</a>
-										<a href="#">7</a>
-										<a href="#">8</a>
-										<a href="#">9</a>
-										<a href="#">10</a>
-										<a href="#" class="next">다음</a>
-										<a href="#" class="next_end">맨뒤</a>
-									</div>
+									<div class="custom-paging" id="ruleListPaging"></div>
 									<!-- //페이징 -->
 
 									<!-- 버튼 -->
@@ -513,7 +483,7 @@
 																								<td class="t_left bd_b_none bg01 v_top" rowspan="6">
 																									<div class="progress_loading">
 																										<div id="factorTreeLoading" style="display: none;">
-																											<img src="/targetai_publish/images/ajax-loader.gif" />
+																											<img src="/targetai_publish/images/ajax-loader1.gif" />
 																										</div>
 																									</div> <!-- 트리메뉴 -->
 																									<ul id="factorTree" class="ztree treewrap"></ul> <!-- <div id="factorTree" class="treewrap"></div> --> <!-- //트리메뉴 -->
@@ -697,6 +667,7 @@
 	
 <!-- App js-->
 <script src="/targetai/js/pkg.js"></script>
+<script src="/targetai/js/common.js"></script>
 <script src="/targetai_publish/js/app.js" type="text/javascript"></script>
 <script src="/targetai_publish/libs/jquery-ui/jquery-ui.js" type="text/javascript"></script>
 

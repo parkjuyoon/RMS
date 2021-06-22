@@ -20,6 +20,12 @@
 			$(focusId).focus();
 		}
 	});
+	
+	$(document).on("keyup", function(key) {
+		if(key.keyCode == 13 && document.getElementById("modalID_message").style.display == 'block') {
+			document.getElementById("modalID_message").style.display = 'none'
+		}
+	});
 
 	/**
 	 * @param type message팝업 타입(warning, success, confirm)
@@ -29,6 +35,7 @@
 	 * @returns
 	 */
 	function messagePop(type, title, contents, focusId) {
+		$(":focus").blur();
 		$("#messagePop_img").removeClass();
 		
 		if(type == 'warning') {

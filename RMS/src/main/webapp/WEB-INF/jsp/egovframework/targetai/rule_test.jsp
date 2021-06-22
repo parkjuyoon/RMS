@@ -23,7 +23,7 @@
 								<div class="card-body body-header" style="">
 									<div class="progress_loading">
 										<div id="ruleTestPopLoading">
-											<img src="/targetai_publish/images/ajax-loader.gif" />
+											<img src="/targetai_publish/images/ajax-loader1.gif" />
 										</div>
 									</div>
 									<header class="card-header card-header-pd-mobile">

@@ -94,7 +94,7 @@ public class PkgController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/pkgSave.do", method = RequestMethod.POST)
-	public boolean pkgSave(@RequestBody HashMap<String, Object> param) {
+	public HashMap<String, Object> pkgSave(@RequestBody HashMap<String, Object> param) {
 		param.put("REG_USER_ID", 1);
 		param.put("PATH", "/drl_files");
 		
@@ -105,7 +105,10 @@ public class PkgController {
 		param.put("drlNm", drlNm);
 		pkgService.updateDrlFileNm(param);
 		
-		return true;
+		param.put("pkgId", (int) param.get("PKG_ID"));
+		HashMap<String, Object> pkg = pkgService.getPkg(param);
+		
+		return pkg;
 	}
 	
 	/**

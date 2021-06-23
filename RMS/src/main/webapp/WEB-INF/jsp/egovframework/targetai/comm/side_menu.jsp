@@ -1,8 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
-<%@ include file="../rule_test.jsp"%>
-
 <!-- 좌측영역 -->
 <div class="left-side-menu">
 	<div class="h-100" >
@@ -41,7 +39,7 @@
 									<a class="nav-link" href="/targetai/pkg.do">Package</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" href="#" id="ruleTestPopBtn">RULE TEST</a>
+									<a class="nav-link" href="#" id="">API</a>
 								</li>
 							</ul>
 						</div>

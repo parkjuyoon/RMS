@@ -161,4 +161,9 @@ public class PkgServiceImpl extends EgovAbstractServiceImpl implements PkgServic
 	public void updatePkg(HashMap<String, Object> param) {
 		dao.updatePkg(param);		
 	}
+
+	@Override
+	public List<HashMap<String, Object>> getRuleAttrByPkgId(HashMap<String, Object> param) {
+		return dao.getRuleAttrByPkgId(param);
+	}
 }

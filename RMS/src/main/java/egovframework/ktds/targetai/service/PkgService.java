@@ -62,4 +62,6 @@ public interface PkgService {
 	List<String> getRuleIdsByPkgId(HashMap<String, Object> param);
 
 	void updatePkg(HashMap<String, Object> param);
+
+	List<HashMap<String, Object>> getRuleAttrByPkgId(HashMap<String, Object> param);
 }

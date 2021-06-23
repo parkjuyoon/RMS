@@ -17,7 +17,6 @@ $(document).ready(function() {
 	$("#pkgSearchBtn").click(function() {
 		var searchObj = {};
 		searchObj.pkgId_search = $("#pkgId_search").val();
-		searchObj.pkgActYn_search = $("#pkgActYn_search option:selected").val();
 		searchObj.pkgRegUsrId_search = $("#pkgRegUsrId_search").val();
 		searchObj.pkgNm_search = $("#pkgNm_search").val();
 		searchObj.currentPage = 1;
@@ -146,6 +145,7 @@ $(document).ready(function() {
 		$("#ruleListCardBody").css("display", "none");	// RULE 목록 닫기
 		$("#ruleCntInPkgBySearch").text("");	// RULE 목록 건수 초기화
 		$("#ruleSearchBtn").attr("data-pkgId", "");	// RULE 검색 조회 버튼 PKG_ID 초기화
+		$("#ruleTestPopBtn").hide();	// RULE TEST OPEN 버튼 감추기
 	});
 	
 	// PKG 상세 > PKG 명 변경시 중복체크  요청
@@ -194,7 +194,6 @@ $(document).ready(function() {
 			var param = {};
 			param.pkgId = $("#pkgId").text();
 			param.pkgNm = $("#pkgNm").val();
-			param.pkgActYn = $("#pkgActYn").val();
 			param.pkgDsc = $("#pkgDsc").val();
 			
 			if(param.pkgId != '') {
@@ -723,6 +722,113 @@ $(document).ready(function() {
 	$("#ruleResetBtn").click(function() {
 		fnInitRuleSearch();
 	});
+	
+	// 패키지 상세 > RULE TEST OPEN 버튼 클릭
+	$("#ruleTestPopBtn").click(function() {
+		var param = {};
+		param.pkgId = $("#pkgId").text();
+		
+		fnRuleTest(param);
+	});
+	
+	// 패키지 상세 > RULE TEST 팝업 > RULE 속성명 클릭
+	$(document).on("click", "._ruleTestPop_factorNm", function(e) {
+		e.preventDefault();
+		
+		var factorNmEn = $(this).attr("data-factorNmEn");
+		var factorNm = $(this).text();
+
+		var html = "";
+		html += "<div class='oneline_group'>";
+		html += "	<div class='form_group'>";
+		html += "		<label for=''>KEY</label> <input type='text' name='ruleTestPop_key' value='"+ factorNmEn +"' readonly='readonly'/>";
+		html += "	</div>";
+		html += "	<div class='form_group'>";
+		html += "		<label for=''>VALUE</label> <input type='text' name='ruleTestPop_value' class='wd150px'/>";
+		html += "	</div>";
+		html += "	<button type='button' class='btn btn-sm btn-red _ruleTestPop_del' style='color: white'>삭제</button>";
+		html += "</div>";
+		
+		$("#ruleTestPop_input").append(html);
+	});
+	
+	// RULE TEST 메뉴 > 속성 삭제 버튼 클릭
+	var keyValueArr = [];
+
+	$(document).on("click", "._ruleTestPop_del", function() {
+//		var delIdx = $(".ruleTestPop_resBtn").index(this);
+//		keyValueArr.splice(delIdx, 1);
+//		$(this).closest(".oneline_group").remove();
+	});
+
+	// RULE TEST 메뉴 결과확인 버튼 클릭
+	$(document).on("click", "#ruleTestPop_resBtn", function() {
+		var drlPath = $(this).attr("data-drlPath");
+		
+		if(drlPath == '-1') {
+			messagePop("warning", "RULE TEST 체크", "Package를 선택하세요.", "");
+			return;
+		}
+		
+		var keyArr = $("input[name='ruleTestPop_key']");
+		var keyVal = $("input[name='ruleTestPop_value']");
+		
+		for(var i=0; i<keyArr.length; i++) {
+			var key = keyArr.eq(i).val();
+			var val = keyVal.eq(i).val();
+			
+			if(key == '' || val == '') {
+				messagePop("warning", "KEY / VALUE 체크", "빈값을 포함할 수 없습니다.", "");
+				return;
+			}
+			
+			var keyValue = key + ":" + val;
+			
+			keyValueArr.push(keyValue);
+		}
+		
+		var param = {};
+		param.drlPath = drlPath;
+		param.keyValueArr = keyValueArr;
+		
+		$.ajax({
+			method : "POST",
+			url : "/targetai/ruleTest.do",
+			traditional: true,
+			data : JSON.stringify(param),
+			contentType:'application/json; charset=utf-8',
+			dataType : "json",
+			success : function(res) {
+				if(res.length < 1) {
+					$("#ruleTestResPop_res").val("Output 결과가 없습니다.");
+					
+				} else {
+					$("#ruleTestResPop_res").val(JSON.stringify(res, null, 4));
+				}
+				
+				$("#ruleTestResPop").show();
+			},
+			beforeSend : function() {
+				$("#ruleTestPopLoading").show();
+			},
+			complete : function() {
+				$("#ruleTestPopLoading").hide();
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+				console.log(jqXHR);
+				console.log(textStatus);
+				console.log(errorThrown);
+			}
+		});
+		
+		keyValueArr = [];
+	});
+
+	// RULE TEST 팝업 닫기
+	$(document).on("click", "._ruleTestPop_close", function() {
+		$("#ruleTestPop_input").html("");
+	});
 });
 
 /**
@@ -764,7 +870,6 @@ function getPkgList(searchObj) {
 					html += "	<td class='t_center'>" + pkgList[i].PKG_ID + "</td>";
 					html += "	<td class='t_center'><a href='#' class='_pkgNmLink' data-pkgId='"+ pkgList[i].PKG_ID +"'>" + pkgList[i].PKG_NM + "</a></td>";
 					html += "	<td class='t_center'><a href='#' class='_drlNmLink' data-pkgId='"+ pkgList[i].PKG_ID +"'>" + pkgList[i].DRL_NM + "</a></td>";
-					html += "	<td class='t_center'>" + pkgList[i].PKG_ACT_YN + "</td>";
 					html += "	<td class='t_center'>" + (typeof pkgList[i].UDT_DT == 'undefined' ? '-' : pkgList[i].UDT_DT) + "</td>";
 					html += "	<td class='t_center'>" + (typeof pkgList[i].UDT_USRID == 'undefined' ? '-' : pkgList[i].UDT_USRID) + "</td>";
 					html += "	<td class='t_center'>" + pkgList[i].REG_DT + "</td>";
@@ -824,6 +929,16 @@ function fnGetPkg(param) {
 			}
 			
 			$("#ruleSearchBtn").attr("data-pkgId", pkg.PKG_ID);
+			
+			console.log(pkg.RULE_COUNT_IN_PKG);
+			
+			if(pkg.RULE_COUNT_IN_PKG > 0) {
+				var drlPath = pkg.PATH + "/" + pkg.PKG_NM + "/" + pkg.DRL_NM;
+				$("#ruleTestPop_resBtn").attr("data-drlPath", drlPath);
+				$("#ruleTestPopBtn").show();
+			} else {
+				$("#ruleTestPopBtn").hide()
+			}
 			
 			var searchObj = {};
 			searchObj.pkgId = pkg.PKG_ID;
@@ -1363,6 +1478,57 @@ function fnPkgNmCheck(param) {
 }
 
 /**
+ * RULE TEST OPEN 팝업 내 RULE 속성
+ * @param param
+ * @returns
+ */
+function fnRuleTest(param) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/getRuleAttrByPkgId.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			var ruleAttrList = res.ruleAttrList;
+			var html = "";
+			
+			$.each(ruleAttrList, function(idx, ruleAttr) {
+				if(idx == 0 || (idx != 0 && ruleAttrList[idx-1].RELATION == '')) {
+					html += "\""+ ruleAttr.RULE_NM +"\"";
+					html += "\n";
+				}
+				
+				// [고객 : 인터넷결합여부] =="N"&& 형식으로 출력
+				if(ruleAttr.LOGICAL == 'in' || ruleAttr.LOGICAL == 'not in') {
+					html += "	["+ ruleAttr.FACTOR_GRP_NM +" : <a href='#' class='_ruleTestPop_factorNm' data-factorNmEn='"+ ruleAttr.FACTOR_NM_EN +"'>"+ ruleAttr.FACTOR_NM +"</a>] "+ ruleAttr.LOGICAL +"("+ ruleAttr.FACTOR_VAL +")" + ruleAttr.RELATION;
+				} else {
+					html += "	["+ ruleAttr.FACTOR_GRP_NM +" : <a href='#' class='_ruleTestPop_factorNm' data-factorNmEn='"+ ruleAttr.FACTOR_NM_EN +"'>"+ ruleAttr.FACTOR_NM +"</a>] "+ ruleAttr.LOGICAL +"\""+ ruleAttr.FACTOR_VAL +"\"" + ruleAttr.RELATION;
+				}
+				
+				html += "\n";
+			});
+			
+			$("#ruleAttrPreView").html(html);
+			$("#modal_ruleTest").show();
+		},
+		beforeSend : function() {
+			$("#ruleTestPopLoading").show();
+		},
+		complete : function() {
+			$("#ruleTestPopLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
+
+/**
  * RULE 상세 초기화
  * @returns
  */
@@ -1400,7 +1566,6 @@ function initPkgDetail() {
 function fnInitPkgSearch() {
 	$("#pkgId_search").val("");
 	$("#pkgRegUsrId_search").val("");
-	$("#pkgActYn_search").val("Y");
 	$("#pkgNm_search").val("");
 }
 

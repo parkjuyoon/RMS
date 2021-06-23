@@ -66,4 +66,6 @@ public interface PkgMapper {
 
 	void updatePkg(HashMap<String, Object> param);
 
+	List<HashMap<String, Object>> getRuleAttrByPkgId(HashMap<String, Object> param);
+
 }

@@ -45,7 +45,7 @@ public interface PkgService {
 
 	int pkgNmCheck(HashMap<String, Object> map);
 
-	void pkgSave(HashMap<String, Object> param);
+	void addPkg(HashMap<String, Object> param);
 
 	void updateDrlFileNm(HashMap<String, Object> param);
 
@@ -60,4 +60,6 @@ public interface PkgService {
 	void deletePkgById(HashMap<String, Object> param);
 
 	List<String> getRuleIdsByPkgId(HashMap<String, Object> param);
+
+	void updatePkg(HashMap<String, Object> param);
 }

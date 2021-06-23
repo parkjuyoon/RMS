@@ -93,19 +93,35 @@ public class PkgController {
 	 * @return resultMap
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/pkgSave.do", method = RequestMethod.POST)
-	public HashMap<String, Object> pkgSave(@RequestBody HashMap<String, Object> param) {
+	@RequestMapping(value = "/addPkg.do", method = RequestMethod.POST)
+	public HashMap<String, Object> addPkg(@RequestBody HashMap<String, Object> param) {
 		param.put("REG_USER_ID", 1);
 		param.put("PATH", "/drl_files");
 		
 		// PKG 저장
-		pkgService.pkgSave(param);
+		pkgService.addPkg(param);
 		// DRL 파일명 업데이트
 		String drlNm = param.get("pkgNm") + "_" + param.get("PKG_ID") + ".drl";
 		param.put("drlNm", drlNm);
 		pkgService.updateDrlFileNm(param);
 		
 		param.put("pkgId", (int) param.get("PKG_ID"));
+		HashMap<String, Object> pkg = pkgService.getPkg(param);
+		
+		return pkg;
+	}
+	
+	/**
+	 * PKG 수정
+	 * @param param
+	 * @return resultMap
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/updatePkg.do", method = RequestMethod.POST)
+	public HashMap<String, Object> updatePkg(@RequestBody HashMap<String, Object> param) {
+		param.put("REG_USER_ID", 1);
+		// 서비스 저장
+		pkgService.updatePkg(param);
 		HashMap<String, Object> pkg = pkgService.getPkg(param);
 		
 		return pkg;
@@ -273,6 +289,7 @@ public class PkgController {
 		// 해당 패키지에 등록된 RULE 개수 조회
 		HashMap<String, Object> resultMap = new HashMap<>();
 		resultMap.put("pkgId", param.get("pkgId"));
+		resultMap.put("ruleId", param.get("ruleId"));
 		int ruleCount = pkgService.getRuleCount(resultMap);
 		resultMap.put("ruleCount", ruleCount);
 		

@@ -62,7 +62,14 @@ $(document).ready(function() {
 				$("#ruleEditorPopUp").css("display", "none");
 				$("#pkgCard").removeClass("card-collapsed");
 				$("#pkgCardBody").css("display", "");
+				$("#pkgNmDupBtn").attr("data-isDup", "Y");
 				
+				// RULE 상세 초기화 및 닫기
+				$("#ruleCard").addClass("card-collapsed");
+				$("#ruleCardBody").css("display", "none");
+				$("#ruleNmDupBtn").attr("data-isDup", "N");
+				initRuleDetail();
+				initRuleEditor();
 			},
 			beforeSend : function() {
 				$("#pkgLoading").show();
@@ -120,6 +127,7 @@ $(document).ready(function() {
 	
 	// PKG 삭제 버튼
 	$("#deletePkgBtn").click(function() {
+		$(":focus").blur();
 		var pkgListChkBox = $("._pkgListChkBox:checked");
 		
 		var pkgIdArr = [];
@@ -170,12 +178,13 @@ $(document).ready(function() {
 	// PKG 상세 > PKG 명 변경시 중복체크  요청
 	$("#pkgNm").change(function() {
 		$("#pkgDupY").hide();
-		$("#pkgNmDupBtn").data("isDup", "N");
+		$("#pkgNmDupBtn").attr("data-isDup", "N");
 	});
 	
 	// PKG 상세 > 중복체크 버튼 클릭
 	$("#pkgNmDupBtn").click(function(){
 		var pkgNm = $("#pkgNm").val();
+		var pkgId = $("#pkgId").text();
 		
 		if(pkgNm == '') {
 			messagePop("warning", "Package 명 공백체크.", "Package 명을 입력하세요.", "#pkgNm");
@@ -192,34 +201,17 @@ $(document).ready(function() {
 		
 		var param = {};
 		param.pkgNm = pkgNm;
+		param.pkgId = pkgId;
 		
-		$.ajax({
-			method : "POST",
-			url : "/targetai/pkgNmCheck.do",
-			traditional: true,
-			data : JSON.stringify(param),
-			contentType:'application/json; charset=utf-8',
-			dataType : "json",
-			success : function(res) {
-				if(res == false) {	// RULE 명 중복
-					$("#pkgDupY").css("display", "none");
-					$("#pkgDupN").css("display", "");
-					$("#pkgNmDupBtn").data("isDup", "N");
-					$("#pkgNm").focus();
-					return;
-				}
-				
-				$("#pkgDupY").css("display", "");
-				$("#pkgDupN").css("display", "none");
-				$("#pkgNmDupBtn").data("isDup", "Y");
-			}
-		});
+		fnPkgNmCheck(param);
 	});
 	
 	// 신규 패키지 생성 > PKG 상세 > 저장 버튼
 	$("#savePkgBtn").click(function() {
+		$(":focus").blur();
 		// PKG 명 중복 체크
-		var isDup = $("#pkgNmDupBtn").data("isDup");
+		var isDup = $("#pkgNmDupBtn").attr("data-isDup");
+		
 		if(isDup != 'Y') {
 			messagePop("warning", "Package 명 중복체크", "Package 명 중복체크를 먼저 해주세요.", "#pkgNm");
 			return;
@@ -240,8 +232,6 @@ $(document).ready(function() {
 				// 신규등록
 				fnAddPkg(param);
 			}
-			
-//			fnPkgSave(param);
 		}
 	});
 	
@@ -279,7 +269,6 @@ $(document).ready(function() {
 				$("input:radio[name='noLoop']:radio[value='"+ rule.NO_LOOP +"']").prop("checked", true);
 				$("input:radio[name='lockOnActive']:radio[value='"+ rule.LOCK_ON_ACTIVE +"']").prop("checked", true);
 				$("#salience").val(rule.SALIENCE);
-//				$("#ruleWhenCont").val(rule.ATTR_WHEN_CONTENTS);
 				$("#ruleCard").removeClass("card-collapsed");
 				$("#ruleCardBody").css("display", "");
 				$("#ruleDupY").css("display", "none");
@@ -306,9 +295,7 @@ $(document).ready(function() {
 					ruleObj.factorValType = ruleAttr.DATA_TYPE;
 					ruleObj.factorVal = ruleAttr.FACTOR_VAL;
 					
-//				ruleObj.logical = ruleAttr.;
 					ruleObj.logical_txt = ruleAttr.LOGICAL;
-//				ruleObj.relation = ruleAttr.;
 					ruleObj.relation_txt = ruleAttr.RELATION;
 					ruleObj.ruleAttr_txt = ruleAttr.ATTR_WHEN_CONTENTS;
 					ruleObj.ruleAttr_source = ruleAttr.ATTR_WHEN;
@@ -429,6 +416,7 @@ $(document).ready(function() {
 	
 	// RULE 목록 > 삭제 버튼 클릭
 	$("#delRuleBtn").click(function() {
+		$(":focus").blur();
 		var pkgId = $("#ruleSearchBtn").attr("data-pkgId");
 		var ruleListChkBox = $("._ruleListChkBox:checked");
 		
@@ -461,6 +449,7 @@ $(document).ready(function() {
 	
 	// RULE 상세 > 저장 버튼 클릭
 	$("#saveRuleBtn").click(function() {
+		$(":focus").blur();
 		var pkgId = $("#ruleSearchBtn").attr("data-pkgId");
 		
 		if(typeof pkgId === 'undefined' || pkgId == '') {
@@ -505,9 +494,6 @@ $(document).ready(function() {
 		param.ruleObjArr = ruleObjArr;
 		
 		fnRuleSave(param);
-		
-		ruleObj = {};	tmpObj = {};
-		ruleObjArr = [];	tmpArr = [];
 	});
 	
 	// RULE 상세 > 중복체크 버튼 클릭
@@ -833,7 +819,7 @@ function getPkgList(searchObj) {
 function fnAddPkg(param) {
 	$.ajax({
 		method : "POST",
-		url : "/targetai/pkgSave.do",
+		url : "/targetai/addPkg.do",
 		traditional: true,
 		data : JSON.stringify(param),
 		contentType:'application/json; charset=utf-8',
@@ -854,6 +840,43 @@ function fnAddPkg(param) {
 			$("#ruleCardBody").css("display", "none");
 			initRuleDetail();
 			initRuleEditor();
+		},
+		beforeSend : function() {
+			$("#pkgLoading").show();
+		},
+		complete : function() {
+			$("#pkgLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
+
+/**
+ * PKG 상세 > 수정
+ * @param param
+ * @returns
+ */
+function fnUpdatePkg(param) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/updatePkg.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			var searchObj = {};
+			searchObj.currentPage = 1;
+			fnInitPkgSearch();
+			getPkgList(searchObj);
+			
+			messagePop("success", "Package가 수정되었습니다.", "", "");
+			$("#pkgUdtDt").text(res.UDT_DT + "에 " + res.UDT_USRID + "(님)이 등록함.");
 		},
 		beforeSend : function() {
 			$("#pkgLoading").show();
@@ -923,6 +946,7 @@ function getRuleList(searchObj) {
 			
 			$("#ruleList").html(html);
 			$("#ruleCntInPkgBySearch").text(searchObj.totalCount);
+			$("#ruleCntInPkg").text(searchObj.totalCount + "개");
 			fnPaging("#ruleListPaging", searchObj);
 			$("#ruleListCard").removeClass("card-collapsed");
 			$("#ruleListCardBody").css("display", "");
@@ -1154,13 +1178,7 @@ function fnRuleSave(param) {
 			getRuleList(searchObj);
 			
 			messagePop("success", "RULE이 저장되었습니다.", "", "");
-			
-			$("#ruleEditorPopUp").css("display", "none");
-			$("#ruleCard").addClass("card-collapsed");
-			$("#ruleCardBody").css("display", "none");
-			$("#ruleCntInPkg").text(res.ruleCount + "개");
-			initRuleDetail();
-			initRuleEditor();
+			$("#ruleId").text(res.ruleId);
 		},
 		beforeSend : function() {
 			$("#ruleLoading").show();
@@ -1276,6 +1294,35 @@ function fnDeleteRule(param) {
 			console.log(jqXHR);
 			console.log(textStatus);
 			console.log(errorThrown);
+		}
+	});
+}
+
+/**
+ * 패키지 상세 > 패키지명 중복체크
+ * @param param
+ * @returns
+ */
+function fnPkgNmCheck(param) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/pkgNmCheck.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			if(res == false) {	// RULE 명 중복
+				$("#pkgDupY").css("display", "none");
+				$("#pkgDupN").css("display", "");
+				$("#pkgNmDupBtn").attr("data-isDup", "N");
+				$("#pkgNm").focus();
+				return;
+			}
+			
+			$("#pkgDupY").css("display", "");
+			$("#pkgDupN").css("display", "none");
+			$("#pkgNmDupBtn").attr("data-isDup", "Y");
 		}
 	});
 }

@@ -350,6 +350,7 @@ function fnSvcDetail(param) {
 			
 			$("#svcCard").removeClass("card-collapsed");
 			$("#svcCardBody").css("display", "");
+			$("#svcNmDupBtn").data("isDup", "Y");
 			
 		},
 		beforeSend : function() {

@@ -48,7 +48,7 @@ public interface PkgMapper {
 
 	int pkgNmCheck(HashMap<String, Object> param);
 
-	void pkgSave(HashMap<String, Object> param);
+	void addPkg(HashMap<String, Object> param);
 
 	void updateDrlFileNm(HashMap<String, Object> param);
 
@@ -63,5 +63,7 @@ public interface PkgMapper {
 	void deletePkgById(HashMap<String, Object> param);
 
 	List<String> getRuleIdsByPkgId(HashMap<String, Object> param);
+
+	void updatePkg(HashMap<String, Object> param);
 
 }

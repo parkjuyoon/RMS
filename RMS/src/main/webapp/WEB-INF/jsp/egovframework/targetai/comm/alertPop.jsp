@@ -16,6 +16,7 @@
 		e.preventDefault();
 
 		var focusId = $("#messagePop_close").data("focusId");
+		
 		if (focusId != "" || typeof focusId != "undefined") {
 			$(focusId).focus();
 		}
@@ -24,6 +25,12 @@
 	$(document).on("keyup", function(key) {
 		if(key.keyCode == 13 && document.getElementById("modalID_message").style.display == 'block') {
 			document.getElementById("modalID_message").style.display = 'none'
+			
+			var focusId = $("#messagePop_close").data("focusId");
+			
+			if (focusId != "" || typeof focusId != "undefined") {
+				$(focusId).focus();
+			}
 		}
 	});
 

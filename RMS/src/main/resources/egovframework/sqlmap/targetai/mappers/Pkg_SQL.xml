@@ -161,10 +161,11 @@
 		    targetai.PKG P
 		WHERE
 		    P.PKG_NM = #{pkgNm}
+		<if test="pkgId != ''">AND P.PKG_ID != #{pkgId}</if>    
 	</select>
 	
 	<!-- PKG 저장 -->
-	<insert id="pkgSave" parameterType="java.util.HashMap">
+	<insert id="addPkg" parameterType="java.util.HashMap">
 		INSERT INTO targetai.PKG (
 			PKG_NM,
 			PKG_ACT_YN,
@@ -182,6 +183,19 @@
 			SELECT LAST_INSERT_ID()
 		</selectKey>
 	</insert>
+	
+	<!-- PKG 저장시 DRL 파일명 업데이트 -->
+	<update id="updatePkg" parameterType="java.util.HashMap">
+		UPDATE targetai.PKG
+		SET
+			PKG_NM = #{pkgNm},
+			PKG_ACT_YN = #{pkgActYn},
+			PKG_DSC = #{pkgDsc},
+			UDT_USRID = #{REG_USER_ID},
+			UDT_DT = NOW()
+		WHERE
+			PKG_ID = #{pkgId}
+	</update>
 	
 	<!-- PKG 저장시 DRL 파일명 업데이트 -->
 	<update id="updateDrlFileNm" parameterType="java.util.HashMap">

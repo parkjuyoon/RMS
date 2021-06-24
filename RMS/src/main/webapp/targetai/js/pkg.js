@@ -1109,6 +1109,13 @@ function getRuleList(searchObj) {
 			$("#ruleListCard").removeClass("card-collapsed");
 			$("#ruleListCardBody").css("display", "");
 			
+			// 패키지당 RULE 한개이상 생성되면 RULE TEST OPEN 버튼 보임
+			if(searchObj.totalCount > 0) {
+				$("#ruleTestPopBtn").show();
+			} else {
+				$("#ruleTestPopBtn").hide();
+			}
+			
 			// 전체 체크 해제
 			$("#ruleListAllChkBox").prop("checked", false);
 			

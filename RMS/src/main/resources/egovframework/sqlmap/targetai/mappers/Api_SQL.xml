@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.ktds.targetai.mapper.ApiMapper">
+
+	<!-- 서비스 리스트 조회 -->
+	<select id="getActiveObj" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT
+			*
+		FROM
+			targetai.${table}
+		WHERE
+			${column} = #{val}
+	</select>
+	
+	<select id="getPkgBySvcId" parameterType="string" resultType="java.util.HashMap">
+		SELECT
+			P.PATH,
+			P.PKG_NM,
+			P.DRL_NM
+		FROM
+			targetai.SVC S
+			LEFT JOIN targetai.PKG P ON (S.PKG_ID = P.PKG_ID)
+		WHERE
+			S.SVC_ID = #{svc_id}
+	</select>
+	
+	<insert id="addSvclogIn" parameterType="java.util.HashMap">
+		INSERT INTO targetai.SVCLOG (
+			IO_FLAG,
+			SVC_ID,
+			PARAM,
+			VAL
+		) VALUES (
+			"IN",
+			#{SVC_ID},
+			#{PARAM},
+			#{VAL}
+		)
+	<selectKey order="AFTER" keyProperty="SVCLOG_ID" resultType="INT">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
+	</insert>
+	
+	<insert id="addSvclogOut" parameterType="java.util.HashMap">
+		INSERT INTO targetai.SVCLOG (
+			SVCLOG_ID,
+			IO_FLAG,
+			SVC_ID,
+			PARAM,
+			VAL,
+			RULE_ID
+		) VALUES 
+		<foreach collection="RESULT" separator="," item="res">
+		(
+			#{SVCLOG_ID},
+			"OUT",
+			#{SVC_ID},
+			#{PARAM},
+			#{VAL},
+			#{res.RULE_ID}
+		)
+		</foreach>
+	</insert>
+	
+	<update id="updateRspnsCd" parameterType="java.util.HashMap">
+		UPDATE targetai.SVCLOG
+		SET
+			RSPNS_CD = #{RSPNS_CD}
+		WHERE
+			SVCLOG_ID = #{TRANSACTION_ID}
+			AND RULE_ID = #{RULE_ID}
+	</update>
+</mapper>

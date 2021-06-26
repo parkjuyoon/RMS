@@ -503,7 +503,7 @@ function fnPkgList(searchObj) {
 					html += "<tr>";
 					html += "	<td class='t_center'>";
 					html += "		<div class='checkbox-container'>";
-					html += "			<input type='radio' class='_pkgListRadio' data-pkg_id='"+ pkg.PKG_ID +"' data-pkg_nm='"+ pkg.PKG_NM +"'/>";
+					html += "			<input type='radio' class='_pkgListRadio' name='pkgListRadio' data-pkg_id='"+ pkg.PKG_ID +"' data-pkg_nm='"+ pkg.PKG_NM +"'/>";
 					html += "			<label for='_pkgListRadio'></label>";
 					html += "		</div>";
 					html += "	</td>";
@@ -563,7 +563,7 @@ function fnChannelList(searchObj) {
 					html += "<tr>";
 					html += "	<td class='t_center'>";
 					html += "		<div class='checkbox-container'>";
-					html += "			<input type='radio' class='_channelListRadio' data-channel_id='"+ channel.CHANNEL_ID +"' data-channel_nm='"+ channel.CHANNEL_NM +"'/>";
+					html += "			<input type='radio' class='_channelListRadio' name='channelListRadio' data-channel_id='"+ channel.CHANNEL_ID +"' data-channel_nm='"+ channel.CHANNEL_NM +"'/>";
 					html += "			<label for='_channelListRadio'></label>";
 					html += "		</div>";
 					html += "	</td>";

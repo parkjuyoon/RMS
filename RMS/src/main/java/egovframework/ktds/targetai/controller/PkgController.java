@@ -379,7 +379,9 @@ public class PkgController {
 		
 		// RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
 		String pkgId = (String) param.get("pkgId");
-		saveDRL(pkgId);
+		String path = saveDRL(pkgId);
+		
+		resultMap.put("drlPath", path);
 		
 		return resultMap;
 	}
@@ -438,7 +440,7 @@ public class PkgController {
 	 * @param pkgId
 	 * @return
 	 */
-	public boolean saveDRL(String pkgId) {
+	public String saveDRL(String pkgId) {
 		// PKG DRL_SOURCE 업데이트
 		HashMap<String, Object> pkg = pkgService.getPkgById(pkgId);
 		List<HashMap<String, Object>> ruleList = pkgService.getRuleListByPkgId(pkgId);
@@ -475,15 +477,18 @@ public class PkgController {
 		pkgService.updateDrlSource(pkg);
 		
 		// 물리 DRL파일 생성
-		String path = (String) pkg.get("PATH");
-		path = System.getProperty("user.home") + path;
-		path = path.replace("/", File.separator).replace("\\", File.separator);
+		String realPath = (String) pkg.get("PATH");
+		String path = realPath;
+		realPath = System.getProperty("user.home") + path;
+		realPath = realPath.replace("/", File.separator).replace("\\", File.separator);
 		String pkg_nm = (String) pkg.get("PKG_NM");
 		String drl_nm = (String) pkg.get("DRL_NM");
 		String drl_source = (String) pkg.get("DRL_SOURCE");
 		
-		DroolsUtil.outputDrl(path, pkg_nm, drl_nm, drl_source);
+		DroolsUtil.outputDrl(realPath, pkg_nm, drl_nm, drl_source);
 		
-		return true;
+		path += "/" + pkg_nm + "/" + drl_nm;
+		
+		return path;
 	}
 }

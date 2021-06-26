@@ -145,6 +145,7 @@ $(document).ready(function() {
 		$("#ruleListCardBody").css("display", "none");	// RULE 목록 닫기
 		$("#ruleCntInPkgBySearch").text("");	// RULE 목록 건수 초기화
 		$("#ruleSearchBtn").attr("data-pkgId", "");	// RULE 검색 조회 버튼 PKG_ID 초기화
+		$("#ruleCntInPkg").text("0개");
 		$("#ruleTestPopBtn").hide();	// RULE TEST OPEN 버튼 감추기
 	});
 	
@@ -1338,6 +1339,7 @@ function fnRuleSave(param) {
 			
 			messagePop("success", "RULE이 저장되었습니다.", "", "");
 			$("#ruleId").text(res.ruleId);
+			$("#ruleTestPop_resBtn").attr("data-drlPath", res.drlPath);
 		},
 		beforeSend : function() {
 			$("#ruleLoading").show();

@@ -1,38 +1,76 @@
 package egovframework.ktds.targetai.controller;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
+import javax.servlet.http.HttpSession;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import egovframework.ktds.drools.config.DroolsUtil;
-import net.sf.json.JSONException;
+import egovframework.ktds.targetai.service.ApiService;
+import egovframework.ktds.targetai.util.CommonUtil;
 
-@RequestMapping("/targetai/api")
+@RequestMapping("/targetai")
 @Controller
 public class ApiController {
 	
 	@Autowired
-	private ApplicationContext context;
+	private ApiService apiService;
+	
+	/**
+	 * API 테스트 화면 이동
+	 * @param model
+	 * @return /targetai/api.jsp
+	 */
+	@RequestMapping(value = "/api.do")
+	public String main(HttpServletRequest req, ModelMap model) {
+		HttpSession session = req.getSession();
+		String member_id = (String) session.getAttribute("member_id");
+		
+		if(member_id == null) {
+			return "redirect:/targetai/main.do";
+		}
+		
+		return "/targetai/api";
+	}
+	
+	/**
+	 * API Request
+	 * @param type, value, svc_id
+	 * @return json
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/reqUrl.do", method = RequestMethod.POST)
+	public JSONObject request(@RequestBody JSONObject param) {
+		JSONObject responseJSON = new JSONObject();
+		String req_url = (String) param.get("req_url");
+		
+		// 해당 URL으로 API CALL 한다.
+		responseJSON = CommonUtil.callApi(param, "POST", req_url);
+		
+		return responseJSON;
+	}
 	
 	/**
 	 * REQUEST REST API
@@ -40,74 +78,108 @@ public class ApiController {
 	 * @return JSONObject
 	 * 			
 	 */
-	@RequestMapping(value = "/request.do")
-	public void result(HttpServletResponse response, HttpServletRequest request) {
-		long beforeTime = System.currentTimeMillis();
-		
+	@RequestMapping(value = "/api/request.do", method = RequestMethod.POST)
+	public void request(HttpServletResponse response, HttpServletRequest request) {
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json");
 		
-		// 데이터 조회할 위치
-		String source = request.getParameter("source");	// EN_CUST_ITEM1_TXN, ......
-		// 조회할 KEY 값
-		String key = request.getParameter("key");		// ACC_CUST_SROW_ID
-		// 조회할 VALUE 값
-		String val = request.getParameter("val");		// ACC_CUST_SROW_ID_1, ACC_CUST_SROW_ID_2, ..... 
-		// 서비스 아이디
-		String svc_id = request.getParameter("svc_id");
-		
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
+		BufferedReader br = null;
+		StringBuilder sb = null;
 		
 		try {
-			// RULE 테스트 할 객체 조회
-			JSONObject robj = getMap(source, key, val);
 			
-			DataSource dbSource = (DataSource) context.getBean("dataSource");
-			conn = dbSource.getConnection();
+			long beforeTime = System.currentTimeMillis();
 			
-			String sql = ""
-					+ "SELECT "
-					+ "		P.PATH, "
-					+ "		P.PKG_NM, "
-					+ "		P.DRL_NM "
-					+ "FROM "
-					+ "		targetai.SVC S "
-					+ " 	LEFT JOIN targetai.PKG P ON (S.PKG_ID = P.PKG_ID) "
-					+ "		WHERE "
-					+ " 		S.SVC_ID = " + svc_id;
+			br = new BufferedReader(new InputStreamReader(request.getInputStream()));
 			
-			pstmt = conn.prepareStatement(sql);
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
-				String path = rs.getString("PATH");
-				String pkgNm = rs.getString("PKG_NM");
-				String drlNm = rs.getString("DRL_NM");
-				
-				// Drools Get Session
-				String drlPath = path.replace("/", File.separator) + File.separator + pkgNm + File.separator + drlNm;
-				drlPath = System.getProperty("user.home") + drlPath;
-				
-				JSONArray jsonArr = resultJSON(drlPath, robj);
-				response.getWriter().print(jsonArr);
-				
-				break;	// 어차피 결과는 한개이지만 혹시나 여러번 돌 경우를 대비하여 한번만 돌게한다.
+			sb = new StringBuilder();
+		    String line = "";
+			while ((line = br.readLine()) != null) {
+			    sb.append(line);
 			}
 			
+			JSONParser parse = new JSONParser();
+			JSONObject params = (JSONObject) parse.parse(sb.toString());
+			
+			// 조회할 KEY 값
+			String api_type = (String) params.get("api_type");
+			// 조회할 VALUE 값
+			String param_val = (String) params.get("param_val");
+			// 서비스 아이디
+			String svc_id = (String) params.get("svc_id");
+			
+			String table = "";
+			String column = "";
+			
+			// RULE 테스트 할 객체 조회
+			if("CUST".equals(api_type)) {
+				table = "EV_CUST_ITEM1_TXN";
+				column = "ACC_CUST_SROW_ID";
+				
+			} else if("CONT".equals(api_type)) {
+				table = "EV_CONT_ITEM1_TXN";
+				column = "ASSET_SROW_ID";
+				
+			} else if("COMB".equals(api_type)) {
+				table = "EV_CAMP_COMB_ITEM1_TXN";
+				column = "COMB_CONT_SBT_ID";
+				
+			} else {
+				response.getWriter().print(new JSONObject());
+				return;
+			}
+			
+			// RULE 실행할 데이터 조회
+			HashMap<String, Object> activeMap = getActiveMap(table, column, param_val);
+			// PKG 내 DRL 파일 정보 조회
+			HashMap<String, Object> pkg = apiService.getPkgBySvcId(svc_id);
+			
+			if(pkg == null) {
+				response.getWriter().print(new JSONObject());
+				return;
+			}
+			
+			String path = (String) pkg.get("PATH");
+			String pkgNm = (String) pkg.get("PKG_NM");
+			String drlNm = (String) pkg.get("DRL_NM");
+			
+			// Drools Get Session
+			String drlPath = path.replace("/", File.separator) + File.separator + pkgNm + File.separator + drlNm;
+			drlPath = System.getProperty("user.home") + drlPath;
+			
+			// DRL의 RULE 실행 결과
+			List<HashMap<String, Object>> resultList = getResultList(drlPath, activeMap);
+			
+			HashMap<String, Object> responseMap = new HashMap<>();
 			
 			long afterTime = System.currentTimeMillis();
 			long diffTime = (afterTime - beforeTime)/1000;
 			
-			response.getWriter().print("\n\n\n걸린시간 : " + diffTime + " 초");
+			responseMap.put("RESULT", resultList);
+			responseMap.put("EXE_TYPE", "TARGET_AI");
+			responseMap.put("SVC_ID", svc_id);
+			responseMap.put(api_type, param_val);
+			responseMap.put("RUN_TIME", diffTime);
+			responseMap.put("RUN_TIME_UNIT", "sec");
+			
+			// SVCLOG 저장(INPUT/OUTPUT)
+			HashMap<String, Object> logMap = new HashMap<>();
+			logMap.put("RESULT", resultList);
+			logMap.put("SVC_ID", svc_id);
+			logMap.put("PARAM", api_type);
+			logMap.put("VAL", param_val);
+			
+			apiService.addSvclogIn(logMap);
+			apiService.addSvclogOut(logMap);
+			responseMap.put("TRANSACTION_ID", logMap.get("SVCLOG_ID"));
+			
+			response.getWriter().print(new JSONObject(responseMap));
 			
 		} catch (Exception e) {
-			try {e.printStackTrace(response.getWriter()); e.printStackTrace();} catch (IOException e1) {e1.printStackTrace();}
+			e.printStackTrace();
 		} finally {
-			if(pstmt != null) try {pstmt.close();} catch (SQLException e) {};
-			if(rs != null) try {rs.close();} catch (SQLException e) {};
-			if(conn != null) try {conn.close();} catch (SQLException e) {};
+			try {br.close();} catch (IOException e) {e.printStackTrace();}
+			sb.delete(0, sb.length());
 		}
 	}
 	
@@ -119,42 +191,13 @@ public class ApiController {
 	 * @return
 	 * @throws SQLException
 	 */
-	private JSONObject getMap(String source, String key, String val) throws SQLException {
-		JSONObject rsObj = new JSONObject();
-		DataSource dbSource = (DataSource) context.getBean("dataSource");
-		Connection conn = dbSource.getConnection();
+	private HashMap<String, Object> getActiveMap(String table, String column, String val) {
+		HashMap<String, Object> param = new HashMap<>();
+		param.put("table", table);
+		param.put("column", column);
+		param.put("val", val);
 		
-		String sql = ""
-				+ " SELECT "
-				+ "		*"
-				+ " FROM"
-				+ "		targetai." + source
-				+ "	WHERE"
-				+ " 	" + key + " = '" + val + "'";
-		
-		PreparedStatement pstmt = conn.prepareStatement(sql);
-		ResultSet rs = pstmt.executeQuery();
-		
-		int columns = rs.getMetaData().getColumnCount();
-		
-		while(rs.next()) {
-			for(int i=1; i<=columns; i++) {
-				String columnNm = rs.getMetaData().getColumnName(i);
-				String columnType = rs.getMetaData().getColumnTypeName(i);
-				
-				if(columnType.contains("CHAR")) {
-					rsObj.put(columnNm, rs.getString(i));
-					
-				} else if(columnType.contains("INT")) {
-					rsObj.put(columnNm, rs.getInt(i));
-					
-				} else {
-					rsObj.put(columnNm, rs.getObject(i));
-				}
-			}
-		}
-		
-		return rsObj;
+		return apiService.getActiveObj(param);
 	}
 	
 	/**
@@ -163,64 +206,102 @@ public class ApiController {
 	 * @param obj
 	 * @return
 	 */
-	private JSONArray resultJSON(String path, JSONObject obj) {
+	public static List<HashMap<String, Object>> getResultList(String path, HashMap<String, Object> activeMap) {
+		List<HashMap<String, Object>> sortResList = new ArrayList<>();
+		
+		if(activeMap == null) {
+			return sortResList;
+		}
 		
 		// Drools 실행
 		KieSession kieSession = DroolsUtil.getKieSession(path);
 		
-		kieSession.insert(obj);
+		kieSession.insert(activeMap);
 		kieSession.fireAllRules();
 		kieSession.dispose();
 		
 		// 결과화면에 정렬되게 보이기 위해 변환
-		List<JSONObject> resJsonArr = new ArrayList<>();
+		List<HashMap<String, Object>> resList = new ArrayList<>();
 		
-		Iterator<String> iter = obj.keySet().iterator();
+		Iterator<String> iter = activeMap.keySet().iterator();
 		
 		while(iter.hasNext()) {
 			String key = iter.next().toString();
-			String value = (String) obj.get(key);
+			String value = String.valueOf(activeMap.get(key));
 			
 			if(key.startsWith("res_")) {
 				key = key.replaceAll("res_", "");
-				String salience = key.split("_")[1];
+				String ruleId = key.split("_")[0];
+				String campId = key.split("_")[1];
+				campId = "null".equals(campId) ? "" : campId;
+				String salience = key.split("_")[2];
 				
-				JSONObject resJson = new JSONObject();
-				resJson.put("salience", salience);
-				resJson.put("rule_name", value);
+				HashMap<String, Object> resMap = new HashMap<>();
+				resMap.put("SALIENCE", salience);
+				resMap.put("RULE_ID", ruleId);
+				resMap.put("CAMP_ID", campId);
+				resMap.put("RULE_NAME", value);
 				
-				resJsonArr.add(resJson);
+				resList.add(resMap);
 			}
 		}
 		
-		Collections.sort(resJsonArr, new Comparator<JSONObject>() {
+		Collections.sort(resList, new Comparator<HashMap<String, Object>>() {
 
 			@Override
-			public int compare(JSONObject a, JSONObject b) {
-				String valA = new String();
-	            String valB = new String();
-
-	            try {
-	                valA = (String) a.get("salience");
-	                valB = (String) b.get("salience");
-	            } 
-	            catch (JSONException e) {
-	                e.printStackTrace();
+			public int compare(HashMap<String, Object> a, HashMap<String, Object> b) {
+				String valA = (String) a.get("SALIENCE");
+	            String valB = (String) b.get("SALIENCE");
+	            String varC = (String) a.get("RULE_ID");
+	            String varD = (String) b.get("RULE_ID");
+	            
+	            if(valA.equals(valB)) {
+	            	return varC.compareTo(varD);
 	            }
 
 	            return valA.compareTo(valB);
 			}
 		});
 		
-		JSONArray sortResJsonArr = new JSONArray();
-		
-		for(int i=0; i<resJsonArr.size(); i++) {
-			resJsonArr.get(i).put("order", i+1);
-			String salience = (String) resJsonArr.get(i).get("salience"); 
-			resJsonArr.get(i).put("salience", Integer.parseInt(salience));
-			sortResJsonArr.add(resJsonArr.get(i));
+		for(int i=0; i<resList.size(); i++) {
+			resList.get(i).put("ORDER", i+1);
+			String salience = (String) resList.get(i).get("SALIENCE"); 
+			resList.get(i).put("SALIENCE", salience);
+			sortResList.add(resList.get(i));
 		}
 		
-		return sortResJsonArr;
+		return sortResList;
+	}
+	
+	/**
+	 * RSPNS_CD 업데이트
+	 * @param TRANSACTION_ID, RULE_ID, RSPNS_CD
+	 * @return JSONObject
+	 * 			
+	 */
+	@RequestMapping(value = "/api/updateRspnsCd.do", method = RequestMethod.POST)
+	public void updateRspnsCd(HttpServletResponse response, HttpServletRequest request) {
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json");
+		
+		try {
+			
+			HashMap<String, Object> result = new HashMap<>();
+			
+			String svclogId = request.getParameter("TRANSACTION_ID");
+			String ruleId = request.getParameter("RULE_ID");
+			String rspnsCd = request.getParameter("RSPNS_CD");
+			
+			result.put("TRANSACTION_ID", svclogId);
+			result.put("RULE_ID", ruleId);
+			result.put("RSPNS_CD", rspnsCd);
+			apiService.updateRspnsCd(result);
+			
+			result.put("CODE", 200);
+			response.getWriter().print(new JSONObject(result));
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

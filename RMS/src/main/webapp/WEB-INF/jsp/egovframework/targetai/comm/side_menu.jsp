@@ -39,7 +39,7 @@
 									<a class="nav-link" href="/targetai/pkg.do">Package</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" href="#" id="">API</a>
+									<a class="nav-link" href="/targetai/api.do" id="">API</a>
 								</li>
 							</ul>
 						</div>

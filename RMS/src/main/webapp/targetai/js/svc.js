@@ -288,9 +288,9 @@ function fnSvcList(searchObj) {
 					html += "	<td class='t_center'>" + (typeof svc.PKG_NM == 'undefined' ? '-' : svc.PKG_NM) + "</td>";
 					html += "	<td class='t_center'>" + svc.SVC_ACT_YN + "</td>";
 					html += "	<td class='t_center'>" + (typeof svc.UDT_DT == 'undefined' ? '-' : svc.UDT_DT) + "</td>";
-					html += "	<td class='t_center'>" + (typeof svc.UDT_USRID == 'undefined' ? '-' : svc.UDT_USRID) + "</td>";
+					html += "	<td class='t_center'>" + (typeof svc.UDT_USRNM == 'undefined' ? '-' : svc.UDT_USRNM) + "</td>";
 					html += "	<td class='t_center'>" + svc.REG_DT + "</td>";
-					html += "	<td class='t_center'>" + svc.REG_USRID + "</td>";
+					html += "	<td class='t_center'>" + svc.REG_USRNM + "</td>";
 					html += "</tr>";
 				});
 			}
@@ -341,11 +341,11 @@ function fnSvcDetail(param) {
 			$("#svcConnPkg").attr("data-pkg_id", svc.PKG_ID);
 			$("#svcActYn").val(svc.SVC_ACT_YN);
 			$("#svcDsc").val(svc.SVC_DSC);
-			$("#svcRegDt").text(svc.REG_DT + "에 " + svc.REG_USRID + "(님)이 등록함.");
+			$("#svcRegDt").text(svc.REG_DT + "에 " + svc.REG_USRNM + "(님)이 등록함.");
 			if(typeof svc.UDT_USRID == 'undefined') {
 				$("#svcUdtDt").text("수정 이력이 없습니다.");
 			} else {
-				$("#svcUdtDt").text(svc.UDT_DT + "에 " + svc.UDT_USRID + "(님)이 수정함.");
+				$("#svcUdtDt").text(svc.UDT_DT + "에 " + svc.UDT_USRNM + "(님)이 수정함.");
 			}
 			
 			$("#svcCard").removeClass("card-collapsed");
@@ -426,7 +426,7 @@ function fnUpdateSvc(param) {
 			fnSvcList(searchObj);
 			
 			messagePop("success", "서비스가 수정되었습니다.", "", "");
-			$("#svcUdtDt").text(res.UDT_DT + "에 " + res.UDT_USRID + "(님)이 수정함.");
+			$("#svcUdtDt").text(res.UDT_DT + "에 " + res.UDT_USRNM + "(님)이 수정함.");
 		},
 		beforeSend : function() {
 			$("#svcLoading").show();

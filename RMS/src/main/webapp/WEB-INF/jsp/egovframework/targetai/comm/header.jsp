@@ -21,3 +21,6 @@
 <script src="/targetai_publish/js/jquery-3.6.0.min.js" type="text/javascript"></script>
 <script src="/targetai_publish/js/vendor.min.js" type="text/javascript"></script>
 <script src="/targetai_publish/js/jquery.ztree.core.js" type="text/javascript"></script>
+
+<!-- 기능 js -->
+<script src="/targetai/js/common.js"></script>

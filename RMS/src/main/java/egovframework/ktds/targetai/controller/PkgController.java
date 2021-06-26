@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -43,7 +45,14 @@ public class PkgController {
 	 * @return /targetai/pkg.jsp
 	 */
 	@RequestMapping(value = "/pkg.do")
-	public String main(ModelMap model) {
+	public String main(HttpServletRequest req, ModelMap model) {
+		HttpSession session = req.getSession();
+		String member_id = (String) session.getAttribute("member_id");
+		
+		if(member_id == null) {
+			return "redirect:/targetai/main.do";
+		}
+		
 		return "/targetai/pkg";
 	}
 	
@@ -138,77 +147,18 @@ public class PkgController {
 			path = System.getProperty("user.home") + path;
 			path = path.replace("/", File.separator).replace("\\", File.separator);
 			
-			// Drools 실행
-			KieSession kieSession = DroolsUtil.getKieSession(path);
+			List<HashMap<String, Object>> getResultList = ApiController.getResultList(path, paramMap);
+			HashMap<String, Object> resultMap = new HashMap<>();
+			resultMap.put("RESULT", getResultList);
+			JSONObject resultJSON = new JSONObject(resultMap);
 			
-			kieSession.insert(paramMap);
-			kieSession.fireAllRules();
-			kieSession.dispose();
-			
-			// 결과화면에 정렬되게 보이기 위해 변환
-			JSONArray resJsonArr = new JSONArray();
-			
-			Set<String> keySet = paramMap.keySet();
-			Iterator<String> iter = keySet.iterator();
-			
-			while(iter.hasNext()) {
-				String key = (String) iter.next();
-				String value = (String) paramMap.get(key);
-				
-				if(key.startsWith("res_")) {
-					key = key.replaceAll("res_", "");
-					String ruleId = key.split("_")[0];
-					String salience = key.split("_")[1];
-					
-					JSONObject resJson = new JSONObject();
-	//				resJson.put("ruleId", ruleId);
-					resJson.put("salience", salience);
-					resJson.put("rule_name", value);
-					
-					resJsonArr.add(resJson);
-				}
-			}
-			
-			List<JSONObject> jsonValues = new ArrayList<>();
-			for(int i=0; i<resJsonArr.size(); i++) {
-				jsonValues.add((JSONObject)resJsonArr.get(i));
-			}
-			
-			Collections.sort(jsonValues, new Comparator<JSONObject>() {
-	
-				@Override
-				public int compare(JSONObject a, JSONObject b) {
-					String valA = new String();
-		            String valB = new String();
-	
-		            try {
-		                valA = (String) a.get("salience");
-		                valB = (String) b.get("salience");
-		            } 
-		            catch (JSONException e) {
-		                e.printStackTrace();
-		            }
-	
-		            return valA.compareTo(valB);
-				}
-			});
-			
-			JSONArray sortResJsonArr = new JSONArray();
-			
-			for(int i=0; i<resJsonArr.size(); i++) {
-				jsonValues.get(i).put("order", i+1);
-				String salience = (String) jsonValues.get(i).get("salience"); 
-				jsonValues.get(i).put("salience", Integer.parseInt(salience));
-				sortResJsonArr.add(jsonValues.get(i));
-			}
-			
-			return sortResJsonArr.toJSONString();
+			return resultJSON.toJSONString();
 		
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		return null;
+		return new JSONObject().toJSONString();
 	}
 	
 	/**
@@ -218,8 +168,11 @@ public class PkgController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/addPkg.do", method = RequestMethod.POST)
-	public HashMap<String, Object> addPkg(@RequestBody HashMap<String, Object> param) {
-		param.put("REG_USER_ID", 1);
+	public HashMap<String, Object> addPkg(@RequestBody HashMap<String, Object> param, HttpServletRequest req) {
+		HttpSession session = req.getSession();
+		String regUserId = (String) session.getAttribute("member_id");
+		
+		param.put("REG_USER_ID", regUserId);
 		param.put("PATH", "/drl_files");
 		
 		// PKG 저장
@@ -242,8 +195,11 @@ public class PkgController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/updatePkg.do", method = RequestMethod.POST)
-	public HashMap<String, Object> updatePkg(@RequestBody HashMap<String, Object> param) {
-		param.put("REG_USER_ID", 1);
+	public HashMap<String, Object> updatePkg(@RequestBody HashMap<String, Object> param, HttpServletRequest req) {
+		HttpSession session = req.getSession();
+		String regUserId = (String) session.getAttribute("member_id");
+		
+		param.put("REG_USER_ID", regUserId);
 		// 서비스 저장
 		pkgService.updatePkg(param);
 		HashMap<String, Object> pkg = pkgService.getPkg(param);
@@ -378,10 +334,13 @@ public class PkgController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/ruleSave.do", method = RequestMethod.POST)
-	public HashMap<String, Object> ruleSave(@RequestBody HashMap<String, Object> param) {
+	public HashMap<String, Object> ruleSave(@RequestBody HashMap<String, Object> param, HttpServletRequest req) {
 		String ruleId = (String) param.get("ruleId");
 		
-		param.put("USER_ID", 1);
+		HttpSession session = req.getSession();
+		String regUserId = (String) session.getAttribute("member_id");
+		
+		param.put("REG_USER_ID", regUserId);
 		
 		if("".equals(ruleId)) {	// 신규 등록
 			// RULE 저장
@@ -406,7 +365,8 @@ public class PkgController {
 		}
 		
 		// RULE 의 ATTR_WHEN 업데이트
-		String attrThen = "$map.put(\"res_"+ ruleId +"_"+ param.get("salience") +"\", \""+ param.get("ruleNm") +"\");";
+		HashMap<String, Object> ruleMap = pkgService.getRule(param);
+		String attrThen = "$map.put(\"res_"+ ruleMap.get("RULE_ID") +"_"+ ruleMap.get("CAMP_ID") +"_"+ ruleMap.get("SALIENCE") +"\", \""+ ruleMap.get("RULE_NM") +"\");\n";
 		param.put("ATTR_THEN", attrThen);
 		pkgService.updateAttrThen(param);
 		

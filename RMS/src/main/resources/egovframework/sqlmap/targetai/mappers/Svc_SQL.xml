@@ -15,13 +15,17 @@
 		    S.SVC_ACT_YN,
 		    S.SVC_DSC,
 		    S.REG_USRID,
+		    M.MEMBER_NAME REG_USRNM,
 		    DATE_FORMAT(S.REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
 		    DATE_FORMAT(S.UDT_DT, '%Y-%m-%d %h:%i:%s') AS UDT_DT,
-		    S.UDT_USRID
+		    S.UDT_USRID,
+		    M1.MEMBER_NAME UDT_USRNM
 		FROM
 		    targetai.SVC S
 		    LEFT JOIN targetai.CHANNEL C ON (S.CHANNEL_ID = C.CHANNEL_ID)
 		    LEFT JOIN targetai.PKG P ON (S.PKG_ID = P.PKG_ID)
+		    LEFT JOIN targetai.MEMBER M ON (S.REG_USRID = M.MEMBER_ID)
+		    LEFT JOIN targetai.MEMBER M1 ON (S.UDT_USRID = M1.MEMBER_ID)
 		WHERE 1=1
 		<if test="svcId_search != null and svcId_search != ''">AND SVC_ID = #{svcId_search}</if>
 		<if test="svcNm_search != null and svcNm_search != ''">AND SVC_NM LIKE CONCAT('%', #{svcNm_search}, '%')</if>
@@ -57,13 +61,17 @@
 		    S.SVC_ACT_YN,
 		    S.SVC_DSC,
 		    S.REG_USRID,
+		    M.MEMBER_NAME REG_USRNM,
 		    DATE_FORMAT(S.REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
 		    DATE_FORMAT(S.UDT_DT, '%Y-%m-%d %h:%i:%s') AS UDT_DT,
-		    S.UDT_USRID
+		    S.UDT_USRID,
+		    M1.MEMBER_NAME UDT_USRNM
 		FROM
 		    targetai.SVC S
 			LEFT JOIN targetai.CHANNEL C ON (S.CHANNEL_ID = C.CHANNEL_ID)
 			LEFT JOIN targetai.PKG P ON (S.PKG_ID = P.PKG_ID)
+			LEFT JOIN targetai.MEMBER M ON (S.REG_USRID = M.MEMBER_ID)
+		    LEFT JOIN targetai.MEMBER M1 ON (S.UDT_USRID = M1.MEMBER_ID)
 		WHERE
 			S.SVC_ID = #{svcId}
 	</select>

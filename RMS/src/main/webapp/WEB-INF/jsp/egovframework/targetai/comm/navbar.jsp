@@ -7,11 +7,11 @@
 		<ul class="list-unstyled topnav-menu float-end mb-0">
 			<li>
 				<a href="#" class="notification-icon bg_01">
-					<span class="icon01">홍길동</span>
+					<span class="icon01" id="nav_member_name"><%=session.getAttribute("member_name") %></span>
 				</a>
 			</li>
 			<li>
-				<a href="#" class="notification-icon bg_02">
+				<a href="/targetai/logout.do" class="notification-icon bg_02">
 					<span class="icon02">LogOut</span>
 				</a>
 			</li>

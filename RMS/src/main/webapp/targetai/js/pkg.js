@@ -753,15 +753,13 @@ $(document).ready(function() {
 	});
 	
 	// RULE TEST 메뉴 > 속성 삭제 버튼 클릭
-	var keyValueArr = [];
-
 	$(document).on("click", "._ruleTestPop_del", function() {
-//		var delIdx = $(".ruleTestPop_resBtn").index(this);
-//		keyValueArr.splice(delIdx, 1);
-//		$(this).closest(".oneline_group").remove();
+		var delIdx = $("._ruleTestPop_del").index(this);
+		$(this).closest(".oneline_group").remove();
 	});
 
 	// RULE TEST 메뉴 결과확인 버튼 클릭
+	var keyValueArr = [];
 	$(document).on("click", "#ruleTestPop_resBtn", function() {
 		var drlPath = $(this).attr("data-drlPath");
 		
@@ -871,9 +869,9 @@ function getPkgList(searchObj) {
 					html += "	<td class='t_center'><a href='#' class='_pkgNmLink' data-pkgId='"+ pkgList[i].PKG_ID +"'>" + pkgList[i].PKG_NM + "</a></td>";
 					html += "	<td class='t_center'><a href='#' class='_drlNmLink' data-pkgId='"+ pkgList[i].PKG_ID +"'>" + pkgList[i].DRL_NM + "</a></td>";
 					html += "	<td class='t_center'>" + (typeof pkgList[i].UDT_DT == 'undefined' ? '-' : pkgList[i].UDT_DT) + "</td>";
-					html += "	<td class='t_center'>" + (typeof pkgList[i].UDT_USRID == 'undefined' ? '-' : pkgList[i].UDT_USRID) + "</td>";
+					html += "	<td class='t_center'>" + (typeof pkgList[i].UDT_USRNM == 'undefined' ? '-' : pkgList[i].UDT_USRNM) + "</td>";
 					html += "	<td class='t_center'>" + pkgList[i].REG_DT + "</td>";
-					html += "	<td class='t_center'>" + pkgList[i].REG_USRID + "</td>";
+					html += "	<td class='t_center'>" + pkgList[i].REG_USRNM + "</td>";
 					html += "</tr>";
 				}
 			}
@@ -921,16 +919,14 @@ function fnGetPkg(param) {
 			$("#ruleCntInPkg").text(pkg.RULE_COUNT_IN_PKG + "개");
 			$("#pkgDsc").val(pkg.PKG_DSC);
 			$("#pkgActYn").val(pkg.PKG_ACT_YN);
-			$("#pkgRegDt").text(pkg.REG_DT + "에 " + pkg.REG_USRID + "(님)이 등록함.");
+			$("#pkgRegDt").text(pkg.REG_DT + "에 " + pkg.REG_USRNM + "(님)이 등록함.");
 			if(typeof pkg.UDT_USRID == 'undefined') {
 				$("#pkgUdtDt").text("수정 이력이 없습니다.");
 			} else {
-				$("#pkgUdtDt").text(pkg.UDT_DT + "에 " + pkg.UDT_USRID + "(님)이 수정함.");
+				$("#pkgUdtDt").text(pkg.UDT_DT + "에 " + pkg.UDT_USRNM + "(님)이 수정함.");
 			}
 			
 			$("#ruleSearchBtn").attr("data-pkgId", pkg.PKG_ID);
-			
-			console.log(pkg.RULE_COUNT_IN_PKG);
 			
 			if(pkg.RULE_COUNT_IN_PKG > 0) {
 				var drlPath = pkg.PATH + "/" + pkg.PKG_NM + "/" + pkg.DRL_NM;
@@ -993,7 +989,7 @@ function fnAddPkg(param) {
 			messagePop("success", "Package가 저장되었습니다.", "", "");
 			$("#pkgId").text(res.PKG_ID);
 			$("#ruleCntInPkg").text("0개");
-			$("#pkgRegDt").text(res.REG_DT + "에 " + res.REG_USRID + "(님)이 등록함.");
+			$("#pkgRegDt").text(res.REG_DT + "에 " + res.REG_USRNM + "(님)이 등록함.");
 			
 			$("#ruleCard").addClass("card-collapsed");
 			$("#ruleCardBody").css("display", "none");
@@ -1035,7 +1031,7 @@ function fnUpdatePkg(param) {
 			getPkgList(searchObj);
 			
 			messagePop("success", "Package가 수정되었습니다.", "", "");
-			$("#pkgUdtDt").text(res.UDT_DT + "에 " + res.UDT_USRID + "(님)이 등록함.");
+			$("#pkgUdtDt").text(res.UDT_DT + "에 " + res.UDT_USRNM + "(님)이 등록함.");
 		},
 		beforeSend : function() {
 			$("#pkgLoading").show();
@@ -1095,9 +1091,9 @@ function getRuleList(searchObj) {
 					html += "	<td class='t_center'><a href='#' class='_ruleNmLink' data-ruleId='"+ ruleList[i].RULE_ID +"'>" + ruleList[i].RULE_NM + "</a></td>";
 					html += "	<td class='t_center'>" + ruleList[i].SALIENCE + "</td>";
 					html += "	<td class='t_center'>" + (typeof ruleList[i].UDT_DT == 'undefined' ? "-" : ruleList[i].UDT_DT) + "</td>";
-					html += "	<td class='t_center'>" + (typeof ruleList[i].UDT_USRID == 'undefined' ? "-" : ruleList[i].UDT_USRID) + "</td>";
+					html += "	<td class='t_center'>" + (typeof ruleList[i].UDT_USRNM == 'undefined' ? "-" : ruleList[i].UDT_USRNM) + "</td>";
 					html += "	<td class='t_center'>" + ruleList[i].REG_DT + "</td>";
-					html += "	<td class='t_center'>" + ruleList[i].REG_USRID + "</td>";
+					html += "	<td class='t_center'>" + ruleList[i].REG_USRNM + "</td>";
 					html += "</tr>";
 				}
 			}

@@ -766,7 +766,6 @@
 	
 <!-- App js-->
 <script src="/targetai/js/pkg.js"></script>
-<script src="/targetai/js/common.js"></script>
 <script src="/targetai_publish/js/app.js" type="text/javascript"></script>
 <script src="/targetai_publish/libs/jquery-ui/jquery-ui.js" type="text/javascript"></script>
 

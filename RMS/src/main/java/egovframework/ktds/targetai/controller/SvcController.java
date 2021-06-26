@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -32,7 +34,14 @@ public class SvcController {
 	 * @return
 	 */
 	@RequestMapping(value = "/svc.do")
-	public String main(ModelMap model) {
+	public String main(HttpServletRequest req, ModelMap model) {
+		HttpSession session = req.getSession();
+		String member_id = (String) session.getAttribute("member_id");
+		
+		if(member_id == null) {
+			return "redirect:/targetai/main.do";
+		}
+		
 		return "/targetai/svc";
 	}
 	
@@ -92,9 +101,12 @@ public class SvcController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/addSvc.do", method = RequestMethod.POST)
-	public HashMap<String, Object> addSvc(@RequestBody HashMap<String, Object> param) {
+	public HashMap<String, Object> addSvc(@RequestBody HashMap<String, Object> param, HttpServletRequest req) {
+		HttpSession session = req.getSession();
+		String regUserId = (String) session.getAttribute("member_id");
+		
+		param.put("REG_USER_ID", regUserId);
 		param.put("EVENT_ID", 1);
-		param.put("REG_USER_ID", 1);
 		// 서비스 저장
 		svcService.addSvc(param);
 		HashMap<String, Object> svc = svcService.getSvc(param);
@@ -109,8 +121,11 @@ public class SvcController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/updateSvc.do", method = RequestMethod.POST)
-	public HashMap<String, Object> updateSvc(@RequestBody HashMap<String, Object> param) {
-		param.put("REG_USER_ID", 1);
+	public HashMap<String, Object> updateSvc(@RequestBody HashMap<String, Object> param, HttpServletRequest req) {
+		HttpSession session = req.getSession();
+		String regUserId = (String) session.getAttribute("member_id");
+		
+		param.put("REG_USER_ID", regUserId);
 		// 서비스 저장
 		svcService.updateSvc(param);
 		HashMap<String, Object> svc = svcService.getSvc(param);

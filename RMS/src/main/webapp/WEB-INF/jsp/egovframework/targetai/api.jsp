@@ -82,8 +82,8 @@
 															<th class="t_left">Type</th>
 															<td class="t_left">
 																<select name="api_type" class="wd150px">
-																	<option value="" >선택하세요</option>
-																	<option value="CUST" selected>CUST</option>
+																	<option value="" selected>선택하세요</option>
+																	<option value="CUST">CUST</option>
 																	<option value="CONT">CONT</option>
 																	<option value="COMB">COMB</option>
 																</select>
@@ -92,13 +92,13 @@
 														<tr>
 															<th class="t_left">VALUE</th>
 															<td class="t_left">
-																<input type="text" class="wd250px" name="param_val" value="ACC_CUST_SROW_ID_1" />
+																<input type="text" class="wd250px" name="param_val" value="" />
 															</td>
 														</tr>
 														<tr>
 															<th class="t_left">서비스 아이디</th>
 															<td class="t_left">
-																<input type="text" class="wd250px" name="svc_id" value="114" />
+																<input type="text" class="wd250px" name="svc_id" value="" />
 															</td>
 														</tr>
 														<tr>

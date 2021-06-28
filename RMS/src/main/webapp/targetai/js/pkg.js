@@ -30,6 +30,12 @@ $(document).ready(function() {
 		param.pkgId = $(this).attr("data-pkgId");
 		
 		fnGetPkg(param);
+		
+		// RULE 관련 초기화
+		ruleObj = {};	tmpObj = {};
+		ruleObjArr = [];	tmpArr = [];
+		initRuleDetail();	// RULE 상세 초기화
+		initRuleEditor();	// RULE EDITOR 초기화
 	});
 	
 	// RULE 목록 > 열기 토글 링크
@@ -591,6 +597,15 @@ $(document).ready(function() {
 				return;
 			}
 			
+		} else if(tmpObj.factorValType === "INPUT") {
+			tmpObj.factorVal = $("#factorVal_input>input").val();
+			factorVal_Tag = $("#factorVal_input input[name='detAttrChk']");
+			
+			if(typeof tmpObj.factorVal === "undefined" || tmpObj.factorVal == "") {
+				messagePop("warning", "요소값 체크","요소값을 입력 후 추가하세요","");
+				return;
+			}
+			
 		} else {
 			messagePop("warning", "요소값 체크","요소값을 선택 후 추가하세요","");
 		}
@@ -645,6 +660,9 @@ $(document).ready(function() {
 		tmpObj.ruleAttr_source = "this[\""+ tmpObj.factorNmEn +"\"]" + tmpObj.logical_txt + factorVal + " " + tmpObj.relation_txt + "\n";
 		
 		tmpArr.push(tmpObj);
+		
+		$("input[name='detAttrChk']").val("");
+		$("input[name='detAttrChk']").prop("checked",false);
 	});
 	
 	// Rule 속성 minus 버튼 클릭 이벤트
@@ -829,6 +847,15 @@ $(document).ready(function() {
 	$(document).on("click", "._ruleTestPop_close", function() {
 		$("#ruleTestPop_input").html("");
 	});
+	
+	// RULE EDITOR 팝업 > 직접입력
+	$("#changeInputBtn").click(function() {
+		$("._factorVal").hide();
+		$("#factorVal_input").show();
+		$("#factorVal_input>input").focus();
+		
+		$("#factorVal").attr("data-type", "INPUT");
+	});
 });
 
 /**
@@ -951,8 +978,6 @@ function fnGetPkg(param) {
 			$("#ruleCard").addClass("card-collapsed");
 			$("#ruleCardBody").css("display", "none");
 			$("#ruleNmDupBtn").attr("data-isDup", "N");
-			initRuleDetail();
-			initRuleEditor();
 		},
 		beforeSend : function() {
 			$("#pkgLoading").show();
@@ -1182,6 +1207,8 @@ function treeFactorGrpList() {
 			};
 			// zTree 초기화 후 생성
 			$.fn.zTree.init($("#factorTree"), setting, factorGrpArr);
+			$("._factorVal").css("display", "none");
+			$("#changeInputBtn").css("display", "none");
 		},
 		beforeSend : function() {
 			$("#factorTreeLoading").show();
@@ -1273,8 +1300,10 @@ function getFactorVal(event, treeId, treeNode) {
 			var dataType = factor.DATA_TYPE;
 			
 			$("#factorVal_string").css("display", "none");
+			$("#factorVal_input").css("display", "none");
 			$("#factorVal_int").css("display", "none");
 			$("#factorVal_date").css("display", "none");
+			$("#changeInputBtn").css("display", "none");
 			
 			if(dataType === 'DATE') {
 				$("#factorVal_date").css("display", "");
@@ -1288,6 +1317,7 @@ function getFactorVal(event, treeId, treeNode) {
 				
 			} else {	// dataType === 'STRING'
 				$("#factorVal_string").css("display", "");
+				$("#changeInputBtn").css("display", "");
 				$("#factorVal").attr("data-type", "STRING");
 				var html = "";
 				var factorVal = res.factorVal;
@@ -1591,9 +1621,8 @@ function fnInitRuleSearch() {
  */
 function initRuleEditor() {
 	$("#ruleAttrData").html("");
-	$("#factorVal_string").css("display", "none");
-	$("#factorVal_int").css("display", "none");
-	$("#factorVal_date").css("display", "none");
+	$("._factorVal").css("display", "none");
+	$("#changeInputBtn").css("display", "none");
 	$("#logicalRadio1").prop("checked", true);
 	$("#relationRadio1").prop("checked", true);
 }

@@ -112,6 +112,7 @@
 																<th class="t_left icon01">논리 연산</th>
 																<th class="t_left icon02">요소 값
 																	<button type="button" class="btn btn-lg btn-sky btn_right" id="addValBtn">Add Value</button>
+																	<button type="button" class="btn btn-sm btn-green btn_left" id="changeInputBtn">직접 입력</button>
 																</th>
 																<th class="t_left icon03">RULE 속성</th>
 															</tr>
@@ -127,11 +128,14 @@
 																	id="logicalRadio7" value="logical7" /> <label for="logicalRadio7" class="mg_r10">not in</label></td>
 																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3" id="factorVal" data-type="">
 																	<div class="overflow_detail">
-																		<div class="alert fade show mg_b10" role="alert" id="factorVal_string"></div>
-																		<div class="alert fade show mg_b10" role="alert" id="factorVal_int">
+																		<div class="alert fade show mg_b10 _factorVal" role="alert" id="factorVal_string"></div>
+																		<div class="alert fade show mg_b10 _factorVal" role="alert" id="factorVal_input">
+																			<input type="text" class="wd250px" name="detAttrChk" value="" />
+																		</div>
+																		<div class="alert fade show mg_b10 _factorVal" role="alert" id="factorVal_int">
 																			<input type="text" class="wd250px" name="detAttrChk" value="" placeholder="숫자만 입력가능합니다" />
 																		</div>
-																		<div class="alert fade show mg_b10" role="alert" id="factorVal_date">
+																		<div class="alert fade show mg_b10 _factorVal" role="alert" id="factorVal_date">
 																			<input type="text" id="DateId_ex01" name="detAttrChk" class="date" value="" />
 																		</div>
 																	</div>

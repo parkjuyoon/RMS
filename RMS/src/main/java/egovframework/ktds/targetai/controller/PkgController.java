@@ -148,6 +148,14 @@ public class PkgController {
 			path = path.replace("/", File.separator).replace("\\", File.separator);
 			
 			List<HashMap<String, Object>> getResultList = ApiController.getResultList(path, paramMap);
+			
+			if(getResultList == null) {
+				String pkgId = (String) param.get("pkgId");
+				
+				saveDRL(pkgId);
+				getResultList = ApiController.getResultList(path, paramMap);
+			}
+			
 			HashMap<String, Object> resultMap = new HashMap<>();
 			resultMap.put("RESULT", getResultList);
 			JSONObject resultJSON = new JSONObject(resultMap);

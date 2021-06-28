@@ -787,6 +787,7 @@ $(document).ready(function() {
 		}
 		
 		var param = {};
+		param.pkgId = $("#pkgId").text();
 		param.drlPath = drlPath;
 		param.keyValueArr = keyValueArr;
 		

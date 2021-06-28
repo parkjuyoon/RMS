@@ -63,7 +63,7 @@
 														<tr>
 															<th class="t_left">Request URL</th>
 															<td class="t_left">
-																<label id="req_url">http://localhost:8080/targetai/api/request.do</label>
+																<label id="req_url">${rootDomain}/targetai/api/request.do</label>
 																<button type="button" id="apiRequestBtn" class="btn btn-sm btn-green">Request</button>
 															</td>
 														</tr>
@@ -98,7 +98,7 @@
 														<tr>
 															<th class="t_left">서비스 아이디</th>
 															<td class="t_left">
-																<input type="text" class="wd250px" name="svc_id" value="112" />
+																<input type="text" class="wd250px" name="svc_id" value="114" />
 															</td>
 														</tr>
 														<tr>

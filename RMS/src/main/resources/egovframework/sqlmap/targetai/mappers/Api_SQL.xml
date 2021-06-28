@@ -14,6 +14,7 @@
 	
 	<select id="getPkgBySvcId" parameterType="string" resultType="java.util.HashMap">
 		SELECT
+			P.PKG_ID,
 			P.PATH,
 			P.PKG_NM,
 			P.DRL_NM

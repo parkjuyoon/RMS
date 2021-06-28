@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import egovframework.ktds.drools.config.DroolsUtil;
 import egovframework.ktds.targetai.service.ApiService;
+import egovframework.ktds.targetai.service.PkgService;
 import egovframework.ktds.targetai.util.CommonUtil;
 
 @RequestMapping("/targetai")
@@ -37,6 +38,8 @@ public class ApiController {
 	
 	@Autowired
 	private ApiService apiService;
+	@Autowired
+	private PkgService pkgService;
 	
 	/**
 	 * API 테스트 화면 이동
@@ -51,6 +54,8 @@ public class ApiController {
 		if(member_id == null) {
 			return "redirect:/targetai/main.do";
 		}
+		
+		model.put("rootDomain", req.getRequestURL().toString().replace(req.getRequestURI(), ""));
 		
 		return "/targetai/api";
 	}
@@ -150,6 +155,14 @@ public class ApiController {
 			// DRL의 RULE 실행 결과
 			List<HashMap<String, Object>> resultList = getResultList(drlPath, activeMap);
 			
+			// DRL 파일이 존재하지 않을경우 resultList는 NULL 을 반환한다. 
+			// DB에서 조회해서 파일을 생성한 후 다시 RULE 실행한다.
+			if(resultList == null) {
+				int pkgId = (int) pkg.get("PKG_ID");
+				saveDRL(String.valueOf(pkgId));
+				resultList = getResultList(drlPath, activeMap);
+			}
+			
 			HashMap<String, Object> responseMap = new HashMap<>();
 			
 			long afterTime = System.currentTimeMillis();
@@ -170,7 +183,10 @@ public class ApiController {
 			logMap.put("VAL", param_val);
 			
 			apiService.addSvclogIn(logMap);
-			apiService.addSvclogOut(logMap);
+			
+			if(resultList.size() > 0) {
+				apiService.addSvclogOut(logMap);
+			}
 			responseMap.put("TRANSACTION_ID", logMap.get("SVCLOG_ID"));
 			
 			response.getWriter().print(new JSONObject(responseMap));
@@ -215,6 +231,10 @@ public class ApiController {
 		
 		// Drools 실행
 		KieSession kieSession = DroolsUtil.getKieSession(path);
+		
+		if(kieSession == null) {
+			return null;
+		}
 		
 		kieSession.insert(activeMap);
 		kieSession.fireAllRules();
@@ -303,5 +323,62 @@ public class ApiController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
+	 * @param pkgId
+	 * @return
+	 */
+	public String saveDRL(String pkgId) {
+		// PKG DRL_SOURCE 업데이트
+		HashMap<String, Object> pkg = pkgService.getPkgById(pkgId);
+		List<HashMap<String, Object>> ruleList = pkgService.getRuleListByPkgId(pkgId);
+		
+		String drlSource = "";
+		
+		if(ruleList.size() > 0) {
+			drlSource += "package " + pkg.get("PKG_NM") + "\n";
+			drlSource += "import java.util.Map\n\n";
+		}
+		
+		for(HashMap<String, Object> m : ruleList) {
+			drlSource += "rule \"" + m.get("RULE_NM") + "\"\n";
+			drlSource += "	no-loop " + m.get("NO_LOOP") + "\n";
+			drlSource += "	lock-on-active " + m.get("LOCK_ON_ACTIVE") + "\n";
+			drlSource += "	salience " + m.get("SALIENCE") + "\n";
+			drlSource += "	when\n";
+			drlSource += "		$map : Map(\n";
+			
+			int ruleId = (int) m.get("RULE_ID");
+			List<HashMap<String, Object>> whenList = pkgService.getWhenList(ruleId);
+			
+			for(HashMap<String, Object> w : whenList) {
+				drlSource += "		" + w.get("ATTR_WHEN");
+			}
+			
+			drlSource += "	)\n";
+			drlSource += "	then\n";
+			drlSource += "		" + m.get("ATTR_THEN") + "\n";
+			drlSource += "end\n\n";
+		}
+		
+		pkg.put("DRL_SOURCE", drlSource);
+		pkgService.updateDrlSource(pkg);
+		
+		// 물리 DRL파일 생성
+		String realPath = (String) pkg.get("PATH");
+		String path = realPath;
+		realPath = System.getProperty("user.home") + path;
+		realPath = realPath.replace("/", File.separator).replace("\\", File.separator);
+		String pkg_nm = (String) pkg.get("PKG_NM");
+		String drl_nm = (String) pkg.get("DRL_NM");
+		String drl_source = (String) pkg.get("DRL_SOURCE");
+		
+		DroolsUtil.outputDrl(realPath, pkg_nm, drl_nm, drl_source);
+		
+		path += "/" + pkg_nm + "/" + drl_nm;
+		
+		return path;
 	}
 }

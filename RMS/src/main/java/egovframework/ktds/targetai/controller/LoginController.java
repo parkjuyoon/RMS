@@ -1,6 +1,9 @@
 package egovframework.ktds.targetai.controller;
 
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -9,7 +12,12 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import egovframework.ktds.targetai.service.LoginService;
 
@@ -40,15 +48,11 @@ public class LoginController {
 	 * @param model
 	 * @return /targetai/login.jsp
 	 */
-	@RequestMapping(value = "/login.do")
-	public String login(HttpServletRequest req, HttpServletResponse resp) {
+	@RequestMapping(value = "/login.do", method = RequestMethod.POST)
+	public String login(HttpServletRequest req) {
 		
 		String id = req.getParameter("id");
 		String passwd = req.getParameter("passwd");
-		
-		if("".equals(id) || "".equals(passwd)) {
-			return "redirect:/targetai/login.do";
-		}
 		
 		HashMap<String, Object> param = new HashMap<>();
 		param.put("id", id);
@@ -61,6 +65,31 @@ public class LoginController {
 		session.setAttribute("member_name", member.get("MEMBER_NAME"));
 		
 		return "redirect:/targetai/svc.do";
+	}
+	
+	/**
+	 * 
+	 * @param param
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/loginCheck.do", method = RequestMethod.POST)
+	public boolean loginCheck(HttpServletRequest req) {
+		
+		String id = req.getParameter("id");
+		String passwd = req.getParameter("passwd");
+		
+		HashMap<String, Object> param = new HashMap<>();
+		param.put("id", id);
+		param.put("passwd", passwd);
+		
+		HashMap<String, Object> member = loginService.getMember(param);
+		
+		if(member == null) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**

@@ -27,41 +27,31 @@
 		.wrap .wrap_input .input_ck {margin:22px 0 0 0; font-size:12px;}
 		.wrap .wrap_input .input_ck input {position:relative; top:-1px; vertical-align:middle; margin:0 5px 0 0;}
 		.wrap .wrap_input .input_login button {width:370px; background-color:#25b5b5; color:#ffffff; margin:35px 0 0 0; border-radius:4px; line-height:30px; padding:8px 5px 8px 5px; border:1px solid #25b5b5; font-size:16px; cursor:pointer;}
+		.wrongTxt {float: right; color: red; display: none;}
 	</style>
-	
-	<!-- Bootstrap css -->
-	<link href="/targetai_publish/libs/font-awesome/css/all.min.css" rel="stylesheet" type="text/css" />
-	<link href="/targetai_publish/libs/jquery-ui/jquery-ui.css" rel="stylesheet" type="text/css" />
-	<link href="/targetai_publish/libs/elusive-icons/css/elusive-icons.css" rel="stylesheet" type="text/css" />
-	<link href="/targetai_publish/css/config/custom/app.css" rel="stylesheet" type="text/css" id="app-default-stylesheet" />
-	<link href="/targetai_publish/css/config/custom/app-dark.min.css" rel="stylesheet" type="text/css" id="app-dark-stylesheet" />
-	<link href="/targetai_publish/css/icons.min.css" rel="stylesheet" type="text/css" />
-	<link href="/targetai_publish/css/config/custom/zTreeStyle.css" rel="stylesheet" type="text/css" />
 	
 	<!-- Default/tree js-->
 	<script src="/targetai_publish/js/jquery-3.6.0.min.js" type="text/javascript"></script>
-	<script src="/targetai_publish/js/vendor.min.js" type="text/javascript"></script>
-	<script src="/targetai_publish/js/jquery.ztree.core.js" type="text/javascript"></script>
-
+	<script src="/targetai/js/login.js" type="text/javascript"></script>
+	
 </head>
 <body>
-	<%@ include file="../targetai/comm/alertPop.jsp"%>
-	
-	<form action="/targetai/login.do" method="post">
+	<form id="loginForm" action="/targetai/login.do" method="post">
 		<div class="wrap">
 			<div class="wrap_box">
 				<div><img src="/targetai_publish/images/login_logo.png" alt="Target AI" /></div>
 				<!-- 로그인정보 -->
 				<div class="wrap_input">
 					<div class="input_id">
-						<input type="text" id="" name="id" maxlength="15" size="15" value="admin" placeholder="ID" />
+						<input type="text" id="id" name="id" maxlength="15" size="15" value="admin" placeholder="ID" />
 					</div>
 					<div class="input_pw">
-						<input type="password" id="" name="passwd" maxlength="15" size="15" value="New1234!" placeholder="PW" />
+						<input type="password" id="passwd" name="passwd" maxlength="15" size="15" value="New1234!" placeholder="PW" />
 					</div>
 					<div class="cb"></div>
 					<div class="input_ck">
 						<input type="checkbox" name="" value="" />아이디 저장
+						<span class="wrongTxt">사용자 정보가 없습니다.</span>
 					</div>
 					<div class="input_login">
 						<button id="loginBtn">로그인</button>
@@ -71,8 +61,5 @@
 			</div>
 		</div>
 	</form>
-	
-<script src="/targetai_publish/js/app.js" type="text/javascript"></script>
-<script src="/targetai_publish/libs/jquery-ui/jquery-ui.js" type="text/javascript"></script>
 </body>
 </html>

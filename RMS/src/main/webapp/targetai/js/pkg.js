@@ -1527,6 +1527,7 @@ function fnRuleTest(param) {
 		contentType:'application/json; charset=utf-8',
 		dataType : "json",
 		success : function(res) {
+			console.log(res);
 			var ruleAttrList = res.ruleAttrList;
 			var html = "";
 			

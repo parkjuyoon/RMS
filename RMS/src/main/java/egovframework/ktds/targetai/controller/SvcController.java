@@ -34,8 +34,7 @@ public class SvcController {
 	 * @return
 	 */
 	@RequestMapping(value = "/svc.do")
-	public String main(HttpServletRequest req, ModelMap model) {
-		HttpSession session = req.getSession();
+	public String main(HttpSession session, ModelMap model) {
 		String member_id = (String) session.getAttribute("member_id");
 		
 		if(member_id == null) {
@@ -101,8 +100,7 @@ public class SvcController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/addSvc.do", method = RequestMethod.POST)
-	public HashMap<String, Object> addSvc(@RequestBody HashMap<String, Object> param, HttpServletRequest req) {
-		HttpSession session = req.getSession();
+	public HashMap<String, Object> addSvc(@RequestBody HashMap<String, Object> param, HttpSession session) {
 		String regUserId = (String) session.getAttribute("member_id");
 		
 		param.put("REG_USER_ID", regUserId);
@@ -121,8 +119,7 @@ public class SvcController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/updateSvc.do", method = RequestMethod.POST)
-	public HashMap<String, Object> updateSvc(@RequestBody HashMap<String, Object> param, HttpServletRequest req) {
-		HttpSession session = req.getSession();
+	public HashMap<String, Object> updateSvc(@RequestBody HashMap<String, Object> param, HttpSession session) {
 		String regUserId = (String) session.getAttribute("member_id");
 		
 		param.put("REG_USER_ID", regUserId);

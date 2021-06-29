@@ -45,8 +45,7 @@ public class PkgController {
 	 * @return /targetai/pkg.jsp
 	 */
 	@RequestMapping(value = "/pkg.do")
-	public String main(HttpServletRequest req, ModelMap model) {
-		HttpSession session = req.getSession();
+	public String main(HttpSession session, ModelMap model) {
 		String member_id = (String) session.getAttribute("member_id");
 		
 		if(member_id == null) {
@@ -176,8 +175,7 @@ public class PkgController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/addPkg.do", method = RequestMethod.POST)
-	public HashMap<String, Object> addPkg(@RequestBody HashMap<String, Object> param, HttpServletRequest req) {
-		HttpSession session = req.getSession();
+	public HashMap<String, Object> addPkg(@RequestBody HashMap<String, Object> param, HttpSession session) {
 		String regUserId = (String) session.getAttribute("member_id");
 		
 		param.put("REG_USER_ID", regUserId);
@@ -203,8 +201,7 @@ public class PkgController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/updatePkg.do", method = RequestMethod.POST)
-	public HashMap<String, Object> updatePkg(@RequestBody HashMap<String, Object> param, HttpServletRequest req) {
-		HttpSession session = req.getSession();
+	public HashMap<String, Object> updatePkg(@RequestBody HashMap<String, Object> param, HttpSession session) {
 		String regUserId = (String) session.getAttribute("member_id");
 		
 		param.put("REG_USER_ID", regUserId);
@@ -342,10 +339,8 @@ public class PkgController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/ruleSave.do", method = RequestMethod.POST)
-	public HashMap<String, Object> ruleSave(@RequestBody HashMap<String, Object> param, HttpServletRequest req) {
+	public HashMap<String, Object> ruleSave(@RequestBody HashMap<String, Object> param, HttpSession session) {
 		String ruleId = (String) param.get("ruleId");
-		
-		HttpSession session = req.getSession();
 		String regUserId = (String) session.getAttribute("member_id");
 		
 		param.put("REG_USER_ID", regUserId);

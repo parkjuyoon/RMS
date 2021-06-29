@@ -11,7 +11,7 @@
 			REG_DT
 		FROM targetai.MEMBER
 		WHERE 
-			MEMBER_ID = #{id}
-			AND PASSWD = #{passwd}
+			BINARY(MEMBER_ID) = #{id}
+			AND BINARY(PASSWD) = #{passwd}
 	</select>
 </mapper>

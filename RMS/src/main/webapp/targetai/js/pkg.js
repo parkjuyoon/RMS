@@ -482,6 +482,7 @@ $(document).ready(function() {
 		param.noLoop = $("input[name='noLoop']:checked").val();
 		param.lockOnActive = $("input[name='noLoop']:checked").val();
 		param.salience = $("#salience").val();
+		param.targetType = $("#targetType").val();
 		param.ruleObjArr = ruleObjArr;
 		
 		fnRuleSave(param);

@@ -77,6 +77,8 @@ $(document).ready(function() {
 			param.channelId = $("#svcConnChannel").attr("data-channel_id");
 			param.pkgId = $("#svcConnPkg").attr("data-pkg_id");
 			param.svcActYn = $("#svcActYn").val();
+			param.numOfOffer = $("#numOfOffer").val() == '' ? null : $("#numOfOffer").val();
+			param.targetType = $("#targetType").val();
 			param.svcDsc = $("#svcDsc").val();
 			
 			if(param.svcId != '') {
@@ -341,6 +343,8 @@ function fnSvcDetail(param) {
 			$("#svcConnPkg").attr("data-pkg_id", svc.PKG_ID);
 			$("#svcActYn").val(svc.SVC_ACT_YN);
 			$("#svcDsc").val(svc.SVC_DSC);
+			$("#numOfOffer").val(svc.NUM_OF_OFFER);
+			$("#targetType").val(svc.TARGET_TYPE);
 			$("#svcRegDt").text(svc.REG_DT + "에 " + svc.REG_USRNM + "(님)이 등록함.");
 			if(typeof svc.UDT_USRID == 'undefined') {
 				$("#svcUdtDt").text("수정 이력이 없습니다.");

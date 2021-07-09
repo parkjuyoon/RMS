@@ -1,6 +1,7 @@
 package egovframework.ktds.targetai.serviceImpl;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -15,11 +16,6 @@ public class ApiServiceImpl extends EgovAbstractServiceImpl implements ApiServic
 
 	@Resource(name = "apiMapper")
 	private ApiMapper dao;
-
-	@Override
-	public HashMap<String, Object> getActiveObj(HashMap<String, Object> param) {
-		return dao.getActiveObj(param);
-	}
 
 	@Override
 	public HashMap<String, Object> getPkgBySvcId(String svc_id) {
@@ -40,6 +36,16 @@ public class ApiServiceImpl extends EgovAbstractServiceImpl implements ApiServic
 	@Override
 	public void updateRspnsCd(HashMap<String, Object> param) {
 		dao.updateRspnsCd(param);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> getActiveList(HashMap<String, Object> param) {
+		return dao.getActiveList(param);
+	}
+
+	@Override
+	public List<Integer> getRuleIdsBySvcId(String svc_id) {
+		return dao.getRuleIdsBySvcId(svc_id);
 	}
 
 

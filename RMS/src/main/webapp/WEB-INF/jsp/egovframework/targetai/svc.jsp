@@ -415,6 +415,21 @@
 														</td>
 													</tr>
 													<tr>
+														<th class="t_left">NUM OF OFFER</th>
+														<td class="t_left">
+															<input type="text" class="wd150px" id="numOfOffer" value="" placeholder="미 입력시 전체 추천"/>
+														</td>
+													</tr>
+													<tr>
+														<th class="t_left">TARGET TYPE</th>
+														<td class="t_left">
+															<select id="targetType" class="wd150px">
+																<option value="CUST">고객</option>
+																<option value="CONT">계약</option>
+															</select>
+														</td>
+													</tr>
+													<tr>
 														<th class="t_left">설명</th>
 														<td class="t_left">
 															<textarea rows="4" cols="7" class="txtsize_100 wd100" id="svcDsc" placeholder="상세설명을 입력하세요."></textarea>

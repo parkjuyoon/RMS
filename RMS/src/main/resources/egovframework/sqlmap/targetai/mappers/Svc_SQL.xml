@@ -60,6 +60,8 @@
 		    P.PKG_NM,
 		    S.SVC_ACT_YN,
 		    S.SVC_DSC,
+		    S.NUM_OF_OFFER,
+            S.TARGET_TYPE,
 		    S.REG_USRID,
 		    M.MEMBER_NAME REG_USRNM,
 		    DATE_FORMAT(S.REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
@@ -96,6 +98,8 @@
 			SVC_DSC,
 			CHANNEL_ID,
 			PKG_ID,
+			NUM_OF_OFFER,
+			TARGET_TYPE,
 			REG_USRID
 		) VALUES (
 			#{svcNm},
@@ -104,6 +108,8 @@
 			#{svcDsc},
 			#{channelId},
 			#{pkgId},
+			#{numOfOffer},
+			#{targetType},
 			#{REG_USER_ID}
 		)
 		<selectKey keyProperty="svcId" resultType="int" order="AFTER">
@@ -119,6 +125,8 @@
 			CHANNEL_ID = #{channelId},
 			PKG_ID = #{pkgId},
 			SVC_ACT_YN = #{svcActYn},
+			NUM_OF_OFFER = #{numOfOffer},
+			TARGET_TYPE = #{targetType},
 			SVC_DSC = #{svcDsc},
 			UDT_USRID = #{REG_USER_ID},
 			UDT_DT = NOW()

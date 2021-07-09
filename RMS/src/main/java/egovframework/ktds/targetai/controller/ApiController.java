@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.mysql.fabric.xmlrpc.base.Array;
+
 import egovframework.ktds.drools.config.DroolsUtil;
 import egovframework.ktds.targetai.service.ApiService;
 import egovframework.ktds.targetai.service.PkgService;
@@ -67,7 +69,7 @@ public class ApiController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/reqUrl.do", method = RequestMethod.POST)
-	public JSONObject request(@RequestBody JSONObject param) {
+	public JSONObject reqUrl(@RequestBody JSONObject param) {
 		JSONObject responseJSON = new JSONObject();
 		String req_url = (String) param.get("req_url");
 		
@@ -107,88 +109,173 @@ public class ApiController {
 			JSONObject params = (JSONObject) parse.parse(sb.toString());
 			
 			// 조회할 KEY 값
-			String api_type = (String) params.get("api_type");
+			String param_targetType = params.get("api_type") == null ? null : (String) params.get("api_type");
 			// 조회할 VALUE 값
-			String param_val = (String) params.get("param_val");
+			String param_custId = (String) params.get("param_val");
 			// 서비스 아이디
-			String svc_id = (String) params.get("svc_id");
+			String param_svcId = (String) params.get("svc_id");
 			
-			String table = "";
-			String column = "";
-			
-			// RULE 테스트 할 객체 조회
-			if("CUST".equals(api_type)) {
-				table = "EV_CUST_ITEM1_TXN";
-				column = "ACC_CUST_SROW_ID";
-				
-			} else if("CONT".equals(api_type)) {
-				table = "EV_CONT_ITEM1_TXN";
-				column = "ASSET_SROW_ID";
-				
-			} else if("COMB".equals(api_type)) {
-				table = "EV_CAMP_COMB_ITEM1_TXN";
-				column = "COMB_CONT_SBT_ID";
-				
-			} else {
-				response.getWriter().print(new JSONObject());
-				return;
-			}
-			
-			// RULE 실행할 데이터 조회
-			HashMap<String, Object> activeMap = getActiveMap(table, column, param_val);
 			// PKG 내 DRL 파일 정보 조회
-			HashMap<String, Object> pkg = apiService.getPkgBySvcId(svc_id);
+			HashMap<String, Object> pkg = apiService.getPkgBySvcId(param_svcId);
 			
 			if(pkg == null) {
 				response.getWriter().print(new JSONObject());
 				return;
 			}
 			
+			String svcTargetType = (param_targetType == null ? (String) pkg.get("TARGET_TYPE") : param_targetType);
+			Object numOfOffer = pkg.get("NUM_OF_OFFER") == null ? null : pkg.get("NUM_OF_OFFER");
+			
+			int pkgId = (int) pkg.get("PKG_ID");
 			String path = (String) pkg.get("PATH");
 			String pkgNm = (String) pkg.get("PKG_NM");
 			String drlNm = (String) pkg.get("DRL_NM");
 			
-			// Drools Get Session
+			// DRL 파일 선택
 			String drlPath = path.replace("/", File.separator) + File.separator + pkgNm + File.separator + drlNm;
 			drlPath = System.getProperty("user.home") + drlPath;
 			
-			// DRL의 RULE 실행 결과
-			List<HashMap<String, Object>> resultList = getResultList(drlPath, activeMap);
+			// RULE 실행할 데이터 조회
+			HashMap<String, Object> param = new HashMap<>();
+			param.put("val", param_custId);
 			
-			// DRL 파일이 존재하지 않을경우 resultList는 NULL 을 반환한다. 
-			// DB에서 조회해서 파일을 생성한 후 다시 RULE 실행한다.
-			if(resultList == null) {
-				int pkgId = (int) pkg.get("PKG_ID");
-				saveDRL(String.valueOf(pkgId));
-				resultList = getResultList(drlPath, activeMap);
-			}
-			
+			List<HashMap<String, Object>> activeList = apiService.getActiveList(param);
 			HashMap<String, Object> responseMap = new HashMap<>();
-			
+				
 			long afterTime = System.currentTimeMillis();
 			long diffTime = (afterTime - beforeTime)/1000;
 			
-			responseMap.put("RESULT", resultList);
 			responseMap.put("EXE_TYPE", "TARGET_AI");
-			responseMap.put("SVC_ID", svc_id);
-			responseMap.put(api_type, param_val);
+			responseMap.put("SVC_ID", param_svcId);
+			responseMap.put("NUM_OF_OFFER", pkg.get("NUM_OF_OFFER"));
+			responseMap.put("SVC_TARGET_TYPE", svcTargetType);
+			responseMap.put("CUST_ID", param_custId);
+			responseMap.put("NUM_OF_OFFER", numOfOffer == null ? "ALL" : (int) numOfOffer);	// ALL 이면 모든 RULE 표시, 제한있으면 제한된 만큼 RULE 표시
 			responseMap.put("RUN_TIME", diffTime);
 			responseMap.put("RUN_TIME_UNIT", "sec");
 			
+			List<Integer> ruleIds = apiService.getRuleIdsBySvcId(param_svcId);	// 등록된 모든 RULE 의 RULE_ID를 SALIENCE ASC, ORDER ASC 순으로 정렬하여 조회
+			List<HashMap<String, Object>> resultTmp = new ArrayList<>();	// 계약건수마다 걸린 RULE 을 한군데 넣어놓을 임시 리스트
+			List<HashMap<String, Object>> respList = new ArrayList<>();		// response 리스트
+			List<Integer> respRuleIds = new ArrayList<>();					// response 할 RULE_ID 리스트
+			
+			for(HashMap<String, Object> activeMap : activeList) {
+				// DRL의 RULE 실행 결과
+				activeMap.put("SVC_TARGET_TYPE", svcTargetType);
+				List<HashMap<String, Object>> resultList = getResultList(drlPath, activeMap);
+				
+				// DRL 파일이 존재하지 않을경우 resultList는 NULL 을 반환한다. 
+				// DB에서 조회해서 파일을 생성한 후 다시 RULE 실행한다.
+				if(resultList == null) {
+					saveDRL(String.valueOf(pkgId));
+					resultList = getResultList(drlPath, activeMap);
+				}
+				
+				// 계약건수마다 걸린 RULE 을 임시리스트 한곳에 모아둔다.
+				for(HashMap<String, Object> res : resultList) {
+					resultTmp.add(res);
+				}
+			}
+			
+			// SVC TARGET TYPE 이 CUST 인경우
+			if("CUST".equals(svcTargetType)) {	
+				loopOut:
+				for(int ruleId : ruleIds) {
+					for(HashMap<String, Object> res : resultTmp) {
+						int rid = (int) res.get("RULE_ID");
+						
+						if(ruleId == rid) {
+							if(respRuleIds.contains(rid)) {
+								break;
+								
+							} else {
+								if(numOfOffer != null) {		// NUM_OF_OFFER 제한이 있을경우 제한된만큼만 저장
+									int nof = (int) numOfOffer;
+									
+									if(respRuleIds.size() >= nof) {
+										break loopOut;
+										
+									} else {
+										respList.add(res);
+										respRuleIds.add(rid);
+									}
+									
+								} else {						// NUM_OF_OFFER 제한이 없을경우 모든 RULE 저장
+									respList.add(res);
+									respRuleIds.add(rid);
+								}
+							}
+							
+						}
+					}
+				}
+				
+			// SVC TARGET TYPE 이 CONT 인 경우
+			} else if("CONT".equals(svcTargetType)) {	
+				loopOut:
+				for(int ruleId : ruleIds) {
+					for(HashMap<String, Object> res : resultTmp) {
+						int rid = (int) res.get("RULE_ID");
+						String ruleTargetType = (String) res.get("TARGET_TYPE");
+						
+						if(ruleId == rid) {
+							if(respRuleIds.contains(rid)) {
+								if("CUST".equals(ruleTargetType)) {
+									break;
+									
+								} else if("CONT".equals(ruleTargetType)) {
+									respList.add(res);
+									
+								} else {
+									response.getWriter().print(new JSONObject());
+									return;
+								}
+								
+							} else {
+								if(numOfOffer != null) {		// NUM_OF_OFFER 제한이 있을경우 제한된만큼만 저장
+									int nof = (int) numOfOffer;
+									
+									if(respRuleIds.size() >= nof) {
+										break loopOut;
+										
+									} else {
+										respList.add(res);
+										respRuleIds.add(rid);
+									}
+									
+								} else {						// NUM_OF_OFFER 제한이 없을경우 모든 RULE 저장
+									respList.add(res);
+									respRuleIds.add(rid);
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			// ORDER 다시 매기기
+			for(int i=0; i<respList.size(); i++) {
+				respList.get(i).put("ORDER", i+1);
+			}
+			
+			// RESULT OUTPUT
+			responseMap.put("RESULT", respList);
+			/*
 			// SVCLOG 저장(INPUT/OUTPUT)
 			HashMap<String, Object> logMap = new HashMap<>();
-			logMap.put("RESULT", resultList);
+			logMap.put("RESULT", respList);
 			logMap.put("SVC_ID", svc_id);
-			logMap.put("PARAM", api_type);
+			logMap.put("PARAM", "CUST_NO");	// pk 중복 에러
 			logMap.put("VAL", param_val);
 			
 			apiService.addSvclogIn(logMap);
 			
-			if(resultList.size() > 0) {
+			if(respList.size() > 0) {
 				apiService.addSvclogOut(logMap);
 			}
-			responseMap.put("TRANSACTION_ID", logMap.get("SVCLOG_ID"));
 			
+			responseMap.put("TRANSACTION_ID", logMap.get("SVCLOG_ID"));
+			*/
 			response.getWriter().print(new JSONObject(responseMap));
 			
 		} catch (Exception e) {
@@ -200,23 +287,6 @@ public class ApiController {
 	}
 	
 	/**
-	 * RULE 적용할 객체 조회
-	 * @param source
-	 * @param key
-	 * @param val
-	 * @return
-	 * @throws SQLException
-	 */
-	private HashMap<String, Object> getActiveMap(String table, String column, String val) {
-		HashMap<String, Object> param = new HashMap<>();
-		param.put("table", table);
-		param.put("column", column);
-		param.put("val", val);
-		
-		return apiService.getActiveObj(param);
-	}
-	
-	/**
 	 * RULE 실행 후 SALIENCE, ORDER 순으로 ASC 정렬하여 리턴
 	 * @param path
 	 * @param obj
@@ -225,13 +295,10 @@ public class ApiController {
 	public static List<HashMap<String, Object>> getResultList(String path, HashMap<String, Object> activeMap) {
 		List<HashMap<String, Object>> sortResList = new ArrayList<>();
 		
-		if(activeMap == null) {
-			return sortResList;
-		}
-		
 		// Drools 실행
 		KieSession kieSession = DroolsUtil.getKieSession(path);
 		
+		// 파일이 없을경우 또는 문법이 틀린 DRL 파일 경우 null 리턴
 		if(kieSession == null) {
 			return null;
 		}
@@ -241,39 +308,48 @@ public class ApiController {
 		kieSession.dispose();
 		
 		// 결과화면에 정렬되게 보이기 위해 변환
-		List<HashMap<String, Object>> resList = new ArrayList<>();
-		
 		Iterator<String> iter = activeMap.keySet().iterator();
 		
+		// 실행된 RULE_ID 얻기
+		List<Integer> ruleIdList = new ArrayList<>();
 		while(iter.hasNext()) {
 			String key = iter.next().toString();
 			String value = String.valueOf(activeMap.get(key));
 			
-			if(key.startsWith("res_")) {
-				key = key.replaceAll("res_", "");
-				String ruleId = key.split("_")[0];
-				String campId = key.split("_")[1];
-				campId = "null".equals(campId) ? "" : campId;
-				String salience = key.split("_")[2];
-				
-				HashMap<String, Object> resMap = new HashMap<>();
-				resMap.put("SALIENCE", salience);
-				resMap.put("RULE_ID", ruleId);
-				resMap.put("CAMP_ID", campId);
-				resMap.put("RULE_NAME", value);
-				
-				resList.add(resMap);
+			if(key.startsWith("ruleId_")) {
+				ruleIdList.add(Integer.parseInt(value));
 			}
+		}
+		
+		List<HashMap<String, Object>> resList = new ArrayList<>();
+		
+		for(Integer ruleId : ruleIdList) {
+			HashMap<String, Object> resMap = new HashMap<>();
+			String ruleNm = "ruleNm_" + ruleId;
+			String campId = "campId_" + ruleId;
+			String salience = "salience_" + ruleId;
+			String targetType = "targetType_" + ruleId;
+			
+			resMap.put("RULE_ID", ruleId);
+			resMap.put("RULE_NM", activeMap.get(ruleNm));
+			resMap.put("CAMP_ID", activeMap.get(campId));
+			resMap.put("SALIENCE", activeMap.get(salience));
+			resMap.put("TARGET_TYPE", activeMap.get(targetType));
+			if("CONT".equals((String) activeMap.get(targetType)) && "CONT".equals((String) activeMap.get("SVC_TARGET_TYPE"))) {
+				resMap.put("SVC_CONT_ID", activeMap.get("SVC_CONT_ID"));
+			}
+			
+			resList.add(resMap);
 		}
 		
 		Collections.sort(resList, new Comparator<HashMap<String, Object>>() {
 
 			@Override
 			public int compare(HashMap<String, Object> a, HashMap<String, Object> b) {
-				String valA = (String) a.get("SALIENCE");
-	            String valB = (String) b.get("SALIENCE");
-	            String varC = (String) a.get("RULE_ID");
-	            String varD = (String) b.get("RULE_ID");
+				String valA = String.valueOf(a.get("SALIENCE"));
+	            String valB = String.valueOf(b.get("SALIENCE"));
+	            String varC = String.valueOf(a.get("RULE_ID"));
+	            String varD = String.valueOf(b.get("RULE_ID"));
 	            
 	            if(valA.equals(valB)) {
 	            	return varC.compareTo(varD);
@@ -285,7 +361,7 @@ public class ApiController {
 		
 		for(int i=0; i<resList.size(); i++) {
 			resList.get(i).put("ORDER", i+1);
-			String salience = (String) resList.get(i).get("SALIENCE"); 
+			int salience = (int) resList.get(i).get("SALIENCE"); 
 			resList.get(i).put("SALIENCE", salience);
 			sortResList.add(resList.get(i));
 		}

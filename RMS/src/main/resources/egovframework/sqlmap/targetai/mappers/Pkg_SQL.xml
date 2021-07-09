@@ -154,6 +154,7 @@
 		    R.NUM_OF_TGT,
 		    R.PKG_ID,
 		    R.CAMP_ID,
+		    R.TARGET_TYPE,
 		    R.REG_DT,
 		    R.REG_USRID,
 		    R.UDT_DT,
@@ -307,6 +308,7 @@
 			NO_LOOP,
 			LOCK_ON_ACTIVE,
 			SALIENCE,
+			TARGET_TYPE,
 			PKG_ID,
 			REG_USRID
 		) VALUES (
@@ -314,6 +316,7 @@
 			#{noLoop},
 			#{lockOnActive},
 			#{salience},
+			#{targetType},
 			#{pkgId},
 			#{REG_USER_ID}
 		)
@@ -362,6 +365,7 @@
 			NO_LOOP = #{noLoop},
 			LOCK_ON_ACTIVE = #{lockOnActive},
 			SALIENCE = #{salience},
+			TARGET_TYPE = #{targetType},
 			PKG_ID = #{pkgId},
 			UDT_DT = NOW(),
 			UDT_USRID = #{USER_ID}

@@ -68,41 +68,29 @@
 															</td>
 														</tr>
 														<tr>
-															<th class="t_left">접속 정보</th>
-															<td class="t_left">
-																* method = "POST"<br/>
-																* type = "json"<br/>
-																1. req_url(요청URL)<br/>
-																2. api_type(CUST/CONT/COMB)<br/>
-																3. param_val(type 해당하는 key값)<br/>
-																4. svc_id(RULE 서비스할 아이디)<br/>
-															</td>
-														</tr>
-														<tr>
-															<th class="t_left">Type</th>
+															<th class="t_left">TARGET TYPE</th>
 															<td class="t_left">
 																<select name="api_type" class="wd150px">
-																	<option value="" selected>선택하세요</option>
-																	<option value="CUST">CUST</option>
+																	<option value="CUST" selected>CUST</option>
 																	<option value="CONT">CONT</option>
 																	<option value="COMB">COMB</option>
 																</select>
 															</td>
 														</tr>
 														<tr>
-															<th class="t_left">VALUE</th>
+															<th class="t_left">CUST ID</th>
 															<td class="t_left">
-																<input type="text" class="wd250px" name="param_val" value="" />
+																<input type="text" class="wd250px" name="param_val" value="SRC_CUST_SORC_ID_1" />
 															</td>
 														</tr>
 														<tr>
-															<th class="t_left">서비스 아이디</th>
+															<th class="t_left">SERVICE ID</th>
 															<td class="t_left">
-																<input type="text" class="wd250px" name="svc_id" value="" />
+																<input type="text" class="wd250px" name="svc_id" value="119" />
 															</td>
 														</tr>
 														<tr>
-															<th class="t_left">결과</th>
+															<th class="t_left">RESPONSE</th>
 															<td class="t_left">
 																<textarea rows="15" cols="7" class="txtsize_100 wd100" id="resultArea" style="white-space: pre;" readonly="readonly"></textarea>
 															</td>

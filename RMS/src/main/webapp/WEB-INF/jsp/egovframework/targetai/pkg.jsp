@@ -736,7 +736,16 @@
 													</tr>
 													<tr>
 														<th class="t_left">SALIENCE</th>
-														<td class="t_left"><input type="text" class="wd250px" id="salience" value="" /></td>
+														<td class="t_left"><input type="text" class="wd150px" id="salience" value="" /></td>
+													</tr>
+													<tr>
+														<th class="t_left">TARGET TYPE</th>
+														<td class="t_left">
+															<select id="targetType" class="wd150px">
+																<option value="CUST">고객</option>
+																<option value="CONT">계약</option>
+															</select>
+														</td>
 													</tr>
 													<tr>
 														<th class="t_left">CONTENTS</th>

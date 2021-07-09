@@ -1,10 +1,9 @@
 package egovframework.ktds.targetai.service;
 
 import java.util.HashMap;
+import java.util.List;
 
 public interface ApiService {
-
-	HashMap<String, Object> getActiveObj(HashMap<String, Object> param);
 
 	HashMap<String, Object> getPkgBySvcId(String svc_id);
 
@@ -13,5 +12,9 @@ public interface ApiService {
 	void addSvclogOut(HashMap<String, Object> responseMap);
 
 	void updateRspnsCd(HashMap<String, Object> param);
+
+	List<HashMap<String, Object>> getActiveList(HashMap<String, Object> param);
+
+	List<Integer> getRuleIdsBySvcId(String svc_id);
 
 }

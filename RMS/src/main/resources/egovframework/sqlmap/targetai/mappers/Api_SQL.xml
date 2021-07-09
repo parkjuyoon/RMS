@@ -3,13 +3,14 @@
 <mapper namespace="egovframework.ktds.targetai.mapper.ApiMapper">
 
 	<!-- 서비스 리스트 조회 -->
-	<select id="getActiveObj" parameterType="java.util.HashMap" resultType="java.util.HashMap">
-		SELECT
-			*
+	<select id="getActiveList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 
+		    *
 		FROM
-			targetai.${table}
+			targetai.EV_CUST_ITEM1_TXN CUST
+		    LEFT JOIN targetai.EV_CONT_ITEM1_TXN CONT ON (CUST.SRC_CUST_SORC_ID = CONT.SRC_CUST_SORC_ID)
 		WHERE
-			${column} = #{val}
+			CUST.SRC_CUST_SORC_ID = #{val}
 	</select>
 	
 	<select id="getPkgBySvcId" parameterType="string" resultType="java.util.HashMap">
@@ -17,7 +18,9 @@
 			P.PKG_ID,
 			P.PATH,
 			P.PKG_NM,
-			P.DRL_NM
+			P.DRL_NM,
+			S.NUM_OF_OFFER,
+    		S.TARGET_TYPE
 		FROM
 			targetai.SVC S
 			LEFT JOIN targetai.PKG P ON (S.PKG_ID = P.PKG_ID)
@@ -71,4 +74,17 @@
 			SVCLOG_ID = #{TRANSACTION_ID}
 			AND RULE_ID = #{RULE_ID}
 	</update>
+	
+	<!-- 서비스에 연결되어 있는 RULE 아이디 리스트 조회 -->
+	<select id="getRuleIdsBySvcId" parameterType="String" resultType="int">
+		SELECT
+		    R.RULE_ID
+		FROM
+			targetai.SVC S
+			LEFT JOIN targetai.RULE R ON (R.PKG_ID = S.PKG_ID)
+		WHERE
+			S.SVC_ID = #{svc_id}
+		ORDER BY R.SALIENCE ASC, R.RULE_ID ASC
+	</select>
+	
 </mapper>

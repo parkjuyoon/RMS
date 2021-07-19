@@ -256,11 +256,11 @@
 .pd_l45 {padding-left:45px !important;}
 .pd_l50 {padding-left:50px !important;}
 
-html {position:relative; min-height:100%;}
+html {position:relative; min-height:100%; min-width:1520px; overflow-x:auto;}
 body {overflow-x:hidden;}
 #wrapper {height:100%; overflow:hidden; width:100%;}
 .content-page {margin-left:240px; overflow:hidden; padding:0 15px 0 15px; min-height:80vh; margin-top:137px;}
-.left-side-menu {width:240px; background:#ffffff; bottom:0; padding:20px 0; position:fixed; transition:all .1s ease-out; top:70px; box-shadow:0 0 35px 0 rgba(154, 161, 171, 0.15);}
+.left-side-menu {width:240px; background:#ffffff; bottom:0; padding:20px 0; position:fixed; transition:all .1s ease-out; top:70px; box-shadow:0 0 35px 0 rgba(154, 161, 171, 0.15); z-index:2;}
 
 #sidebar-menu > ul {list-style:none; padding:0;}
 #sidebar-menu > ul > li > a {color:#6e768e; display:block; padding:12px 20px; position:relative; transition:all 0.4s; font-family:"IBM Plex Sans", sans-serif; font-size:0.95rem;}

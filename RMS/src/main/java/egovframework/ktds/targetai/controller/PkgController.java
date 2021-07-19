@@ -304,9 +304,19 @@ public class PkgController {
 	@ResponseBody
 	@RequestMapping(value = "/getFactorVal.do", method = RequestMethod.POST)
 	public HashMap<String, Object> getFactorVal(@RequestBody HashMap<String, Object> param) {
-		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		HashMap<String, Object> factor = pkgService.getFactor(param);
-		List<HashMap<String, Object>> factorVal = pkgService.getFactorVal(param);
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		List<HashMap<String, Object>> factorVal = new ArrayList<>();
+		
+		String factorType = (String) factor.get("FACTOR_TYPE");
+		
+		if("DATA".equals(factorType)) {
+			factorVal = pkgService.getFactorVal(param);
+			
+		} else if("FUNC".equals(factorType)) {
+			factorVal = pkgService.getFactorFunc(param);
+		} 
+		
 		resultMap.put("factor", factor);
 		resultMap.put("factorVal", factorVal);
 			

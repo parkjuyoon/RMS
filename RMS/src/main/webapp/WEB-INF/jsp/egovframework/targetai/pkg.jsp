@@ -95,9 +95,10 @@
 													<table class="sform_type_pop modal_table">
 														<colgroup>
 															<col style="width: 280px" />
+															<col style="width: 200px" />
+															<col style="width: 400px" />
 															<col style="width: auto" />
-															<col style="width: 800px" />
-															<col style="width: 500px" />
+															<col style="width: 450px" />
 														</colgroup>
 														<tbody>
 															<tr>
@@ -107,7 +108,7 @@
 																			<img src="/targetai_publish/images/ajax-loader1.gif" />
 																		</div>
 																	</div> <!-- 트리메뉴 -->
-																	<ul id="factorTree" class="ztree treewrap"></ul> <!-- <div id="factorTree" class="treewrap"></div> --> <!-- //트리메뉴 -->
+																	<ul id="factorTree" class="ztree treewrap"></ul>
 																</td>
 																<th class="t_left icon01">논리 연산</th>
 																<th class="t_left icon02">요소 값
@@ -115,6 +116,7 @@
 																	<button type="button" class="btn btn-sm btn-green btn_left" id="changeInputBtn">직접 입력</button>
 																</th>
 																<th class="t_left icon03">RULE 속성</th>
+																<th class="t_left icon03">FUNCTION 속성</th>
 															</tr>
 															<tr>
 																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top"><input type="radio" name="logicalRadios" id="logicalRadio1"
@@ -126,22 +128,16 @@
 																	for="logicalRadio5" class="mg_r10">&lt;=</label> <br /> <input type="radio" name="logicalRadios" id="logicalRadio6"
 																	value="logical6" /> <label for="logicalRadio6" class="mg_r10">in</label> <br /> <input type="radio" name="logicalRadios"
 																	id="logicalRadio7" value="logical7" /> <label for="logicalRadio7" class="mg_r10">not in</label></td>
-																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3" id="factorVal" data-type="">
+																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3">
 																	<div class="overflow_detail">
-																		<div class="alert fade show mg_b10 _factorVal" role="alert" id="factorVal_string"></div>
-																		<div class="alert fade show mg_b10 _factorVal" role="alert" id="factorVal_input">
-																			<input type="text" class="wd250px" name="detAttrChk" value="" />
-																		</div>
-																		<div class="alert fade show mg_b10 _factorVal" role="alert" id="factorVal_int">
-																			<input type="text" class="wd250px" name="detAttrChk" value="" placeholder="숫자만 입력가능합니다" />
-																		</div>
-																		<div class="alert fade show mg_b10 _factorVal" role="alert" id="factorVal_date">
-																			<input type="text" id="DateId_ex01" name="detAttrChk" class="date" value="" />
-																		</div>
+																		<div class="alert fade show mg_b10 _factorVal" role="alert" id="factorVal" data-type=""></div>
 																	</div>
 																</td>
 																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3">
 																	<div class="overflow_rule" id="ruleAttrData"></div>
+																</td>
+																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3">
+																	<div class="overflow_rule" id="funcAttrData"></div>
 																</td>
 															</tr>
 															<tr>
@@ -156,7 +152,7 @@
 															</tr>
 															<tr>
 																<th class="t_left icon05">통계 VIEW</th>
-																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_middle bd_b_none" rowspan="2">
+																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_middle bd_b_none" rowspan="2" colspan="2">
 																	<div class="graph_left">
 																		<div style="width: 100%;">
 																			<img src="/targetai_publish/images/modal_graph_ex01.png" alt="" />

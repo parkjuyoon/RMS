@@ -218,6 +218,7 @@
 	<select id="getFactorGrpList" resultType="java.util.HashMap">
 		SELECT
 			FACTOR_GRP_ID,
+			FACTOR_GRP_PID,
 			FACTOR_GRP_NM,
 		    FACTOR_GRP_DSC,
 		    REG_DTM,
@@ -301,6 +302,22 @@
 		    AND F.FACTOR_ID = #{factorId}
 	</select>
 	
+	<!-- Factor func 조회 -->
+	<select id="getFactorFunc"  resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT 
+		    FACTOR_ID,
+		    ARG_NM,
+		    ARG_TYPE,
+		    `ORDER`,
+		    DATA_TYPE,
+		    REG_DT
+		FROM
+		    targetai.FACTOR_FUNC
+		WHERE
+			FACTOR_ID = #{factorId}
+		ORDER BY `ORDER` ASC
+	</select>
+	
 	<!-- RULE 저장 -->
 	<insert id="ruleSave" parameterType="java.util.HashMap">
 		INSERT INTO targetai.RULE (
@@ -337,8 +354,7 @@
 			FACTOR_NM_EN,
 			FACTOR_VAL,
 			LOGICAL,
-			RELATION,
-			FUNC_YN
+			RELATION
 		) VALUES 
 		<foreach collection="ruleObjArr" item="ruleAttr" separator=",">
 		(
@@ -351,8 +367,7 @@
 			#{ruleAttr.factorNmEn},
 			#{ruleAttr.factorVal},
 			#{ruleAttr.logical_txt},
-			#{ruleAttr.relation_txt},
-			'N'
+			#{ruleAttr.relation_txt}
 		)
 		</foreach>
 	</insert>
@@ -459,11 +474,6 @@
 		    RA.FACTOR_VAL,
 		    RA.LOGICAL,
 		    RA.RELATION,
-			RA.FUNC_YN,
-			RA.FUNC_URL,
-			RA.FUNC_PARAM,
-			RA.FUNC_LOGICAL,
-			RA.FUNC_VAL,
 		    F.DATA_TYPE
 		FROM
 			targetai.RULE_ATTR RA

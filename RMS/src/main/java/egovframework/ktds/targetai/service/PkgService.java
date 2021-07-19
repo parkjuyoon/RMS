@@ -64,4 +64,6 @@ public interface PkgService {
 	void updatePkg(HashMap<String, Object> param);
 
 	List<HashMap<String, Object>> getRuleAttrByPkgId(HashMap<String, Object> param);
+
+	List<HashMap<String, Object>> getFactorFunc(HashMap<String, Object> param);
 }

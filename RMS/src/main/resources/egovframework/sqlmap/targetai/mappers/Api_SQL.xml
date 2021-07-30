@@ -87,4 +87,23 @@
 		ORDER BY R.SALIENCE ASC, R.RULE_ID ASC
 	</select>
 	
+	<!--  -->
+	<select id="getFunctionByPkgId" parameterType="int" resultType="java.util.HashMap">
+		SELECT 
+			RF.RULE_FUNC_ID,
+		    RF.RULE_ID,
+		    RF.FUNC_NM,
+		    RF.FUNC_FLAG,
+		    RFA.ARG_VAL,
+		    FF.`ORDER`,
+		    FF.DATA_TYPE
+		FROM
+			targetai.RULE_FUNC_ARGS RFA
+		    LEFT JOIN targetai.FACTOR_FUNC FF ON (RFA.FACTOR_FUNC_ID = FF.FACTOR_FUNC_ID)
+		    LEFT JOIN targetai.RULE_FUNC RF ON (RFA.RULE_FUNC_ID = RF.RULE_FUNC_ID)
+			LEFT JOIN targetai.RULE R ON (RF.RULE_ID = R.RULE_ID)
+		WHERE
+			R.PKG_ID =	#{pkgId}
+	</select>
+	
 </mapper>

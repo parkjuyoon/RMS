@@ -31,7 +31,7 @@ $(document).ready(function() {
 		var param = {};
 		param.req_url = req_url;
 		param.api_type = api_type;
-		param.param_val = param_val;
+		param.param_val = param_val; 
 		param.svc_id = svc_id;
 		
 		fnRequestApi(param);

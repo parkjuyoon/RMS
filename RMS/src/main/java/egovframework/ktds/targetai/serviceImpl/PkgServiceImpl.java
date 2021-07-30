@@ -171,4 +171,44 @@ public class PkgServiceImpl extends EgovAbstractServiceImpl implements PkgServic
 	public List<HashMap<String, Object>> getFactorFunc(HashMap<String, Object> param) {
 		return dao.getFactorFunc(param);
 	}
+
+	@Override
+	public void ruleFuncSave(HashMap<String, Object> param) {
+		dao.ruleFuncSave(param);
+	}
+
+	@Override
+	public void deleteRuleFuncById(HashMap<String, Object> param) {
+		dao.deleteRuleFuncById(param);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> getRuleFuncList(int ruleId) {
+		return dao.getRuleFuncList(ruleId);
+	}
+
+	@Override
+	public void ruleFuncArgsSave(HashMap<String, Object> param) {
+		dao.ruleFuncArgsSave(param);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> getRuleFuncArgsList(int ruleFuncId) {
+		return dao.getRuleFuncArgsList(ruleFuncId);
+	}
+
+	@Override
+	public void deleteRuleFuncArgsById(HashMap<String, Object> param) {
+		dao.deleteRuleFuncArgsById(param);
+	}
+
+	@Override
+	public void deleteRuleFuncByIds(HashMap<String, Object> param) {
+		dao.deleteRuleFuncByIds(param);
+	}
+
+	@Override
+	public void deleteRuleFuncArgsByIds(HashMap<String, Object> param) {
+		dao.deleteRuleFuncArgsByIds(param);
+	}
 }

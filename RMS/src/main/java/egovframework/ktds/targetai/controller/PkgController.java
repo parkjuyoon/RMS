@@ -129,9 +129,6 @@ public class PkgController {
 	@ResponseBody
 	@RequestMapping(value = "/ruleTest.do", method = RequestMethod.POST, produces="application/text; charset=UTF-8")
 	public String ruleTest(@RequestBody HashMap<String, Object> param) {
-		
-		try {
-			
 			HashMap<String, Object> paramMap = new HashMap<String, Object>();
 			List<String> keyValueArr = (List<String>) param.get("keyValueArr");
 			
@@ -145,6 +142,8 @@ public class PkgController {
 			String path = (String) param.get("drlPath");
 			path = System.getProperty("user.home") + path;
 			path = path.replace("/", File.separator).replace("\\", File.separator);
+			
+			System.out.println(path);
 			
 			List<HashMap<String, Object>> getResultList = ApiController.getResultList(path, paramMap);
 			
@@ -160,12 +159,6 @@ public class PkgController {
 			JSONObject resultJSON = new JSONObject(resultMap);
 			
 			return resultJSON.toJSONString();
-		
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return new JSONObject().toJSONString();
 	}
 	
 	/**
@@ -244,6 +237,15 @@ public class PkgController {
 		int ruleId = (int) rule.get("RULE_ID");
 		List<HashMap<String, Object>> ruleAttrList = pkgService.getWhenList(ruleId);
 		resultMap.put("ruleAttrList", ruleAttrList);
+		List<HashMap<String, Object>> ruleFuncList = pkgService.getRuleFuncList(ruleId);
+		resultMap.put("ruleFuncList", ruleFuncList);
+		
+		for(HashMap<String, Object> ruleFunc : ruleFuncList) {
+			int ruleFuncId = (int) ruleFunc.get("RULE_FUNC_ID");
+			
+			List<HashMap<String, Object>> ruleFuncArgsList = pkgService.getRuleFuncArgsList(ruleFuncId);
+			ruleFunc.put("argsArr", ruleFuncArgsList);
+		}
 		
 		return resultMap;
 	}
@@ -352,6 +354,7 @@ public class PkgController {
 	public HashMap<String, Object> ruleSave(@RequestBody HashMap<String, Object> param, HttpSession session) {
 		String ruleId = (String) param.get("ruleId");
 		String regUserId = (String) session.getAttribute("member_id");
+		String functionYn = "N";
 		
 		param.put("REG_USER_ID", regUserId);
 		
@@ -362,6 +365,29 @@ public class PkgController {
 			param.put("ruleId", (int) param.get("RULE_ID"));
 			// RULE_ATTR 저장
 			pkgService.ruleAttrSave(param);
+			// 함수 여부 체크 후 저장
+			List<HashMap<String, Object>> funcList = (List<HashMap<String, Object>>) param.get("funcObjArr");
+			
+			if(funcList.size() > 0) {
+				functionYn = "Y";
+				
+				// RULE_FUNC 저장
+				for(HashMap<String, Object> func : funcList) {
+					func.put("ruleId", ruleId);
+					pkgService.ruleFuncSave(func);
+					
+					// RULE_FUNC_ARGS 저장
+					List<HashMap<String, Object>> argList = (List<HashMap<String, Object>>) func.get("argsArr");
+					
+					for(HashMap<String, Object> arg : argList) {
+						int ruleFuncId = (int) func.get("RULE_FUNC_ID");
+						arg.put("ruleFuncId", ruleFuncId);
+						arg.put("ruleId", ruleId);
+						// RULE_FUNC_ARGS 저장
+						pkgService.ruleFuncArgsSave(arg);
+					}
+				}
+			}
 			
 		} else {	// 수정
 			param.put("ruleId", Integer.parseInt(ruleId));
@@ -375,9 +401,37 @@ public class PkgController {
 				// RULE_ATTR 저장
 				pkgService.ruleAttrSave(param);
 			}
+			
+			// 함수 여부 체크 후 수정
+			List<HashMap<String, Object>> funcList = (List<HashMap<String, Object>>) param.get("funcObjArr");
+			
+			if(funcList.size() > 0) {
+				functionYn = "Y";
+				// RULE_FUNC 삭제
+				pkgService.deleteRuleFuncById(param);
+				// RULE_FUNC_ARGS 삭제
+				pkgService.deleteRuleFuncArgsById(param);
+				
+				// RULE_FUNC 저장
+				for(HashMap<String, Object> func : funcList) {
+					func.put("ruleId", ruleId);
+					pkgService.ruleFuncSave(func);
+					
+					// RULE_FUNC_ARGS 저장
+					List<HashMap<String, Object>> argList = (List<HashMap<String, Object>>) func.get("argsArr");
+					
+					for(HashMap<String, Object> arg : argList) {
+						int ruleFuncId = (int) func.get("RULE_FUNC_ID");
+						arg.put("ruleFuncId", ruleFuncId);
+						arg.put("ruleId", ruleId);
+						// RULE_FUNC_ARGS 저장
+						pkgService.ruleFuncArgsSave(arg);
+					}
+				}
+			}
 		}
 		
-		// RULE 의 ATTR_WHEN 업데이트
+		// RULE 의 ATTR_THEN 업데이트
 		HashMap<String, Object> ruleMap = pkgService.getRule(param);
 		String attrThen = "$map.put(\"res_"+ ruleMap.get("RULE_ID") +"_"+ ruleMap.get("CAMP_ID") +"_"+ ruleMap.get("SALIENCE") +"\", \""+ ruleMap.get("RULE_NM") +"\");\n";
 		
@@ -387,7 +441,7 @@ public class PkgController {
 		attrThen += "		$map.put(\"salience_"+ ruleMap.get("RULE_ID") + "\", " + ruleMap.get("SALIENCE") +");\n";
 		attrThen += "		$map.put(\"ruleNm_"+ ruleMap.get("RULE_ID") + "\", \"" + ruleMap.get("RULE_NM") +"\");\n";
 		attrThen += "		$map.put(\"targetType_"+ ruleMap.get("RULE_ID") + "\", \"" + ruleMap.get("TARGET_TYPE") +"\");\n";
-		
+		attrThen += "		$map.put(\"functionYn_"+ ruleMap.get("RULE_ID") + "\", \"" + functionYn +"\");";
 		
 		param.put("ATTR_THEN", attrThen);
 		pkgService.updateAttrThen(param);
@@ -426,6 +480,10 @@ public class PkgController {
 			pkgService.deleteRuleById(param);
 			// RULE_ATTR 삭제
 			pkgService.deleteRuleAttrByIds(param);
+			// RULE_FUNC 삭제
+			pkgService.deleteRuleFuncByIds(param);
+			// RULE_FUNC_ARGS 삭제
+			pkgService.deleteRuleFuncArgsByIds(param);
 		}
 		
 		return true;
@@ -443,6 +501,10 @@ public class PkgController {
 		pkgService.deleteRuleById(param);
 		// RULE_ATTR 삭제
 		pkgService.deleteRuleAttrByIds(param);
+		// RULE_FUNC 삭제
+		pkgService.deleteRuleFuncByIds(param);
+		// RULE_FUNC_ARGS 삭제
+		pkgService.deleteRuleFuncArgsByIds(param);
 		
 		// 해당 패키지에 등록된 RULE 개수 조회
 		HashMap<String, Object> resultMap = new HashMap<>();

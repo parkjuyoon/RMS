@@ -304,7 +304,8 @@
 	
 	<!-- Factor func 조회 -->
 	<select id="getFactorFunc"  resultType="java.util.HashMap" parameterType="java.util.HashMap">
-		SELECT 
+		SELECT
+			FACTOR_FUNC_ID,
 		    FACTOR_ID,
 		    ARG_NM,
 		    ARG_TYPE,
@@ -412,6 +413,24 @@
 		</foreach>
 	</delete>
 	
+	<!-- RULE_FUNC 삭제 -->
+	<delete id="deleteRuleFuncByIds" parameterType="java.util.HashMap">
+		DELETE FROM targetai.RULE_FUNC
+		WHERE RULE_ID IN 
+		<foreach collection="ruleIdArr" item="ruleId" separator="," open="(" close=")">
+			#{ruleId}
+		</foreach>
+	</delete>
+	
+	<!-- RULE_FUNC_ARGS 삭제 -->
+	<delete id="deleteRuleFuncArgsByIds" parameterType="java.util.HashMap">
+		DELETE FROM targetai.RULE_FUNC_ARGS
+		WHERE RULE_ID IN 
+		<foreach collection="ruleIdArr" item="ruleId" separator="," open="(" close=")">
+			#{ruleId}
+		</foreach>
+	</delete>
+	
 	<!-- RULE 의 ATTR_WHEN 업데이트 -->
 	<update id="updateAttrThen" parameterType="java.util.HashMap">
 		UPDATE targetai.RULE
@@ -512,5 +531,92 @@
 		WHERE
 			R.PKG_ID = #{pkgId}
 		ORDER BY SALIENCE ASC, RULE_ID ASC, RULE_ATTR_ID ASC
+	</select>
+	
+	<!-- RULE_FUNC 삭제 -->
+	<delete id="deleteRuleFuncById" parameterType="java.util.HashMap">
+		DELETE FROM targetai.RULE_FUNC
+		WHERE 
+			RULE_ID = #{ruleId}
+	</delete>
+	
+	<!-- RULE_FUNC_ARGS 삭제 -->
+	<delete id="deleteRuleFuncArgsById" parameterType="java.util.HashMap">
+		DELETE FROM targetai.RULE_FUNC_ARGS
+		WHERE
+			RULE_ID = #{ruleId}
+	</delete>
+	
+	<!-- RULE_FUNC 저장 -->
+	<insert id="ruleFuncSave" parameterType="java.util.HashMap">
+		INSERT INTO targetai.RULE_FUNC (
+			RULE_ID,
+			FUNC_NM,
+			FUNC_FLAG,
+			FUNC_ATTR_TXT,
+			FACTOR_ID,
+			RELATION
+		) VALUES (
+			#{ruleId},
+			#{factorNmEn},
+			#{funcFlag},
+			#{funcAttr_txt},
+			#{factorId},
+			#{relation_txt}
+		)
+		<selectKey keyProperty="RULE_FUNC_ID" resultType="int" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<!-- RULE_FUNC_ARGS 저장 -->
+	<insert id="ruleFuncArgsSave" parameterType="java.util.HashMap">
+		INSERT INTO targetai.RULE_FUNC_ARGS (
+			RULE_FUNC_ID,
+			FACTOR_FUNC_ID,
+			ARG_VAL,
+			RULE_ID
+		) VALUES (
+			#{ruleFuncId},
+			#{factorFuncId},
+			#{factorVal},
+			#{ruleId}
+		)	
+	</insert>
+	
+	<!-- RULE_FUNC 조회 By RULE_ID -->
+	<select id="getRuleFuncList" parameterType="int" resultType="java.util.HashMap">
+		SELECT 
+		    RULE_FUNC_ID,
+		    RULE_ID,
+		    FUNC_NM as factorNmEn,
+		    FUNC_FLAG AS funcFlag,
+		    FUNC_ATTR_TXT as funcAttr_txt,
+		    FACTOR_ID as factorId,
+		   	RELATION as relation_txt
+		FROM
+		    targetai.RULE_FUNC
+		WHERE
+			RULE_ID = #{ruleId}
+		ORDER BY
+			RULE_FUNC_ID ASC
+	</select>
+	
+	<!-- RULE_FUNC_ARGS 조회 By RULE_FUNC_ID -->
+	<select id="getRuleFuncArgsList" parameterType="int" resultType="java.util.HashMap">
+		SELECT 
+		    RFA.FACTOR_FUNC_ID as factorFuncId,
+		    RFA.ARG_VAL as factorVal,
+		    FF.ARG_NM,
+		    FF.ARG_TYPE as argType,
+		    FF.`ORDER` as `order`,
+		    FF.DATA_TYPE as dataType,
+		    FF.REG_DT
+		FROM
+		    targetai.RULE_FUNC_ARGS RFA
+		    LEFT JOIN targetai.FACTOR_FUNC FF ON (RFA.FACTOR_FUNC_ID = FF.FACTOR_FUNC_ID)
+		WHERE
+			RFA.RULE_FUNC_ID = #{ruleFuncId}
+		ORDER BY RULE_FUNC_ID ASC, `ORDER` ASC
 	</select>
 </mapper>

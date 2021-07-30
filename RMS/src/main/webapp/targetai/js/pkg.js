@@ -272,7 +272,11 @@ $(document).ready(function() {
 				
 				// -- RULE 속성 객체 세팅 --
 				ruleObjArr = [];
+				var contents = "";
+				var ruleHtml = "";
+				
 				var ruleAttrList = res.ruleAttrList;
+				
 				$.each(ruleAttrList, function(idx, ruleAttr) {
 					ruleObj = {};
 					ruleObj.factorGrpNm = ruleAttr.FACTOR_GRP_NM;
@@ -288,23 +292,40 @@ $(document).ready(function() {
 					ruleObj.ruleAttr_source = ruleAttr.ATTR_WHEN;
 					
 					ruleObjArr.push(ruleObj);
-				});
-				
-				var contents = "";
-				html = "";
-				$.each(ruleObjArr, function(idx, ruleObj) {
-					html += "<div class='alert fade show mg_b10' role='alert'>";
-					html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
-					html += 		ruleObj.ruleAttr_txt;
-					html += "</div>";
 					
-					contents += ruleObj.ruleAttr_txt + "\n";
+					ruleHtml += "<div class='alert fade show mg_b10' role='alert'>";
+					ruleHtml += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
+					ruleHtml += 		ruleAttr.ATTR_WHEN_CONTENTS;
+					ruleHtml += "</div>";
+					
+					contents += ruleAttr.ATTR_WHEN_CONTENTS + "\n";
 				});
 				
-				$("#ruleAttrData").append(html);
+				// -- FUNCTION 속성 객체 세팅 --
+				funcObjArr = [];
+				var argsArr = [];
+				var funcHtml = "";
+				
+				var ruleFuncList = res.ruleFuncList;
+				funcObjArr = ruleFuncList;
+				
+				console.log(ruleFuncList)
+				
+				$.each(ruleFuncList, function(idx, ruleFunc) {
+					funcHtml += "<div class='alert fade show mg_b10' role='alert'>";
+					funcHtml += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
+					funcHtml += 		ruleFunc.funcAttr_txt;
+					funcHtml += "</div>";
+					
+					contents += ruleFunc.funcAttr_txt + "\n";
+				});
+				
+				$("#ruleAttrData").append(ruleHtml);
+				$("#funcAttrData").append(funcHtml);
 				$("#ruleWhenCont").val(contents);
 				
 				tmpArr = cloneArr(ruleObjArr);	// 취소시 되돌리기 위한 변수에도 초기값 세팅
+				ftmpArr = cloneArr(funcObjArr);	// 취소시 되돌리기 위한 변수에도 초기값 세팅
 				
 			},
 			beforeSend : function() {
@@ -514,7 +535,7 @@ $(document).ready(function() {
 		param.ruleId = $("#ruleId").text();
 		param.ruleNm = $("#ruleNm").val();
 		param.noLoop = $("input[name='noLoop']:checked").val();
-		param.lockOnActive = $("input[name='noLoop']:checked").val();
+		param.lockOnActive = $("input[name='lockOnActive']:checked").val();
 		param.salience = $("#salience").val();
 		param.targetType = $("#targetType").val();
 		param.ruleObjArr = ruleObjArr;
@@ -604,12 +625,14 @@ $(document).ready(function() {
 			funcAttr_txt += 		factorNmEn + "(";
 			
 			for(var idx=0; idx<factorVal_Tag.length; idx++) {
+				var factorFuncId = factorVal_Tag.eq(idx).attr("data-factorFuncId");
 				var argType = factorVal_Tag.eq(idx).attr("data-argType");
 				var order = factorVal_Tag.eq(idx).attr("data-order");
 				var dataType = factorVal_Tag.eq(idx).attr("data-dataType");
 				var factorVal = factorVal_Tag.eq(idx).val();
 				
 				var args = {};
+				args.factorFuncId = factorFuncId;
 				args.argType = argType;
 				args.order = order*1;
 				args.dataType = dataType;
@@ -636,6 +659,16 @@ $(document).ready(function() {
 			funcAttr_txt += " == " + funcFlag + (relation_txt == '' ? relation_txt : ", " + relation_txt);
 			funcHtml += funcAttr_txt + "</div>";
 			$("#funcAttrData").append(funcHtml);
+			
+			if(relation == 'relation1') {
+				relation_txt = "&&"
+					
+			} else if(relation == 'relation2') {
+				relation_txt = "||"
+					
+			} else {
+				relation_txt = "";
+			}
 			
 			ftmpObj = {};
 			ftmpObj.funcFlag = funcFlag;
@@ -706,12 +739,13 @@ $(document).ready(function() {
 			
 			// 논리연산 IN, NOT IN 선택
 			if(logical == 'logical6' || logical == 'logical7') {
+				factorVal = "";
+				
 				for(var i=0; i<factorVal_Tag.length; i++) {
 					factorVal += (factorValType == 'INT' ? factorVal_Tag.eq(i).val() : "\""+ factorVal_Tag.eq(i).val() +"\"") 
 					+ (i+1 == factorVal_Tag.length ? "" : ", ");
 				}
 				
-				tmpObj.factorVal = factorVal;
 				factorVal = "(" + factorVal + ")";
 			
 			// 논리연산 IN, NOT IN 이 아닌 값을 선택시
@@ -1486,7 +1520,7 @@ function getFactorVal(event, treeId, treeNode) {
 			} else if(dataType == 'ARGS') {
 				$.each(factorVal, function(idx, func){
 					html += "<label for='' class='mg_r10'>"+ func.ARG_NM +"</label>";
-					html += "<input type='text' class='wd250px' name='detAttrChk' data-argType='"+ func.ARG_TYPE +"' data-order='"+ func.ORDER +"' data-dataType='"+ func.DATA_TYPE +"' value=''/>";
+					html += "<input type='text' class='wd250px' name='detAttrChk' data-factorFuncId='"+ func.FACTOR_FUNC_ID +"' data-argType='"+ func.ARG_TYPE +"' data-order='"+ func.ORDER +"' data-dataType='"+ func.DATA_TYPE +"' value=''/>";
 					html += "<br />";
 				});
 				
@@ -1694,7 +1728,6 @@ function fnRuleTest(param) {
 		contentType:'application/json; charset=utf-8',
 		dataType : "json",
 		success : function(res) {
-			console.log(res);
 			var ruleAttrList = res.ruleAttrList;
 			var html = "";
 			
@@ -1706,9 +1739,9 @@ function fnRuleTest(param) {
 				
 				// [고객 : 인터넷결합여부] =="N"&& 형식으로 출력
 				if(ruleAttr.LOGICAL == 'in' || ruleAttr.LOGICAL == 'not in') {
-					html += "	["+ ruleAttr.FACTOR_GRP_NM +" : <a href='#' class='_ruleTestPop_factorNm' data-factorNmEn='"+ ruleAttr.FACTOR_NM_EN +"'>"+ ruleAttr.FACTOR_NM +"</a>] "+ ruleAttr.LOGICAL +"("+ ruleAttr.FACTOR_VAL +")" + ruleAttr.RELATION;
+					html += "	["+ ruleAttr.FACTOR_GRP_NM +" : <a href='#' class='_ruleTestPop_factorNm' data-factorNmEn='"+ ruleAttr.FACTOR_NM_EN +"'>"+ ruleAttr.FACTOR_NM +"</a>] "+ ruleAttr.LOGICAL + ruleAttr.FACTOR_VAL + ruleAttr.RELATION;
 				} else {
-					html += "	["+ ruleAttr.FACTOR_GRP_NM +" : <a href='#' class='_ruleTestPop_factorNm' data-factorNmEn='"+ ruleAttr.FACTOR_NM_EN +"'>"+ ruleAttr.FACTOR_NM +"</a>] "+ ruleAttr.LOGICAL +"\""+ ruleAttr.FACTOR_VAL +"\"" + ruleAttr.RELATION;
+					html += "	["+ ruleAttr.FACTOR_GRP_NM +" : <a href='#' class='_ruleTestPop_factorNm' data-factorNmEn='"+ ruleAttr.FACTOR_NM_EN +"'>"+ ruleAttr.FACTOR_NM +"</a>] "+ ruleAttr.LOGICAL + ruleAttr.FACTOR_VAL + ruleAttr.RELATION;
 				}
 				
 				html += "\n";
@@ -1818,7 +1851,20 @@ function cloneArr(arr) {
 		var newObj = {};
 		
 		for(const property in obj) {
-			newObj[`${property}`] = `${obj[property]}`;
+			if(typeof obj[`${property}`] == 'object') {
+				if(Array.isArray(obj[`${property}`])) {
+					newObj[`${property}`] = cloneArr(obj[`${property}`]);
+					
+				} else {
+					newObj[`${property}`] = cloneObj(obj[`${property}`])
+				}
+				
+			} else if(typeof obj[`${property}`] == 'number') {
+				newObj[`${property}`] = `${obj[property]}` * 1;
+
+			} else {
+				newObj[`${property}`] = `${obj[property]}`;
+			}
 		}
 		
 		newArr.push(newObj);

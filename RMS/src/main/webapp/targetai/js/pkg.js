@@ -666,7 +666,7 @@ $(document).ready(function() {
 			} else if(relation == 'relation2') {
 				relation_txt = "||"
 					
-			} else {
+			} else {//
 				relation_txt = "";
 			}
 			

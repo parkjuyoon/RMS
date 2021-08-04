@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_60"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="lib/kie-api-6.5.0.Final.jar" sourcepath="C:/Users/parkjy/.m2/repository/org/kie/kie-api/6.5.0.Final/kie-api-6.5.0.Final-sources.jar"/>
+	<classpathentry kind="lib" path="lib/kie-internal-6.5.0.Final.jar"/>
+	<classpathentry kind="lib" path="lib/drools-compiler-6.5.0.Final.jar" sourcepath="C:/Users/parkjy/.m2/repository/org/drools/drools-compiler/6.5.0.Final/drools-compiler-6.5.0.Final-sources.jar"/>
+	<classpathentry kind="lib" path="lib/drools-core-6.5.0.Final.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.2.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-simple-1.7.32.jar"/>
+	<classpathentry kind="lib" path="lib/xstream-1.4.17.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.jdt.core-3.26.0.jar"/>
+	<classpathentry kind="lib" path="lib/protobuf-java-3.14.0.jar"/>
+	<classpathentry kind="lib" path="lib/mvel2-2.2.8.Final.jar"/>
+	<classpathentry kind="lib" path="lib/antlr-3.5.jar"/>
+	<classpathentry kind="lib" path="lib/antlr-runtime-3.5.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

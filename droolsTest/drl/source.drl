@@ -1,0 +1,39 @@
+package test
+import java.util.Map
+
+rule "aaaa"
+	no-loop true
+	lock-on-active true
+	salience 1
+	when
+		$map : Map(
+		(this["MPHON_SBSC_YN"]=="Y" &&
+		this["CUST_AGE"]>30) || 
+		(this["MPHON_SBSC_YN"]=="Y" &&
+		this["CUST_AGE"]>30)
+	)
+	then
+		$map.put("ruleId_156", 156);
+		$map.put("campId_156", null);
+		$map.put("salience_156", 1);
+		$map.put("ruleNm_156", "bbb");
+		$map.put("targetType_156", "CONT");
+end
+
+rule "bbb"
+	no-loop true
+	lock-on-active true
+	salience 1
+	when
+		$map : Map(
+		this["ENGT_YN"]=="Y" &&
+		this["INET_COMB_YN"]=="N" 
+	)
+	then
+		$map.put("ruleId_156", 156);
+		$map.put("campId_156", null);
+		$map.put("salience_156", 1);
+		$map.put("ruleNm_156", "bbb");
+		$map.put("targetType_156", "CONT");
+end
+

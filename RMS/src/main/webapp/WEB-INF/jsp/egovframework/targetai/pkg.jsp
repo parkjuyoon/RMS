@@ -96,9 +96,11 @@
 														<colgroup>
 															<col style="width: 280px" />
 															<col style="width: 200px" />
-															<col style="width: 400px" />
+															<col style="width: 200px" />
+															<col style="width: 180px" />
 															<col style="width: auto" />
-															<col style="width: 450px" />
+															<col style="width: 230px" />
+															<col style="width: 230px" />
 														</colgroup>
 														<tbody>
 															<tr>
@@ -110,49 +112,77 @@
 																	</div> <!-- 트리메뉴 -->
 																	<ul id="factorTree" class="ztree treewrap"></ul>
 																</td>
-																<th class="t_left icon01">논리 연산</th>
-																<th class="t_left icon02">요소 값
-																	<button type="button" class="btn btn-lg btn-sky btn_right" id="addValBtn">Add Value</button>
+																<th class="t_left icon02" colspan="2">요소 값
 																	<button type="button" class="btn btn-sm btn-green btn_left" id="changeInputBtn">직접 입력</button>
 																</th>
+																<th class="t_left icon01">논리 연산
+																	<button type="button" class="btn btn-sm btn-sky" id="addValBtn1">&gt;&gt;</button>
+																</th>
 																<th class="t_left icon03">RULE 속성</th>
-																<th class="t_left icon03">FUNCTION 속성</th>
+																<th class="t_left icon03" colspan="2">FUNCTION 속성</th>
 															</tr>
 															<tr>
-																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top"><input type="radio" name="logicalRadios" id="logicalRadio1"
-																	value="logical1" checked /> <label for="logicalRadio1" class="mg_r10">==</label> <br /> <input type="radio"
-																	name="logicalRadios" id="logicalRadio2" value="logical2" /> <label for="logicalRadio2" class="mg_r10">&gt;</label> <br /> <input
-																	type="radio" name="logicalRadios" id="logicalRadio3" value="logical3" /> <label for="logicalRadio3" class="mg_r10">&lt;</label>
-																	<br /> <input type="radio" name="logicalRadios" id="logicalRadio4" value="logical4" /> <label for="logicalRadio4"
-																	class="mg_r10">&gt;=</label> <br /> <input type="radio" name="logicalRadios" id="logicalRadio5" value="logical5" /> <label
-																	for="logicalRadio5" class="mg_r10">&lt;=</label> <br /> <input type="radio" name="logicalRadios" id="logicalRadio6"
-																	value="logical6" /> <label for="logicalRadio6" class="mg_r10">in</label> <br /> <input type="radio" name="logicalRadios"
-																	id="logicalRadio7" value="logical7" /> <label for="logicalRadio7" class="mg_r10">not in</label></td>
-																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3">
+																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3" colspan="2">
 																	<div class="overflow_detail">
 																		<div class="alert fade show mg_b10 _factorVal" role="alert" id="factorVal" data-type=""></div>
+																		<input type="text" id="factorVal_direct" value="" placeholder="요소값을 입력하세요." style="display: none;">
 																	</div>
+																</td>
+																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top">
+																	<input type="radio" name="logicalRadios" id="logicalRadio1" value="logical1" checked /> 
+																	<label for="logicalRadio1" class="mg_r10">==</label> 
+																	<br /> 
+																	<input type="radio" name="logicalRadios" id="logicalRadio2" value="logical2" /> 
+																	<label for="logicalRadio2" class="mg_r10">&gt;</label> 
+																	<br /> 
+																	<input type="radio" name="logicalRadios" id="logicalRadio3" value="logical3" /> 
+																	<label for="logicalRadio3" class="mg_r10">&lt;</label>
+																	<br /> 
+																	<input type="radio" name="logicalRadios" id="logicalRadio4" value="logical4" /> 
+																	<label for="logicalRadio4" class="mg_r10">&gt;=</label> 
+																	<br /> 
+																	<input type="radio" name="logicalRadios" id="logicalRadio5" value="logical5" /> 
+																	<label for="logicalRadio5" class="mg_r10">&lt;=</label> 
+																	<br /> 
+																	<input type="radio" name="logicalRadios" id="logicalRadio6" value="logical6" /> 
+																	<label for="logicalRadio6" class="mg_r10">in</label> 
+																	<br /> 
+																	<input type="radio" name="logicalRadios" id="logicalRadio7" value="logical7" /> 
+																	<label for="logicalRadio7" class="mg_r10">not in</label>
 																</td>
 																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3">
 																	<div class="overflow_rule" id="ruleAttrData"></div>
 																</td>
-																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3">
+																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3" colspan="2">
 																	<div class="overflow_rule" id="funcAttrData"></div>
 																</td>
 															</tr>
 															<tr>
-																<th class="t_left icon04">관계 연산</th>
+																<th class="t_left icon04">관계 연산
+																	<button type="button" class="btn btn-sm btn-sky" id="addValBtn2">&gt;&gt;</button>
+																</th>
 															</tr>
 															<tr>
-																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top"><input type="radio" name="relationRadios" id="relationRadio1"
-																	value="relation1" /> <label for="relationRadio1" class="mg_r10">AND</label> <br /> <input type="radio" name="relationRadios"
-																	id="relationRadio2" value="relation2" /> <label for="relationRadio2" class="mg_r10">OR</label> <br /> <input type="radio"
-																	name="relationRadios" id="relationRadio3" value="relation3" checked /> <label for="relationRadio3" class="mg_r10">NONE</label>
+																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top">
+																	<input type="radio" name="relationRadios" id="relationRadio1" value="relation1" /> 
+																	<label for="relationRadio1" class="mg_r10">AND</label> 
+																	<br /> 
+																	<input type="radio" name="relationRadios" id="relationRadio2" value="relation2" /> 
+																	<label for="relationRadio2" class="mg_r10">OR</label> 
+																	<br /> 
+																	<input type="radio" name="relationRadios" id="relationRadio3" value="relation3" /> 
+																	<label for="relationRadio3" class="mg_r10">（</label>
+																	<br /> 
+																	<input type="radio" name="relationRadios" id="relationRadio4" value="relation4" /> 
+																	<label for="relationRadio4" class="mg_r10">）</label>
+																	<br /> 
+																	<input type="radio" name="relationRadios" id="relationRadio5" value="relation5" /> 
+																	<label for="relationRadio5" class="mg_r10">X</label>
 																</td>
 															</tr>
 															<tr>
 																<th class="t_left icon05">통계 VIEW</th>
-																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_middle bd_b_none" rowspan="2" colspan="2">
+																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_middle bd_b_none" rowspan="2" colspan="5">
 																	<div class="graph_left">
 																		<div style="width: 100%;">
 																			<img src="/targetai_publish/images/modal_graph_ex01.png" alt="" />
@@ -165,10 +195,8 @@
 																	</div>
 																	<div class="clear"></div>
 																</td>
-																<th class="t_left icon06">속성의 유형값</th>
 															</tr>
 															<tr>
-																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top"></td>
 																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top">
 																	<ul class="ulvalue">
 																		<li>최대값 :</li>

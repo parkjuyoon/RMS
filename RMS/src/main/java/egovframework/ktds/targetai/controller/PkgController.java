@@ -2,20 +2,13 @@ package egovframework.ktds.targetai.controller;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.kie.api.runtime.KieSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import egovframework.ktds.drools.config.DroolsUtil;
 import egovframework.ktds.targetai.service.PkgService;
-import net.sf.json.JSONException;
 
 /**
  * @since 2021.05.25

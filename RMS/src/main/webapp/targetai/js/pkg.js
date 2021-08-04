@@ -832,7 +832,7 @@ $(document).ready(function() {
 		}
 	});
 
-	// 패키지관리 > RULE EDITOR > 관계연산 추가 버튼
+	// 패키지관리 > RULE EDITOR > 관계연산 추가 버튼.
 	$("#addValBtn2").click(function() {
 		var relation = $("input[name='relationRadios']:checked").val();
 		var relation_txt = $("input[name='relationRadios']:checked").next().text();

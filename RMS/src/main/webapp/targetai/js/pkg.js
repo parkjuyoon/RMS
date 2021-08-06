@@ -678,8 +678,8 @@ $(document).ready(function() {
 			ftmpObj.factorValType = factorValType;
 			ftmpObj.logical = logical;
 			ftmpObj.logical_txt = logical_txt;
-//			ftmpObj.relation = relation;
-//			ftmpObj.relation_txt = relation_txt;
+			ftmpObj.relation = "";
+			ftmpObj.relation_txt = "";
 			ftmpObj.funcAttr_txt = funcAttr_txt;
 			
 			ftmpArr.push(ftmpObj);
@@ -788,10 +788,8 @@ $(document).ready(function() {
 			
 			var html = "";
 			html += "<div class='alert fade show mg_b10' role='alert'>";
-			html += "	<label></label>";
 			html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
 			html += "	<span>"+ ruleAttr_txt +"</span>";
-			html += "	<label></label>";
 			html += "</div>";
 			
 			$("#ruleAttrData").append(html);
@@ -823,8 +821,8 @@ $(document).ready(function() {
 			tmpObj.factorValType = factorValType;
 			tmpObj.logical = logical;
 			tmpObj.logical_txt = logical_txt;
-//			tmpObj.relation = relation;
-//			tmpObj.relation_txt = relation_txt;
+			tmpObj.relation = "";
+			tmpObj.relation_txt = "";
 			tmpObj.ruleAttr_txt = ruleAttr_txt;
 			tmpObj.ruleAttr_source = ruleAttr_source;
 			
@@ -835,13 +833,78 @@ $(document).ready(function() {
 	// 패키지관리 > RULE EDITOR > 관계연산 추가 버튼
 	$("#addValBtn2").click(function() {
 		var relation = $("input[name='relationRadios']:checked").val();
-		var relation_txt = $("input[name='relationRadios']:checked").next().text();
+		var relation_txt = (relation == "relation5" ? "" : $("input[name='relationRadios']:checked").next().text());
 		
-		if(relation == "relation1" || relation == 'relation2')  {
-			if(Object.keys(tmpObj).length == 0) {
+		// 괄호가 아닐경우 요소값 추가 체크
+		if(!(relation == "relation3" || relation == "relation4")) {
+			if(tmpArr.length < 1) {
 				messagePop("warning", "요소값을 먼저 추가하세요.","","");
 				return;
 			}
+		}
+		
+		// 좌괄호 일때
+		if(relation == "relation3") {
+			var html = "";
+			html += "<div class='alert fade show mg_b10' role='alert'>";
+			html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
+			html += "	<span>(</span>";
+			html += "</div>";
+			
+			$("#ruleAttrData").append(html);
+			tmpObj = {};
+			tmpObj.relation = relation;
+			tmpObj.relation_txt = relation_txt;
+			tmpArr.push(tmpObj);
+			
+		// 우괄호 일때
+		} else if(relation == "relation4") {
+			var html = "";
+			html += "<div class='alert fade show mg_b10' role='alert'>";
+			html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
+			html += "	<span>)</span>";
+			html += "</div>";
+			
+			$("#ruleAttrData").append(html);
+			tmpObj = {};
+			tmpObj.relation = relation;
+			tmpObj.relation_txt = relation_txt;
+			tmpArr.push(tmpObj);
+			
+		// AND / OR 일경우
+		} else if(relation == "relation1" || relation == 'relation2') {
+			tmpObj = cloneObj(tmpArr[tmpArr.length-1]);
+			
+			if(tmpObj.relation.indexOf("relation3") != -1 || tmpObj.relation.indexOf("relation4") != -1) {
+				tmpArr[tmpArr.length-1].relation = tmpObj.relation + "," + relation;
+				tmpArr[tmpArr.length-1].relation_txt = tmpObj.relation_txt + " " + relation_txt;
+				tmpArr[tmpArr.length-1].ruleAttr_txt = tmpObj.relation_txt + " " + relation_txt;
+				tmpArr[tmpArr.length-1].ruleAttr_source = tmpObj.relation_txt + " " + relation_txt + "\n";
+				
+			} else {
+				tmpArr[tmpArr.length-1].relation = relation;
+				tmpArr[tmpArr.length-1].relation_txt = relation_txt;
+				tmpArr[tmpArr.length-1].ruleAttr_txt = "["+ tmpArr[tmpArr.length-1].factorGrpNm + " : " + tmpArr[tmpArr.length-1].factorNm + "] " + tmpArr[tmpArr.length-1].logical_txt + tmpArr[tmpArr.length-1].factorVal + " " + relation_txt;
+				tmpArr[tmpArr.length-1].ruleAttr_source = "this[\""+ tmpArr[tmpArr.length-1].factorNmEn +"\"]" + tmpArr[tmpArr.length-1].logical_txt + tmpArr[tmpArr.length-1].factorVal + " " + relation_txt + "\n";
+			}
+			
+			$("._ruleAttrMinus").eq($("._ruleAttrMinus").length-1).siblings("span").text(tmpArr[tmpArr.length-1].ruleAttr_txt);
+			
+		} else if(relation == "relation5") {
+			
+		}
+		
+		
+		
+		console.log(tmpArr);
+		
+/*		
+		if(relation == "relation1" || relation == 'relation2')  {
+//			if(Object.keys(tmpObj).length == 0) {
+//				messagePop("warning", "요소값을 먼저 추가하세요.","","");
+//				return;
+//			}
+			
 			
 			tmpObj.ruleAttr_txt = "["+ tmpObj.factorGrpNm + " : " + tmpObj.factorNm + "] " + tmpObj.logical_txt + tmpObj.factorVal + " " + relation_txt;
 			tmpObj.ruleAttr_source = "this[\""+ tmpObj.factorNmEn +"\"]" + tmpObj.logical_txt + tmpObj.factorVal + " " + relation_txt + "\n";
@@ -849,15 +912,40 @@ $(document).ready(function() {
 			$("._ruleAttrMinus").eq($("._ruleAttrMinus").length-1).siblings("span").text(tmpObj.ruleAttr_txt);
 			
 		} else if(relation == "relation3") {
-			$("._ruleAttrMinus").eq($("._ruleAttrMinus").length-1).siblings("label").eq(0).text("（");
+			var html = "";
+			html += "<div class='alert fade show mg_b10' role='alert'>";
+			html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
+			html += "	<span>(</span>";
+			html += "</div>";
+			
+			$("#ruleAttrData").append(html);
+			tmpObj = {};
+			tmpObj.parenthesis = "(";
+			tmpArr.push(tmpObj);
 			
 		} else if(relation == "relation4") {
-			$("._ruleAttrMinus").eq($("._ruleAttrMinus").length-1).siblings("label").eq(1).text("）");
-		}
+			var html = "";
+			html += "<div class='alert fade show mg_b10' role='alert'>";
+			html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
+			html += "	<span>)</span>";
+			html += "</div>";
 			
+			$("#ruleAttrData").append(html);
+			tmpObj = {};
+			tmpObj.parenthesis = ")";
+			tmpArr.push(tmpObj);
+			
+		} else if(relation == "relation5") {
+			tmpObj.ruleAttr_txt = "["+ tmpObj.factorGrpNm + " : " + tmpObj.factorNm + "] " + tmpObj.logical_txt + tmpObj.factorVal + " " + relation_txt;
+			tmpObj.ruleAttr_source = "this[\""+ tmpObj.factorNmEn +"\"]" + tmpObj.logical_txt + tmpObj.factorVal + " " + relation_txt + "\n";
+			
+			$("._ruleAttrMinus").eq($("._ruleAttrMinus").length-1).siblings("span").text(tmpObj.ruleAttr_txt);
+		}
 		
-		console.log(tmpObj)
 		
+		
+//		console.log(tmpObj)
+*/		
 	});
 	
 	// Rule 속성 minus 버튼 클릭 이벤트
@@ -1903,7 +1991,12 @@ function cloneObj(obj) {
 	var newObj = {};
 	
 	for(const property in obj) {
-		newObj[`${property}`] = `${obj[property]}`;
+		if(typeof obj[`${property}`] == 'number') {
+			newObj[`${property}`] = `${obj[property]}` * 1;
+			
+		} else {
+			newObj[`${property}`] = `${obj[property]}`;
+		}
 	}
 	
 	return newObj;

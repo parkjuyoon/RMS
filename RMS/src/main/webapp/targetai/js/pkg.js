@@ -786,13 +786,21 @@ $(document).ready(function() {
 			
 			var ruleAttr_txt = "["+ factorGrpNm + " : " + factorNm + "] " + logical_txt + factorVal;	
 			
-			var html = "";
-			html += "<div class='alert fade show mg_b10' role='alert'>";
-			html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
-			html += "	<span>"+ ruleAttr_txt +"</span>";
-			html += "</div>";
+			var $minus = $("._ruleAttrMinus");
+			if($minus.eq($minus.length-1).siblings("span").text() == "(") {
+				ruleAttr_txt = "( " + ruleAttr_txt;
+				$minus.eq($minus.length-1).siblings("span").text(ruleAttr_txt);
+				
+			} else {
+				var html = "";
+				html += "<div class='alert fade show mg_b10' role='alert'>";
+				html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
+				html += "	<span>"+ ruleAttr_txt +"</span>";
+				html += "</div>";
+				
+				$("#ruleAttrData").append(html);
+			}
 			
-			$("#ruleAttrData").append(html);
 			
 			
 			/*
@@ -834,13 +842,10 @@ $(document).ready(function() {
 	$("#addValBtn2").click(function() {
 		var relation = $("input[name='relationRadios']:checked").val();
 		var relation_txt = (relation == "relation5" ? "" : $("input[name='relationRadios']:checked").next().text());
+		var $minus = $("._ruleAttrMinus");
 		
-		// 괄호가 아닐경우 요소값 추가 체크
-		if(!(relation == "relation3" || relation == "relation4")) {
-			if(tmpArr.length < 1) {
-				messagePop("warning", "요소값을 먼저 추가하세요.","","");
-				return;
-			}
+		if(tmpArr.length > 0) {
+			tmpObj = cloneObj(tmpArr[tmpArr.length-1]);
 		}
 		
 		// 좌괄호 일때
@@ -850,102 +855,38 @@ $(document).ready(function() {
 			html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
 			html += "	<span>(</span>";
 			html += "</div>";
-			
+				
 			$("#ruleAttrData").append(html);
-			tmpObj = {};
-			tmpObj.relation = relation;
-			tmpObj.relation_txt = relation_txt;
-			tmpArr.push(tmpObj);
 			
 		// 우괄호 일때
 		} else if(relation == "relation4") {
-			var html = "";
-			html += "<div class='alert fade show mg_b10' role='alert'>";
-			html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
-			html += "	<span>)</span>";
-			html += "</div>";
-			
-			$("#ruleAttrData").append(html);
-			tmpObj = {};
-			tmpObj.relation = relation;
-			tmpObj.relation_txt = relation_txt;
-			tmpArr.push(tmpObj);
+			if($minus.length > 0) {
+				tmpObj.ruleAttr_txt = tmpObj.ruleAttr_txt + " )";
+				$minus.eq($minus.length-1).siblings("span").text(tmpObj.ruleAttr_txt);
+				
+			} else {
+				var html = "";
+				html += "<div class='alert fade show mg_b10' role='alert'>";
+				html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
+				html += "	<span>)</span>";
+				html += "</div>";
+				
+				$("#ruleAttrData").append(html);
+			}
 			
 		// AND / OR 일경우
 		} else if(relation == "relation1" || relation == 'relation2') {
-			tmpObj = cloneObj(tmpArr[tmpArr.length-1]);
-			
-			if(tmpObj.relation.indexOf("relation3") != -1 || tmpObj.relation.indexOf("relation4") != -1) {
-				tmpArr[tmpArr.length-1].relation = tmpObj.relation + "," + relation;
-				tmpArr[tmpArr.length-1].relation_txt = tmpObj.relation_txt + " " + relation_txt;
-				tmpArr[tmpArr.length-1].ruleAttr_txt = tmpObj.relation_txt + " " + relation_txt;
-				tmpArr[tmpArr.length-1].ruleAttr_source = tmpObj.relation_txt + " " + relation_txt + "\n";
-				
-			} else {
-				tmpArr[tmpArr.length-1].relation = relation;
-				tmpArr[tmpArr.length-1].relation_txt = relation_txt;
-				tmpArr[tmpArr.length-1].ruleAttr_txt = "["+ tmpArr[tmpArr.length-1].factorGrpNm + " : " + tmpArr[tmpArr.length-1].factorNm + "] " + tmpArr[tmpArr.length-1].logical_txt + tmpArr[tmpArr.length-1].factorVal + " " + relation_txt;
-				tmpArr[tmpArr.length-1].ruleAttr_source = "this[\""+ tmpArr[tmpArr.length-1].factorNmEn +"\"]" + tmpArr[tmpArr.length-1].logical_txt + tmpArr[tmpArr.length-1].factorVal + " " + relation_txt + "\n";
+			if($minus.length > 0) {
+				tmpObj.ruleAttr_txt = tmpObj.ruleAttr_txt + " " + relation_txt;
+				$minus.eq($minus.length-1).siblings("span").text(tmpObj.ruleAttr_txt);
 			}
 			
-			$("._ruleAttrMinus").eq($("._ruleAttrMinus").length-1).siblings("span").text(tmpArr[tmpArr.length-1].ruleAttr_txt);
-			
 		} else if(relation == "relation5") {
 			
 		}
 		
 		
 		
-		console.log(tmpArr);
-		
-/*		
-		if(relation == "relation1" || relation == 'relation2')  {
-//			if(Object.keys(tmpObj).length == 0) {
-//				messagePop("warning", "요소값을 먼저 추가하세요.","","");
-//				return;
-//			}
-			
-			
-			tmpObj.ruleAttr_txt = "["+ tmpObj.factorGrpNm + " : " + tmpObj.factorNm + "] " + tmpObj.logical_txt + tmpObj.factorVal + " " + relation_txt;
-			tmpObj.ruleAttr_source = "this[\""+ tmpObj.factorNmEn +"\"]" + tmpObj.logical_txt + tmpObj.factorVal + " " + relation_txt + "\n";
-			
-			$("._ruleAttrMinus").eq($("._ruleAttrMinus").length-1).siblings("span").text(tmpObj.ruleAttr_txt);
-			
-		} else if(relation == "relation3") {
-			var html = "";
-			html += "<div class='alert fade show mg_b10' role='alert'>";
-			html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
-			html += "	<span>(</span>";
-			html += "</div>";
-			
-			$("#ruleAttrData").append(html);
-			tmpObj = {};
-			tmpObj.parenthesis = "(";
-			tmpArr.push(tmpObj);
-			
-		} else if(relation == "relation4") {
-			var html = "";
-			html += "<div class='alert fade show mg_b10' role='alert'>";
-			html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
-			html += "	<span>)</span>";
-			html += "</div>";
-			
-			$("#ruleAttrData").append(html);
-			tmpObj = {};
-			tmpObj.parenthesis = ")";
-			tmpArr.push(tmpObj);
-			
-		} else if(relation == "relation5") {
-			tmpObj.ruleAttr_txt = "["+ tmpObj.factorGrpNm + " : " + tmpObj.factorNm + "] " + tmpObj.logical_txt + tmpObj.factorVal + " " + relation_txt;
-			tmpObj.ruleAttr_source = "this[\""+ tmpObj.factorNmEn +"\"]" + tmpObj.logical_txt + tmpObj.factorVal + " " + relation_txt + "\n";
-			
-			$("._ruleAttrMinus").eq($("._ruleAttrMinus").length-1).siblings("span").text(tmpObj.ruleAttr_txt);
-		}
-		
-		
-		
-//		console.log(tmpObj)
-*/		
 	});
 	
 	// Rule 속성 minus 버튼 클릭 이벤트

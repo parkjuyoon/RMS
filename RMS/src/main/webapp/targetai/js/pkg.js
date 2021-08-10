@@ -678,8 +678,8 @@ $(document).ready(function() {
 			ftmpObj.factorValType = factorValType;
 			ftmpObj.logical = logical;
 			ftmpObj.logical_txt = logical_txt;
-//			ftmpObj.relation = relation;
-//			ftmpObj.relation_txt = relation_txt;
+			ftmpObj.relation = "";
+			ftmpObj.relation_txt = "";
 			ftmpObj.funcAttr_txt = funcAttr_txt;
 			
 			ftmpArr.push(ftmpObj);
@@ -786,15 +786,21 @@ $(document).ready(function() {
 			
 			var ruleAttr_txt = "["+ factorGrpNm + " : " + factorNm + "] " + logical_txt + factorVal;	
 			
-			var html = "";
-			html += "<div class='alert fade show mg_b10' role='alert'>";
-			html += "	<label></label>";
-			html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
-			html += "	<span>"+ ruleAttr_txt +"</span>";
-			html += "	<label></label>";
-			html += "</div>";
+			var $minus = $("._ruleAttrMinus");
+			if($minus.eq($minus.length-1).siblings("span").text() == "(") {
+				ruleAttr_txt = "( " + ruleAttr_txt;
+				$minus.eq($minus.length-1).siblings("span").text(ruleAttr_txt);
+				
+			} else {
+				var html = "";
+				html += "<div class='alert fade show mg_b10' role='alert'>";
+				html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
+				html += "	<span>"+ ruleAttr_txt +"</span>";
+				html += "</div>";
+				
+				$("#ruleAttrData").append(html);
+			}
 			
-			$("#ruleAttrData").append(html);
 			
 			
 			/*
@@ -823,8 +829,8 @@ $(document).ready(function() {
 			tmpObj.factorValType = factorValType;
 			tmpObj.logical = logical;
 			tmpObj.logical_txt = logical_txt;
-//			tmpObj.relation = relation;
-//			tmpObj.relation_txt = relation_txt;
+			tmpObj.relation = "";
+			tmpObj.relation_txt = "";
 			tmpObj.ruleAttr_txt = ruleAttr_txt;
 			tmpObj.ruleAttr_source = ruleAttr_source;
 			
@@ -835,28 +841,51 @@ $(document).ready(function() {
 	// 패키지관리 > RULE EDITOR > 관계연산 추가 버튼
 	$("#addValBtn2").click(function() {
 		var relation = $("input[name='relationRadios']:checked").val();
-		var relation_txt = $("input[name='relationRadios']:checked").next().text();
+		var relation_txt = (relation == "relation5" ? "" : $("input[name='relationRadios']:checked").next().text());
+		var $minus = $("._ruleAttrMinus");
 		
-		if(relation == "relation1" || relation == 'relation2')  {
-			if(Object.keys(tmpObj).length == 0) {
-				messagePop("warning", "요소값을 먼저 추가하세요.","","");
-				return;
+		if(tmpArr.length > 0) {
+			tmpObj = cloneObj(tmpArr[tmpArr.length-1]);
+		}
+		
+		// 좌괄호 일때
+		if(relation == "relation3") {
+			var html = "";
+			html += "<div class='alert fade show mg_b10' role='alert'>";
+			html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
+			html += "	<span>(</span>";
+			html += "</div>";
+				
+			$("#ruleAttrData").append(html);
+			
+		// 우괄호 일때
+		} else if(relation == "relation4") {
+			if($minus.length > 0) {
+				tmpObj.ruleAttr_txt = tmpObj.ruleAttr_txt + " )";
+				$minus.eq($minus.length-1).siblings("span").text(tmpObj.ruleAttr_txt);
+				
+			} else {
+				var html = "";
+				html += "<div class='alert fade show mg_b10' role='alert'>";
+				html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
+				html += "	<span>)</span>";
+				html += "</div>";
+				
+				$("#ruleAttrData").append(html);
 			}
 			
-			tmpObj.ruleAttr_txt = "["+ tmpObj.factorGrpNm + " : " + tmpObj.factorNm + "] " + tmpObj.logical_txt + tmpObj.factorVal + " " + relation_txt;
-			tmpObj.ruleAttr_source = "this[\""+ tmpObj.factorNmEn +"\"]" + tmpObj.logical_txt + tmpObj.factorVal + " " + relation_txt + "\n";
+		// AND / OR 일경우
+		} else if(relation == "relation1" || relation == 'relation2') {
+			if($minus.length > 0) {
+				tmpObj.ruleAttr_txt = tmpObj.ruleAttr_txt + " " + relation_txt;
+				$minus.eq($minus.length-1).siblings("span").text(tmpObj.ruleAttr_txt);
+			}
 			
-			$("._ruleAttrMinus").eq($("._ruleAttrMinus").length-1).siblings("span").text(tmpObj.ruleAttr_txt);
+		} else if(relation == "relation5") {
 			
-		} else if(relation == "relation3") {
-			$("._ruleAttrMinus").eq($("._ruleAttrMinus").length-1).siblings("label").eq(0).text("（");
-			
-		} else if(relation == "relation4") {
-			$("._ruleAttrMinus").eq($("._ruleAttrMinus").length-1).siblings("label").eq(1).text("）");
 		}
-			
 		
-		console.log(tmpObj)
+		
 		
 	});
 	
@@ -1903,7 +1932,12 @@ function cloneObj(obj) {
 	var newObj = {};
 	
 	for(const property in obj) {
-		newObj[`${property}`] = `${obj[property]}`;
+		if(typeof obj[`${property}`] == 'number') {
+			newObj[`${property}`] = `${obj[property]}` * 1;
+			
+		} else {
+			newObj[`${property}`] = `${obj[property]}`;
+		}
 	}
 	
 	return newObj;

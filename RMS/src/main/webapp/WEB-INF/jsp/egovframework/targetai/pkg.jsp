@@ -171,10 +171,10 @@
 																	<label for="relationRadio2" class="mg_r10">OR</label> 
 																	<br /> 
 																	<input type="radio" name="relationRadios" id="relationRadio3" value="relation3" /> 
-																	<label for="relationRadio3" class="mg_r10">（</label>
+																	<label for="relationRadio3" class="mg_r10">(</label>
 																	<br /> 
 																	<input type="radio" name="relationRadios" id="relationRadio4" value="relation4" /> 
-																	<label for="relationRadio4" class="mg_r10">）</label>
+																	<label for="relationRadio4" class="mg_r10">)</label>
 																	<br /> 
 																	<input type="radio" name="relationRadios" id="relationRadio5" value="relation5" /> 
 																	<label for="relationRadio5" class="mg_r10">X</label>

@@ -298,7 +298,7 @@ $(document).ready(function() {
 					ruleHtml += 		ruleAttr.ATTR_WHEN_CONTENTS;
 					ruleHtml += "</div>";
 					
-					contents += ruleAttr.ATTR_WHEN_CONTENTS + "\n";
+					contents += ruleAttr.ATTR_WHEN_CONTENTS;
 				});
 				
 				// -- FUNCTION 속성 객체 세팅 --
@@ -308,6 +308,10 @@ $(document).ready(function() {
 				
 				var ruleFuncList = res.ruleFuncList;
 				funcObjArr = ruleFuncList;
+				
+				if(ruleFuncList.length > 0) {
+					contents += "\n";
+				}
 				
 				$.each(ruleFuncList, function(idx, ruleFunc) {
 					funcHtml += "<div class='alert fade show mg_b10' role='alert'>";
@@ -354,7 +358,7 @@ $(document).ready(function() {
 		$.each(ruleObjArr, function(idx, ruleObj) {
 			html += "<div class='alert fade show mg_b10' role='alert'>";
 			html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
-			html += 		ruleObj.ruleAttr_txt;
+			html += 		"<span>" + ruleObj.ruleAttr_txt + "</span>";
 			html += "</div>";
 		});
 		
@@ -364,7 +368,7 @@ $(document).ready(function() {
 		$.each(funcObjArr, function(idx, funObj) {
 			html += "<div class='alert fade show mg_b10' role='alert'>";
 			html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
-			html += 		funObj.funcAttr_txt;
+			html += 		"<span>" + funObj.funcAttr_txt + "</span>";
 			html += "</div>";
 		});
 		
@@ -384,8 +388,12 @@ $(document).ready(function() {
 		
 		var contents = "";
 		$.each(ruleObjArr, function(idx, ruleObj) {
-			contents += ruleObj.ruleAttr_txt + "\n";
+			contents += ruleObj.ruleAttr_txt;
 		});
+		
+		if(funcObjArr.length > 0) {
+			contents += "\n";
+		}
 		
 		$.each(funcObjArr, function(idx, funcObj) {
 			contents += funcObj.funcAttr_txt + "\n";
@@ -401,7 +409,7 @@ $(document).ready(function() {
 		
 		var contents = "";
 		$.each(ruleObjArr, function(idx, ruleObj) {
-			contents += ruleObj.ruleAttr_txt + "\n";
+			contents += ruleObj.ruleAttr_txt;
 		});
 		
 		$("#ruleWhenCont").val(contents);
@@ -597,15 +605,8 @@ $(document).ready(function() {
 		var factorNmEn = node.name_en;
 		var factorValType = $("#factorVal").attr("data-type");
 		var factorVal = "";
-		
 		var logical = $("input[name='logicalRadios']:checked").val();
 		var logical_txt = $("input[name='logicalRadios']:checked").next().text();
-//		var relation = $("input[name='relationRadios']:checked").val();
-//		var relation_txt = $("input[name='relationRadios']:checked").next().text();
-//		
-//		if(relation == 'relation3') {
-//			relation_txt = "";
-//		}
 		
 		// RULE 속성 추가시 제약조건 체크
 		var factorVal_Tag = "";
@@ -657,16 +658,6 @@ $(document).ready(function() {
 			funcAttr_txt += " == " + funcFlag;
 			funcHtml += funcAttr_txt + "</div>";
 			$("#funcAttrData").append(funcHtml);
-			
-//			if(relation == 'relation1') {
-//				relation_txt = "&&"
-//					
-//			} else if(relation == 'relation2') {
-//				relation_txt = "||"
-//					
-//			} else {
-//				relation_txt = "";
-//			}
 			
 			ftmpObj = {};
 			ftmpObj.funcFlag = funcFlag;
@@ -784,11 +775,15 @@ $(document).ready(function() {
 				}
 			}
 			
+			// RULE 속성 부분에 표시될 형식
 			var ruleAttr_txt = "["+ factorGrpNm + " : " + factorNm + "] " + logical_txt + factorVal;	
+			// DRL 파일에 저장될 소스
+			var ruleAttr_source = "this[\""+ factorNmEn +"\"]" + logical_txt + factorVal;
 			
-			var $minus = $("._ruleAttrMinus");
+			var $minus = $("#ruleAttrData ._ruleAttrMinus");
 			if($minus.eq($minus.length-1).siblings("span").text() == "(") {
 				ruleAttr_txt = "( " + ruleAttr_txt;
+				ruleAttr_source = "( " + ruleAttr_source;
 				$minus.eq($minus.length-1).siblings("span").text(ruleAttr_txt);
 				
 			} else {
@@ -800,25 +795,6 @@ $(document).ready(function() {
 				
 				$("#ruleAttrData").append(html);
 			}
-			
-			
-			
-			/*
-			if(relation == 'relation1') {
-				relation_txt = "&&"
-					
-			} else if(relation == 'relation2') {
-				relation_txt = "||"
-					
-			} else {
-				relation_txt = "";
-			}
-			*/
-			
-			// DRL 파일에 저장될 소스
-			var ruleAttr_source = "this[\""+ factorNmEn +"\"]" + logical_txt + factorVal + "\n";
-			
-			$("input[name='detAttrChk']").prop("checked",false);
 			
 			tmpObj = {};
 			tmpObj.factorGrpNm = factorGrpNm;
@@ -841,11 +817,14 @@ $(document).ready(function() {
 	// 패키지관리 > RULE EDITOR > 관계연산 추가 버튼
 	$("#addValBtn2").click(function() {
 		var relation = $("input[name='relationRadios']:checked").val();
-		var relation_txt = (relation == "relation5" ? "" : $("input[name='relationRadios']:checked").next().text());
-		var $minus = $("._ruleAttrMinus");
+		var relation_txt = $("input[name='relationRadios']:checked").next().text();
+		var $minus = $("#ruleAttrData ._ruleAttrMinus");
 		
 		if(tmpArr.length > 0) {
 			tmpObj = cloneObj(tmpArr[tmpArr.length-1]);
+			
+		} else {
+			tmpObj = {};
 		}
 		
 		// 좌괄호 일때
@@ -860,33 +839,43 @@ $(document).ready(function() {
 			
 		// 우괄호 일때
 		} else if(relation == "relation4") {
-			if($minus.length > 0) {
-				tmpObj.ruleAttr_txt = tmpObj.ruleAttr_txt + " )";
+			if(tmpArr.length > 0) {
+				tmpObj.ruleAttr_txt = tmpObj.ruleAttr_txt + ")";
+				tmpObj.ruleAttr_source = tmpObj.ruleAttr_source + ")";
 				$minus.eq($minus.length-1).siblings("span").text(tmpObj.ruleAttr_txt);
-				
-			} else {
-				var html = "";
-				html += "<div class='alert fade show mg_b10' role='alert'>";
-				html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
-				html += "	<span>)</span>";
-				html += "</div>";
-				
-				$("#ruleAttrData").append(html);
 			}
 			
 		// AND / OR 일경우
 		} else if(relation == "relation1" || relation == 'relation2') {
-			if($minus.length > 0) {
+			if(tmpArr.length > 0 && $minus.eq($minus.length-1).siblings("span").text() != '(') {
 				tmpObj.ruleAttr_txt = tmpObj.ruleAttr_txt + " " + relation_txt;
+				
+				if(relation_txt == "AND") {
+					relation_txt = "&&";
+
+				} else if(relation_txt == 'OR') {
+					relation_txt = "||";
+					
+				} else {
+					relation_txt = "";
+				}
+				
+				tmpObj.relation = relation;
+				tmpObj.relation_txt = relation_txt;
+				
+				tmpObj.ruleAttr_source = tmpObj.ruleAttr_source + " " + relation_txt;
 				$minus.eq($minus.length-1).siblings("span").text(tmpObj.ruleAttr_txt);
 			}
-			
-		} else if(relation == "relation5") {
-			//
 		}
 		
+		if(!(relation == "relation4" || relation == "relation3" || Object.keys(tmpObj).length < 1)) {
+			tmpObj.ruleAttr_txt = tmpObj.ruleAttr_txt + "\n";
+			tmpObj.ruleAttr_source = tmpObj.ruleAttr_source + "\n";
+		}
 		
-		
+		if(tmpArr.length > 0) {
+			tmpArr[tmpArr.length-1] = tmpObj;
+		}
 	});
 	
 	// Rule 속성 minus 버튼 클릭 이벤트
@@ -958,8 +947,12 @@ $(document).ready(function() {
 		
 		var contents = ""
 		$.each(ruleObjArr, function(idx, ruleObj) {
-			contents += ruleObj.ruleAttr_txt + "\n";
+			contents += ruleObj.ruleAttr_txt;
 		});
+		
+		if(funcObjArr.length > 0) {
+			contents += "\n";
+		}
 		
 		$.each(funcObjArr, function(idx, funcObj) {
 			contents += funcObj.funcAttr_txt + "\n";
@@ -1023,6 +1016,7 @@ $(document).ready(function() {
 		e.preventDefault();
 		
 		var factorNmEn = $(this).attr("data-factorNmEn");
+		var factorVal = $(this).attr("data-factorVal");
 		var factorNm = $(this).text();
 
 		var html = "";
@@ -1031,7 +1025,7 @@ $(document).ready(function() {
 		html += "		<label for=''>KEY</label> <input type='text' name='ruleTestPop_key' value='"+ factorNmEn +"' readonly='readonly'/>";
 		html += "	</div>";
 		html += "	<div class='form_group'>";
-		html += "		<label for=''>VALUE</label> <input type='text' name='ruleTestPop_value' class='wd150px'/>";
+		html += "		<label for=''>VALUE</label> <input type='text' name='ruleTestPop_value' class='wd150px' value='"+ factorVal.replaceAll("\"", "") +"'/>";
 		html += "	</div>";
 		html += "	<button type='button' class='btn btn-sm btn-red _ruleTestPop_del' style='color: white'>삭제</button>";
 		html += "</div>";
@@ -1829,19 +1823,23 @@ function fnRuleTest(param) {
 			var html = "";
 			
 			$.each(ruleAttrList, function(idx, ruleAttr) {
+				if(idx != 0 && ruleAttrList[idx-1].RELATION == '') {
+					html += "\n";
+				}
+				
 				if(idx == 0 || (idx != 0 && ruleAttrList[idx-1].RELATION == '')) {
 					html += "\""+ ruleAttr.RULE_NM +"\"";
 					html += "\n";
 				}
 				
 				// [고객 : 인터넷결합여부] =="N"&& 형식으로 출력
-				if(ruleAttr.LOGICAL == 'in' || ruleAttr.LOGICAL == 'not in') {
-					html += "	["+ ruleAttr.FACTOR_GRP_NM +" : <a href='#' class='_ruleTestPop_factorNm' data-factorNmEn='"+ ruleAttr.FACTOR_NM_EN +"'>"+ ruleAttr.FACTOR_NM +"</a>] "+ ruleAttr.LOGICAL + ruleAttr.FACTOR_VAL + ruleAttr.RELATION;
-				} else {
-					html += "	["+ ruleAttr.FACTOR_GRP_NM +" : <a href='#' class='_ruleTestPop_factorNm' data-factorNmEn='"+ ruleAttr.FACTOR_NM_EN +"'>"+ ruleAttr.FACTOR_NM +"</a>] "+ ruleAttr.LOGICAL + ruleAttr.FACTOR_VAL + ruleAttr.RELATION;
-				}
+//				if(ruleAttr.LOGICAL == 'in' || ruleAttr.LOGICAL == 'not in') {
+//					html += "	["+ ruleAttr.FACTOR_GRP_NM +" : <a href='#' class='_ruleTestPop_factorNm' data-factorNmEn='"+ ruleAttr.FACTOR_NM_EN +"'>"+ ruleAttr.FACTOR_NM +"</a>] "+ ruleAttr.LOGICAL + ruleAttr.FACTOR_VAL + ruleAttr.RELATION;
+//				} else {
+//					html += "	["+ ruleAttr.FACTOR_GRP_NM +" : <a href='#' class='_ruleTestPop_factorNm' data-factorNmEn='"+ ruleAttr.FACTOR_NM_EN +"'>"+ ruleAttr.FACTOR_NM +"</a>] "+ ruleAttr.LOGICAL + ruleAttr.FACTOR_VAL + ruleAttr.RELATION;
+//				}
 				
-				html += "\n";
+				html += "<a href='#' class='_ruleTestPop_factorNm' data-factorNmEn='"+ ruleAttr.FACTOR_NM_EN +"' data-factorVal='"+ ruleAttr.FACTOR_VAL +"'>\t"+ ruleAttr.ATTR_WHEN_CONTENTS +"</a>";
 			});
 			
 			$("#ruleAttrPreView").html(html);

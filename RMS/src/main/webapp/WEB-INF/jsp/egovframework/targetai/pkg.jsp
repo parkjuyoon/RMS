@@ -175,9 +175,6 @@
 																	<br /> 
 																	<input type="radio" name="relationRadios" id="relationRadio4" value="relation4" /> 
 																	<label for="relationRadio4" class="mg_r10">)</label>
-																	<br /> 
-																	<input type="radio" name="relationRadios" id="relationRadio5" value="relation5" /> 
-																	<label for="relationRadio5" class="mg_r10">X</label>
 																</td>
 															</tr>
 															<tr>

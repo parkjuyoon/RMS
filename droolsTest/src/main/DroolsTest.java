@@ -1,13 +1,12 @@
 package main;
 
-import java.util.Collection;
 import java.util.HashMap;
 
 import org.kie.api.runtime.KieSession;
 
 public class DroolsTest {
 
-	private static final String PATH = "C:\\work\\eGovFrameDev-3.9.0-64bit\\workspace\\droolsTest\\drl\\source.drl";
+	private static final String PATH = "C:\\Users\\parkjy\\git\\repository\\droolsTest\\drl\\source.drl";
 	
 	public static void main(String[] args) {
 

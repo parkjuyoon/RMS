@@ -143,4 +143,38 @@
 			#{svcId}
 		</foreach>
 	</delete>
+	
+	<!-- output value 저장 -->
+	<insert id="addSvcOutputValue" parameterType="java.util.HashMap">
+		INSERT INTO targetai.SVC_OUTPUT_VALUE (
+			SVC_ID,
+			FACTOR_ID
+		) VALUES 
+		<foreach collection="opvArr" item="opv" separator=",">
+		(
+			#{svcId},
+			#{opv.factorId}
+		)
+		</foreach>
+	</insert>
+	
+	<!-- output value 삭제 -->
+	<delete id="delSvcOutputValue" parameterType="java.util.HashMap">
+		DELETE FROM targetai.SVC_OUTPUT_VALUE
+		WHERE
+			SVC_ID = #{svcId}
+	</delete>
+	
+	<!-- output value 조회 -->
+	<select id="getOutputValueList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 
+		    SOV.FACTOR_ID AS factorId,
+		    F.FACTOR_NM AS factorNm,
+		    F.FACTOR_NM_EN AS factorNmEn
+		FROM
+		    targetai.SVC_OUTPUT_VALUE SOV
+		    LEFT JOIN targetai.FACTOR F ON (SOV.FACTOR_ID = F.FACTOR_ID)
+		WHERE
+			SOV.SVC_ID = #{svcId}
+	</select>
 </mapper>

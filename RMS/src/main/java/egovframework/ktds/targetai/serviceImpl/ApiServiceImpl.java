@@ -48,9 +48,4 @@ public class ApiServiceImpl extends EgovAbstractServiceImpl implements ApiServic
 		return dao.getRuleIdsBySvcId(svc_id);
 	}
 
-	@Override
-	public List<HashMap<String, Object>> getFunctionByPkgId(int pkgId) {
-		return dao.getFunctionByPkgId(pkgId);
-	}
-
 }

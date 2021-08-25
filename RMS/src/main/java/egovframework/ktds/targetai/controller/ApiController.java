@@ -175,86 +175,7 @@ public class ApiController {
 					resultTmp.add(res);
 				}
 			}
-			
-			// 연결된 패키지 내 함수 등록된 RULE_ID 리스트 조회
-			List<HashMap<String, Object>> functionList = apiService.getFunctionByPkgId(pkgId);
-			List<HashMap<String, Object>> funcList = new ArrayList<>();
-			HashMap<String, Object> funcMap = new HashMap<>();
-			List<HashMap<String, Object>> argList = new ArrayList<>();
-			
-			int ruleFuncId = 0;
-			int cnt = 0;
-			for(HashMap<String, Object> func : functionList) {
-				int rfi = (int) func.get("RULE_FUNC_ID");
-				int ruldId = (int) func.get("RULE_ID");
-				String funcNm = (String) func.get("FUNC_NM");
-				String funcFlag = (String) func.get("FUNC_FLAG");
-				
-				if(ruleFuncId != rfi) {
-					if(ruleFuncId != 0) {
-						funcMap.put("argList", argList);
-						argList = new ArrayList<>();
-						funcList.add(funcMap);
-						funcMap = new HashMap<>();
-					}
-					
-					ruleFuncId = rfi;
-				}
-				
-				// FUNCTION 정보 저장
-				funcMap.put("RULE_FUNC_ID", rfi);
-				funcMap.put("RULE_ID", ruldId);
-				funcMap.put("FUNC_NM", funcNm);
-				funcMap.put("FUNC_FLAG", funcFlag);
-				
-				// ARGUMENT 저장
-				String argVal = (String) func.get("ARG_VAL");
-				int order = (int) func.get("ORDER");
-				String dataType = (String) func.get("DATA_TYPE");
-				
-				HashMap<String, Object> argMap = new HashMap<>();
-				argMap.put("ARG_VAL", argVal);
-				argMap.put("ORDER", order);
-				argMap.put("DATA_TYPE", dataType);
-				
-				argList.add(argMap);
-				
-				cnt++;
-				if(functionList.size() == cnt) {
-					funcMap.put("argList", argList);
-					funcList.add(funcMap);
-				}
-			}
-			
-			// 함수 실행결과 걸러지는 RULE_ID 목록
-			HashSet<Integer> deltmpRIds = new HashSet<>();
-			for(HashMap<String, Object> func : funcList) {
-				int ruleId = (int) func.get("RULE_ID");
-				String funcNm = (String) func.get("FUNC_NM");
-				String funcFlag = (String) func.get("FUNC_FLAG");
-				List<HashMap<String, Object>> args = (List<HashMap<String, Object>>) func.get("argList");
-				
-				FunctionUtil fu = new FunctionUtil();
-				
-				boolean rs = fu.result(funcNm, args);
-				
-				if(!funcFlag.equalsIgnoreCase(String.valueOf(rs))) {
-					deltmpRIds.add(ruleId);
-				}
-			}
-			
-			// 함수 실행결과 걸러지는 RULE_ID 와 일치하지 않는 항목만 저장
-			List<HashMap<String, Object>> tmps = new ArrayList<>();
-			for(HashMap<String, Object> m : resultTmp) {
-				int ruleId = (int) m.get("RULE_ID");
 
-				if(!deltmpRIds.contains(ruleId)) {
-					tmps.add(m);
-				}
-			}
-			
-			resultTmp = tmps; 
-			
 			// SVC TARGET TYPE 이 CUST 인경우
 			if("CUST".equals(svcTargetType)) {	
 				loopOut:
@@ -407,14 +328,12 @@ public class ApiController {
 			String campId = "campId_" + ruleId;
 			String salience = "salience_" + ruleId;
 			String targetType = "targetType_" + ruleId;
-			String functionYn = "functionYn_" + ruleId;
 			
 			resMap.put("RULE_ID", ruleId);
 			resMap.put("RULE_NM", activeMap.get(ruleNm));
 			resMap.put("CAMP_ID", activeMap.get(campId));
 			resMap.put("SALIENCE", activeMap.get(salience));
 			resMap.put("TARGET_TYPE", activeMap.get(targetType));
-			resMap.put("FUNCTION_YN", activeMap.get(functionYn));
 			if("CONT".equals((String) activeMap.get(targetType)) && "CONT".equals((String) activeMap.get("SVC_TARGET_TYPE"))) {
 				resMap.put("SVC_CONT_ID", activeMap.get("SVC_CONT_ID"));
 			}
@@ -491,11 +410,12 @@ public class ApiController {
 		HashMap<String, Object> pkg = pkgService.getPkgById(pkgId);
 		List<HashMap<String, Object>> ruleList = pkgService.getRuleListByPkgId(pkgId);
 		
+		String drlImport = "";
 		String drlSource = "";
 		
 		if(ruleList.size() > 0) {
-			drlSource += "package " + pkg.get("PKG_NM") + "\n";
-			drlSource += "import java.util.Map\n\n";
+			drlImport += "package " + pkg.get("PKG_NM") + ";\n";
+			drlImport += "import java.util.Map;\n";
 		}
 		
 		for(HashMap<String, Object> m : ruleList) {
@@ -511,6 +431,13 @@ public class ApiController {
 			
 			for(HashMap<String, Object> w : whenList) {
 				drlSource += "		" + w.get("ATTR_WHEN");
+				
+				if("함수".equals(w.get("FACTOR_GRP_NM"))) {
+					String importTxt= "import static egovframework.ktds.targetai.function." + w.get("FACTOR_NM_EN") + ".*;\n";
+					if(!drlImport.contains(importTxt)) {
+						drlImport += importTxt;
+					}
+				}
 			}
 			
 			drlSource += "	)\n";
@@ -519,7 +446,7 @@ public class ApiController {
 			drlSource += "end\n\n";
 		}
 		
-		pkg.put("DRL_SOURCE", drlSource);
+		pkg.put("DRL_SOURCE", drlImport + "\n" + drlSource);
 		pkgService.updateDrlSource(pkg);
 		
 		// 물리 DRL파일 생성

@@ -52,4 +52,19 @@ public class SvcServiceImpl extends EgovAbstractServiceImpl implements SvcServic
 		dao.deleteSvcById(param);		
 	}
 
+	@Override
+	public void addSvcOutputValue(HashMap<String, Object> param) {
+		dao.addSvcOutputValue(param);		
+	}
+
+	@Override
+	public void delSvcOutputValue(HashMap<String, Object> param) {
+		dao.delSvcOutputValue(param);		
+	}
+
+	@Override
+	public List<HashMap<String, Object>> getOutputValueList(HashMap<String, Object> param) {
+		return dao.getOutputValueList(param);
+	}
+
 }

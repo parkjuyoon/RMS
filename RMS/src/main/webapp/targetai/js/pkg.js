@@ -9,10 +9,6 @@ $(document).ready(function() {
 	var ruleObjArr = [];
 	var tmpObj = {};
 	var tmpArr = [];
-	var funcObj = {};
-	var funcObjArr = [];
-	var ftmpObj = {};
-	var ftmpArr = [];
 	
 	// 패키지 리스트 조회
 	var searchObj = {};
@@ -40,9 +36,6 @@ $(document).ready(function() {
 		// RULE 관련 초기화
 		ruleObj = {};	tmpObj = {};
 		ruleObjArr = [];	tmpArr = [];
-		// FUNCTION 관련 초기화
-		funcObj = {};	ftmpObj = {};
-		funcObjArr = [];	ftmpArr = [];
 		initRuleDetail();	// RULE 상세 초기화
 		initRuleEditor();	// RULE EDITOR 초기화
 	});
@@ -151,9 +144,6 @@ $(document).ready(function() {
 		// RULE 관련 초기화
 		ruleObj = {};	tmpObj = {};
 		ruleObjArr = [];	tmpArr = [];
-		// FUNCTION 관련 초기화
-		funcObj = {};	ftmpObj = {};
-		funcObjArr = [];	ftmpArr = [];
 		initRuleDetail();	// RULE 상세 초기화
 		initRuleEditor();	// RULE EDITOR 초기화
 		
@@ -301,34 +291,10 @@ $(document).ready(function() {
 					contents += ruleAttr.ATTR_WHEN_CONTENTS;
 				});
 				
-				// -- FUNCTION 속성 객체 세팅 --
-				funcObjArr = [];
-				var argsArr = [];
-				var funcHtml = "";
-				
-				var ruleFuncList = res.ruleFuncList;
-				funcObjArr = ruleFuncList;
-				
-				if(ruleFuncList.length > 0) {
-					contents += "\n";
-				}
-				
-				$.each(ruleFuncList, function(idx, ruleFunc) {
-					funcHtml += "<div class='alert fade show mg_b10' role='alert'>";
-					funcHtml += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
-					funcHtml += 		ruleFunc.funcAttr_txt;
-					funcHtml += "</div>";
-					
-					contents += ruleFunc.funcAttr_txt + "\n";
-				});
-				
 				$("#ruleAttrData").append(ruleHtml);
-				$("#funcAttrData").append(funcHtml);
 				$("#ruleWhenCont").val(contents);
 				
 				tmpArr = cloneArr(ruleObjArr);	// 취소시 되돌리기 위한 변수에도 초기값 세팅
-				ftmpArr = cloneArr(funcObjArr);	// 취소시 되돌리기 위한 변수에도 초기값 세팅
-				
 			},
 			beforeSend : function() {
 				$("#ruleLoading").show();
@@ -364,15 +330,6 @@ $(document).ready(function() {
 		
 		$("#ruleAttrData").html(html);
 		
-		html = "";
-		$.each(funcObjArr, function(idx, funObj) {
-			html += "<div class='alert fade show mg_b10' role='alert'>";
-			html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
-			html += 		"<span>" + funObj.funcAttr_txt + "</span>";
-			html += "</div>";
-		});
-		
-		$("#funcAttrData").html(html);
 		treeFactorGrpList();	// RULE EDITOR 트리 생성
 		
 		$("#modal_ruleEditor").show();
@@ -384,19 +341,10 @@ $(document).ready(function() {
 	// RULE 상세 > RULE EDITOR 취소버튼
 	$("#ruleEditorCancel").click(function() {
 		tmpArr = cloneArr(ruleObjArr);
-		ftmpArr = cloneArr(funcObjArr);
 		
 		var contents = "";
 		$.each(ruleObjArr, function(idx, ruleObj) {
 			contents += ruleObj.ruleAttr_txt;
-		});
-		
-		if(funcObjArr.length > 0) {
-			contents += "\n";
-		}
-		
-		$.each(funcObjArr, function(idx, funcObj) {
-			contents += funcObj.funcAttr_txt + "\n";
 		});
 		
 		$("#ruleWhenCont").val(contents);
@@ -421,9 +369,6 @@ $(document).ready(function() {
 		// RULE 속성 Obj 초기화
 		ruleObj = {};	tmpObj = {};
 		ruleObjArr = [];	tmpArr = [];
-		// FUNCTION 속성 Obj 초기화
-		funcObj = {};	ftmpObj = {};
-		funcObjArr = [];	ftmpArr = [];
 		initRuleDetail();	// RULE 상세 초기화
 		initRuleEditor();	// RULE EDITOR 초기화
 		
@@ -481,9 +426,6 @@ $(document).ready(function() {
 				// RULE 관련 초기화
 				ruleObj = {};	tmpObj = {};
 				ruleObjArr = [];	tmpArr = [];
-				// FUNCTION 관련 초기화
-				funcObj = {};	ftmpObj = {};
-				funcObjArr = [];	ftmpArr = [];
 				initRuleDetail();	// RULE 상세 초기화
 				initRuleEditor();	// RULE EDITOR 초기화
 			}
@@ -545,7 +487,6 @@ $(document).ready(function() {
 		param.salience = $("#salience").val();
 		param.targetType = $("#targetType").val();
 		param.ruleObjArr = ruleObjArr;
-		param.funcObjArr = funcObjArr;
 		
 		fnRuleSave(param);
 	});
@@ -611,123 +552,82 @@ $(document).ready(function() {
 		// RULE 속성 추가시 제약조건 체크
 		var factorVal_Tag = "";
 		
-		// 함수 속성 추가 일경우 --------------------------------------------------------------------------------------
-		if(factorValType === "ARGS") {
-			factorVal_Tag = $("input[type='text'][name='detAttrChk']");
-			var funcFlag = $("input[type='radio'][name='detAttrChk']:checked").val();
-			var argsArr = [];
+		// 요소 값 입력 여부 체크
+		if(factorValType === "STRING") {
+			factorVal = $("input[name='detAttrChk']:checked").val();
+			factorVal_Tag = $("input[name='detAttrChk']:checked");
 			
-			var funcHtml = "";
-			var funcAttr_txt = "";
-			funcHtml += "<div class='alert fade show mg_b10' role='alert'>";
-			funcHtml += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
-			funcAttr_txt += 		factorNmEn + "(";
-			
-			for(var idx=0; idx<factorVal_Tag.length; idx++) {
-				var factorFuncId = factorVal_Tag.eq(idx).attr("data-factorFuncId");
-				var argType = factorVal_Tag.eq(idx).attr("data-argType");
-				var order = factorVal_Tag.eq(idx).attr("data-order");
-				var dataType = factorVal_Tag.eq(idx).attr("data-dataType");
-				var factorVal = factorVal_Tag.eq(idx).val();
-				
-				var args = {};
-				args.factorFuncId = factorFuncId;
-				args.argType = argType;
-				args.order = order*1;
-				args.dataType = dataType;
-				if(dataType === 'INT') {
-					factorVal = factorVal_Tag.eq(idx).val() * 1;
-					
-					if(isNaN(factorVal)) {
-						messagePop("warning", "요소값 체크","파라미터 데이터 타입이 잘못 입력되었습니다.","");
-						return;
-					}
-				}
-				args.factorVal = factorVal;
-				argsArr.push(args);
-				
-				if(dataType === "STRING") {
-					funcAttr_txt += "\"" + factorVal + "\"";
-				} else {
-					funcAttr_txt += factorVal;
-				}
-				
-				funcAttr_txt += (idx < factorVal_Tag.length-1 ? ", " : ")");
-			}
-			
-			funcAttr_txt += " == " + funcFlag;
-			funcHtml += funcAttr_txt + "</div>";
-			$("#funcAttrData").append(funcHtml);
-			
-			ftmpObj = {};
-			ftmpObj.funcFlag = funcFlag;
-			ftmpObj.argsArr = argsArr;
-			ftmpObj.factorGrpNm = factorGrpNm;
-			ftmpObj.factorId = factorId;
-			ftmpObj.factorNm = factorNm;
-			ftmpObj.factorNmEn = factorNmEn;
-			ftmpObj.factorValType = factorValType;
-			ftmpObj.logical = logical;
-			ftmpObj.logical_txt = logical_txt;
-			ftmpObj.relation = "";
-			ftmpObj.relation_txt = "";
-			ftmpObj.funcAttr_txt = funcAttr_txt;
-			
-			ftmpArr.push(ftmpObj);
-			
-		// RULE 속성 추가 일 경우 --------------------------------------------------------------------------------------
-		} else {
-			// 요소 값 입력 여부 체크
-			if(factorValType === "STRING") {
-				factorVal = $("input[name='detAttrChk']:checked").val();
-				factorVal_Tag = $("input[name='detAttrChk']:checked");
-				
-				if(typeof factorVal === "undefined" || factorVal == "") {
-					messagePop("warning", "요소값 체크","요소값을 입력 후 추가하세요","");
-					return;
-				}
-				
-			} else if(factorValType === "INT") {
-				factorVal = $("input[name='detAttrChk']").val();
-				factorVal_Tag = $("input[name='detAttrChk']");
-				
-				if(typeof factorVal === "undefined" || factorVal == "") {
-					messagePop("warning", "요소값 체크","요소값을 입력 후 추가하세요","");
-					return;
-				}
-				
-				// 숫자만 입력했는지 체크
-				var pattern_num = /^[0-9]+$/;
-				if(!(logical == 'logical6' || logical == 'logical7')) {
-					if(!pattern_num.test(factorVal)) {
-						messagePop("warning", "요소값 체크","숫자만 입력할 수 있습니다.","");
-						return;
-					}
-				}
-				
-			} else if(factorValType === "DATE") {
-				factorVal = $("input[name='detAttrChk']").val();
-				factorVal_Tag = $("input[name='detAttrChk']");
-				
-				if(typeof factorVal === "undefined" || factorVal == "") {
-					messagePop("warning", "요소값 체크","요소값을 입력 후 추가하세요","");
-					return;
-				}
-				 
-			} else if(factorValType === "INPUT") {
-				factorVal = $("#factorVal_direct").val();
-				factorVal_Tag = $("input[name='detAttrChk']");
-				
-				if(typeof factorVal === "undefined" || factorVal == "") {
-					messagePop("warning", "요소값 체크","요소값을 입력 후 추가하세요","");
-					return;
-				}
-				
-			} else {
-				messagePop("warning", "요소값 체크","요소값을 선택 후 추가하세요","");
+			if(typeof factorVal === "undefined" || factorVal == "") {
+				messagePop("warning", "요소값 체크","요소값을 입력 후 추가하세요","");
 				return;
 			}
 			
+		} else if(factorValType === "INT") {
+			factorVal = $("input[name='detAttrChk']").val();
+			factorVal_Tag = $("input[name='detAttrChk']");
+			
+			if(typeof factorVal === "undefined" || factorVal == "") {
+				messagePop("warning", "요소값 체크","요소값을 입력 후 추가하세요","");
+				return;
+			}
+			
+			// 숫자만 입력했는지 체크
+			var pattern_num = /^[0-9]+$/;
+			if(!(logical == 'logical6' || logical == 'logical7')) {
+				if(!pattern_num.test(factorVal)) {
+					messagePop("warning", "요소값 체크","숫자만 입력할 수 있습니다.","");
+					return;
+				}
+			}
+			
+		} else if(factorValType === "DATE") {
+			factorVal = $("input[name='detAttrChk']").val();
+			factorVal_Tag = $("input[name='detAttrChk']");
+			
+			if(typeof factorVal === "undefined" || factorVal == "") {
+				messagePop("warning", "요소값 체크","요소값을 입력 후 추가하세요.","");
+				return;
+			}
+			 
+		} else if(factorValType === "INPUT") {
+			factorVal = $("#factorVal_direct").val();
+			factorVal_Tag = $("input[name='detAttrChk']");
+			
+			if(typeof factorVal === "undefined" || factorVal == "") {
+				messagePop("warning", "요소값 체크","요소값을 입력 후 추가하세요.","");
+				return;
+			}
+			
+		} else if(factorValType === "ARGS") {
+			factorVal = $("input[type='radio'][name='detAttrChk']:checked").val();
+			factorVal_Tag = $("input[type='text'][name='detAttrChk']");
+			
+			for(var idx=0; idx<factorVal_Tag.length; idx++) {
+				var dataType = factorVal_Tag.eq(idx).attr("data-dataType");
+				var paramVal = factorVal_Tag.eq(idx).val();
+				
+				if(paramVal == '') {
+					messagePop("warning", "요소값을 입력 후 추가하세요.","","");
+					return;
+				}
+				
+				if(dataType === 'INT') {
+					paramVal = factorVal_Tag.eq(idx).val() * 1;
+					
+					if(isNaN(paramVal)) {
+						messagePop("warning", "파라미터 데이터 타입이 잘못 입력되었습니다.","","");
+						return;
+					}
+				}
+			}
+			
+		} else {
+			messagePop("warning", "요소값 체크","요소값을 선택 후 추가하세요","");
+			return;
+		}
+		
+		// RULE 일 경우만 실행
+		if(factorValType != "ARGS") {
 			// 논리연산 IN, NOT IN 선택
 			if(logical == 'logical6' || logical == 'logical7') {
 				if(factorValType === 'INPUT' || factorValType === 'INT') {
@@ -757,15 +657,15 @@ $(document).ready(function() {
 					
 					factorVal = "(" + factorVal + ")";
 				}
-			
-			// 논리연산 IN, NOT IN 이 아닌 값을 선택시
+				
+				// 논리연산 IN, NOT IN 이 아닌 값을 선택시
 			} else {
 				if(!(factorValType === 'INPUT' || factorValType === 'INT')) {
 					if(factorVal_Tag.length > 1) {
 						messagePop("warning", "요소값 체크","상세 속성을 한 가지만 선택하세요.","");
 						return;
 					}
-				
+					
 					factorVal = (factorValType == 'INT' ? factorVal_Tag.eq(0).val() : "\""+ factorVal_Tag.eq(0).val() +"\"");
 					
 				} else {
@@ -774,44 +674,71 @@ $(document).ready(function() {
 					}
 				}
 			}
+		}
+		
+		var ruleAttr_txt = "";
+		var ruleAttr_source = "";
 			
-			// RULE 속성 부분에 표시될 형식
-			var ruleAttr_txt = "["+ factorGrpNm + " : " + factorNm + "] " + logical_txt + factorVal;	
-			// DRL 파일에 저장될 소스
-			var ruleAttr_source = "this[\""+ factorNmEn +"\"]" + logical_txt + factorVal;
+		// FUNCTION 일 경우
+		if(factorValType === "ARGS") {
+			var pTmp = "";
 			
-			var $minus = $("#ruleAttrData ._ruleAttrMinus");
-			if($minus.eq($minus.length-1).siblings("span").text() == "(") {
-				ruleAttr_txt = "( " + ruleAttr_txt;
-				ruleAttr_source = "( " + ruleAttr_source;
-				$minus.eq($minus.length-1).siblings("span").text(ruleAttr_txt);
+			for(var idx=0; idx<factorVal_Tag.length; idx++) {
+				var dataType = factorVal_Tag.eq(idx).attr("data-dataType");
+				var paramVal = factorVal_Tag.eq(idx).val();
 				
-			} else {
-				var html = "";
-				html += "<div class='alert fade show mg_b10' role='alert'>";
-				html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
-				html += "	<span>"+ ruleAttr_txt +"</span>";
-				html += "</div>";
-				
-				$("#ruleAttrData").append(html);
+				if(dataType == 'INT') {
+					pTmp += (idx == factorVal_Tag.length-1 ? paramVal : paramVal + ", ");
+					
+				} else {
+					pTmp += (idx == factorVal_Tag.length-1 ? "\"" + paramVal + "\"" : "\"" + paramVal + "\", ");
+				}
 			}
 			
-			tmpObj = {};
-			tmpObj.factorGrpNm = factorGrpNm;
-			tmpObj.factorId = factorId;
-			tmpObj.factorNm = factorNm;
-			tmpObj.factorNmEn = factorNmEn;
-			tmpObj.factorVal = factorVal;
-			tmpObj.factorValType = factorValType;
-			tmpObj.logical = logical;
-			tmpObj.logical_txt = logical_txt;
-			tmpObj.relation = "";
-			tmpObj.relation_txt = "";
-			tmpObj.ruleAttr_txt = ruleAttr_txt;
-			tmpObj.ruleAttr_source = ruleAttr_source;
+			// RULE 속성 부분에 표시될 형식
+			ruleAttr_txt = factorNmEn + "(" + pTmp + ") == " + factorVal;
+			// DRL 파일에 저장될 소스
+			ruleAttr_source = "eval(main(" + pTmp + ") == " + factorVal + ")";
 			
-			tmpArr.push(tmpObj);
+		// RULE 일 경우
+		} else {
+			// RULE 속성 부분에 표시될 형식
+			ruleAttr_txt = "["+ factorGrpNm + " : " + factorNm + "] " + logical_txt + factorVal;	
+			// DRL 파일에 저장될 소스
+			ruleAttr_source = "this[\""+ factorNmEn +"\"]" + logical_txt + factorVal;
 		}
+		
+		var $minus = $("#ruleAttrData ._ruleAttrMinus");
+		if($minus.eq($minus.length-1).siblings("span").text() == "(") {
+			ruleAttr_txt = "( " + ruleAttr_txt;
+			ruleAttr_source = "( " + ruleAttr_source;
+			$minus.eq($minus.length-1).siblings("span").text(ruleAttr_txt);
+			
+		} else {
+			var html = "";
+			html += "<div class='alert fade show mg_b10' role='alert'>";
+			html += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
+			html += "	<span>"+ ruleAttr_txt +"</span>";
+			html += "</div>";
+			
+			$("#ruleAttrData").append(html);
+		}
+		
+		tmpObj = {};
+		tmpObj.factorGrpNm = factorGrpNm;
+		tmpObj.factorId = factorId;
+		tmpObj.factorNm = factorNm;
+		tmpObj.factorNmEn = factorNmEn;
+		tmpObj.factorVal = factorVal;
+		tmpObj.factorValType = factorValType;
+		tmpObj.logical = logical;
+		tmpObj.logical_txt = logical_txt;
+		tmpObj.relation = "";
+		tmpObj.relation_txt = "";
+		tmpObj.ruleAttr_txt = ruleAttr_txt;
+		tmpObj.ruleAttr_source = ruleAttr_source;
+		
+		tmpArr.push(tmpObj);
 	});
 
 	// 패키지관리 > RULE EDITOR > 관계연산 추가 버튼
@@ -889,17 +816,6 @@ $(document).ready(function() {
 		tmpObj = {};
 	});
 	
-	// FUNCTION 속성 minus 버튼 클릭 이벤트
-	$(document).on("click", "#funcAttrData ._ruleAttrMinus", function() {
-		var delIdx = $("#funcAttrData ._ruleAttrMinus").index(this);
-		
-		ftmpArr.splice(delIdx, 1);
-		
-		$(this).closest("label").remove();
-		
-		ftmpObj = {};
-	});
-	
 	// RULE 상세 > RULE EDITOR 팝업 > 적용 버튼 클릭
 	$("#ruleEditorSave").click(function() {
 		if(tmpArr.length < 1) {
@@ -923,43 +839,15 @@ $(document).ready(function() {
 			}
 		}
 		
-		// FUNCTION 속성 정합성 체크
-		for(var i=0; i<ftmpArr.length; i++) {
-			if(i < ftmpArr.length-1) {
-				if(ftmpArr[i].relation_txt === '') {
-					messagePop("warning", "FUNCTION 속성 정의가 올바르지 않습니다.", "", "");
-					return;
-				}
-				
-			} else {
-				if(ftmpArr[i].relation_txt != '') {
-					messagePop("warning", "FUNCTION 속성 정의가 올바르지 않습니다.", "", "");
-					return;
-				}
-			}
-		}
-		
 		ruleObjArr = cloneArr(tmpArr);
-		
-		if(ftmpArr.length > 0) {
-			funcObjArr = cloneArr(ftmpArr);
-		}
 		
 		var contents = ""
 		$.each(ruleObjArr, function(idx, ruleObj) {
 			contents += ruleObj.ruleAttr_txt;
 		});
 		
-		if(funcObjArr.length > 0) {
-			contents += "\n";
-		}
-		
-		$.each(funcObjArr, function(idx, funcObj) {
-			contents += funcObj.funcAttr_txt + "\n";
-		});
-		
 		$("#ruleWhenCont").val(contents);
-		close_layerPop('modal_ruleEditor');;
+		close_layerPop('modal_ruleEditor');
 		initRuleEditor();
 	});
 	
@@ -1425,7 +1313,9 @@ function getRuleList(searchObj) {
  */
 function treeFactorGrpList() {
 	
-	var param = {};
+	var param = {
+		functionYn : "Y"
+	};
 	
 	$.ajax({
 		method : "POST",
@@ -1601,20 +1491,15 @@ function getFactorVal(event, treeId, treeNode) {
 				$("#changeInputBtn").show();
 				
 			} else if(dataType == 'ARGS') {
-				html += "<select>" +
-						"	<option value='all'>All Of Following" +
-						"	<option value='any'>Any Of Following" +
-						"</select><br/>";
-				
 				$.each(factorVal, function(idx, func){
 					html += "<label for='' class='mg_r10'>"+ func.ARG_NM +"</label>";
-					html += "<input type='text' class='wd250px' name='detAttrChk' data-factorFuncId='"+ func.FACTOR_FUNC_ID +"' data-argType='"+ func.ARG_TYPE +"' data-order='"+ func.ORDER +"' data-dataType='"+ func.DATA_TYPE +"' value=''/>";
+					html += "<input type='text' class='wd250px' name='detAttrChk' data-dataType='"+ func.DATA_TYPE +"' value=''/>";
 					html += "<br />";
 				});
 				
 				html += "<label for='' class='mg_r10'>결과 </label>";
-				html += "<input type='radio' name='detAttrChk' id='' value='TRUE' checked><label for='' class='mg_r10'>&nbsp;TRUE </label>";
-				html += "<input type='radio' name='detAttrChk' id='' value='FALSE'><label for='' class='mg_r10'>&nbsp;FALSE </label>";
+				html += "<input type='radio' name='detAttrChk' id='' value='true' checked><label for='' class='mg_r10'>&nbsp;true </label>";
+				html += "<input type='radio' name='detAttrChk' id='' value='false'><label for='' class='mg_r10'>&nbsp;false </label>";
 				
 				$("#factorVal").html(html);
 				$("#changeInputBtn").hide();

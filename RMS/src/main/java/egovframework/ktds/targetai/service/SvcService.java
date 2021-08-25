@@ -19,4 +19,10 @@ public interface SvcService {
 
 	void deleteSvcById(HashMap<String, Object> param);
 
+	void addSvcOutputValue(HashMap<String, Object> param);
+
+	void delSvcOutputValue(HashMap<String, Object> param);
+
+	List<HashMap<String, Object>> getOutputValueList(HashMap<String, Object> param);
+
 }

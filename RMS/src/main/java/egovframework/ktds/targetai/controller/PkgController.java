@@ -229,15 +229,6 @@ public class PkgController {
 		int ruleId = (int) rule.get("RULE_ID");
 		List<HashMap<String, Object>> ruleAttrList = pkgService.getWhenList(ruleId);
 		resultMap.put("ruleAttrList", ruleAttrList);
-		List<HashMap<String, Object>> ruleFuncList = pkgService.getRuleFuncList(ruleId);
-		resultMap.put("ruleFuncList", ruleFuncList);
-		
-		for(HashMap<String, Object> ruleFunc : ruleFuncList) {
-			int ruleFuncId = (int) ruleFunc.get("RULE_FUNC_ID");
-			
-			List<HashMap<String, Object>> ruleFuncArgsList = pkgService.getRuleFuncArgsList(ruleFuncId);
-			ruleFunc.put("argsArr", ruleFuncArgsList);
-		}
 		
 		return resultMap;
 	}
@@ -251,8 +242,14 @@ public class PkgController {
 	@RequestMapping(value = "/getFactorGrpList.do", method = RequestMethod.POST)
 	public HashMap<String, Object> getFactorGrpList(@RequestBody HashMap<String, Object> param) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		List<HashMap<String, Object>> factorGrpList = pkgService.getFactorGrpList();
-		resultMap.put("factorGrpList", factorGrpList);
+		
+		try {
+			List<HashMap<String, Object>> factorGrpList = pkgService.getFactorGrpList(param);
+			resultMap.put("factorGrpList", factorGrpList);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		return resultMap;
 	}
@@ -308,7 +305,7 @@ public class PkgController {
 			factorVal = pkgService.getFactorVal(param);
 			
 		} else if("FUNC".equals(factorType)) {
-			factorVal = pkgService.getFactorFunc(param);
+			factorVal = pkgService.getFactorFuncArgs(param);
 		} 
 		
 		resultMap.put("factor", factor);
@@ -346,7 +343,6 @@ public class PkgController {
 	public HashMap<String, Object> ruleSave(@RequestBody HashMap<String, Object> param, HttpSession session) {
 		String ruleId = (String) param.get("ruleId");
 		String regUserId = (String) session.getAttribute("member_id");
-		String functionYn = "N";
 		
 		param.put("REG_USER_ID", regUserId);
 		
@@ -357,29 +353,6 @@ public class PkgController {
 			param.put("ruleId", (int) param.get("RULE_ID"));
 			// RULE_ATTR 저장
 			pkgService.ruleAttrSave(param);
-			// 함수 여부 체크 후 저장
-			List<HashMap<String, Object>> funcList = (List<HashMap<String, Object>>) param.get("funcObjArr");
-			
-			if(funcList.size() > 0) {
-				functionYn = "Y";
-				
-				// RULE_FUNC 저장
-				for(HashMap<String, Object> func : funcList) {
-					func.put("ruleId", ruleId);
-					pkgService.ruleFuncSave(func);
-					
-					// RULE_FUNC_ARGS 저장
-					List<HashMap<String, Object>> argList = (List<HashMap<String, Object>>) func.get("argsArr");
-					
-					for(HashMap<String, Object> arg : argList) {
-						int ruleFuncId = (int) func.get("RULE_FUNC_ID");
-						arg.put("ruleFuncId", ruleFuncId);
-						arg.put("ruleId", ruleId);
-						// RULE_FUNC_ARGS 저장
-						pkgService.ruleFuncArgsSave(arg);
-					}
-				}
-			}
 			
 		} else {	// 수정
 			param.put("ruleId", Integer.parseInt(ruleId));
@@ -393,34 +366,6 @@ public class PkgController {
 				// RULE_ATTR 저장
 				pkgService.ruleAttrSave(param);
 			}
-			
-			// 함수 여부 체크 후 수정
-			List<HashMap<String, Object>> funcList = (List<HashMap<String, Object>>) param.get("funcObjArr");
-			
-			if(funcList.size() > 0) {
-				functionYn = "Y";
-				// RULE_FUNC 삭제
-				pkgService.deleteRuleFuncById(param);
-				// RULE_FUNC_ARGS 삭제
-				pkgService.deleteRuleFuncArgsById(param);
-				
-				// RULE_FUNC 저장
-				for(HashMap<String, Object> func : funcList) {
-					func.put("ruleId", ruleId);
-					pkgService.ruleFuncSave(func);
-					
-					// RULE_FUNC_ARGS 저장
-					List<HashMap<String, Object>> argList = (List<HashMap<String, Object>>) func.get("argsArr");
-					
-					for(HashMap<String, Object> arg : argList) {
-						int ruleFuncId = (int) func.get("RULE_FUNC_ID");
-						arg.put("ruleFuncId", ruleFuncId);
-						arg.put("ruleId", ruleId);
-						// RULE_FUNC_ARGS 저장
-						pkgService.ruleFuncArgsSave(arg);
-					}
-				}
-			}
 		}
 		
 		// RULE 의 ATTR_THEN 업데이트
@@ -432,8 +377,7 @@ public class PkgController {
 		attrThen += "		$map.put(\"campId_"+ ruleMap.get("RULE_ID") + "\", " + ruleMap.get("CAMP_ID") +");\n";
 		attrThen += "		$map.put(\"salience_"+ ruleMap.get("RULE_ID") + "\", " + ruleMap.get("SALIENCE") +");\n";
 		attrThen += "		$map.put(\"ruleNm_"+ ruleMap.get("RULE_ID") + "\", \"" + ruleMap.get("RULE_NM") +"\");\n";
-		attrThen += "		$map.put(\"targetType_"+ ruleMap.get("RULE_ID") + "\", \"" + ruleMap.get("TARGET_TYPE") +"\");\n";
-		attrThen += "		$map.put(\"functionYn_"+ ruleMap.get("RULE_ID") + "\", \"" + functionYn +"\");";
+		attrThen += "		$map.put(\"targetType_"+ ruleMap.get("RULE_ID") + "\", \"" + ruleMap.get("TARGET_TYPE") +"\");";
 		
 		param.put("ATTR_THEN", attrThen);
 		pkgService.updateAttrThen(param);
@@ -472,10 +416,6 @@ public class PkgController {
 			pkgService.deleteRuleById(param);
 			// RULE_ATTR 삭제
 			pkgService.deleteRuleAttrByIds(param);
-			// RULE_FUNC 삭제
-			pkgService.deleteRuleFuncByIds(param);
-			// RULE_FUNC_ARGS 삭제
-			pkgService.deleteRuleFuncArgsByIds(param);
 		}
 		
 		return true;
@@ -493,10 +433,6 @@ public class PkgController {
 		pkgService.deleteRuleById(param);
 		// RULE_ATTR 삭제
 		pkgService.deleteRuleAttrByIds(param);
-		// RULE_FUNC 삭제
-		pkgService.deleteRuleFuncByIds(param);
-		// RULE_FUNC_ARGS 삭제
-		pkgService.deleteRuleFuncArgsByIds(param);
 		
 		// 해당 패키지에 등록된 RULE 개수 조회
 		HashMap<String, Object> resultMap = new HashMap<>();
@@ -521,11 +457,12 @@ public class PkgController {
 		HashMap<String, Object> pkg = pkgService.getPkgById(pkgId);
 		List<HashMap<String, Object>> ruleList = pkgService.getRuleListByPkgId(pkgId);
 		
+		String drlImport = "";
 		String drlSource = "";
 		
 		if(ruleList.size() > 0) {
-			drlSource += "package " + pkg.get("PKG_NM") + "\n";
-			drlSource += "import java.util.Map\n\n";
+			drlImport += "package " + pkg.get("PKG_NM") + ";\n";
+			drlImport += "import java.util.Map;\n";
 		}
 		
 		for(HashMap<String, Object> m : ruleList) {
@@ -541,6 +478,13 @@ public class PkgController {
 			
 			for(HashMap<String, Object> w : whenList) {
 				drlSource += "		" + w.get("ATTR_WHEN");
+				
+				if("함수".equals(w.get("FACTOR_GRP_NM"))) {
+					String importTxt= "import static egovframework.ktds.targetai.function." + w.get("FACTOR_NM_EN") + ".*;\n";
+					if(!drlImport.contains(importTxt)) {
+						drlImport += importTxt;
+					}
+				}
 			}
 			
 			drlSource += "	)\n";
@@ -549,7 +493,7 @@ public class PkgController {
 			drlSource += "end\n\n";
 		}
 		
-		pkg.put("DRL_SOURCE", drlSource);
+		pkg.put("DRL_SOURCE", drlImport + "\n" + drlSource);
 		pkgService.updateDrlSource(pkg);
 		
 		// 물리 DRL파일 생성

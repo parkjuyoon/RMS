@@ -95,12 +95,10 @@
 													<table class="sform_type_pop modal_table">
 														<colgroup>
 															<col style="width: 280px" />
-															<col style="width: 200px" />
-															<col style="width: 200px" />
+															<col style="width: 250px" />
+															<col style="width: 250px" />
 															<col style="width: 180px" />
 															<col style="width: auto" />
-															<col style="width: 230px" />
-															<col style="width: 230px" />
 														</colgroup>
 														<tbody>
 															<tr>
@@ -119,7 +117,6 @@
 																	<button type="button" class="btn btn-sm btn-sky" id="addValBtn1">&gt;&gt;</button>
 																</th>
 																<th class="t_left icon03">RULE 속성</th>
-																<th class="t_left icon03" colspan="2">FUNCTION 속성</th>
 															</tr>
 															<tr>
 																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3" colspan="2">
@@ -153,9 +150,6 @@
 																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3">
 																	<div class="overflow_rule" id="ruleAttrData"></div>
 																</td>
-																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3" colspan="2">
-																	<div class="overflow_rule" id="funcAttrData"></div>
-																</td>
 															</tr>
 															<tr>
 																<th class="t_left icon04">관계 연산
@@ -179,7 +173,7 @@
 															</tr>
 															<tr>
 																<th class="t_left icon05">통계 VIEW</th>
-																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_middle bd_b_none" rowspan="2" colspan="5">
+																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_middle bd_b_none" rowspan="2" colspan="4">
 																	<div class="graph_left">
 																		<div style="width: 100%;">
 																			<img src="/targetai_publish/images/modal_graph_ex01.png" alt="" />

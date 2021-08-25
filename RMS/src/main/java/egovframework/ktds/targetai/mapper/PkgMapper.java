@@ -20,7 +20,7 @@ public interface PkgMapper {
 
 	HashMap<String, Object> getRule(HashMap<String, Object> param);
 
-	List<HashMap<String, Object>> getFactorGrpList();
+	List<HashMap<String, Object>> getFactorGrpList(HashMap<String, Object> param);
 
 	List<String> getFactorList(HashMap<String, Object> param);
 
@@ -68,22 +68,5 @@ public interface PkgMapper {
 
 	List<HashMap<String, Object>> getRuleAttrByPkgId(HashMap<String, Object> param);
 
-	List<HashMap<String, Object>> getFactorFunc(HashMap<String, Object> param);
-
-	void ruleFuncSave(HashMap<String, Object> param);
-
-	void deleteRuleFuncById(HashMap<String, Object> param);
-
-	List<HashMap<String, Object>> getRuleFuncList(int ruleId);
-
-	void ruleFuncArgsSave(HashMap<String, Object> param);
-
-	List<HashMap<String, Object>> getRuleFuncArgsList(int ruleFuncId);
-
-	void deleteRuleFuncArgsById(HashMap<String, Object> param);
-
-	void deleteRuleFuncByIds(HashMap<String, Object> param);
-
-	void deleteRuleFuncArgsByIds(HashMap<String, Object> param);
-
+	List<HashMap<String, Object>> getFactorFuncArgs(HashMap<String, Object> param);
 }

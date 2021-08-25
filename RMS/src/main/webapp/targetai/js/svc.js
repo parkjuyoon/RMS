@@ -80,6 +80,7 @@ $(document).ready(function() {
 			param.numOfOffer = $("#numOfOffer").val() == '' ? null : $("#numOfOffer").val();
 			param.targetType = $("#targetType").val();
 			param.svcDsc = $("#svcDsc").val();
+			param.opvArr = opvArr;
 			
 			if(param.svcId != '') {
 				// 수정
@@ -246,7 +247,250 @@ $(document).ready(function() {
 		
 		fnPkgList(searchObj);
 	});
+	
+	// 서비스 상세 > OutPut Value 선택
+	$("#svcOutPutPopBtn").click(function() {
+		availableFactorGrpList();
+	});
+	
+	// output value 선택 > output add 버튼
+	$("#outPutAddBtn").click(function() {
+		var treeObj = $.fn.zTree.getZTreeObj("availableFactor");
+		var nodes = treeObj.getSelectedNodes();
+		
+		loopOut:
+		for(var i=0; i<nodes.length; i++) {
+			if(!nodes[i].isParent) {
+				var name = nodes[i].name;
+				var name_en = nodes[i].name_en;
+				var nodeId = nodes[i].id;
+				var cfvs = $("._configuredFactorVal");
+				
+				for(var j=0; j<cfvs.length; j++) {
+					var nid = cfvs.eq(j).attr("data-nodeId");
+					
+					if(nodeId == nid) {
+						continue loopOut;
+					}
+				}
+				
+				var html = "";
+				html = "<span style='cursor:pointer;' class='_configuredFactorVal' data-nodeId='"+ nodeId +"' data-nameEn='"+ name_en +"' data-name='"+ name +"'>";
+				html += "	<i class='far fa-check-circle custom-btn-i'></i><label>" + name +"</label><br/>";
+				html +=	"</span>";
+				
+				$("#configuredFactor").append(html);
+			}
+		}
+	});
+	
+	// output value 선택 > output remove 버튼
+	$("#outPutRemoveBtn").click(function() {
+		var cfvs = $("._configuredFactorVal");
+		
+		for(var i=0; i<cfvs.length; i++) {
+			var state = cfvs.eq(i).css("background-color");
+			state = rgb2hex(state);
+			
+			if(state != '#000000') {
+				cfvs.eq(i).remove();
+			}
+		}
+	});
+	
+	// output value 선택 > configured value 선택
+	$(document).on("click", "._configuredFactorVal", function() {
+		var state = $(this).css("background-color");
+		state = rgb2hex(state);
+
+		if(state == '#000000') {
+			$(this).css("background-color", "#def4ff");
+		} else {
+			$(this).removeAttr("style");
+		}
+	});
+	
+	// output value 선택 > 적용버튼 클릭
+	var opvArr = [];
+	$("#outPutAcceptBtn").click(function() {
+		opvArr = [];
+		var cfvs = $("._configuredFactorVal");
+		var factorNmLinkTxt = "";
+		
+		for(var i=0; i<cfvs.length; i++) {
+			var factorId = cfvs.eq(i).attr("data-nodeId");
+			var factorNmEn = cfvs.eq(i).attr("data-nameEn");
+			var factorNm = cfvs.eq(i).attr("data-name");
+			factorNmLinkTxt += (i == cfvs.length-1 ? factorNm : factorNm + ", ");
+			
+			var opvObj = {};
+			opvObj.factorId = factorId;
+			opvObj.factorNmEn = factorNmEn;
+			opvObj.factorNm = factorNm;
+			
+			opvArr.push(opvObj);
+		}
+		
+		if(cfvs.length > 0) {
+			$("#svcOutPutPopBtn").hide();
+			$("#svcOutPutPopLink").show();
+			$("#svcOutPutPopLink").text(factorNmLinkTxt);
+		}
+		
+		close_layerPop('modal_svcOutPut');
+	});
+	
+	// output value 선택 > 링크 클릭
+	$("#svcOutPutPopLink").click(function() {
+		availableFactorGrpList();
+		$("#modal_svcOutPut").show();
+	});
 });
+
+// rgb to hex
+function rgb2hex(rgb) {
+    if (  rgb.search("rgb") == -1 ) {
+         return rgb;
+    } else {
+         rgb = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+))?\)$/);
+         function hex(x) {
+              return ("0" + parseInt(x).toString(16)).slice(-2);
+         }
+         return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+    }
+}
+
+/**
+ * Factor Group List 조회 후 트리 생성
+ * @returns
+ */
+function availableFactorGrpList() {
+	
+	var param = {
+		functionYn : "N"
+	};
+	
+	$.ajax({
+		method : "POST",
+		url : "/targetai/getFactorGrpList.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			var factorGrpList = res.factorGrpList;
+			var factorGrpArr = [];
+			
+			$.each(factorGrpList, function(idx, factorGrp) {
+				var factorGrpObj = {};
+				factorGrpObj.id = factorGrp.FACTOR_GRP_ID;
+				factorGrpObj.pId = factorGrp.FACTOR_GRP_PID;
+				factorGrpObj.name = factorGrp.FACTOR_GRP_NM;
+				factorGrpObj.isParent = true;
+				factorGrpObj.open = false;
+				
+				factorGrpArr.push(factorGrpObj);
+			});
+			
+			// zTree 설정 
+			var setting = {
+				data: {
+					simpleData: {
+						enable: true
+					}
+				},
+				callback: {
+					beforeExpand: function(treeId, treeNode) {
+						if(typeof treeNode.children === 'undefined') {
+							var selectedFactorGrpId = treeNode.id;
+//							// Factor Group 하위 Factor List 조회 후 트리생성
+							availableFactorList(selectedFactorGrpId, treeId, treeNode);
+						}
+					},
+					onClick: getAvailableFactorVal
+				}
+			};
+			
+			// zTree 초기화 후 생성
+			$.fn.zTree.init($("#availableFactor"), setting, factorGrpArr);
+		},
+		beforeSend : function() {
+			$("#modal_svcOutPutLoading").show();
+		},
+		complete : function() {
+			$("#modal_svcOutPutLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
+
+/**
+ * Factor Group 하위 Factor List 조회 후 트리생성
+ * @returns
+ */ 
+function availableFactorList(factorGrpId, treeId, treeNode) {
+	var param = {};
+	param.factorGrpId = factorGrpId;
+	
+	$.ajax({
+		method : "POST",
+		url : "/targetai/getFactorList.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success:function(res) {
+			var factorList = res.factorList;
+			var factorArr = [];
+			
+			$.each(factorList, function(idx, factor) {
+				var factorObj = {};
+				factorObj.id = factor.FACTOR_ID;
+				factorObj.pId = factorGrpId;
+				factorObj.name = factor.FACTOR_NM;
+				factorObj.name_en = factor.FACTOR_NM_EN;
+
+				factorArr.push(factorObj);
+			});
+			
+			// Factor 트리 추가
+			var treeObj = $.fn.zTree.getZTreeObj(treeId);
+			treeObj.addNodes(treeNode, factorArr);
+		},
+		beforeSend : function() {
+			$("#modal_svcOutPutLoading").show();
+		},
+		complete : function() {
+			$("#modal_svcOutPutLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
+
+/**
+ * Factor Value 조회
+ * @param factorValObj
+ * @returns
+ */
+function getAvailableFactorVal(event, treeId, treeNode) {
+	if(treeNode.isParent) {
+		return;
+	}
+	
+	var factorObj = {
+		factorId : treeNode.id,
+	};
+}
 
 /**
  * 서비스 리스트 조회
@@ -335,6 +579,32 @@ function fnSvcDetail(param) {
 		dataType : "json",
 		success : function(res) {
 			var svc = res.svc;
+			opvArr = res.opvList;
+			
+			// output value 선택 입력
+			if(opvArr.length > 0) {
+				var factorNmLinkTxt = "";
+				var html = "";
+				for(var i=0; i<opvArr.length; i++) {
+					factorNmLinkTxt += (i == opvArr.length-1 ? opvArr[i].factorNm : opvArr[i].factorNm + ", ");
+					
+					html += "<span style='cursor:pointer;' class='_configuredFactorVal' data-nodeId='"+ opvArr[i].factorId +"' data-nameEn='"+ opvArr[i].factorNmEn +"' data-name='"+ opvArr[i].factorNm +"'>";
+					html += "	<i class='far fa-check-circle custom-btn-i'></i><label>" + opvArr[i].factorNm +"</label><br/>";
+					html +=	"</span>";
+				}
+				
+				$("#configuredFactor").html(html);
+				$("#svcOutPutPopLink").text(factorNmLinkTxt);
+				$("#svcOutPutPopLink").show();
+				$("#svcOutPutPopBtn").hide();
+				
+			} else {
+				$("#configuredFactor").html("");
+				$("#svcOutPutPopLink").text("");
+				$("#svcOutPutPopLink").hide();
+				$("#svcOutPutPopBtn").show();
+			}
+			
 			$("#svcId").text(svc.SVC_ID);
 			$("#svcNm").val(svc.SVC_NM);
 			$("#svcConnChannel").val(svc.CHANNEL_NM);
@@ -355,7 +625,6 @@ function fnSvcDetail(param) {
 			$("#svcCard").removeClass("card-collapsed");
 			$("#svcCardBody").css("display", "");
 			$("#svcNmDupBtn").data("isDup", "Y");
-			
 		},
 		beforeSend : function() {
 			$("#svcLoading").show();
@@ -662,4 +931,9 @@ function fnInitSvcDetail() {
 	$("#svcDupY").css("display", "none");
 	$("#svcDupN").css("display", "none");
 	$("#svcNmDupBtn").data("isDup", "N");
+	$("#svcOutPutPopBtn").show();
+	$("#svcOutPutPopLink").hide();
+	$("#configuredFactor").html("");
+	$("#numOfOffer").val("");
+	opvArr = [];
 }

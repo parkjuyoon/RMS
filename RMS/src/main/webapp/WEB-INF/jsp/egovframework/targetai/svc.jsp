@@ -406,6 +406,95 @@
 														</td>
 													</tr>
 													<tr>
+														<th class="t_left">OutPut Value 선택</th>
+														<td class="t_left" >
+															<button type="button" id="svcOutPutPopBtn" data-modalclass="modal_svcOutPut" title="팝업" class="btn btn-sm btn-green btnModal" style="display: none;">OPEN</button>
+															<a href="#" id="svcOutPutPopLink" style="display: none;"></a>
+															<!-- outPut Value 선택 팝업 -->
+															<div id="modal_svcOutPut" class="modal_pop">
+																<div class="modal_content" style="width: 800px;">
+																	<!-- 팝업항상중앙띄우기 -->
+																	<div class="modla_center">
+																		<div class="modal_header">
+																			<span class="close _ruleTestPop_close" onclick="close_layerPop('modal_svcOutPut');" data-focusId="">&times;</span>
+																			<h2>OutPut Value 선택</h2>
+																		</div>
+																		<!-- 본문 -->
+																		<div class="modal_body" style="height: 500px;">
+																			<div class="progress_loading">
+																				<div id="modal_svcOutPutLoading">
+																					<img src="/targetai_publish/images/ajax-loader1.gif" />
+																				</div>
+																			</div>
+																			<div class="modal_wrap">
+																				<div class="row">
+																					<div class="col">
+																						<!-- 본문페이지 -->
+																						<div class="card-body body-header" style="width: 42%; float: left;">
+																							<header class="card-header card-header-pd-mobile">
+																								<div class="card-actions card-header-position-mobile"></div>
+																								<h2 class="card-title_txt" id="">Available:</h2>
+																							</header>
+																							<!-- 경고 -->
+																							<div class="card-body">
+																								<div id="" style="height: 370px; overflow: auto;">
+																									<ul id="availableFactor" class="ztree"></ul>
+																								</div>
+																							</div>
+																							<!-- //경고 -->
+																						</div>
+																						<!-- //본문페이지 -->
+																						<!-- 본문페이지 -->
+																						<div class="" style="width: 13%;
+																										    float: left;
+																										    margin-left: 10px;
+																										    margin-right: 10px;
+																										    display: flex;
+																										    justify-content: center;
+																										    align-items: center;
+																										    height: 100%;">
+																							<div>
+																								<button type="button" id="outPutAddBtn" class="btn btn-sm btn-sky" style="width: 100%; margin-bottom: 10px;">Add &gt;</button>
+																								<button type="button" id="outPutRemoveBtn" class="btn btn-sm btn-gray" style="width: 100%;">&lt; Remove</button>
+																							</div>
+																						</div>
+																						<!-- //본문페이지 -->
+																						<!-- 본문페이지 -->
+																						<div class="card-body body-header" style="width: 42%; float: left;">
+																							<header class="card-header card-header-pd-mobile">
+																								<div class="card-actions card-header-position-mobile"></div>
+																								<h2 class="card-title_txt" id="">Configured:</h2>
+																							</header>
+																							<!-- 경고 -->
+																							<div class="card-body">
+																								<div id="configuredFactor" style="height: 370px; overflow: auto;"></div>
+																							</div>
+																							<!-- //경고 -->
+																						</div>
+																						<!-- //본문페이지 -->
+																						
+																					</div>
+																				</div>
+																				<div class="row">
+																					<!-- 버튼 -->
+																					<div class="modal-footer">
+																						<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('modal_svcOutPut');"><i class="far fa-times-circle custom-btn-i"></i> 취소</button>
+																						<button type="button" class="btn btn-sm btn-green" id="outPutAcceptBtn"><i class="far fa-check-circle custom-btn-i"></i> 적용</button>
+																					</div>
+																					<!-- //버튼 -->
+																				</div>
+																			</div>
+																		</div>
+																		<!-- //본문 -->
+																	</div>
+																	<!-- //팝업항상중앙띄우기 -->
+																</div>
+															</div>
+															<!-- //outPut Value 선택 팝업 팝업 -->
+															
+														</td>
+													</tr>
+													<tr>
 														<th class="t_left">활성여부</th>
 														<td class="t_left">
 															<select id="svcActYn" class="wd150px">

@@ -71,7 +71,10 @@ public class SvcController {
 	public HashMap<String, Object> getSvc(@RequestBody HashMap<String, Object> param) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		HashMap<String, Object> svc = svcService.getSvc(param);
+		
+		List<HashMap<String, Object>> opvList = svcService.getOutputValueList(param);
 		resultMap.put("svc", svc);
+		resultMap.put("opvList", opvList);
 		
 		return resultMap;
 	}
@@ -107,6 +110,11 @@ public class SvcController {
 		param.put("EVENT_ID", 1);
 		// 서비스 저장
 		svcService.addSvc(param);
+		// output value 저장
+		List<HashMap<String, Object>> opvList = (List<HashMap<String, Object>>) param.get("opvArr");
+		if(opvList.size() > 0) {
+			svcService.addSvcOutputValue(param);
+		}
 		HashMap<String, Object> svc = svcService.getSvc(param);
 		
 		return svc;
@@ -125,6 +133,13 @@ public class SvcController {
 		param.put("REG_USER_ID", regUserId);
 		// 서비스 저장
 		svcService.updateSvc(param);
+		// output value 저장
+		List<HashMap<String, Object>> opvList = (List<HashMap<String, Object>>) param.get("opvArr");
+		if(opvList.size() > 0) {
+			svcService.delSvcOutputValue(param);	// 삭제
+			svcService.addSvcOutputValue(param);	// 저장
+		}
+		
 		HashMap<String, Object> svc = svcService.getSvc(param);
 		
 		return svc;

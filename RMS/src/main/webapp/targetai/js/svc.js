@@ -253,7 +253,7 @@ $(document).ready(function() {
 		availableFactorGrpList();
 	});
 	
-	// output value 선택 > output add 버튼
+	// output value 선택 > output add 버튼/
 	$("#outPutAddBtn").click(function() {
 		var treeObj = $.fn.zTree.getZTreeObj("availableFactor");
 		var nodes = treeObj.getSelectedNodes();

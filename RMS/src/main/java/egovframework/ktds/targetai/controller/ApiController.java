@@ -154,6 +154,7 @@ public class ApiController {
 			responseMap.put("RUN_TIME_UNIT", "sec");
 			
 			List<Integer> ruleIds = apiService.getRuleIdsBySvcId(param_svcId);	// 등록된 모든 RULE 의 RULE_ID를 SALIENCE ASC, ORDER ASC 순으로 정렬하여 조회
+			List<HashMap<String, Object>> outPutValList = apiService.getOutPutValList(param_svcId);	// 서비스 아이디에 해당하는 output value 리스트 조회
 			List<HashMap<String, Object>> resultTmp = new ArrayList<>();	// 계약건수마다 걸린 RULE 을 한군데 넣어놓을 임시 리스트
 			List<HashMap<String, Object>> respList = new ArrayList<>();		// response 리스트
 			List<Integer> respRuleIds = new ArrayList<>();					// response 할 RULE_ID 리스트
@@ -161,13 +162,13 @@ public class ApiController {
 			for(HashMap<String, Object> activeMap : activeList) {
 				// DRL의 RULE 실행 결과
 				activeMap.put("SVC_TARGET_TYPE", svcTargetType);
-				List<HashMap<String, Object>> resultList = getResultList(drlPath, activeMap);
+				List<HashMap<String, Object>> resultList = getResultList(drlPath, activeMap, outPutValList);
 				
 				// DRL 파일이 존재하지 않을경우 resultList는 NULL 을 반환한다. 
 				// DB에서 조회해서 파일을 생성한 후 다시 RULE 실행한다.
 				if(resultList == null) {
 					saveDRL(String.valueOf(pkgId));
-					resultList = getResultList(drlPath, activeMap);
+					resultList = getResultList(drlPath, activeMap, outPutValList);
 				}
 				
 				// 계약건수마다 걸린 RULE 을 임시리스트 한곳에 모아둔다.
@@ -288,10 +289,11 @@ public class ApiController {
 	/**
 	 * RULE 실행 후 SALIENCE, ORDER 순으로 ASC 정렬하여 리턴
 	 * @param path
+	 * @param outPutValList 
 	 * @param obj
 	 * @return
 	 */
-	public static List<HashMap<String, Object>> getResultList(String path, HashMap<String, Object> activeMap) {
+	public static List<HashMap<String, Object>> getResultList(String path, HashMap<String, Object> activeMap, List<HashMap<String, Object>> outPutValList) {
 		List<HashMap<String, Object>> sortResList = new ArrayList<>();
 		
 		// Drools 실행
@@ -336,6 +338,14 @@ public class ApiController {
 			resMap.put("TARGET_TYPE", activeMap.get(targetType));
 			if("CONT".equals((String) activeMap.get(targetType)) && "CONT".equals((String) activeMap.get("SVC_TARGET_TYPE"))) {
 				resMap.put("SVC_CONT_ID", activeMap.get("SVC_CONT_ID"));
+			}
+			
+			for(HashMap<String, Object> opv : outPutValList) {
+				String columnName = (String) opv.get("FACTOR_NM_EN");
+				if(activeMap.get(columnName) != null) {
+					String columnValue = (String) activeMap.get(columnName);
+					resMap.put(columnName, columnValue);
+				}
 			}
 			
 			resList.add(resMap);

@@ -137,13 +137,13 @@ public class PkgController {
 			
 			System.out.println(path);
 			
-			List<HashMap<String, Object>> getResultList = ApiController.getResultList(path, paramMap);
+			List<HashMap<String, Object>> getResultList = ApiController.getResultList(path, paramMap, new ArrayList<>());
 			
 			if(getResultList == null) {
 				String pkgId = (String) param.get("pkgId");
 				
 				saveDRL(pkgId);
-				getResultList = ApiController.getResultList(path, paramMap);
+				getResultList = ApiController.getResultList(path, paramMap, new ArrayList<>());
 			}
 			
 			HashMap<String, Object> resultMap = new HashMap<>();

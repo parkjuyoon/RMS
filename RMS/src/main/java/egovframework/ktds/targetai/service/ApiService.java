@@ -17,4 +17,6 @@ public interface ApiService {
 
 	List<Integer> getRuleIdsBySvcId(String svc_id);
 
+	List<HashMap<String, Object>> getOutPutValList(String param_svcId);
+
 }

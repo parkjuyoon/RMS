@@ -335,6 +335,11 @@ $(document).ready(function() {
 			$("#svcOutPutPopBtn").hide();
 			$("#svcOutPutPopLink").show();
 			$("#svcOutPutPopLink").text(factorNmLinkTxt);
+		} else {
+			$("#svcOutPutPopBtn").show();
+			$("#svcOutPutPopLink").hide();
+			$("#svcOutPutPopLink").text("");
+			opvArr = [];
 		}
 		
 		close_layerPop('modal_svcOutPut');

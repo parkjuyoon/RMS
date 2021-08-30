@@ -86,4 +86,19 @@
 			S.SVC_ID = #{svc_id}
 		ORDER BY R.SALIENCE ASC, R.RULE_ID ASC
 	</select>
+	
+	<!-- OUTPUT VALUE 값 조회 -->
+	<select id="getOutPutValList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 
+		    SOV.SVC_OUTPUT_VALUE_ID,
+		    SOV.SVC_ID,
+		    SOV.FACTOR_ID,
+		    F.FACTOR_NM,
+		    F.FACTOR_NM_EN
+		FROM
+		    targetai.SVC_OUTPUT_VALUE SOV
+		    LEFT JOIN targetai.FACTOR F ON (SOV.FACTOR_ID = F.FACTOR_ID)
+		WHERE
+			SOV.SVC_ID = #{param_svcId}
+	</select>
 </mapper>

@@ -113,7 +113,9 @@ public class SvcController {
 		// output value 저장
 		List<HashMap<String, Object>> opvList = (List<HashMap<String, Object>>) param.get("opvArr");
 		if(opvList.size() > 0) {
-			svcService.addSvcOutputValue(param);
+			svcService.addSvcOutputValue(param); // 저장
+		} else {
+			svcService.delSvcOutputValue(param); // 삭제
 		}
 		HashMap<String, Object> svc = svcService.getSvc(param);
 		
@@ -138,6 +140,8 @@ public class SvcController {
 		if(opvList.size() > 0) {
 			svcService.delSvcOutputValue(param);	// 삭제
 			svcService.addSvcOutputValue(param);	// 저장
+		} else {
+			svcService.delSvcOutputValue(param);	// 삭제
 		}
 		
 		HashMap<String, Object> svc = svcService.getSvc(param);

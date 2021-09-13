@@ -10,7 +10,7 @@ rule "CheckIsEmpty1"
 		$map : Map(
 			this["INSUR_PROD_SBSC_YN"]=="Y" &&
 			this["IPTV_SBSC_YN"]<"50" ||
-		    eval(main("#", 12) == false)
+		    eval(main("#", this["PARAM_VAL"]) == false)
 		)
 	then
 	    $map.put("function_result1", "결과값");

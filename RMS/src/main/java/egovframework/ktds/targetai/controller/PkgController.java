@@ -135,8 +135,6 @@ public class PkgController {
 			path = System.getProperty("user.home") + path;
 			path = path.replace("/", File.separator).replace("\\", File.separator);
 			
-			System.out.println(path);
-			
 			List<HashMap<String, Object>> getResultList = ApiController.getResultList(path, paramMap, new ArrayList<>());
 			
 			if(getResultList == null) {

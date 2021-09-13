@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.ktds.targetai.mapper.SettingMapper">
+	
+	<select id="getFuncList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT
+			FACTOR_ID,
+			FACTOR_NM,
+			FACTOR_NM_EN,
+			FACTOR_TYPE,
+			DATA_TYPE,
+			NUM_OF_GRP,
+			CATEGORY_YN,
+			FACTOR_GRP_ID,
+			ATTR_USE_YN
+		FROM
+			targetai.FACTOR
+		WHERE
+			FACTOR_TYPE = 'FUNC'
+	</select>
+	
+	<select id="getImportInfo" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT
+			FACTOR_FUNC_IMPORT_ID,
+			FACTOR_ID,
+			CLASS_NM,
+			METHOD_NM,
+			IMPORT_CONTENTS
+		FROM
+			targetai.FACTOR_FUNC_IMPORT
+		WHERE
+			FACTOR_ID = #{factorId}
+	</select>
+	
+	<select id="getParamInfo" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT
+			FACTOR_FUNC_ARGS_ID,
+			FACTOR_ID,
+			ARG_NM,
+			`ORDER`,
+			DATA_TYPE
+		FROM
+			targetai.FACTOR_FUNC_ARGS
+		WHERE
+			FACTOR_ID = #{factorId}
+		ORDER BY `ORDER` ASC
+	</select>
+	
+	<select id="getSourceInfo" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT
+			FACTOR_FUNC_SOURCE_ID,
+			FACTOR_ID,
+			SOURCE_FILE_NM,
+			SOURCE_FILE_EXT,
+			SOURCE_FILE_PATH,
+			SOURCE_CODE,
+			REG_USRID
+		FROM
+			targetai.FACTOR_FUNC_SOURCE
+		WHERE
+			FACTOR_ID = #{factorId}
+	</select>
+ 
+</mapper>

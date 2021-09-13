@@ -13,6 +13,7 @@ public class DroolsTest {
 		HashMap<String, Object> activeMap1 = new HashMap<>();
 		activeMap1.put("MPHON_SBSC_YN", "Y");
 		activeMap1.put("CUST_AGE", 40);
+		activeMap1.put("PARAM_VAL", 12);
 		
 		// Drools 실행
 		KieSession kieSession = Util.getKieSession(PATH);

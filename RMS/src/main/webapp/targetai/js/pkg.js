@@ -906,6 +906,8 @@ $(document).ready(function() {
 		var factorNmEn = $(this).attr("data-factorNmEn");
 		var factorVal = $(this).attr("data-factorVal");
 		var factorNm = $(this).text();
+		var factorGrpNm = $(this).attr("data-factorGrpNm");
+		
 
 		var html = "";
 		html += "<div class='oneline_group'>";
@@ -913,7 +915,11 @@ $(document).ready(function() {
 		html += "		<label for=''>KEY</label> <input type='text' name='ruleTestPop_key' value='"+ factorNmEn +"' readonly='readonly'/>";
 		html += "	</div>";
 		html += "	<div class='form_group'>";
-		html += "		<label for=''>VALUE</label> <input type='text' name='ruleTestPop_value' class='wd150px' value='"+ factorVal.replaceAll("\"", "") +"'/>";
+		if(factorGrpNm == '함수') {
+			html += "		<label for=''>VALUE</label> <input type='text' name='ruleTestPop_value' class='wd150px' value='"+ factorVal.replaceAll("\"", "") +"' readonly='readonly'/>";
+		} else {
+			html += "		<label for=''>VALUE</label> <input type='text' name='ruleTestPop_value' class='wd150px' value='"+ factorVal.replaceAll("\"", "") +"'/>";
+		}
 		html += "	</div>";
 		html += "	<button type='button' class='btn btn-sm btn-red _ruleTestPop_del' style='color: white'>삭제</button>";
 		html += "</div>";
@@ -1724,7 +1730,7 @@ function fnRuleTest(param) {
 //					html += "	["+ ruleAttr.FACTOR_GRP_NM +" : <a href='#' class='_ruleTestPop_factorNm' data-factorNmEn='"+ ruleAttr.FACTOR_NM_EN +"'>"+ ruleAttr.FACTOR_NM +"</a>] "+ ruleAttr.LOGICAL + ruleAttr.FACTOR_VAL + ruleAttr.RELATION;
 //				}
 				
-				html += "<a href='#' class='_ruleTestPop_factorNm' data-factorNmEn='"+ ruleAttr.FACTOR_NM_EN +"' data-factorVal='"+ ruleAttr.FACTOR_VAL +"'>\t"+ ruleAttr.ATTR_WHEN_CONTENTS +"</a>";
+				html += "<a href='#' class='_ruleTestPop_factorNm' data-factorGrpNm= '"+ ruleAttr.FACTOR_GRP_NM +"' data-factorNmEn='"+ ruleAttr.FACTOR_NM_EN +"' data-factorVal='"+ ruleAttr.FACTOR_VAL +"'>\t"+ ruleAttr.ATTR_WHEN_CONTENTS +"</a>";
 			});
 			
 			$("#ruleAttrPreView").html(html);

@@ -41,6 +41,9 @@
 								<li class="nav-item">
 									<a class="nav-link" href="/targetai/api.do" id="">API</a>
 								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="/targetai/setting.do" id="">Setting</a>
+								</li>
 							</ul>
 						</div>
 					</div>

@@ -107,7 +107,8 @@
 																		<div id="factorTreeLoading" style="display: none;">
 																			<img src="/targetai_publish/images/ajax-loader1.gif" />
 																		</div>
-																	</div> <!-- 트리메뉴 -->
+																	</div> 
+																	<!-- 트리메뉴 -->
 																	<ul id="factorTree" class="ztree treewrap"></ul>
 																</td>
 																<th class="t_left icon02" colspan="2">요소 값

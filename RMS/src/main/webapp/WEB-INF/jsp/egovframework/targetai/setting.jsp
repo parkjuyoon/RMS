@@ -294,7 +294,7 @@
 
 									<!-- 버튼 -->
 									<div class="card-actions-foot">
-										<button type="button" class="btn btn-sm btn-green" id="saveSvcBtn">
+										<button type="button" class="btn btn-sm btn-green" id="saveFuncSettingBtn">
 											<i class="fas fa-save custom-btn-i"></i> 저장
 										</button>
 									</div>

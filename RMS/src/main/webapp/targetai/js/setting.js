@@ -80,7 +80,11 @@ $(document).ready(function() {
 		
 		fnGetFuncInfo(factorId);
 	});
-
+	
+	// FUNCTION 설정 > 저장 버튼 클릭
+	$("#saveFuncSettingBtn").click(function() {
+		fnSaveFuncSetting();
+	});
 });
 
 /**
@@ -222,6 +226,42 @@ function fnGetFuncInfo(factorId) {
 				$("#parameterTd").html(html);
 			}
 			
+		},
+		beforeSend : function() {
+			$("#loadingIcon").show();
+		},
+		complete : function() {
+			$("#loadingIcon").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
+
+/**
+ * FUNCTION 설정 저장
+ * @returns
+ */
+function fnSaveFuncSetting() {
+	var sourceFile = $("input[name='funcFileUpload']")[0].files[0];
+	const formData = new FormData();
+	formData.append("test", "테스트입니다.");
+	formData.append("sourceFile", sourceFile);
+	
+	$.ajax({
+		method : "POST",
+		dataType : "json",
+		url : "/targetai/saveFuncSetting.do",
+		data : formData,
+		enctype : "multipart/form-data",
+		processData : false,
+		contentType : false,
+		success : function(res) {
+			console.log(res);
 		},
 		beforeSend : function() {
 			$("#loadingIcon").show();

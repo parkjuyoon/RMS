@@ -1,5 +1,6 @@
 package egovframework.ktds.targetai.controller;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
@@ -13,9 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import egovframework.ktds.targetai.service.SettingService;
-import egovframework.rte.fdl.property.EgovPropertyService;
 
 /**
  * @since 2021.05.25
@@ -85,6 +87,31 @@ public class SettingController {
 		resultMap.put("sourceInfo", sourceInfo);
 		
 		return resultMap;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/saveFuncSetting.do", method = RequestMethod.POST)
+	public String saveFuncSetting(MultipartHttpServletRequest request) throws Exception {
+		
+		System.out.println(request.getParameter("test"));
+		
+		List<MultipartFile> fileList = request.getFiles("sourceFile");
+		
+		System.out.println("=======================================");
+		System.out.println(fileList.size());
+		
+		File file = new File(".");
+		
+		String funcUploadPath = request.getSession().getServletContext().getRealPath("/");
+		
+		System.out.println("funcUploadPath : " +funcUploadPath);
+		
+		for(MultipartFile mf : fileList) {
+			System.out.println(mf.getOriginalFilename());
+		}
+		
+		
+		return "true";
 	}
 	
 }

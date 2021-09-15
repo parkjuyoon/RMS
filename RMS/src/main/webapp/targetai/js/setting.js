@@ -249,7 +249,6 @@ function fnGetFuncInfo(factorId) {
 function fnSaveFuncSetting() {
 	var sourceFile = $("input[name='funcFileUpload']")[0].files[0];
 	const formData = new FormData();
-	formData.append("test", "테스트입니다.");
 	formData.append("sourceFile", sourceFile);
 	
 	$.ajax({

@@ -93,22 +93,43 @@ public class SettingController {
 	@RequestMapping(value = "/saveFuncSetting.do", method = RequestMethod.POST)
 	public String saveFuncSetting(MultipartHttpServletRequest request) throws Exception {
 		
-		System.out.println(request.getParameter("test"));
-		
 		List<MultipartFile> fileList = request.getFiles("sourceFile");
 		
 		System.out.println("=======================================");
 		System.out.println(fileList.size());
 		
-		File file = new File(".");
+		File file = new File("/");
 		
-		String funcUploadPath = request.getSession().getServletContext().getRealPath("/");
+		String path1 = System.getProperty("user.home");
+		System.out.println("userHome : " + path1);
 		
-		System.out.println("funcUploadPath : " +funcUploadPath);
+		String path2 = System.getProperty("user.home");
+		System.out.println("userHome : " + path2);
 		
 		for(MultipartFile mf : fileList) {
 			System.out.println(mf.getOriginalFilename());
 		}
+		
+//		String drl_output_path = path + File.separator + package_nm + File.separator + drl_file_nm;
+//		File folder = new File(path + File.separator + package_nm);
+//		File drlFile = null;
+//		
+//		try {
+//			if(!folder.exists()) {
+//				folder.mkdirs();
+//			} 
+//			
+//			drlFile = new File(drl_output_path);
+//			FileOutputStream fos = new FileOutputStream(drlFile);
+//			OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+//			BufferedWriter bw = new BufferedWriter(osw);
+//			
+//			bw.write(drl_data);
+//			bw.close();
+//			
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 		
 		
 		return "true";

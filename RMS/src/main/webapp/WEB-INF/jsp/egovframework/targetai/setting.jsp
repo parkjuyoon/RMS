@@ -252,7 +252,6 @@
 																<select id="paramTypeSelect" class="wd150px">
 																	<option value="STRING">String</option>
 																	<option value="INT">int</option>
-																	<option value="DATE">date</option>
 																</select>
 																<input type="text" class="wd300px" id="" value="" />
 																<button type="button" id="" class="btn btn-sm btn-gray _paramPlusBtn">+</button>
@@ -271,7 +270,9 @@
 													<tr>
 														<th class="t_left">Class 코드 에디터</th>
 														<td class="t_left">
-															<textarea rows="10" cols="7" class="txtsize_100 wd100" id="" placeholder="Method 내  JAVA 코드만 입력하세요."></textarea>
+															<textarea rows="10" cols="7" class="txtsize_100 wd100" id="funcSourceArea" placeholder="Method 내  JAVA 코드만 입력하세요."
+															onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"
+															></textarea>
 														</td>
 													</tr>
 													<tr>

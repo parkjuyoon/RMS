@@ -50,19 +50,23 @@ public class LoginController {
 	 */
 	@RequestMapping(value = "/login.do", method = RequestMethod.POST)
 	public String login(HttpServletRequest req) {
-		
-		String id = req.getParameter("id");
-		String passwd = req.getParameter("passwd");
-		
-		HashMap<String, Object> param = new HashMap<>();
-		param.put("id", id);
-		param.put("passwd", passwd);
-		
-		HashMap<String, Object> member = loginService.getMember(param);
-		
-		HttpSession session = req.getSession();
-		session.setAttribute("member_id", member.get("MEMBER_ID"));
-		session.setAttribute("member_name", member.get("MEMBER_NAME"));
+		try {
+			String id = req.getParameter("id");
+			String passwd = req.getParameter("passwd");
+			
+			HashMap<String, Object> param = new HashMap<>();
+			param.put("id", id);
+			param.put("passwd", passwd);
+			
+			HashMap<String, Object> member = loginService.getMember(param);
+			
+			HttpSession session = req.getSession();
+			session.setAttribute("member_id", member.get("MEMBER_ID"));
+			session.setAttribute("member_name", member.get("MEMBER_NAME"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "redirect:/targetai/loginCheck.do";
+		}
 		
 		return "redirect:/targetai/svc.do";
 	}
@@ -75,17 +79,21 @@ public class LoginController {
 	@ResponseBody
 	@RequestMapping(value = "/loginCheck.do", method = RequestMethod.POST)
 	public boolean loginCheck(HttpServletRequest req) {
-		
-		String id = req.getParameter("id");
-		String passwd = req.getParameter("passwd");
-		
-		HashMap<String, Object> param = new HashMap<>();
-		param.put("id", id);
-		param.put("passwd", passwd);
-		
-		HashMap<String, Object> member = loginService.getMember(param);
-		
-		if(member == null) {
+		try {
+			String id = req.getParameter("id");
+			String passwd = req.getParameter("passwd");
+			
+			HashMap<String, Object> param = new HashMap<>();
+			param.put("id", id);
+			param.put("passwd", passwd);
+			
+			HashMap<String, Object> member = loginService.getMember(param);
+			
+			if(member == null) {
+				return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 		

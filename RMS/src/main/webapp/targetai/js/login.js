@@ -11,10 +11,7 @@ $(document).ready(function() {
 //		var formData = new FormData(form);
 		var formData = $("#loginForm").serialize();
 		
-		
 		if($("#id").val() === '') {
-			
-			
 			$("#id").focus();
 			return;
 		}

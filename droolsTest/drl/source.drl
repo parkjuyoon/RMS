@@ -1,28 +1,19 @@
-package drl;
-import java.util.Map;
-import static com.secbro.drools.utils.DroolsStringUtils.*;
+boolean rt = false;
 
-rule "CheckIsEmpty1"
-	no-loop true
-	lock-on-active true
-	salience 1
-	when
-		$map : Map(
-			this["INSUR_PROD_SBSC_YN"]=="Y" &&
-			this["IPTV_SBSC_YN"]<"50" ||
-		    eval(main("#", this["PARAM_VAL"]) == false)
-		)
-	then
-	    $map.put("function_result1", "결과값");
-end
+if("uninterested".equals(code) && day > 20) {
+	rt = true;
+	
+} else if("interested".equals(code) && day > 20) {
+	rt = false;
 
-rule "CheckIsEmpty2"
-	no-loop true
-	lock-on-active true
-	salience 1
-	when
-		$map : Map()
-	    eval(main("#", 12) == true)
-	then
-	    $map.put("function_result2", "결과값");
-end
+} else if("accepted".equals(code) && day > 20) {
+	rt = true;
+	
+} else if("secondTmAccepted".equals(code) && day > 20) {
+	rt = true;
+	
+} else {
+	rt = true;
+}
+		
+return rt;

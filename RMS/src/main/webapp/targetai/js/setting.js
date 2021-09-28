@@ -19,12 +19,11 @@ $(document).ready(function() {
 	$(document).on("click", "._paramPlusBtn", function() {
 		var html = "";
 		html += "<div>";
-		html += "	<select id='' class='wd150px'>";
-		html += "		<option value='s'>String</option>";
-		html += "		<option value='i'>int</option>";
-		html += "		<option value='d'>date</option>";
+		html += "	<select class='wd150px _paramTypeSelect'>";
+		html += "		<option value='STRING'>String</option>";
+		html += "		<option value='INT'>int</option>";
 		html += "	</select>";
-		html += "	<input type='text' class='wd300px' id='' value='' />";
+		html += "	<input type='text' class='wd300px _paramVal' value='' />";
 		html += "	<button type='button' id='' class='btn btn-sm btn-gray _paramPlusBtn'>+</button>";
 		html += "	<button type='button' id='' class='btn btn-sm btn-red _paramMinusBtn'>-</button>";
 		html += "</div>";
@@ -197,12 +196,11 @@ function fnGetFuncInfo(factorId) {
 			html = "";
 			$.each(paramInfoList, function(idx, paramInfo) {
 				html += "<div>";
-				html += "	<select id='' class='wd150px'>";
-				html += "		<option value='s'>String</option>";
-				html += "		<option value='i'>int</option>";
-				html += "		<option value='d'>date</option>";
+				html += "	<select class='wd150px _paramTypeSelect'>";
+				html += "		<option value='STRING'>String</option>";
+				html += "		<option value='INT'>int</option>";
 				html += "	</select>";
-				html += "	<input type='text' class='wd300px' id='' value='"+ paramInfo.ARG_NM +"' />";
+				html += "	<input type='text' class='wd300px _paramVal' value='"+ paramInfo.ARG_NM +"' />";
 				html += "	<button type='button' id='' class='btn btn-sm btn-gray _paramPlusBtn'>+</button>";
 				html += "	<button type='button' id='' class='btn btn-sm btn-red _paramMinusBtn'>-</button>";
 				html += "</div>";
@@ -247,8 +245,51 @@ function fnGetFuncInfo(factorId) {
  * @returns
  */
 function fnSaveFuncSetting() {
-	var sourceFile = $("input[name='funcFileUpload']")[0].files[0];
 	const formData = new FormData();
+	
+	// 함수명(한글)
+	var funcNm = "";
+	if($("#funcSelect").parent("div").css("display") == "none") {
+		formData.append("funcNm", $("#funcNm").val());
+		formData.append("factorId", null);
+		
+	} else {
+		formData.append("sourceFile", sourceFile);
+		formData.append("factorId", $("#funcSelect").val());
+	}
+	
+	// class 명
+	formData.append("funcNmEn", $("#funcNmEn").val());
+	// method 명
+	formData.append("methodNmEn", $("#methodNmEn").val());
+	// source code 내용
+	formData.append("sourceCode", $("#funcSourceArea").val());
+	
+	// import Class 객체
+	var importArray1 = $("#importClassTd").children("div");
+	var importArray2 = [];
+	for(var i=0; i<importArray1.length; i++) {
+		var importType = importArray1.eq(i).find("._importClass").text();
+		importArray2.push(importType);
+	}
+	formData.append("importArray", JSON.stringify(importArray2));
+	
+	// parameter 객체
+	var paramArray1 = $("#parameterTd").children("div");
+	var paramArray2 = [];
+	for(var i=0; i<paramArray1.length; i++) {
+		var paramType = paramArray1.eq(i).find("._paramTypeSelect").val();
+		var paramVal = paramArray1.eq(i).find("._paramVal").val();
+		var paramObj = {};
+		paramObj.paramType = paramType;
+		paramObj.paramVal = paramVal;
+		
+		paramArray2.push(paramObj);
+	}
+	formData.append("paramArray", JSON.stringify(paramArray2));
+
+	// java파일 업로드
+	var sourceFile = $("input[name='funcFileUpload']")[0].files[0];
 	formData.append("sourceFile", sourceFile);
 	
 	$.ajax({

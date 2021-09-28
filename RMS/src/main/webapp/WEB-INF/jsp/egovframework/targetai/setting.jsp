@@ -220,7 +220,7 @@
 												<tbody>
 													<tr>
 														<th class="t_left">함수명(한글)</th>
-														<td class="t_left" id="">
+														<td class="t_left">
 															<div style="display: none;">
 																<select id="funcSelect" class="wd250px"></select>
 																<button type="button" id="addFuncBtn" class="btn btn-sm btn-gray" title="조회">신규 전환</button>
@@ -249,18 +249,18 @@
 														<th class="t_left">Parameter</th>
 														<td class="t_left" id="parameterTd">
 															<div>
-																<select id="paramTypeSelect" class="wd150px">
+																<select class="wd150px _paramTypeSelect">
 																	<option value="STRING">String</option>
 																	<option value="INT">int</option>
 																</select>
-																<input type="text" class="wd300px" id="" value="" />
+																<input type="text" class="wd300px _paramVal" value="" />
 																<button type="button" id="" class="btn btn-sm btn-gray _paramPlusBtn">+</button>
 																<button type="button" id="" class="btn btn-sm btn-red _paramMinusBtn">-</button>
 															</div>
 														</td>
 													</tr>
 													<tr>
-														<th class="t_left">Class 파일 업로드</th>
+														<th class="t_left">java 파일 업로드</th>
 														<td class="t_left">
 															<input type="text" class="wd250px" id="funcFileUploadView" value="" readonly="readonly"/>
 															<input type="file" class="wd250px" id="" name="funcFileUpload" value="" readonly="readonly" style="display: none;"/>
@@ -268,7 +268,7 @@
 														</td>
 													</tr>
 													<tr>
-														<th class="t_left">Class 코드 에디터</th>
+														<th class="t_left">Source Code Editor</th>
 														<td class="t_left">
 															<textarea rows="10" cols="7" class="txtsize_100 wd100" id="funcSourceArea" placeholder="Method 내  JAVA 코드만 입력하세요."
 															onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"

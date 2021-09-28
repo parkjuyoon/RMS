@@ -8,6 +8,8 @@ import java.util.Properties;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +22,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import egovframework.ktds.targetai.service.SettingService;
 
 /**
- * @since 2021.05.25
+ * @since 2021.09.01
  * @author 박주윤 차장
  *
  */
@@ -50,6 +52,10 @@ public class SettingController {
 		return "/targetai/setting";
 	}
 	
+	/**
+	 * FUNCTION 설정 > 함수명 SELECT BOX 전환시 리스트 조회
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/getFuncList.do", method = RequestMethod.POST)
 	public HashMap<String, Object> getFuncList() {
@@ -62,6 +68,10 @@ public class SettingController {
 		return resultMap;
 	}
 	
+	/**
+	 * 함수 CLASS 가 저장되는 경로 조회
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/getFuncRootPath.do", method = RequestMethod.POST)
 	public HashMap<String, Object> getFuncRootPath() {
@@ -73,6 +83,11 @@ public class SettingController {
 		return resultMap;
 	}
 	
+	/**
+	 * FUNCTION 설정 > SELECT BOX 에서 함수 선택했을때 상세 내용 조회
+	 * @param param
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/getFuncInfo.do", method = RequestMethod.POST)
 	public HashMap<String, Object> getFuncInfo(@RequestBody HashMap<String, Object> param) {
@@ -89,48 +104,45 @@ public class SettingController {
 		return resultMap;
 	}
 	
+	/**
+	 * FUNCTION 설정 > 저장 버튼 클릭 > 함수 저장
+	 * @param request
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/saveFuncSetting.do", method = RequestMethod.POST)
-	public String saveFuncSetting(MultipartHttpServletRequest request) throws Exception {
+	public String saveFuncSetting(MultipartHttpServletRequest request) {
 		
-		List<MultipartFile> fileList = request.getFiles("sourceFile");
-		
-		System.out.println("=======================================");
-		System.out.println(fileList.size());
-		
-		File file = new File("/");
-		
-		String path1 = System.getProperty("user.home");
-		System.out.println("userHome : " + path1);
-		
-		String path2 = System.getProperty("user.home");
-		System.out.println("userHome : " + path2);
-		
-		for(MultipartFile mf : fileList) {
-			System.out.println(mf.getOriginalFilename());
+		try {
+			List<MultipartFile> fileList = request.getFiles("sourceFile");
+			
+			for(MultipartFile mf : fileList) {
+				System.out.println(mf.getOriginalFilename());
+			}
+			
+			String sourceCode = request.getParameter("sourceCode");
+			
+			System.out.println(sourceCode);
+			
+			String importArray = request.getParameter("importArray");
+			String paramArrayStr = request.getParameter("paramArray");
+	
+			JSONParser parser = new JSONParser();
+			List<String> importList = (List<String>) parser.parse(importArray);
+			List<HashMap<String, Object>> parameterList = (List<HashMap<String, Object>>) parser.parse(paramArrayStr);
+			
+			for(String s : importList) {
+				System.out.println(s);
+			}
+			
+			for(HashMap m : parameterList) {
+				System.out.println(m);
+			}
+			
+			
+		} catch (ParseException e) {
+			e.printStackTrace();
 		}
-		
-//		String drl_output_path = path + File.separator + package_nm + File.separator + drl_file_nm;
-//		File folder = new File(path + File.separator + package_nm);
-//		File drlFile = null;
-//		
-//		try {
-//			if(!folder.exists()) {
-//				folder.mkdirs();
-//			} 
-//			
-//			drlFile = new File(drl_output_path);
-//			FileOutputStream fos = new FileOutputStream(drlFile);
-//			OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
-//			BufferedWriter bw = new BufferedWriter(osw);
-//			
-//			bw.write(drl_data);
-//			bw.close();
-//			
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-		
 		
 		return "true";
 	}

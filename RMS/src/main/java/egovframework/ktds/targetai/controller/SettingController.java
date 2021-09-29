@@ -93,11 +93,11 @@ public class SettingController {
 	public HashMap<String, Object> getFuncInfo(@RequestBody HashMap<String, Object> param) {
 		HashMap<String, Object> resultMap = new HashMap<>();
 		
-		List<HashMap<String, Object>> importInfoList = settingService.getImportInfo(param);
 		List<HashMap<String, Object>> paramInfoList = settingService.getParamInfo(param);
+		HashMap<String, Object> factor = settingService.getFactorById(param);
 		HashMap<String, Object> sourceInfo = settingService.getSourceInfo(param);
 		
-		resultMap.put("importInfoList", importInfoList);
+		resultMap.put("factor", factor);
 		resultMap.put("paramInfoList", paramInfoList);
 		resultMap.put("sourceInfo", sourceInfo);
 		
@@ -111,40 +111,50 @@ public class SettingController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/saveFuncSetting.do", method = RequestMethod.POST)
-	public String saveFuncSetting(MultipartHttpServletRequest request) {
+	public boolean saveFuncSetting(@RequestBody HashMap<String, Object> param) {
 		
 		try {
-			List<MultipartFile> fileList = request.getFiles("sourceFile");
+			HashMap<String, Object> paramMap = new HashMap<>();
 			
-			for(MultipartFile mf : fileList) {
-				System.out.println(mf.getOriginalFilename());
+			String factorId = (String) param.get("factorId");
+			
+			// factorId
+			paramMap.put("factorId", factorId);
+			// 함수명(한글)
+			paramMap.put("funcNm", param.get("funcNm"));
+			// 함수명(영문)
+			paramMap.put("funcNmEn", param.get("funcNmEn"));
+			// parameter 객체
+			List<HashMap<String, Object>> parameterList = (List<HashMap<String, Object>>) param.get("paramArray");
+			paramMap.put("parameterList", parameterList);
+			// source code 내용
+			String sourceCode = (String) param.get("sourceCode");
+			paramMap.put("sourceCode", sourceCode);
+			
+			// 신규등록
+			if("".equals(factorId)) {
+				// factor 추가
+				settingService.addFunctionFactor(param);
+				// 파라미터 추가
+				settingService.addFunctionParameter(param);
+				// source 추가
+				settingService.addFunctionSource(param);
+				
+			// 수정
+			} else {
+				// factor 수정
+				settingService.updateFunctionFactor(param);
+				// 파라미터 수정
+				settingService.updateFunctionParameter(param);
+				// source 수정
+				settingService.updateFunctionSource(param);
 			}
 			
-			String sourceCode = request.getParameter("sourceCode");
-			
-			System.out.println(sourceCode);
-			
-			String importArray = request.getParameter("importArray");
-			String paramArrayStr = request.getParameter("paramArray");
-	
-			JSONParser parser = new JSONParser();
-			List<String> importList = (List<String>) parser.parse(importArray);
-			List<HashMap<String, Object>> parameterList = (List<HashMap<String, Object>>) parser.parse(paramArrayStr);
-			
-			for(String s : importList) {
-				System.out.println(s);
-			}
-			
-			for(HashMap m : parameterList) {
-				System.out.println(m);
-			}
-			
-			
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		return "true";
+		return true;
 	}
 	
 }

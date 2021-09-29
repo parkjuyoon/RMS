@@ -219,31 +219,28 @@
 												</colgroup>
 												<tbody>
 													<tr>
-														<th class="t_left">함수명(한글)</th>
+														<th class="t_left">함수 선택</th>
 														<td class="t_left">
-															<div style="display: none;">
-																<select id="funcSelect" class="wd250px"></select>
-																<button type="button" id="addFuncBtn" class="btn btn-sm btn-gray" title="조회">신규 전환</button>
-															</div>
 															<div>
-																<input type="text" class="wd250px" id="funcNm" value="" />
-																<button type="button" id="selectFuncBtn" class="btn btn-sm btn-gray" title="조회">선택 전환</button>
+																<select id="funcSelect" class="wd250px"></select>
 															</div>
 														</td>
 													</tr>
 													<tr>
-														<th class="t_left">Class / Method 명</th>
+														<th class="t_left">함수명(KOR)</th>
+														<td class="t_left">
+															<div>
+																<input type="text" class="wd250px" id="funcNm" value="" placeholder="속성에 반영됩니다."/>
+															</div>
+														</td>
+													</tr>
+													<tr>
+														<th class="t_left">함수명(ENG)</th>
 														<td class="t_left" id="">
 															<div>
-																<input type="text" class="wd250px" id="funcNmEn" value="" placeholder="Class 명을 입력하세요."/>
-																<input type="text" class="wd250px" id="methodNmEn" value="" placeholder="Method 명을 입력하세요."/>
-																<button type="button" id="addImportBtn" class="btn btn-sm btn-gray" title="추가">추가</button>
+																<input type="text" class="wd250px" id="funcNmEn" value="" placeholder="실제 소스에 반영됩니다."/>
 															</div>
 														</td>
-													</tr>
-													<tr>
-														<th class="t_left">import Class</th>
-														<td class="t_left" id="importClassTd"></td>
 													</tr>
 													<tr>
 														<th class="t_left">Parameter</th>
@@ -257,14 +254,6 @@
 																<button type="button" id="" class="btn btn-sm btn-gray _paramPlusBtn">+</button>
 																<button type="button" id="" class="btn btn-sm btn-red _paramMinusBtn">-</button>
 															</div>
-														</td>
-													</tr>
-													<tr>
-														<th class="t_left">java 파일 업로드</th>
-														<td class="t_left">
-															<input type="text" class="wd250px" id="funcFileUploadView" value="" readonly="readonly"/>
-															<input type="file" class="wd250px" id="" name="funcFileUpload" value="" readonly="readonly" style="display: none;"/>
-															<button type="button" id="funcFileUploadBtn" data-modalclass="modal_svcConnPkg" class="btn_onlyico_search btnModal" title="조회">새창 열기</button>
 														</td>
 													</tr>
 													<tr>

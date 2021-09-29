@@ -246,7 +246,9 @@
 		    targetai.FACTOR
 		WHERE
 			ATTR_USE_YN = 'Y'
-			AND FACTOR_GRP_ID = #{factorGrpId};
+			AND FACTOR_GRP_ID = #{factorGrpId}
+		ORDER BY
+			`ORDER` ASC
 	</select>
 	
 	<!-- RULE 이름 중복체크 -->

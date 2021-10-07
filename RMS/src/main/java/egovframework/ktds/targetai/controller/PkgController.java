@@ -233,17 +233,16 @@ public class PkgController {
 	
 	/**
 	 * 속성 view 리스트 조회
-	 * @param factor_grp_id
-	 * @return factorGrpList
+	 * @return factorList
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/getFactorGrpList.do", method = RequestMethod.POST)
-	public HashMap<String, Object> getFactorGrpList(@RequestBody HashMap<String, Object> param) {
+	@RequestMapping(value = "/getFactorList.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getFactorList(@RequestBody HashMap<String, Object> param) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		
 		try {
-			List<HashMap<String, Object>> factorGrpList = pkgService.getFactorGrpList(param);
-			resultMap.put("factorGrpList", factorGrpList);
+			List<HashMap<String, Object>> factorList = pkgService.getFactorList(param);
+			resultMap.put("factorList", factorList);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -251,23 +250,7 @@ public class PkgController {
 		
 		return resultMap;
 	}
-	
-	/**
-	 * 속성 view 하위 요소 리스트 조회
-	 * @param factor_grp_id
-	 * @return factorList
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/getFactorList.do", method = RequestMethod.POST)
-	public HashMap<String, Object> getFactorList(@RequestBody HashMap<String, Object> param) {
-		HashMap<String, Object> factor = new HashMap<String, Object>();
-		List<String> factorList = pkgService.getFactorList(param);
-		
-		factor.put("factorList", factorList);
-			
-		return factor;
-	}
-	
+
 	/**
 	 * Rule name 중복 체크
 	 * @param param
@@ -293,22 +276,25 @@ public class PkgController {
 	@ResponseBody
 	@RequestMapping(value = "/getFactorVal.do", method = RequestMethod.POST)
 	public HashMap<String, Object> getFactorVal(@RequestBody HashMap<String, Object> param) {
-		HashMap<String, Object> factor = pkgService.getFactor(param);
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+		HashMap<String, Object> factor = pkgService.getFactorById(param);
 		List<HashMap<String, Object>> factorVal = new ArrayList<>();
-		
 		String factorType = (String) factor.get("FACTOR_TYPE");
-		
-		if("DATA".equals(factorType)) {
+
+		if(factor != null) {
 			factorVal = pkgService.getFactorVal(param);
-			
-		} else if("FUNC".equals(factorType)) {
+		}
+		
+		if("FUNC".equals(factorType)) {
 			factorVal = pkgService.getFactorFuncArgs(param);
 		} 
 		
 		resultMap.put("factor", factor);
 		resultMap.put("factorVal", factorVal);
-			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return resultMap;
 	}
 	

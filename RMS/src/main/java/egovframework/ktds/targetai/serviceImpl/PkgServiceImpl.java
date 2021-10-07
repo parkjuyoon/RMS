@@ -48,23 +48,13 @@ public class PkgServiceImpl extends EgovAbstractServiceImpl implements PkgServic
 	}
 
 	@Override
-	public List<HashMap<String, Object>> getFactorGrpList(HashMap<String, Object> param) {
-		return dao.getFactorGrpList(param);
-	}
-
-	@Override
-	public List<String> getFactorList(HashMap<String, Object> param) {
+	public List<HashMap<String, Object>> getFactorList(HashMap<String, Object> param) {
 		return dao.getFactorList(param);
 	}
 
 	@Override
 	public int ruleNmCheck(HashMap<String, Object> param) {
 		return dao.ruleNmCheck(param);
-	}
-
-	@Override
-	public HashMap<String, Object> getFactor(HashMap<String, Object> param) {
-		return dao.getFactor(param);
 	}
 
 	@Override
@@ -170,5 +160,10 @@ public class PkgServiceImpl extends EgovAbstractServiceImpl implements PkgServic
 	@Override
 	public List<HashMap<String, Object>> getFactorFuncArgs(HashMap<String, Object> param) {
 		return dao.getFactorFuncArgs(param);
+	}
+
+	@Override
+	public HashMap<String, Object> getFactorById(HashMap<String, Object> param) {
+		return dao.getFactorById(param);
 	}
 }

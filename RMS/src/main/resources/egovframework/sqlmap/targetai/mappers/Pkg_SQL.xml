@@ -215,40 +215,16 @@
 	</update>
 	
 	<!-- 속성 view 리스트 조회 -->
-	<select id="getFactorGrpList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
-		SELECT
-			FACTOR_GRP_ID,
-			FACTOR_GRP_PID,
-			FACTOR_GRP_NM,
-		    FACTOR_GRP_DSC,
-		    REG_DTM,
-		    ATTR_USE_YN
-		FROM
-		    targetai.FACTOR_GRP
-		WHERE
-			ATTR_USE_YN = 'Y'
-		<if test='functionYn == "N"'>AND FACTOR_GRP_NM != '함수'</if>
-	</select>
-	
-	<!-- 속성 view 하위 요소 리스트 조회 -->
 	<select id="getFactorList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
-		SELECT
-			FACTOR_ID,
+		SELECT 
+		    FACTOR_ID,
+		    PARENT_ID,
 		    FACTOR_NM,
-		    FACTOR_NM_EN,
-		    FACTOR_TYPE,
-		    DATA_TYPE,
-		    NUM_OF_GRP,
-		    CATEGORY_YN,
-		    FACTOR_GRP_ID,
-		    ATTR_USE_YN
+		    FACTOR_TYPE
 		FROM
 		    targetai.FACTOR
-		WHERE
+	    WHERE
 			ATTR_USE_YN = 'Y'
-			AND FACTOR_GRP_ID = #{factorGrpId}
-		ORDER BY
-			`ORDER` ASC
 	</select>
 	
 	<!-- RULE 이름 중복체크 -->
@@ -265,44 +241,33 @@
 	</select>
 	
 	<!-- Factor 조회 -->
-	<select id="getFactor" resultType="java.util.HashMap" parameterType="java.util.HashMap">
-		SELECT
-			FG.FACTOR_GRP_ID,
-		    FG.FACTOR_GRP_NM,
-		    F.FACTOR_ID,
-		    F.FACTOR_NM,
-		    F.FACTOR_NM_EN,
-		    F.FACTOR_TYPE,
-		    F.DATA_TYPE,
-		    F.ATTR_USE_YN
+	<select id="getFactorById" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT 
+		    FACTOR_ID,
+		    PARENT_ID,
+		    FACTOR_NM,
+		    FACTOR_NM_EN,
+		    FACTOR_TYPE,
+		    DATA_TYPE,
+		    NUM_OF_GRP,
+		    CATEGORY_YN,
+		    ATTR_USE_YN
 		FROM
-		    targetai.FACTOR F, targetai.FACTOR_GRP FG
-		WHERE
-			F.FACTOR_GRP_ID = FG.FACTOR_GRP_ID
-		    AND F.ATTR_USE_YN = 'Y'
-		    AND F.FACTOR_ID = #{factorId}
-	</select>
+		    targetai.FACTOR
+	    WHERE
+			ATTR_USE_YN = 'Y'
+			AND FACTOR_ID = #{factorId}
+ 	</select>	
 	
 	<!-- Factor Value 조회 -->
 	<select id="getFactorVal" resultType="java.util.HashMap" parameterType="java.util.HashMap">
 		SELECT
-			FG.FACTOR_GRP_ID,
-		    FG.FACTOR_GRP_NM,
-		    F.FACTOR_ID,
-		    F.FACTOR_NM,
-		    F.FACTOR_NM_EN,
-		    F.FACTOR_TYPE,
-		    F.DATA_TYPE,
-		    F.ATTR_USE_YN,
-		    FV.VAL
+			FACTOR_ID,
+			VAL
 		FROM
-		    targetai.FACTOR F, targetai.FACTOR_GRP FG, targetai.FACTOR_VAL FV
+			targetai.FACTOR_VAL
 		WHERE
-			F.FACTOR_GRP_ID = FG.FACTOR_GRP_ID
-		    AND F.FACTOR_ID = FV.FACTOR_ID
-		    AND F.ATTR_USE_YN = 'Y'
-		    AND F.DATA_TYPE = 'STRING'
-		    AND F.FACTOR_ID = #{factorId}
+			FACTOR_ID = #{factorId}
 	</select>
 	
 	<!-- FACTOR 함수 선택시 ARGUMENT 조회 -->

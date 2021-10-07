@@ -330,7 +330,7 @@ $(document).ready(function() {
 		
 		$("#ruleAttrData").html(html);
 		
-		treeFactorGrpList();	// RULE EDITOR 트리 생성
+		fngetFactorListTree();	// RULE EDITOR 트리 생성
 		
 		$("#modal_ruleEditor").show();
 		if($("#ruleCardBody").css("display") == "none") {
@@ -1317,32 +1317,31 @@ function getRuleList(searchObj) {
  * Factor Group List 조회 후 트리 생성
  * @returns
  */
-function treeFactorGrpList() {
-	
-	var param = {
-		functionYn : "Y"
-	};
+function fngetFactorListTree() {
+	var param = {};
 	
 	$.ajax({
 		method : "POST",
-		url : "/targetai/getFactorGrpList.do",
+		url : "/targetai/getFactorList.do",
 		traditional: true,
 		data : JSON.stringify(param),
 		contentType:'application/json; charset=utf-8',
 		dataType : "json",
 		success : function(res) {
-			var factorGrpList = res.factorGrpList;
-			var factorGrpArr = [];
+			var factorList = res.factorList;
+			var factorArr = [];
 			
-			$.each(factorGrpList, function(idx, factorGrp) {
-				var factorGrpObj = {};
-				factorGrpObj.id = factorGrp.FACTOR_GRP_ID;
-				factorGrpObj.pId = factorGrp.FACTOR_GRP_PID;
-				factorGrpObj.name = factorGrp.FACTOR_GRP_NM;
-				factorGrpObj.isParent = true;
-				factorGrpObj.open = false;
+			$.each(factorList, function(idx, factor) {
+				var factorObj = {};
+				factorObj.id = factor.FACTOR_ID;
+				factorObj.pId = factor.PARENT_ID;
+				factorObj.name = factor.FACTOR_NM;
+				if(factor.FACTOR_TYPE == 'GROUP') {
+					factorObj.isParent = true;
+					factorObj.open = false;
+				}
 				
-				factorGrpArr.push(factorGrpObj);
+				factorArr.push(factorObj);
 			});
 			
 			// zTree 설정 
@@ -1353,70 +1352,15 @@ function treeFactorGrpList() {
 					}
 				},
 				callback: {
-					beforeExpand: function(treeId, treeNode) {
-						if(typeof treeNode.children === 'undefined') {
-							var selectedFactorGrpId = treeNode.id;
-//							// Factor Group 하위 Factor List 조회 후 트리생성
-							treeFactorList(selectedFactorGrpId, treeId, treeNode);
-						}
-					},
 					onClick: getFactorVal
 				}
 			};
 			
 			// zTree 초기화 후 생성
-			$.fn.zTree.init($("#factorTree"), setting, factorGrpArr);
+			$.fn.zTree.init($("#factorTree"), setting, factorArr);
 			$("#factorVal").html("");
 			$("#changeInputBtn").css("display", "none");
 			
-		},
-		beforeSend : function() {
-			$("#factorTreeLoading").show();
-		},
-		complete : function() {
-			$("#factorTreeLoading").hide();
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
-			console.log(jqXHR);
-			console.log(textStatus);
-			console.log(errorThrown);
-		}
-	});
-}
-
-/**
- * Factor Group 하위 Factor List 조회 후 트리생성
- * @returns
- */ 
-function treeFactorList(factorGrpId, treeId, treeNode) {
-	var param = {};
-	param.factorGrpId = factorGrpId;
-	
-	$.ajax({
-		method : "POST",
-		url : "/targetai/getFactorList.do",
-		traditional: true,
-		data : JSON.stringify(param),
-		contentType:'application/json; charset=utf-8',
-		dataType : "json",
-		success:function(res) {
-			var factorList = res.factorList;
-			var factorArr = [];
-			
-			$.each(factorList, function(idx, factor) {
-				var factorObj = {};
-				factorObj.id = factor.FACTOR_ID;
-				factorObj.pId = factorGrpId;
-				factorObj.name = factor.FACTOR_NM;
-				factorObj.name_en = factor.FACTOR_NM_EN;
-
-				factorArr.push(factorObj);
-			});
-			
-			// Factor 트리 추가
-			var treeObj = $.fn.zTree.getZTreeObj(treeId);
-			treeObj.addNodes(treeNode, factorArr);
 		},
 		beforeSend : function() {
 			$("#factorTreeLoading").show();

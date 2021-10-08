@@ -132,7 +132,7 @@ public class SettingController {
 			// source code 내용
 			String sourceCode = (String) param.get("sourceCode");
 			paramMap.put("sourceCode", sourceCode);
-/*			
+/*		/	
 			// 신규등록
 			if("".equals(factorId)) {
 				// factor 추가

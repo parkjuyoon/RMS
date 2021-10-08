@@ -222,7 +222,7 @@
 														<th class="t_left">함수 선택</th>
 														<td class="t_left">
 															<div>
-																<select id="funcSelect" class="wd250px"></select>
+																<select id="funcSelect" class="wd250px" data-funcPid=""></select>
 															</div>
 														</td>
 													</tr>

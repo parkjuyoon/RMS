@@ -218,8 +218,9 @@
 	<select id="getFactorList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
 		SELECT 
 		    FACTOR_ID,
-		    PARENT_ID,
+		    PID,
 		    FACTOR_NM,
+		    FACTOR_NM_EN,
 		    FACTOR_TYPE
 		FROM
 		    targetai.FACTOR
@@ -244,7 +245,7 @@
 	<select id="getFactorById" resultType="java.util.HashMap" parameterType="java.util.HashMap">
 		SELECT 
 		    FACTOR_ID,
-		    PARENT_ID,
+		    PID,
 		    FACTOR_NM,
 		    FACTOR_NM_EN,
 		    FACTOR_TYPE,

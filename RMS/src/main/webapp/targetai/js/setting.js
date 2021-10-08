@@ -69,6 +69,7 @@ function fnGetFuncList() {
 			});
 			
 			$("#funcSelect").html(html);
+			$("#funcSelect").attr("data-funcPid", res.PID);
 		},
 		beforeSend : function() {
 			$("#loadingIcon").show();
@@ -105,12 +106,11 @@ function fnGetFuncInfo(factorId) {
 		success : function(res) {
 			var factor = res.factor;
 			var paramInfoList = res.paramInfoList;
-			var sourceInfo = res.sourceInfo;
 			var html = "";
 			
 			$("#funcNm").val(factor == null ? "" : factor.FACTOR_NM);
 			$("#funcNmEn").val(factor == null ? "" : factor.FACTOR_NM_EN);
-			$("#funcSourceArea").val(sourceInfo == null ? "" : sourceInfo.SOURCE_CODE);
+			$("#funcSourceArea").val(factor == null ? "" : factor.FUNC_SOURCE);
 			
 			if(paramInfoList.length > 0) {
 				$.each(paramInfoList, function(idx, paramInfo) {
@@ -161,6 +161,8 @@ function fnGetFuncInfo(factorId) {
  */
 function fnSaveFuncSetting() {
 	const param = {};
+	// 함수 factorId
+	param.pid = $("#funcSelect").attr("data-funcPid");
 	// factorId
 	param.factorId = $("#funcSelect").val();
 	// 함수명(한글)
@@ -176,6 +178,7 @@ function fnSaveFuncSetting() {
 	for(var i=0; i<paramArray1.length; i++) {
 		var paramType = paramArray1.eq(i).find("._paramTypeSelect").val();
 		var paramVal = paramArray1.eq(i).find("._paramVal").val();
+		var order = paramArray1.eq(i).find("._paramVal").val();
 		var paramObj = {};
 		paramObj.paramType = paramType;
 		paramObj.paramVal = paramVal;

@@ -28,11 +28,6 @@ public class SettingServiceImpl extends EgovAbstractServiceImpl implements Setti
 	}
 
 	@Override
-	public HashMap<String, Object> getSourceInfo(HashMap<String, Object> param) {
-		return dao.getSourceInfo(param);
-	}
-
-	@Override
 	public HashMap<String, Object> getFactorById(HashMap<String, Object> param) {
 		return dao.getFactorById(param);
 	}
@@ -48,11 +43,6 @@ public class SettingServiceImpl extends EgovAbstractServiceImpl implements Setti
 	}
 
 	@Override
-	public void addFunctionSource(HashMap<String, Object> param) {
-		dao.addFunctionSource(param);
-	}
-
-	@Override
 	public void updateFunctionFactor(HashMap<String, Object> param) {
 		dao.updateFunctionFactor(param);
 	}
@@ -63,8 +53,8 @@ public class SettingServiceImpl extends EgovAbstractServiceImpl implements Setti
 	}
 
 	@Override
-	public void updateFunctionSource(HashMap<String, Object> param) {
-		dao.updateFunctionSource(param);
+	public int getFuncPid() {
+		return dao.getFuncPid();
 	}
 
 }

@@ -61,8 +61,10 @@ public class SettingController {
 	public HashMap<String, Object> getFuncList() {
 		HashMap<String, Object> resultMap = new HashMap<>();
 		
-		List<HashMap<String, Object>> funcList = settingService.getFuncList();
+		int pid = settingService.getFuncPid();
+		resultMap.put("PID", pid);
 		
+		List<HashMap<String, Object>> funcList = settingService.getFuncList();
 		resultMap.put("funcList", funcList);
 		
 		return resultMap;
@@ -95,11 +97,9 @@ public class SettingController {
 		
 		List<HashMap<String, Object>> paramInfoList = settingService.getParamInfo(param);
 		HashMap<String, Object> factor = settingService.getFactorById(param);
-		HashMap<String, Object> sourceInfo = settingService.getSourceInfo(param);
 		
 		resultMap.put("factor", factor);
 		resultMap.put("paramInfoList", paramInfoList);
-		resultMap.put("sourceInfo", sourceInfo);
 		
 		return resultMap;
 	}
@@ -119,6 +119,8 @@ public class SettingController {
 			String factorId = (String) param.get("factorId");
 			
 			// factorId
+			paramMap.put("pid", param.get("pid"));
+			// factorId
 			paramMap.put("factorId", factorId);
 			// 함수명(한글)
 			paramMap.put("funcNm", param.get("funcNm"));
@@ -130,15 +132,13 @@ public class SettingController {
 			// source code 내용
 			String sourceCode = (String) param.get("sourceCode");
 			paramMap.put("sourceCode", sourceCode);
-			
+/*			
 			// 신규등록
 			if("".equals(factorId)) {
 				// factor 추가
 				settingService.addFunctionFactor(param);
 				// 파라미터 추가
 				settingService.addFunctionParameter(param);
-				// source 추가
-				settingService.addFunctionSource(param);
 				
 			// 수정
 			} else {
@@ -146,10 +146,8 @@ public class SettingController {
 				settingService.updateFunctionFactor(param);
 				// 파라미터 수정
 				settingService.updateFunctionParameter(param);
-				// source 수정
-				settingService.updateFunctionSource(param);
 			}
-			
+*/		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

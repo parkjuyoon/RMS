@@ -1334,8 +1334,9 @@ function fngetFactorListTree() {
 			$.each(factorList, function(idx, factor) {
 				var factorObj = {};
 				factorObj.id = factor.FACTOR_ID;
-				factorObj.pId = factor.PARENT_ID;
+				factorObj.pId = factor.PID;
 				factorObj.name = factor.FACTOR_NM;
+				factorObj.name_en = factor.FACTOR_NM_EN;
 				if(factor.FACTOR_TYPE == 'GROUP') {
 					factorObj.isParent = true;
 					factorObj.open = false;

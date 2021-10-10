@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -30,6 +31,9 @@ public class PkgController {
 
 	@Resource(name = "pkgService")
 	protected PkgService pkgService;
+	
+	@Resource(name = "applicationProperties")
+	protected Properties applicationProperties;
 	
 	/**
 	 * package 관리 화면 이동
@@ -437,6 +441,9 @@ public class PkgController {
 	 * @return
 	 */
 	public String saveDRL(String pkgId) {
+		// 함수 import 경로
+		String funcRootPath = applicationProperties.getProperty("func.import.root_path");
+		
 		// PKG DRL_SOURCE 업데이트
 		HashMap<String, Object> pkg = pkgService.getPkgById(pkgId);
 		List<HashMap<String, Object>> ruleList = pkgService.getRuleListByPkgId(pkgId);
@@ -464,7 +471,8 @@ public class PkgController {
 				drlSource += "		" + w.get("ATTR_WHEN");
 				
 				if("함수".equals(w.get("FACTOR_GRP_NM"))) {
-					String importTxt= "import static egovframework.ktds.targetai.function." + w.get("FACTOR_NM_EN") + ".*;\n";
+					String factorNmEn = (String) w.get("FACTOR_NM_EN");
+					String importTxt= funcRootPath + "." + factorNmEn + "." + factorNmEn.toLowerCase() + ";\n";
 					if(!drlImport.contains(importTxt)) {
 						drlImport += importTxt;
 					}

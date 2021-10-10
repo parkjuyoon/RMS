@@ -698,7 +698,7 @@ $(document).ready(function() {
 			// RULE 속성 부분에 표시될 형식
 			ruleAttr_txt = factorNmEn + "(" + pTmp + ") == " + factorVal;
 			// DRL 파일에 저장될 소스
-			ruleAttr_source = "eval(main(" + pTmp + ") == " + factorVal + ")";
+			ruleAttr_source = "eval("+ factorNmEn.toLowerCase() +"(" + pTmp + ") == " + factorVal + ")";
 			
 		// RULE 일 경우
 		} else {

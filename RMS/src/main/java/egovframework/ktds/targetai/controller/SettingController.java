@@ -132,22 +132,24 @@ public class SettingController {
 			// source code 내용
 			String sourceCode = (String) param.get("sourceCode");
 			paramMap.put("sourceCode", sourceCode);
-/*		/	
+	
 			// 신규등록
 			if("".equals(factorId)) {
 				// factor 추가
-				settingService.addFunctionFactor(param);
+				settingService.addFunctionFactor(paramMap);
 				// 파라미터 추가
-				settingService.addFunctionParameter(param);
+				settingService.addFunctionParameter(paramMap);
 				
 			// 수정
 			} else {
 				// factor 수정
-				settingService.updateFunctionFactor(param);
-				// 파라미터 수정
-				settingService.updateFunctionParameter(param);
+				settingService.updateFunctionFactor(paramMap);
+				// 파라미터 삭제
+				settingService.delFunctionParameter(paramMap);
+				// 파라미터 추가
+				settingService.addFunctionParameter(paramMap);
 			}
-*/		
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

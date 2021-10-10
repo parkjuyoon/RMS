@@ -76,6 +76,9 @@
  			'ARGS',
  			#{sourceCode}
  		)
+ 		<selectKey keyProperty="factorId" resultType="int" order="AFTER">
+ 			SELECT LAST_INSERT_ID()
+ 		</selectKey>
  	</insert>
  	
  	<insert id="addFunctionParameter" parameterType="java.util.HashMap">
@@ -90,17 +93,24 @@
  			#{factorId},
  			#{parameter.paramVal},
  			#{parameter.order},
- 			#{parameter.paramType},
+ 			#{parameter.paramType}
  		)
  		</foreach>
  	</insert>
  	
  	<update id="updateFunctionFactor" parameterType="java.util.HashMap">
- 	
+ 		UPDATE targetai.FACTOR
+ 		SET
+ 			FACTOR_NM = #{funcNm},
+ 			FACTOR_NM_EN = #{funcNmEn},
+ 			FUNC_SOURCE = #{sourceCode}
+ 		WHERE
+ 			FACTOR_ID = #{factorId}
  	</update>
  	
- 	<update id="updateFunctionParameter" parameterType="java.util.HashMap">
- 	
- 	</update>
- 	
+ 	<delete id="delFunctionParameter" parameterType="java.util.HashMap">
+ 		DELETE FROM targetai.FACTOR_FUNC_ARGS
+ 		WHERE
+ 			FACTOR_ID = #{factorId}
+ 	</delete>
 </mapper>

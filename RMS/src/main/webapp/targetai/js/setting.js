@@ -178,10 +178,10 @@ function fnSaveFuncSetting() {
 	for(var i=0; i<paramArray1.length; i++) {
 		var paramType = paramArray1.eq(i).find("._paramTypeSelect").val();
 		var paramVal = paramArray1.eq(i).find("._paramVal").val();
-		var order = paramArray1.eq(i).find("._paramVal").val();
 		var paramObj = {};
 		paramObj.paramType = paramType;
 		paramObj.paramVal = paramVal;
+		paramObj.order = i+1;
 		
 		paramArray2.push(paramObj);
 	}
@@ -196,6 +196,7 @@ function fnSaveFuncSetting() {
 		dataType : "json",
 		success : function(res) {
 			messagePop("success", "FUNCTION 을 저장했습니다.", "", "");
+			fnGetFuncList();
 			$("#funcSelect").val("").trigger("change");
 		},
 		beforeSend : function() {

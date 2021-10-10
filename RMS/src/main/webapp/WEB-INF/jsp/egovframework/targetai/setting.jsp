@@ -264,18 +264,6 @@
 															></textarea>
 														</td>
 													</tr>
-													<tr>
-														<th class="t_left">최초 등록</th>
-														<td class="t_left" id=""></td>
-													</tr>
-													<tr>
-														<th class="t_left">수정 일자</th>
-														<td class="t_left" id=""></td>
-													</tr>
-													<tr>
-														<th class="t_left">최종 수정자</th>
-														<td class="t_left" id=""></td>
-													</tr>
 												</tbody>
 											</table>
 										</div>

@@ -48,8 +48,8 @@ public class SettingServiceImpl extends EgovAbstractServiceImpl implements Setti
 	}
 
 	@Override
-	public void updateFunctionParameter(HashMap<String, Object> param) {
-		dao.updateFunctionParameter(param);
+	public void delFunctionParameter(HashMap<String, Object> param) {
+		dao.delFunctionParameter(param);
 	}
 
 	@Override

@@ -20,7 +20,7 @@ public interface SettingMapper {
 
 	void updateFunctionFactor(HashMap<String, Object> param);
 
-	void updateFunctionParameter(HashMap<String, Object> param);
+	void delFunctionParameter(HashMap<String, Object> param);
 
 	int getFuncPid();
 

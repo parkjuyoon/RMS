@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import egovframework.ktds.targetai.service.SettingService;
+import egovframework.ktds.targetai.util.DynamicClassBuilder;
 
 /**
  * @since 2021.09.01
@@ -149,6 +150,12 @@ public class SettingController {
 				// 파라미터 추가
 				settingService.addFunctionParameter(paramMap);
 			}
+			
+			// CLASS 파일 생성
+			DynamicClassBuilder dcb = new DynamicClassBuilder();
+			Object[] params = new Object[parameterList.size()];
+			
+			dcb.createInstance(sourceCode, params);
 
 		} catch (Exception e) {
 			e.printStackTrace();

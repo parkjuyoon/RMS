@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -41,6 +43,9 @@ public class ApiController {
 	private ApiService apiService;
 	@Autowired
 	private PkgService pkgService;
+	
+	@Resource(name = "applicationProperties")
+	protected Properties applicationProperties;
 	
 	/**
 	 * API 테스트 화면 이동
@@ -159,17 +164,13 @@ public class ApiController {
 			List<HashMap<String, Object>> respList = new ArrayList<>();		// response 리스트
 			List<Integer> respRuleIds = new ArrayList<>();					// response 할 RULE_ID 리스트
 			
+			// DB 기준으로 DRL 파일 생성
+			saveDRL(String.valueOf(pkgId));
+			
 			for(HashMap<String, Object> activeMap : activeList) {
 				// DRL의 RULE 실행 결과
 				activeMap.put("SVC_TARGET_TYPE", svcTargetType);
 				List<HashMap<String, Object>> resultList = getResultList(drlPath, activeMap, outPutValList);
-				
-				// DRL 파일이 존재하지 않을경우 resultList는 NULL 을 반환한다. 
-				// DB에서 조회해서 파일을 생성한 후 다시 RULE 실행한다.
-				if(resultList == null) {
-					saveDRL(String.valueOf(pkgId));
-					resultList = getResultList(drlPath, activeMap, outPutValList);
-				}
 				
 				// 계약건수마다 걸린 RULE 을 임시리스트 한곳에 모아둔다.
 				for(HashMap<String, Object> res : resultList) {
@@ -416,6 +417,9 @@ public class ApiController {
 	 * @return
 	 */
 	public String saveDRL(String pkgId) {
+		// 함수 import 경로
+		String funcRootPath = applicationProperties.getProperty("func.import.root_path");
+				
 		// PKG DRL_SOURCE 업데이트
 		HashMap<String, Object> pkg = pkgService.getPkgById(pkgId);
 		List<HashMap<String, Object>> ruleList = pkgService.getRuleListByPkgId(pkgId);
@@ -443,7 +447,8 @@ public class ApiController {
 				drlSource += "		" + w.get("ATTR_WHEN");
 				
 				if("함수".equals(w.get("FACTOR_GRP_NM"))) {
-					String importTxt= "import static egovframework.ktds.targetai.function." + w.get("FACTOR_NM_EN") + ".*;\n";
+					String factorNmEn = (String) w.get("FACTOR_NM_EN");
+					String importTxt= funcRootPath + "." + factorNmEn + "." + factorNmEn.toLowerCase() + ";\n";
 					if(!drlImport.contains(importTxt)) {
 						drlImport += importTxt;
 					}

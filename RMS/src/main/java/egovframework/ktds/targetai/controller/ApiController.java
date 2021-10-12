@@ -170,6 +170,16 @@ public class ApiController {
 				activeMap.put("SVC_TARGET_TYPE", svcTargetType);
 				List<HashMap<String, Object>> resultList = getResultList(drlPath, activeMap, outPutValList);
 				
+				// 파일이 없을경우 또는 문법이 틀린 DRL 파일 경우 null 리턴
+				if(resultList == null) {
+					responseMap.put("CODE", 501);
+					responseMap.put("RESULT", respList);
+					response.getWriter().print(new JSONObject(responseMap));
+					throw new NullPointerException();
+				} else {
+					responseMap.put("CODE", 200);
+				}
+				
 				// 계약건수마다 걸린 RULE 을 임시리스트 한곳에 모아둔다.
 				for(HashMap<String, Object> res : resultList) {
 					resultTmp.add(res);

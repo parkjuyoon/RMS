@@ -47,6 +47,12 @@ function fnRequestApi(param) {
 		contentType:'application/json; charset=utf-8',
 		dataType : "json",
 		success : function(res) {
+			var code = res.CODE;
+			
+			if(code != 200) {
+				messagePop("warning", "DRL 문법에러", "DRL 문법에 오류가 있습니다. 확인하세요.", "");
+			}
+			
 			var jsonStr = JSON.stringify(res, null, 4);
 			
 			$("#resultArea").val(jsonStr);

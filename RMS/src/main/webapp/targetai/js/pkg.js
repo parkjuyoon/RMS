@@ -687,7 +687,7 @@ $(document).ready(function() {
 				var dataType = factorVal_Tag.eq(idx).attr("data-dataType");
 				var paramVal = factorVal_Tag.eq(idx).val();
 				
-				if(dataType == 'INT') {
+				if(dataType == 'int') {
 					pTmp += (idx == factorVal_Tag.length-1 ? paramVal : paramVal + ", ");
 					
 				} else {

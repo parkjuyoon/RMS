@@ -80,7 +80,7 @@ public class SettingController {
 	public HashMap<String, Object> getFuncRootPath() {
 		HashMap<String, Object> resultMap = new HashMap<>();
 		
-		String funcRootPath = applicationProperties.getProperty("func.import.root_path");
+		String funcRootPath = "import static " + applicationProperties.getProperty("func.import.root_path");
 		resultMap.put("funcRootPath", funcRootPath);
 		
 		return resultMap;
@@ -152,10 +152,13 @@ public class SettingController {
 			}
 			
 			// CLASS 파일 생성
+			String funcRootPath = applicationProperties.getProperty("func.import.root_path");
 			DynamicClassBuilder dcb = new DynamicClassBuilder();
-			Object[] params = new Object[parameterList.size()];
+			Object instance = dcb.createInstance(funcRootPath, (String) param.get("funcNmEn"), sourceCode, parameterList);
 			
-			dcb.createInstance(sourceCode, params);
+			if(instance == null) {
+				return false;
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();

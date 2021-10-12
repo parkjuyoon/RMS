@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -33,7 +32,6 @@ import egovframework.ktds.drools.config.DroolsUtil;
 import egovframework.ktds.targetai.service.ApiService;
 import egovframework.ktds.targetai.service.PkgService;
 import egovframework.ktds.targetai.util.CommonUtil;
-import egovframework.ktds.targetai.util.FunctionUtil;
 
 @RequestMapping("/targetai")
 @Controller
@@ -418,7 +416,7 @@ public class ApiController {
 	 */
 	public String saveDRL(String pkgId) {
 		// 함수 import 경로
-		String funcRootPath = applicationProperties.getProperty("func.import.root_path");
+		String funcRootPath = "import static " + applicationProperties.getProperty("func.import.root_path");
 				
 		// PKG DRL_SOURCE 업데이트
 		HashMap<String, Object> pkg = pkgService.getPkgById(pkgId);

@@ -10,8 +10,8 @@ $(document).ready(function() {
 		var html = "";
 		html += "<div>";
 		html += "	<select class='wd150px _paramTypeSelect'>";
-		html += "		<option value='STRING'>String</option>";
-		html += "		<option value='INT'>int</option>";
+		html += "		<option value='String'>String</option>";
+		html += "		<option value='int'>int</option>";
 		html += "	</select>";
 		html += "	<input type='text' class='wd300px _paramVal' value='' />";
 		html += "	<button type='button' id='' class='btn btn-sm btn-gray _paramPlusBtn'>+</button>";
@@ -116,8 +116,13 @@ function fnGetFuncInfo(factorId) {
 				$.each(paramInfoList, function(idx, paramInfo) {
 					html += "<div>";
 					html += "	<select class='wd150px _paramTypeSelect'>";
-					html += "		<option value='STRING'>String</option>";
-					html += "		<option value='INT'>int</option>";
+				if(paramInfo.DATA_TYPE == 'String') {
+					html += "		<option value='String' selected>String</option>";
+					html += "		<option value='int'>int</option>";
+				} else if(paramInfo.DATA_TYPE == 'int'){
+					html += "		<option value='String'>String</option>";
+					html += "		<option value='int' selected>int</option>";
+				}
 					html += "	</select>";
 					html += "	<input type='text' class='wd300px _paramVal' value='"+ paramInfo.ARG_NM +"' />";
 					html += "	<button type='button' id='' class='btn btn-sm btn-gray _paramPlusBtn'>+</button>";
@@ -128,8 +133,8 @@ function fnGetFuncInfo(factorId) {
 			} else {
 				html += "<div>";
 				html += "	<select id='' class='wd150px _paramTypeSelect'>";
-				html += "		<option value='STRING'>String</option>";
-				html += "		<option value='INT'>int</option>";
+				html += "		<option value='String'>String</option>";
+				html += "		<option value='int'>int</option>";
 				html += "	</select>";
 				html += "	<input type='text' class='wd300px _paramVal' id='' value='' />";
 				html += "	<button type='button' id='' class='btn btn-sm btn-gray _paramPlusBtn'>+</button>";
@@ -178,6 +183,8 @@ function fnSaveFuncSetting() {
 	for(var i=0; i<paramArray1.length; i++) {
 		var paramType = paramArray1.eq(i).find("._paramTypeSelect").val();
 		var paramVal = paramArray1.eq(i).find("._paramVal").val();
+		
+		console.log(paramType)
 		var paramObj = {};
 		paramObj.paramType = paramType;
 		paramObj.paramVal = paramVal;
@@ -195,9 +202,13 @@ function fnSaveFuncSetting() {
 		contentType:'application/json; charset=utf-8',
 		dataType : "json",
 		success : function(res) {
-			messagePop("success", "FUNCTION 을 저장했습니다.", "", "");
-			fnGetFuncList();
-			$("#funcSelect").val("").trigger("change");
+			if(res == true) {
+				messagePop("success", "FUNCTION 을 저장했습니다.", "", "");
+				fnGetFuncList();
+				$("#funcSelect").val("").trigger("change");
+			} else {
+				messagePop("warning", "소스 코드 에러", "소스 코드에 에러가 있습니다.", "");
+			}
 		},
 		beforeSend : function() {
 			$("#loadingIcon").show();

@@ -21,7 +21,7 @@ public class DynamicClassBuilder {
 		
 		try {
 			// 프로젝트(실행되는 main 소스)의 Home Directory 경로 조회
-			String path = DroolsTest.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+			String path = DynamicClassBuilder.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 			
 			// source 만들고 java 파일 생성
 			String classNm = "DaySinceLastEvent";

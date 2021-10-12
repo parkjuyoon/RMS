@@ -5,10 +5,13 @@ import java.io.FileWriter;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
+
+import egovframework.ktds.targetai.controller.SettingController;
 
 public class DynamicClassBuilder {
 
@@ -17,36 +20,32 @@ public class DynamicClassBuilder {
 	 * @param body 메소드 안의 소스내용
 	 * @return java->class->instance Object
 	 */
-	public Object createInstance(String body, Object[] params) {
+	public Object createInstance(String funcRootPath, String funcNmEn, String body, List<HashMap<String, Object>> parameterList) {
 		
 		try {
 			// 프로젝트(실행되는 main 소스)의 Home Directory 경로 조회
-			String path = DroolsTest.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+			String path = DynamicClassBuilder.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 			
 			// source 만들고 java 파일 생성
-			String classNm = "DaySinceLastEvent";
-			String packageNm = "main.func";
-			String methodNm = "run";
+			String classNm = funcNmEn;
+			String packageNm = funcRootPath;
+			String methodNm = funcNmEn.toLowerCase();
+			String filePath = path + funcRootPath.replaceAll("\\.", "/") + "/" + classNm;
 			
-			File sourceFile = new File(path + "main/func/"+ classNm +".java");
-			String source = this.getSource(packageNm, classNm, methodNm, params, body);
-			System.out.println(path);
-			System.out.println(source);
+			File sourceFile = new File(filePath +".java");
+			String source = this.getSource(packageNm, classNm, methodNm, parameterList, body);
 			new FileWriter(sourceFile).append(source).close();
 			
 			// 만들어진 java 파일을 컴파일 한다.
 			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-			compiler.run(null, System.out, System.out, sourceFile.getPath());
+			int compileResult = compiler.run(null, System.out, System.out, sourceFile.getPath());
 			
-			// 컴파일된 class를 load 한다.
-			URL[] urls = new URL[] {
-					new File(path + "main/func").toURI().toURL()
-			};
-			URLClassLoader classLoader = URLClassLoader.newInstance(urls);
+			if(compileResult != 0) {
+				return null;
+			} else {
+				return new Object();
+			}
 			
-			Class<?> cls = Class.forName(packageNm + "." + classNm, true, classLoader);
-			return cls.newInstance();
-		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -62,29 +61,35 @@ public class DynamicClassBuilder {
 	 * @param body
 	 * @return
 	 */
-	private String getSource(String packageNm, String classNm, String methodNm, Object[] params, String body) {
+	private String getSource(String packageNm, String classNm, String methodNm, List<HashMap<String, Object>> parameterList, String body) {
 
 		StringBuffer sb = new StringBuffer();
 		
 		// java source를 생성한다.
 		sb.append("package " + packageNm + ";\n\n");
 		sb.append("public class " + classNm + "{\n");
-		sb.append("	public static boolean " + methodNm + "(Object[] params) throws Exception {\n");
-		for(int i=0; i<params.length; i++) {
-			switch (params[i].getClass().getSimpleName()) {
-			case "String":
-				sb.append("		String code = (String) params["+ i +"];\n");
-				break;
-			case "Integer":
-				sb.append("		int day = (int) params["+ i +"];\n");
-				break;
-
-			default:
-				break;
+		sb.append("	public static boolean " + methodNm);
+		
+		String paramTxt = "(";
+		int cnt=0;
+		for(HashMap<String, Object> pt : parameterList) {
+			String paramType = (String) pt.get("paramType");
+			String paramVal = (String) pt.get("paramVal");
+			
+			cnt ++;
+			if(cnt == parameterList.size()) {
+				paramTxt += paramType + " " + paramVal;
+			} else {
+				paramTxt += paramType + " " + paramVal + ", ";
 			}
 		}
+		paramTxt += ") ";
+		
+		sb.append(paramTxt);
+		sb.append("throws Exception {\n");
 		sb.append(body);
 		sb.append("	}\n}");
+		
 		
 		return sb.toString();
 	}

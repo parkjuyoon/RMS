@@ -247,8 +247,8 @@
 														<td class="t_left" id="parameterTd">
 															<div>
 																<select class="wd150px _paramTypeSelect">
-																	<option value="STRING">String</option>
-																	<option value="INT">int</option>
+																	<option value="String">String</option>
+																	<option value="int">int</option>
 																</select>
 																<input type="text" class="wd300px _paramVal" value="" />
 																<button type="button" id="" class="btn btn-sm btn-gray _paramPlusBtn">+</button>

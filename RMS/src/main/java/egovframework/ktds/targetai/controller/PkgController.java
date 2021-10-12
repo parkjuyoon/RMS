@@ -442,7 +442,7 @@ public class PkgController {
 	 */
 	public String saveDRL(String pkgId) {
 		// 함수 import 경로
-		String funcRootPath = applicationProperties.getProperty("func.import.root_path");
+		String funcRootPath = "import static " + applicationProperties.getProperty("func.import.root_path");
 		
 		// PKG DRL_SOURCE 업데이트
 		HashMap<String, Object> pkg = pkgService.getPkgById(pkgId);

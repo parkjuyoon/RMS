@@ -134,6 +134,15 @@ public class SettingController {
 			String sourceCode = (String) param.get("sourceCode");
 			paramMap.put("sourceCode", sourceCode);
 	
+			// CLASS 파일 생성
+			String funcRootPath = applicationProperties.getProperty("func.import.root_path");
+			DynamicClassBuilder dcb = new DynamicClassBuilder();
+			Object instance = dcb.createInstance(funcRootPath, (String) param.get("funcNmEn"), sourceCode, parameterList);
+			
+			if(instance == null) {
+				return false;
+			}
+			
 			// 신규등록
 			if("".equals(factorId)) {
 				// factor 추가
@@ -151,15 +160,6 @@ public class SettingController {
 				settingService.addFunctionParameter(paramMap);
 			}
 			
-			// CLASS 파일 생성
-			String funcRootPath = applicationProperties.getProperty("func.import.root_path");
-			DynamicClassBuilder dcb = new DynamicClassBuilder();
-			Object instance = dcb.createInstance(funcRootPath, (String) param.get("funcNmEn"), sourceCode, parameterList);
-			
-			if(instance == null) {
-				return false;
-			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

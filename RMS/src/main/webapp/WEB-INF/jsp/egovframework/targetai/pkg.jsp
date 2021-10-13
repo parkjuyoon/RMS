@@ -438,7 +438,7 @@
 									</div>
 									<!-- 테이블 -->
 									<div class="panel bd_b_none nobordertop">
-										<table class="tb_type01">
+										<table class="tb_type01 tablesorter">
 											<colgroup>
 												<col style="width: 5%;" />
 												<col style="width: 7%;" />
@@ -458,11 +458,11 @@
 														</div>
 													</th>
 													<th>ID</th>
-													<th>패키지명</th>
+													<th>패키지명<label class="_sortable"></label></th>
 													<th>DRL</th>
 													<th>수정일시</th>
 													<th>수정자</th>
-													<th>등록일시</th>
+													<th>등록일시<label class="_sortable"></label></th>
 													<th>등록자</th>
 												</tr>
 											</thead>
@@ -536,7 +536,7 @@
 														<td class="t_left" id="ruleCntInPkg"></td>
 													</tr>
 													<tr>
-														<th class="t_left">RULE TEST</th>
+														<th class="t_left">RULE 테스트</th>
 														<td class="t_left" >
 															<button type="button" id="ruleTestPopBtn" style="display:none;" class="btn btn-sm btn-green">OPEN</button> 
 														</td>
@@ -732,7 +732,7 @@
 															<span class="custom-green mg_l15" style="display: none;" id="ruleDupY"><i class="el el-idea"></i> 사용가능 RULE 명입니다.</span>
 														</td>
 													</tr>
-													<tr>
+													<tr style="display: none;">
 														<th class="t_left">NO-LOOP</th>
 														<td class="t_left">
 															<div class="radio-container mg_r0">
@@ -741,7 +741,7 @@
 															</div>
 														</td>
 													</tr>
-													<tr>
+													<tr style="display: none;">
 														<th class="t_left">LOCK-ON-ACTIVE</th>
 														<td class="t_left">
 															<div class="radio-container mg_r0">
@@ -751,11 +751,11 @@
 														</td>
 													</tr>
 													<tr>
-														<th class="t_left">SALIENCE</th>
+														<th class="t_left">우선 순위</th>
 														<td class="t_left"><input type="text" class="wd150px" id="salience" value="" /></td>
 													</tr>
 													<tr>
-														<th class="t_left">TARGET TYPE</th>
+														<th class="t_left">타켓 유형</th>
 														<td class="t_left">
 															<select id="targetType" class="wd150px">
 																<option value="CUST">고객</option>
@@ -764,7 +764,7 @@
 														</td>
 													</tr>
 													<tr>
-														<th class="t_left">CONTENTS</th>
+														<th class="t_left">상세속성 정의</th>
 														<td class="t_left"><textarea rows="4" cols="7" class="txtsize_100 wd100" id="ruleWhenCont" placeholder="RULE EDITOR를 통해 생성하세요."
 																readonly="readonly"></textarea></td>
 													</tr>

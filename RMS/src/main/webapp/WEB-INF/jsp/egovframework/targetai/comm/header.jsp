@@ -24,3 +24,5 @@
 
 <!-- 기능 js -->
 <script src="/targetai/js/common.js"></script>
+<script src="/targetai/js/comm/jquery.tablesorter.min.js"></script>
+<script src="/targetai/js/comm/widget-scroller.js"></script>

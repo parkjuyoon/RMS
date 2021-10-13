@@ -1066,6 +1066,7 @@ function getPkgList(searchObj) {
 			
 			// 전체 체크 해제
 			$("#pkgListAllChkBox").prop("checked", false);
+			fnSortableOption();
 			
 		},
 		beforeSend : function() {
@@ -1296,7 +1297,6 @@ function getRuleList(searchObj) {
 			
 			// 전체 체크 해제
 			$("#ruleListAllChkBox").prop("checked", false);
-			
 		},
 		beforeSend : function() {
 			$("#ruleLoading").show();

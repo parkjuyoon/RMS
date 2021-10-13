@@ -406,7 +406,7 @@
 														</td>
 													</tr>
 													<tr>
-														<th class="t_left">OutPut Value 선택</th>
+														<th class="t_left">출력 값 선택</th>
 														<td class="t_left" >
 															<button type="button" id="svcOutPutPopBtn" data-modalclass="modal_svcOutPut" title="팝업" class="btn btn-sm btn-green btnModal" style="display: none;">OPEN</button>
 															<a href="#" id="svcOutPutPopLink" style="display: none;"></a>
@@ -417,7 +417,7 @@
 																	<div class="modla_center">
 																		<div class="modal_header">
 																			<span class="close _ruleTestPop_close" onclick="close_layerPop('modal_svcOutPut');" data-focusId="">&times;</span>
-																			<h2>OutPut Value 선택</h2>
+																			<h2>출력 값 선택</h2>
 																		</div>
 																		<!-- 본문 -->
 																		<div class="modal_body" style="height: 500px;">
@@ -504,13 +504,13 @@
 														</td>
 													</tr>
 													<tr>
-														<th class="t_left">NUM OF OFFER</th>
+														<th class="t_left">최대 추천개수</th>
 														<td class="t_left">
 															<input type="text" class="wd150px" id="numOfOffer" value="" placeholder="미 입력시 전체 추천"/>
 														</td>
 													</tr>
 													<tr>
-														<th class="t_left">TARGET TYPE</th>
+														<th class="t_left">타겟 유형</th>
 														<td class="t_left">
 															<select id="targetType" class="wd150px">
 																<option value="CUST">고객</option>

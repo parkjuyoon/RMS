@@ -5,6 +5,52 @@ $(document).on("click", "a[href='#']", function(e) {
 	e.preventDefault();
 });
 
+function fnSortableOption() {
+	$("._sortable").html("\t▼");
+	$("._sortable").attr("data-orderby", "desc");
+	
+	$("._sortable").click(function() {
+		var orderby = $(this).attr("data-orderby");
+		var table = $(this).closest("table");
+		var rows = table[0].rows;
+		var cellIndex = $(this).closest("th")[0].cellIndex;
+		
+		console.log(table[0])
+		
+		var sortTable = function(orderby, cellIndex) {
+			for(var i=1; i<(rows.length-1); i++) {
+				var firstCell = rows[i].cells[cellIndex];
+				var secondCell = rows[i+1].cells[cellIndex];
+				
+				
+//				if(orderby == 'desc') {
+					if(firstCell.innerHTML.toLowerCase() > secondCell.innerHTML.toLowerCase()) {
+						rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+					}
+//				} 
+				
+//				if(orderby == 'asc'){
+//					if(firstCell.innerHTML.toLowerCase() < secondCell.innerHTML.toLowerCase()) {
+//						rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+//					}
+//				}
+			}
+			
+		};
+		
+		if(orderby  == "desc") {
+			$(this).html("\t▲");
+			$("._sortable").attr("data-orderby", "asc");
+			sortTable(orderby, cellIndex);
+			
+		} else {
+			$(this).html("\t▼");
+			$("._sortable").attr("data-orderby", "desc");
+			sortTable(orderby, cellIndex);
+		}
+	});
+}
+
 /**
  * 페이징처리
  * @param elementId, totalCount, currentPage

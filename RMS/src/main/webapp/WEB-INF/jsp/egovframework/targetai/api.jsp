@@ -30,7 +30,7 @@
 									<span>API</span>
 								</li>
 								<li>
-									<span>API Request/Response</span>
+									<span>API 요청/응답</span>
 								</li>
 							</ol>
 						</div>
@@ -44,7 +44,7 @@
 								<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
 								<div class="card" id="">
 									<header class="card-header card-header-pd-mobile">
-										<h2 class="card-title_txt">API Request/Response</h2>
+										<h2 class="card-title_txt">API 요청/응답</h2>
 									</header>
 									<!-- 본문페이지 -->
 									<div class="card-body" id="" >
@@ -61,36 +61,36 @@
 													</colgroup>
 													<tbody>
 														<tr>
-															<th class="t_left">Request URL</th>
+															<th class="t_left">요청 URL</th>
 															<td class="t_left">
 																<label id="req_url">${rootDomain}/targetai/api/request.do</label>
 																<button type="button" id="apiRequestBtn" class="btn btn-sm btn-green">Request</button>
 															</td>
 														</tr>
 														<tr>
-															<th class="t_left">TARGET TYPE</th>
+															<th class="t_left">타겟 유형</th>
 															<td class="t_left">
 																<select name="api_type" class="wd150px">
-																	<option value="CUST" selected>CUST</option>
-																	<option value="CONT">CONT</option>
-																	<option value="COMB">COMB</option>
+																	<option value="CUST" selected>고객</option>
+																	<option value="CONT">계약</option>
+																	<option value="COMB">결합</option>
 																</select>
 															</td>
 														</tr>
 														<tr>
-															<th class="t_left">CUST ID</th>
+															<th class="t_left">고객 아이디</th>
 															<td class="t_left">
 																<input type="text" class="wd250px" name="param_val" value="SRC_CUST_SORC_ID_1" />
 															</td>
 														</tr>
 														<tr>
-															<th class="t_left">SERVICE ID</th>
+															<th class="t_left">서비스 아이디</th>
 															<td class="t_left">
 																<input type="text" class="wd250px" name="svc_id" value="" />
 															</td>
 														</tr>
 														<tr>
-															<th class="t_left">RESPONSE</th>
+															<th class="t_left">응답 결과</th>
 															<td class="t_left">
 																<textarea rows="15" cols="7" class="txtsize_100 wd100" id="resultArea" style="white-space: pre;" readonly="readonly"></textarea>
 															</td>

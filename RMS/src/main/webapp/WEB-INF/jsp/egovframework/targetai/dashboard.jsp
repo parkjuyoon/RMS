@@ -19,5 +19,8 @@
 기능 명세 문서 정리
 엑셀로
 대분류중분류소분류
+
+이기현과장 kihyeon.lee@kt.com
+조성희팀장 ishcho@kt.com
 </body>
 </html>

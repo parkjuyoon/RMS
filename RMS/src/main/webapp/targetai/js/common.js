@@ -15,20 +15,21 @@ function fnSortableOption() {
 		var rows = table[0].rows;
 		var cellIndex = $(this).closest("th")[0].cellIndex;
 		
-		console.log(table[0])
-		
 		var sortTable = function(orderby, cellIndex) {
 			for(var i=1; i<(rows.length-1); i++) {
-				var firstCell = rows[i].cells[cellIndex];
-				var secondCell = rows[i+1].cells[cellIndex];
+				var firstCell = rows[i].cells[cellIndex].children[0];
+				var secondCell = rows[i+1].cells[cellIndex].children[0];
 				
-				
+				if(typeof firstCell == 'undefined') {
+					return;
+				}
 //				if(orderby == 'desc') {
 					if(firstCell.innerHTML.toLowerCase() > secondCell.innerHTML.toLowerCase()) {
 						rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+						return false;
 					}
 //				} 
-				
+//				
 //				if(orderby == 'asc'){
 //					if(firstCell.innerHTML.toLowerCase() < secondCell.innerHTML.toLowerCase()) {
 //						rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
@@ -38,16 +39,24 @@ function fnSortableOption() {
 			
 		};
 		
-		if(orderby  == "desc") {
+//		if(orderby  == "desc") {
 			$(this).html("\t▲");
 			$("._sortable").attr("data-orderby", "asc");
-			sortTable(orderby, cellIndex);
+			var rs = sortTable(orderby, cellIndex);
 			
-		} else {
-			$(this).html("\t▼");
-			$("._sortable").attr("data-orderby", "desc");
-			sortTable(orderby, cellIndex);
-		}
+			while(true) {
+				if(rs == false) {
+					$("._sortable").click();
+				} else {
+					break;
+				}
+			}
+			
+//		} else {
+//			$(this).html("\t▼");
+//			$("._sortable").attr("data-orderby", "desc");
+//			sortTable(orderby, cellIndex);
+//		}
 	});
 }
 

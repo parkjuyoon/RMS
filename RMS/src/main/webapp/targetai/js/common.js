@@ -5,11 +5,15 @@ $(document).on("click", "a[href='#']", function(e) {
 	e.preventDefault();
 });
 
+/**
+ * 테이블 정렬 기능 (th 안에 label class='_sortable' 추가)
+ * @returns
+ */
 function fnSortableOption() {
 	$("._sortable").html("\t▼");
 	$("._sortable").attr("data-orderby", "desc");
 	
-	$("._sortable").click(function() {
+	$(document).on("click", "._sortable", function() {
 		var orderby = $(this).attr("data-orderby");
 		var table = $(this).closest("table");
 		var rows = table[0].rows;
@@ -17,46 +21,43 @@ function fnSortableOption() {
 		
 		var sortTable = function(orderby, cellIndex) {
 			for(var i=1; i<(rows.length-1); i++) {
-				var firstCell = rows[i].cells[cellIndex].children[0];
-				var secondCell = rows[i+1].cells[cellIndex].children[0];
+				var firstCell = rows[i].cells[cellIndex];
+				var secondCell = rows[i+1].cells[cellIndex];
 				
-				if(typeof firstCell == 'undefined') {
-					return;
-				}
-//				if(orderby == 'desc') {
-					if(firstCell.innerHTML.toLowerCase() > secondCell.innerHTML.toLowerCase()) {
+				if(orderby == 'desc') {
+					if(firstCell.textContent.toLowerCase() > secondCell.textContent.toLowerCase()) {
 						rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
 						return false;
 					}
-//				} 
-//				
-//				if(orderby == 'asc'){
-//					if(firstCell.innerHTML.toLowerCase() < secondCell.innerHTML.toLowerCase()) {
-//						rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
-//					}
-//				}
-			}
-			
-		};
-		
-//		if(orderby  == "desc") {
-			$(this).html("\t▲");
-			$("._sortable").attr("data-orderby", "asc");
-			var rs = sortTable(orderby, cellIndex);
-			
-			while(true) {
-				if(rs == false) {
-					$("._sortable").click();
-				} else {
-					break;
+				} 
+				
+				if(orderby == 'asc'){
+					if(firstCell.textContent.toLowerCase() < secondCell.textContent.toLowerCase()) {
+						rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+						return false;
+					}
 				}
 			}
+		};
+		
+		if(orderby  == "desc") {
+			$(this).html("\t▲");
+			$("._sortable").attr("data-orderby", "asc");
 			
-//		} else {
-//			$(this).html("\t▼");
-//			$("._sortable").attr("data-orderby", "desc");
-//			sortTable(orderby, cellIndex);
-//		}
+		} else {
+			$(this).html("\t▼");
+			$("._sortable").attr("data-orderby", "desc");
+		}
+		
+		var rs = sortTable(orderby, cellIndex);
+		
+		while(true) {
+			if(rs == false) {
+				rs = sortTable(orderby, cellIndex);
+			} else {
+				break;
+			}
+		}
 	});
 }
 

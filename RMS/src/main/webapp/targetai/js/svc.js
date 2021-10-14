@@ -9,6 +9,7 @@ $(document).ready(function() {
 	var searchObj = {};
 	searchObj.currentPage = 1;
 	fnSvcList(searchObj);
+	fnSortableOption();
 	
 	// 서비스 검색 > 조회 버튼 클릭
 	$("#svcSearchBtn").click(function() {

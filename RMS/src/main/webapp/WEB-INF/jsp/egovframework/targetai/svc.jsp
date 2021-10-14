@@ -130,13 +130,13 @@
 														</div>
 													</th>
 													<th>ID</th>
-													<th>채널명</th>
-													<th>서비스명</th>
-													<th>패키지명</th>
+													<th>채널명<label class="_sortable"></label></th>
+													<th>서비스명<label class="_sortable"></label></th>
+													<th>패키지명<label class="_sortable"></label></th>
 													<th>활성여부</th>
 													<th>수정일시</th>
 													<th>수정자</th>
-													<th>등록일시</th>
+													<th>등록일시<label class="_sortable"></label></th>
 													<th>등록자</th>
 												</tr>
 											</thead>

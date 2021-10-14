@@ -663,11 +663,11 @@
 														</div>
 													</th>
 													<th>ID</th>
-													<th>RULE 명</th>
-													<th>SALIENCE</th>
+													<th>RULE 명<label class="_sortable"></label></th>
+													<th>우선순위</th>
 													<th>수정일시</th>
 													<th>수정자</th>
-													<th>등록일시</th>
+													<th>등록일시<label class="_sortable"></label></th>
 													<th>등록자</th>
 												</tr>
 											</thead>

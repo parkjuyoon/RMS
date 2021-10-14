@@ -14,6 +14,7 @@ $(document).ready(function() {
 	var searchObj = {};
 	searchObj.currentPage = 1;
 	getPkgList(searchObj);
+	fnSortableOption();
 	
 	// 패키지 검색 > 조회 버튼 클릭
 	$("#pkgSearchBtn").click(function() {
@@ -908,7 +909,6 @@ $(document).ready(function() {
 		var factorNm = $(this).text();
 		var factorGrpNm = $(this).attr("data-factorGrpNm");
 		
-
 		var html = "";
 		html += "<div class='oneline_group'>";
 		html += "	<div class='form_group'>";
@@ -1066,8 +1066,6 @@ function getPkgList(searchObj) {
 			
 			// 전체 체크 해제
 			$("#pkgListAllChkBox").prop("checked", false);
-			fnSortableOption();
-			
 		},
 		beforeSend : function() {
 			$("#pkgLoading").show();
@@ -1657,6 +1655,7 @@ function fnRuleTest(param) {
 		success : function(res) {
 			var ruleAttrList = res.ruleAttrList;
 			var html = "";
+			var html2 = "";
 			
 			$.each(ruleAttrList, function(idx, ruleAttr) {
 				if(idx != 0 && ruleAttrList[idx-1].RELATION == '') {
@@ -1676,8 +1675,23 @@ function fnRuleTest(param) {
 //				}
 				
 				html += "<a href='#' class='_ruleTestPop_factorNm' data-factorGrpNm= '"+ ruleAttr.FACTOR_GRP_NM +"' data-factorNmEn='"+ ruleAttr.FACTOR_NM_EN +"' data-factorVal='"+ ruleAttr.FACTOR_VAL +"'>\t"+ ruleAttr.ATTR_WHEN_CONTENTS +"</a>";
+				
+				html2 += "<div class='oneline_group'>";
+				html2 += "	<div class='form_group'>";
+				html2 += "		<label for=''>KEY</label> <input type='text' name='ruleTestPop_key' value='"+ ruleAttr.FACTOR_NM +"' readonly='readonly'/>";
+				html2 += "	</div>";
+				html2 += "	<div class='form_group'>";
+				if(ruleAttr.FACTOR_GRP_NM == '함수') {
+					html2 += "		<label for=''>VALUE</label> <input type='text' name='ruleTestPop_value' class='wd150px' value='"+ ruleAttr.FACTOR_VAL.replaceAll("\"", "") +"' readonly='readonly'/>";
+				} else {
+					html2 += "		<label for=''>VALUE</label> <input type='text' name='ruleTestPop_value' class='wd150px' value='"+ ruleAttr.FACTOR_VAL.replaceAll("\"", "") +"'/>";
+				}
+				html2 += "	</div>";
+				html2 += "	<button type='button' class='btn btn-sm btn-red _ruleTestPop_del' style='color: white'>삭제</button>";
+				html2 += "</div>";
 			});
 			
+			$("#ruleTestPop_input").append(html2);
 			$("#ruleAttrPreView").html(html);
 			$("#modal_ruleTest").show();
 		},

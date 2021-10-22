@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import egovframework.ktds.drools.config.DroolsUtil;
 import egovframework.ktds.targetai.service.PkgService;
+import egovframework.ktds.targetai.service.RuleService;
 
 /**
  * @since 2021.05.25
@@ -31,6 +32,9 @@ public class PkgController {
 
 	@Resource(name = "pkgService")
 	protected PkgService pkgService;
+	
+	@Resource(name = "ruleService")
+	protected RuleService ruleService;
 	
 	@Resource(name = "applicationProperties")
 	protected Properties applicationProperties;
@@ -200,23 +204,6 @@ public class PkgController {
 	}
 	
 	/**
-	 * Rule 리스트 조회
-	 * @param searchObj
-	 * @return ruleList, ruleCount
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/getRuleList.do", method = RequestMethod.POST)
-	public HashMap<String, Object> getRuleList(@RequestBody HashMap<String, Object> searchObj) {
-		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		List<HashMap<String, Object>> ruleList = pkgService.getRuleList(searchObj);
-		int ruleCount = pkgService.getRuleCount(searchObj);
-		resultMap.put("ruleList", ruleList);
-		resultMap.put("ruleCount", ruleCount);
-		
-		return resultMap;
-	}
-	
-	/**
 	 * RULE 상세 조회
 	 * @param RULE_ID
 	 * @return rule
@@ -374,7 +361,7 @@ public class PkgController {
 		HashMap<String, Object> resultMap = new HashMap<>();
 		resultMap.put("pkgId", param.get("pkgId"));
 		resultMap.put("ruleId", param.get("ruleId"));
-		int ruleCount = pkgService.getRuleCount(resultMap);
+		int ruleCount = ruleService.getRuleCount(resultMap);
 		resultMap.put("ruleCount", ruleCount);
 		
 		// RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
@@ -425,7 +412,7 @@ public class PkgController {
 		// 해당 패키지에 등록된 RULE 개수 조회
 		HashMap<String, Object> resultMap = new HashMap<>();
 		resultMap.put("pkgId", param.get("pkgId"));
-		int ruleCount = pkgService.getRuleCount(resultMap);
+		int ruleCount = ruleService.getRuleCount(resultMap);
 		resultMap.put("ruleCount", ruleCount);
 		
 		// RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트

@@ -10,7 +10,10 @@ $(document).ready(function() {
 	var tmpObj = {};
 	var tmpArr = [];
 	
+	var searchObj = {};
+	searchObj.currentPage = 1;
 	getRuleList(searchObj);
+	fnSortableOption();
 	
 	// RULE 검색 > 조회 버튼 클릭
 	$("#ruleSearchBtn").click(function() {

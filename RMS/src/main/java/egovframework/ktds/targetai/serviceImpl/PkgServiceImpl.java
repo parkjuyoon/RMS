@@ -33,16 +33,6 @@ public class PkgServiceImpl extends EgovAbstractServiceImpl implements PkgServic
 	}
 
 	@Override
-	public List<HashMap<String, Object>> getRuleList(HashMap<String, Object> searchObj) {
-		return dao.getRuleList(searchObj);
-	}
-
-	@Override
-	public int getRuleCount(HashMap<String, Object> searchObj) {
-		return dao.getRuleCount(searchObj);
-	}
-
-	@Override
 	public HashMap<String, Object> getRule(HashMap<String, Object> param) {
 		return dao.getRule(param);
 	}

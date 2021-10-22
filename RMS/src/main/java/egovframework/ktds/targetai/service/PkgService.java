@@ -11,10 +11,6 @@ public interface PkgService {
 
 	int getPkgCount(HashMap<String, Object> searchObj);
 
-	List<HashMap<String, Object>> getRuleList(HashMap<String, Object> searchObj);
-
-	int getRuleCount(HashMap<String, Object> searchObj);
-
 	HashMap<String, Object> getRule(HashMap<String, Object> param);
 
 	List<HashMap<String, Object>> getFactorList(HashMap<String, Object> param);

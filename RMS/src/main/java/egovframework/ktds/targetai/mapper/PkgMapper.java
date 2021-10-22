@@ -14,8 +14,6 @@ public interface PkgMapper {
 
 	int getPkgCount(HashMap<String, Object> searchObj);
 
-	List<HashMap<String, Object>> getRuleList(HashMap<String, Object> searchObj);
-
 	int getRuleCount(HashMap<String, Object> searchObj);
 
 	HashMap<String, Object> getRule(HashMap<String, Object> param);

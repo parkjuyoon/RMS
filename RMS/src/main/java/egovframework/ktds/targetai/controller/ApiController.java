@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import egovframework.ktds.drools.config.DroolsUtil;
 import egovframework.ktds.targetai.service.ApiService;
 import egovframework.ktds.targetai.service.PkgService;
+import egovframework.ktds.targetai.service.RuleService;
 import egovframework.ktds.targetai.util.CommonUtil;
 
 @RequestMapping("/targetai")
@@ -41,6 +42,9 @@ public class ApiController {
 	private ApiService apiService;
 	@Autowired
 	private PkgService pkgService;
+	
+	@Resource(name = "ruleService")
+	protected RuleService ruleService;
 	
 	@Resource(name = "applicationProperties")
 	protected Properties applicationProperties;
@@ -449,7 +453,7 @@ public class ApiController {
 			drlSource += "		$map : Map(\n";
 			
 			int ruleId = (int) m.get("RULE_ID");
-			List<HashMap<String, Object>> whenList = pkgService.getWhenList(ruleId);
+			List<HashMap<String, Object>> whenList = ruleService.getWhenList(ruleId);
 			
 			for(HashMap<String, Object> w : whenList) {
 				drlSource += "		" + w.get("ATTR_WHEN");

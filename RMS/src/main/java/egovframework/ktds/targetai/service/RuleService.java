@@ -9,5 +9,7 @@ public interface RuleService {
 	
 	int getRuleCount(HashMap<String, Object> searchObj);
 	
+	HashMap<String, Object> getRule(HashMap<String, Object> param);
 	
+	List<HashMap<String, Object>> getWhenList(int ruleId);
 }

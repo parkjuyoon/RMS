@@ -1,3 +1,4 @@
+
 package egovframework.ktds.targetai.serviceImpl;
 
 import java.util.HashMap;
@@ -30,11 +31,6 @@ public class PkgServiceImpl extends EgovAbstractServiceImpl implements PkgServic
 	@Override
 	public int getPkgCount(HashMap<String, Object> searchObj) {
 		return dao.getPkgCount(searchObj);
-	}
-
-	@Override
-	public HashMap<String, Object> getRule(HashMap<String, Object> param) {
-		return dao.getRule(param);
 	}
 
 	@Override
@@ -75,11 +71,6 @@ public class PkgServiceImpl extends EgovAbstractServiceImpl implements PkgServic
 	@Override
 	public List<HashMap<String, Object>> getRuleListByPkgId(String pkgId) {
 		return dao.getRuleListByPkgId(pkgId);
-	}
-
-	@Override
-	public List<HashMap<String, Object>> getWhenList(int ruleId) {
-		return dao.getWhenList(ruleId);
 	}
 
 	@Override

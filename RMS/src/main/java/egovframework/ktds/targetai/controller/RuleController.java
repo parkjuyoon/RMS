@@ -55,4 +55,23 @@ public class RuleController {
 		return resultMap;
 	}
 	
+	/**
+	 * RULE 상세 조회
+	 * @param RULE_ID
+	 * @return rule
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getRule.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getRule(@RequestBody HashMap<String, Object> param) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		HashMap<String, Object> rule = ruleService.getRule(param);
+		resultMap.put("rule", rule);
+		
+		int ruleId = (int) rule.get("RULE_ID");
+		List<HashMap<String, Object>> ruleAttrList = ruleService.getWhenList(ruleId);
+		resultMap.put("ruleAttrList", ruleAttrList);
+		
+		return resultMap;
+	}
+	
 }

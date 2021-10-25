@@ -51,4 +51,55 @@
 	    <if test="ruleNm_search != null and ruleNm_search != ''">AND RULE_NM LIKE CONCAT('%', #{ruleNm_search}, '%')</if>
 	</select>
 	
+	<!-- RULE 상세 조회 -->
+	<select id="getRule" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 
+			R.RULE_ID,
+		    R.RULE_NM,
+		    R.NO_LOOP,
+		    R.LOCK_ON_ACTIVE,
+		    R.AGENDA_GRP,
+		    R.SALIENCE,
+		    R.EFFECTIVE_DT,
+		    R.EXPIRES_DT,
+		    R.ENABLED,
+		    R.DURATION,
+		    R.ATTR_THEN,
+		    R.NUM_OF_TGT,
+		    R.PKG_ID,
+		    R.CAMP_ID,
+		    R.TARGET_TYPE,
+		    R.REG_DT,
+		    R.REG_USRID,
+		    R.UDT_DT,
+		    R.UDT_USRID
+		FROM targetai.RULE R
+		WHERE
+			R.RULE_ID = #{ruleId}
+	</select>
+	
+	<!-- RULE_ATTR 정보 조회 -->
+	<select id="getWhenList" parameterType="int" resultType="java.util.HashMap">
+		SELECT
+			RA.RULE_ATTR_ID,
+			RA.RULE_ID,
+			RA.ATTR_WHEN,
+		    RA.ATTR_WHEN_CONTENTS,
+		    RA.FACTOR_GRP_NM,
+		    RA.FACTOR_ID,
+		    RA.FACTOR_NM,
+		    RA.FACTOR_NM_EN,
+		    RA.FACTOR_VAL,
+		    RA.LOGICAL,
+		    RA.RELATION,
+		    F.DATA_TYPE
+		FROM
+			targetai.RULE_ATTR RA
+		    LEFT JOIN targetai.FACTOR F ON (RA.FACTOR_ID = F.FACTOR_ID)
+		WHERE
+			RA.RULE_ID = #{pkgId}
+		ORDER BY 
+			RULE_ATTR_ID ASC
+	</select>
+	
 </mapper>

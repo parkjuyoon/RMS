@@ -26,4 +26,14 @@ public class RuleServiceImpl implements RuleService {
 	public int getRuleCount(HashMap<String, Object> searchObj) {
 		return dao.getRuleCount(searchObj);
 	}
+	
+	@Override
+	public HashMap<String, Object> getRule(HashMap<String, Object> param) {
+		return dao.getRule(param);
+	}
+	
+	@Override
+	public List<HashMap<String, Object>> getWhenList(int ruleId) {
+		return dao.getWhenList(ruleId);
+	}
 }

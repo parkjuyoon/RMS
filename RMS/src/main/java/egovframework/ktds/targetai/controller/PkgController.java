@@ -204,25 +204,6 @@ public class PkgController {
 	}
 	
 	/**
-	 * RULE 상세 조회
-	 * @param RULE_ID
-	 * @return rule
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/getRule.do", method = RequestMethod.POST)
-	public HashMap<String, Object> getRule(@RequestBody HashMap<String, Object> param) {
-		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		HashMap<String, Object> rule = pkgService.getRule(param);
-		resultMap.put("rule", rule);
-		
-		int ruleId = (int) rule.get("RULE_ID");
-		List<HashMap<String, Object>> ruleAttrList = pkgService.getWhenList(ruleId);
-		resultMap.put("ruleAttrList", ruleAttrList);
-		
-		return resultMap;
-	}
-	
-	/**
 	 * 속성 view 리스트 조회
 	 * @return factorList
 	 */
@@ -301,7 +282,7 @@ public class PkgController {
 		HashMap<String, Object> resultMap = new HashMap<>();
 		
 		int ruleId = Integer.parseInt((String) param.get("ruleId"));
-		List<HashMap<String, Object>> ruleAttrList = pkgService.getWhenList(ruleId);
+		List<HashMap<String, Object>> ruleAttrList = ruleService.getWhenList(ruleId);
 		
 		resultMap.put("ruleAttrList", ruleAttrList);
 		
@@ -344,7 +325,7 @@ public class PkgController {
 		}
 		
 		// RULE 의 ATTR_THEN 업데이트
-		HashMap<String, Object> ruleMap = pkgService.getRule(param);
+		HashMap<String, Object> ruleMap = ruleService.getRule(param);
 		String attrThen = "$map.put(\"res_"+ ruleMap.get("RULE_ID") +"_"+ ruleMap.get("CAMP_ID") +"_"+ ruleMap.get("SALIENCE") +"\", \""+ ruleMap.get("RULE_NM") +"\");\n";
 		
 		attrThen = "";
@@ -452,7 +433,7 @@ public class PkgController {
 			drlSource += "		$map : Map(\n";
 			
 			int ruleId = (int) m.get("RULE_ID");
-			List<HashMap<String, Object>> whenList = pkgService.getWhenList(ruleId);
+			List<HashMap<String, Object>> whenList = ruleService.getWhenList(ruleId);
 			
 			for(HashMap<String, Object> w : whenList) {
 				drlSource += "		" + w.get("ATTR_WHEN");

@@ -11,8 +11,6 @@ public interface PkgService {
 
 	int getPkgCount(HashMap<String, Object> searchObj);
 
-	HashMap<String, Object> getRule(HashMap<String, Object> param);
-
 	List<HashMap<String, Object>> getFactorList(HashMap<String, Object> param);
 
 	int ruleNmCheck(HashMap<String, Object> param);
@@ -28,8 +26,6 @@ public interface PkgService {
 	HashMap<String, Object> getPkgById(String pkgId);
 
 	List<HashMap<String, Object>> getRuleListByPkgId(String pkgId);
-
-	List<HashMap<String, Object>> getWhenList(int ruleId);
 
 	void updateDrlSource(HashMap<String, Object> pkg);
 

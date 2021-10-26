@@ -16,10 +16,6 @@ public interface PkgMapper {
 
 	int getRuleCount(HashMap<String, Object> searchObj);
 
-	List<HashMap<String, Object>> getFactorList(HashMap<String, Object> param);
-
-	int ruleNmCheck(HashMap<String, Object> param);
-
 	List<HashMap<String, Object>> getFactorVal(HashMap<String, Object> param);
 
 	void ruleSave(HashMap<String, Object> param);

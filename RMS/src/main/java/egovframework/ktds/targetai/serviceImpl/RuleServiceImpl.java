@@ -36,4 +36,29 @@ public class RuleServiceImpl implements RuleService {
 	public List<HashMap<String, Object>> getWhenList(int ruleId) {
 		return dao.getWhenList(ruleId);
 	}
+	
+	@Override
+	public int ruleNmCheck(HashMap<String, Object> param) {
+		return dao.ruleNmCheck(param);
+	}
+	
+	@Override
+	public List<HashMap<String, Object>> getFactorList(HashMap<String, Object> param) {
+		return dao.getFactorList(param);
+	}
+	
+	@Override
+	public List<HashMap<String, Object>> getFactorFuncArgs(HashMap<String, Object> param) {
+		return dao.getFactorFuncArgs(param);
+	}
+
+	@Override
+	public HashMap<String, Object> getFactorById(HashMap<String, Object> param) {
+		return dao.getFactorById(param);
+	}
+	
+	@Override
+	public List<HashMap<String, Object>> getFactorVal(HashMap<String, Object> param) {
+		return dao.getFactorVal(param);
+	}
 }

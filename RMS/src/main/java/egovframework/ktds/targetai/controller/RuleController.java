@@ -1,5 +1,6 @@
 package egovframework.ktds.targetai.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -74,4 +75,70 @@ public class RuleController {
 		return resultMap;
 	}
 	
+	/**
+	 * Rule name 중복 체크
+	 * @param param
+	 * @return boolean
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/ruleNmCheck.do", method = RequestMethod.POST)
+	public boolean ruleNmCheck(@RequestBody HashMap<String, Object> map) {
+		int ruleNameCnt = ruleService.ruleNmCheck(map);
+		
+		if(ruleNameCnt > 0) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * 속성 view 리스트 조회
+	 * @return factorList
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getFactorList.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getFactorList(@RequestBody HashMap<String, Object> param) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		try {
+			List<HashMap<String, Object>> factorList = ruleService.getFactorList(param);
+			resultMap.put("factorList", factorList);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return resultMap;
+	}
+	
+	/**
+	 * Factor Value 조회
+	 * @param param
+	 * @return factor, factorVal
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getFactorVal.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getFactorVal(@RequestBody HashMap<String, Object> param) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+		HashMap<String, Object> factor = ruleService.getFactorById(param);
+		List<HashMap<String, Object>> factorVal = new ArrayList<>();
+		String factorType = (String) factor.get("FACTOR_TYPE");
+
+		if(factor != null) {
+			factorVal = ruleService.getFactorVal(param);
+		}
+		
+		if("FUNC".equals(factorType)) {
+			factorVal = ruleService.getFactorFuncArgs(param);
+		} 
+		
+		resultMap.put("factor", factor);
+		resultMap.put("factorVal", factorVal);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return resultMap;
+	}
 }

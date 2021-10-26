@@ -11,12 +11,6 @@ public interface PkgService {
 
 	int getPkgCount(HashMap<String, Object> searchObj);
 
-	List<HashMap<String, Object>> getFactorList(HashMap<String, Object> param);
-
-	int ruleNmCheck(HashMap<String, Object> param);
-
-	List<HashMap<String, Object>> getFactorVal(HashMap<String, Object> param);
-
 	void ruleSave(HashMap<String, Object> param);
 
 	void ruleAttrSave(HashMap<String, Object> param);
@@ -52,9 +46,5 @@ public interface PkgService {
 	void updatePkg(HashMap<String, Object> param);
 
 	List<HashMap<String, Object>> getRuleAttrByPkgId(HashMap<String, Object> param);
-
-	List<HashMap<String, Object>> getFactorFuncArgs(HashMap<String, Object> param);
-
-	HashMap<String, Object> getFactorById(HashMap<String, Object> param);
 
 }

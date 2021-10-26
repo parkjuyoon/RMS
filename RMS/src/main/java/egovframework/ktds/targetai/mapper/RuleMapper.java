@@ -15,4 +15,14 @@ public interface RuleMapper {
 	HashMap<String, Object> getRule(HashMap<String, Object> param);
 	
 	List<HashMap<String, Object>> getWhenList(int ruleId);
+	
+	int ruleNmCheck(HashMap<String, Object> param);
+	
+	List<HashMap<String, Object>> getFactorList(HashMap<String, Object> param);
+
+	List<HashMap<String, Object>> getFactorFuncArgs(HashMap<String, Object> param);
+
+	HashMap<String, Object> getFactorById(HashMap<String, Object> param);
+
+	List<HashMap<String, Object>> getFactorVal(HashMap<String, Object> param);
 }

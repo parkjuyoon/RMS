@@ -17,7 +17,6 @@
 		    R.DURATION,
 		    R.ATTR_THEN,
 		    R.NUM_OF_TGT,
-		    R.PKG_ID,
 		    R.CAMP_ID,
 		    DATE_FORMAT(R.REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
 		    R.REG_USRID,
@@ -30,7 +29,6 @@
 			LEFT JOIN targetai.MEMBER M ON (R.REG_USRID = M.MEMBER_ID)
 		    LEFT JOIN targetai.MEMBER M1 ON (R.UDT_USRID = M1.MEMBER_ID)
 		WHERE 1=1
-		<if test="pkgId != null and pkgId != ''">AND PKG_ID = #{pkgId}</if>
 		<if test="ruleId_search != null and ruleId_search != ''">AND RULE_ID = #{ruleId_search}</if>
 	    <if test="ruleRegUsrId_search != null and ruleRegUsrId_search != ''">AND REG_USRID = #{ruleRegUsrId_search}</if>
 	    <if test="ruleNm_search != null and ruleNm_search != ''">AND RULE_NM LIKE CONCAT('%', #{ruleNm_search}, '%')</if>
@@ -45,7 +43,6 @@
 			COUNT(*) AS CNT
 		FROM targetai.RULE
 		WHERE 1=1
-		<if test="pkgId != null and pkgId != ''">AND PKG_ID = #{pkgId}</if>
 		<if test="ruleId_search != null and ruleId_search != ''">AND RULE_ID = #{ruleId_search}</if>
 	    <if test="ruleRegUsrId_search != null and ruleRegUsrId_search != ''">AND REG_USRID = #{ruleRegUsrId_search}</if>
 	    <if test="ruleNm_search != null and ruleNm_search != ''">AND RULE_NM LIKE CONCAT('%', #{ruleNm_search}, '%')</if>
@@ -66,7 +63,6 @@
 		    R.DURATION,
 		    R.ATTR_THEN,
 		    R.NUM_OF_TGT,
-		    R.PKG_ID,
 		    R.CAMP_ID,
 		    R.TARGET_TYPE,
 		    R.REG_DT,
@@ -107,11 +103,9 @@
 		SELECT 
 		    COUNT(*)
 		FROM
-		    targetai.PKG P, targetai.RULE R
+		    targetai.RULE R
 		WHERE
-			P.PKG_ID = R.PKG_ID
-			AND P.PKG_ID = #{pkgId}
-		    AND R.RULE_NM = #{ruleNm}
+		    R.RULE_NM = #{ruleNm}
 		    <if test="ruleId != ''">AND R.RULE_ID != #{ruleId}</if>
 	</select>
 	

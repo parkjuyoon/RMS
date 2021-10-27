@@ -547,6 +547,21 @@ $(document).ready(function() {
 		$("#ruleWhenCont").val(contents);
 		close_layerPop('modal_ruleEditor');;
 	});
+	
+	// RULE 리스트 페이지 번호 클릭
+	$("#ruleListPaging").on("click", "._paging", function(e) {
+		var cls = $(this).attr("class");
+		const pageNum = $(this).attr("data-page_num");
+		
+		var searchObj = {};
+		searchObj.pkgId = $("#ruleSearchBtn").attr("data-pkgId");
+		searchObj.ruleId_search = $("#ruleId_search").val();
+		searchObj.ruleRegUsrId_search = $("#ruleRegUsrId_search").val();
+		searchObj.ruleNm_search = $("#ruleNm_search").val();
+		searchObj.currentPage = 1;
+		
+		getRuleList(searchObj);
+	});
 });
 
 /**

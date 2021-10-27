@@ -532,8 +532,93 @@
 														</td>
 													</tr>
 													<tr>
-														<th class="t_left">RULE</th>
-														<td class="t_left" id="ruleCntInPkg"></td>
+														<th class="t_left">RULE 연결</th>
+														<td class="t_left">
+															<button type="button" id="ruleMappingBtn" data-modalclass="modal_ruleMapping" title="팝업" class="btn btn-sm btn-green btnModal">연결</button>
+															<!-- outPut Value 선택 팝업 -->
+															<div id="modal_ruleMapping" class="modal_pop">
+																<div class="modal_content" style="width: 800px;">
+																	<!-- 팝업항상중앙띄우기 -->
+																	<div class="modla_center">
+																		<div class="modal_header">
+																			<span class="close _ruleMappingPop_close" onclick="close_layerPop('modal_ruleMapping');" data-focusId="">&times;</span>
+																			<h2>RULE 연결</h2>
+																		</div>
+																		<!-- 본문 -->
+																		<div class="modal_body" style="height: 500px;">
+																			<div class="progress_loading">
+																				<div id="modal_ruleMappingLoading">
+																					<img src="/targetai_publish/images/ajax-loader1.gif" />
+																				</div>
+																			</div>
+																			<div class="modal_wrap">
+																				<div class="row">
+																					<div class="col">
+																						<!-- 본문페이지 -->
+																						<div class="card-body body-header" style="width: 42%; float: left;">
+																							<header class="card-header card-header-pd-mobile">
+																								<div class="card-actions card-header-position-mobile"></div>
+																								<div class="form_group">
+																									<h2 class="card-title_txt" id="">Available:
+																											<input type="text" id="" class="wd150px" value="" />
+																									</h2>
+																								</div>
+																							</header>
+																							<!-- 경고 -->
+																							<div class="card-body">
+																								<div id="chkRuleList" style="height: 370px; overflow: auto;"></div>
+																							</div>
+																							<!-- //경고 -->
+																						</div>
+																						<!-- //본문페이지 -->
+																						<!-- 본문페이지 -->
+																						<div class="" style="width: 13%;
+																										    float: left;
+																										    margin-left: 10px;
+																										    margin-right: 10px;
+																										    display: flex;
+																										    justify-content: center;
+																										    align-items: center;
+																										    height: 100%;">
+																							<div>
+																								<button type="button" id="outPutAddBtn" class="btn btn-sm btn-sky" style="width: 100%; margin-bottom: 10px;">Add &gt;</button>
+																								<button type="button" id="outPutRemoveBtn" class="btn btn-sm btn-gray" style="width: 100%;">&lt; Remove</button>
+																							</div>
+																						</div>
+																						<!-- //본문페이지 -->
+																						<!-- 본문페이지 -->
+																						<div class="card-body body-header" style="width: 42%; float: left;">
+																							<header class="card-header card-header-pd-mobile">
+																								<div class="card-actions card-header-position-mobile"></div>
+																								<h2 class="card-title_txt" id="">Configured:</h2>
+																							</header>
+																							<!-- 경고 -->
+																							<div class="card-body">
+																								<div id="configuredFactor" style="height: 370px; overflow: auto;"></div>
+																							</div>
+																							<!-- //경고 -->
+																						</div>
+																						<!-- //본문페이지 -->
+																						
+																					</div>
+																				</div>
+																				<div class="row">
+																					<!-- 버튼 -->
+																					<div class="modal-footer">
+																						<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('modal_ruleMapping');"><i class="far fa-times-circle custom-btn-i"></i> 취소</button>
+																						<button type="button" class="btn btn-sm btn-green" id="outPutAcceptBtn"><i class="far fa-check-circle custom-btn-i"></i> 적용</button>
+																					</div>
+																					<!-- //버튼 -->
+																				</div>
+																			</div>
+																		</div>
+																		<!-- //본문 -->
+																	</div>
+																	<!-- //팝업항상중앙띄우기 -->
+																</div>
+															</div>
+															<!-- //outPut Value 선택 팝업 팝업 -->
+														</td>
 													</tr>
 													<tr>
 														<th class="t_left">RULE 테스트</th>
@@ -569,224 +654,9 @@
 									</div>
 									<!-- //버튼 -->
 								</div>
-								<!-- //본문페이지 -->
 							</div>
 						</div>
 					</div>
-					<!-- //상세영역 -->
-
-					<div class="dot_line"></div>
-
-					<!-- 조회영역 -->
-					<div class="row">
-						<div class="col">
-							<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
-							<div class="card card-collapsed">
-								<header class="card-header">
-									<div class="card-actions">
-										<a href="#" class="card-action card-action-toggle" data-card-toggle></a>
-									</div>
-									<h2 class="card-title_txt">RULE 검색</h2>
-								</header>
-								<!-- 본문페이지 -->
-								<div class="card-body" style="display: none;">
-									<!-- 조회 -->
-									<div class="searcharea">
-										<div class="reset_btn-bottom">
-											<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-gray" id="ruleResetBtn">초기화</button>
-										</div>
-										<div class="search_btn-bottom">
-											<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-darkblue" id="ruleSearchBtn" data-pkgId="">
-												<i class="fas fa-search custom-btn-i"></i>조회
-											</button>
-										</div>
-										<div class="search_input">
-											<div class="search_col">
-												<div class="form_group">
-													<label for="">RULE ID</label> <input type="text" class="wd150px" id="ruleId_search" value="" />
-												</div>
-												<div class="form_group">
-													<label for="">등록자</label> <input type="text" class="wd150px" id="ruleRegUsrId_search" value="" />
-												</div>
-												<div class="oneline_group">
-													<label for="">RULE 명</label> <input type="text" class="wd90" id="ruleNm_search" value="" />
-												</div>
-											</div>
-										</div>
-									</div>
-									<!-- //조회 -->
-								</div>
-								<!-- //본문페이지 -->
-							</div>
-						</div>
-					</div>
-					<!-- //조회영역 -->
-
-					<!-- 그리드영역 -->
-					<div class="row">
-						<div class="col">
-							<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
-							<div class="card card-collapsed" id="ruleListCard">
-								<header class="card-header card-header-pd-mobile">
-									<div class="card-actions card-header-position-mobile">
-										<span class="infonum"> <span class="txt_color_blue mg_l5 mg_r5" id="ruleCntInPkgBySearch"></span>건
-										</span>
-										<a href="#" id="ruleListCardOpen" class="card-action card-action-toggle"></a>
-									</div>
-									<h2 class="card-title_txt">RULE 목록</h2>
-								</header>
-								<!-- 본문페이지 -->
-								<div class="card-body" id="ruleListCardBody" style="display: none;">
-									<div class="progress_loading">
-										<div id="ruleLoading">
-											<img src="/targetai_publish/images/ajax-loader1.gif" />
-										</div>
-									</div>
-									<!-- 테이블 -->
-									<div class="panel bd_b_none nobordertop">
-										<table class="tb_type01">
-											<colgroup>
-												<col style="width: 5%;" />
-												<col style="width: 10%;" />
-												<col style="width: auto;" />
-												<col style="width: 12%;" />
-												<col style="width: 12%;" />
-												<col style="width: 10%;" />
-												<col style="width: 12%;" />
-												<col style="width: 10%;" />
-											</colgroup>
-											<thead>
-												<tr>
-													<th>
-														<div class="checkbox-container">
-															<input type="checkbox" id="ruleListAllChkBox" /> <label for="ruleListAllChkBox"></label>
-														</div>
-													</th>
-													<th>ID</th>
-													<th>RULE 명<label class="_sortable"></label></th>
-													<th>우선순위</th>
-													<th>수정일시</th>
-													<th>수정자</th>
-													<th>등록일시<label class="_sortable"></label></th>
-													<th>등록자</th>
-												</tr>
-											</thead>
-											<tbody id="ruleList"></tbody>
-										</table>
-									</div>
-									<!-- //테이블 -->
-
-									<!-- 페이징 -->
-									<div class="custom-paging" id="ruleListPaging"></div>
-									<!-- //페이징 -->
-
-									<!-- 버튼 -->
-									<div class="card-actions-foot">
-										<button type="button" class="btn btn-sm btn-gray" id="delRuleBtn">
-											<i class="far fa-trash-alt custom-btn-i"></i> 삭제
-										</button>
-										<button type="button" class="btn btn-sm btn-green" id="addNewRuleBtn">
-											<i class="el el-file-new custom-btn-i"></i> 신규 RULE 생성
-										</button>
-									</div>
-									<!-- //버튼 -->
-								</div>
-								<!-- //본문페이지 -->
-							</div>
-						</div>
-					</div>
-					<!-- //그리드영역 -->
-
-					<!-- 상세영역 -->
-					<div class="row">
-						<div class="col">
-							<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
-							<div class="card card-collapsed" id="ruleCard">
-								<header class="card-header card-header-pd-mobile">
-									<div class="card-actions card-header-position-mobile">
-										<button type="button" class="btn btn-sm btn-sky btnModal" id="ruleEditorPopUp" data-ruleId="">RULE EDITOR</button>
-										<a href="#" id="ruleDetailCardOpen" class="card-action card-action-toggle"></a>
-									</div>
-									<h2 class="card-title_txt">RULE 상세</h2>
-								</header>
-								<!-- 본문페이지 -->
-								<div class="card-body" id="ruleCardBody" style="display: none;">
-									<!-- 테이블 -->
-									<div class="panel nobordertop">
-										<div class="sform_head">
-											<table class="sform_type">
-												<colgroup>
-													<col style="width: 180px" />
-													<col style="width: auto" />
-												</colgroup>
-												<tbody>
-													<tr>
-														<th class="t_left">RULE ID</th>
-														<td class="t_left" id="ruleId"></td>
-													</tr>
-													<tr>
-														<th class="t_left">RULE 명</th>
-														<td class="t_left"><input type="text" class="wd250px" id="ruleNm" value="" />
-															<button type="button" data-isDup="N" id="ruleNmDupBtn" class="btn btn-sm btn-gray">중복체크</button> 
-															<span class="custom-red mg_l15" style="display: none;" id="ruleDupN"><i class="el el-idea"></i> 중복된 RULE 명이 있습니다.</span> 
-															<span class="custom-green mg_l15" style="display: none;" id="ruleDupY"><i class="el el-idea"></i> 사용가능 RULE 명입니다.</span>
-														</td>
-													</tr>
-													<tr style="display: none;">
-														<th class="t_left">NO-LOOP</th>
-														<td class="t_left">
-															<div class="radio-container mg_r0">
-																<input type="radio" name="noLoop" value="true" id="" checked /> <label for="noLoop" class="mg_r10">TRUE</label> <input type="radio"
-																	name="noLoop" value="false" id="" /> <label for="noLoop" class="mg_r10">FALSE</label>
-															</div>
-														</td>
-													</tr>
-													<tr style="display: none;">
-														<th class="t_left">LOCK-ON-ACTIVE</th>
-														<td class="t_left">
-															<div class="radio-container mg_r0">
-																<input type="radio" name="lockOnActive" value="true" id="" checked /> <label for="lockOnActive" class="mg_r10">TRUE</label> <input
-																	type="radio" name="lockOnActive" value="false" id="" /> <label for="lockOnActive" class="mg_r10">FALSE</label>
-															</div>
-														</td>
-													</tr>
-													<tr>
-														<th class="t_left">우선 순위</th>
-														<td class="t_left"><input type="text" class="wd150px" id="salience" value="" /></td>
-													</tr>
-													<tr>
-														<th class="t_left">타켓 유형</th>
-														<td class="t_left">
-															<select id="targetType" class="wd150px">
-																<option value="CUST">고객</option>
-																<option value="CONT">계약</option>
-															</select>
-														</td>
-													</tr>
-													<tr>
-														<th class="t_left">상세속성 정의</th>
-														<td class="t_left"><textarea rows="4" cols="7" class="txtsize_100 wd100" id="ruleWhenCont" placeholder="RULE EDITOR를 통해 생성하세요."
-																readonly="readonly"></textarea></td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-									</div>
-									<!-- //테이블 -->
-
-									<!-- 버튼 -->
-									<div class="card-actions-foot">
-										<button type="button" class="btn btn-sm btn-green" id="saveRuleBtn">
-											<i class="fas fa-save custom-btn-i"></i> 저장
-										</button>
-									</div>
-									<!-- //버튼 -->
-								</div>
-								<!-- //본문페이지 -->
-							</div>
-						</div>
-					</div>
-					<!-- //상세영역 -->
 				</div>
 			</div>
 		</div>

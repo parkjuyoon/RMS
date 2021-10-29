@@ -337,6 +337,36 @@ public class PkgController {
 	}
 	
 	/**
+	 * 패키지와 연결 가능한 RULE 목록 조회
+	 * @param param
+	 * @return resultMap
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getConRuleList.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getConRuleList(@RequestBody HashMap<String, Object> param) {
+		HashMap<String, Object> resultMap = new HashMap<>();
+		List<HashMap<String, Object>> conRuleList = pkgService.getConRuleList(param);
+		resultMap.put("conRuleList", conRuleList);
+		
+		return resultMap;
+	}
+	
+	/**
+	 * 맵핑된 RULE 목록 조회
+	 * @param param
+	 * @return resultMap
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getMappingRuleList.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getMappingRuleList(@RequestBody HashMap<String, Object> param) {
+		HashMap<String, Object> resultMap = new HashMap<>();
+		List<HashMap<String, Object>> mappingRuleList = pkgService.getMappingRuleList(param);
+		resultMap.put("mappingRuleList", mappingRuleList);
+		
+		return resultMap;
+	}
+	
+	/**
 	 * RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
 	 * @param pkgId
 	 * @return

@@ -566,7 +566,7 @@
 																							</header>
 																							<!-- 경고 -->
 																							<div class="card-body">
-																								<div id="chkRuleList" style="height: 370px; overflow: auto;"></div>
+																								<div id="conRuleList" style="height: 370px; overflow: auto;"></div>
 																							</div>
 																							<!-- //경고 -->
 																						</div>
@@ -581,8 +581,8 @@
 																										    align-items: center;
 																										    height: 100%;">
 																							<div>
-																								<button type="button" id="outPutAddBtn" class="btn btn-sm btn-sky" style="width: 100%; margin-bottom: 10px;">Add &gt;</button>
-																								<button type="button" id="outPutRemoveBtn" class="btn btn-sm btn-gray" style="width: 100%;">&lt; Remove</button>
+																								<button type="button" id="mappingAddBtn" class="btn btn-sm btn-sky" style="width: 100%; margin-bottom: 10px;">Add &gt;</button>
+																								<button type="button" id="mappingRemoveBtn" class="btn btn-sm btn-gray" style="width: 100%;">&lt; Remove</button>
 																							</div>
 																						</div>
 																						<!-- //본문페이지 -->
@@ -594,7 +594,7 @@
 																							</header>
 																							<!-- 경고 -->
 																							<div class="card-body">
-																								<div id="configuredFactor" style="height: 370px; overflow: auto;"></div>
+																								<div id="mappingRuleList" style="height: 370px; overflow: auto;"></div>
 																							</div>
 																							<!-- //경고 -->
 																						</div>

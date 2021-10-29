@@ -123,4 +123,14 @@ public class PkgServiceImpl extends EgovAbstractServiceImpl implements PkgServic
 		return dao.getRuleAttrByPkgId(param);
 	}
 
+	@Override
+	public List<HashMap<String, Object>> getConRuleList(HashMap<String, Object> param) {
+		return dao.getConRuleList(param);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> getMappingRuleList(HashMap<String, Object> param) {
+		return dao.getMappingRuleList(param);
+	}
+
 }

@@ -57,4 +57,8 @@ public interface PkgMapper {
 	List<HashMap<String, Object>> getFactorFuncArgs(HashMap<String, Object> param);
 
 	HashMap<String, Object> getFactorById(HashMap<String, Object> param);
+
+	List<HashMap<String, Object>> getConRuleList(HashMap<String, Object> param);
+
+	List<HashMap<String, Object>> getMappingRuleList(HashMap<String, Object> param);
 }

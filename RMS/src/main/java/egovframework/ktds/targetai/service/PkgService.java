@@ -47,4 +47,8 @@ public interface PkgService {
 
 	List<HashMap<String, Object>> getRuleAttrByPkgId(HashMap<String, Object> param);
 
+	List<HashMap<String, Object>> getConRuleList(HashMap<String, Object> param);
+
+	List<HashMap<String, Object>> getMappingRuleList(HashMap<String, Object> param);
+
 }

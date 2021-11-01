@@ -82,7 +82,7 @@
 		SELECT
 			RULE_ID
 		FROM
-			targetai.RULE
+			targetai.PKG_RULE_MAPPING
 		WHERE
 			PKG_ID IN 
 		<foreach collection="pkgIdArr" item="pkgId" separator="," open="(" close=")">
@@ -261,25 +261,26 @@
 	<!-- RULE 정보 조회 -->
 	<select id="getRuleListByPkgId" parameterType="string" resultType="java.util.HashMap">
 		SELECT
-			RULE_ID,
-		    RULE_NM,
-		    NO_LOOP,
-		    LOCK_ON_ACTIVE,
-		    AGENDA_GRP,
-		    SALIENCE,
-		    EFFECTIVE_DT,
-		    EXPIRES_DT,
-		    ENABLED,
-		    DURATION,
-		    ATTR_THEN,
-		    NUM_OF_TGT,
-		    PKG_ID,
-		    CAMP_ID,
-		    REG_DT
+			R.RULE_ID,
+			R.RULE_NM,
+			R.NO_LOOP,
+			R.LOCK_ON_ACTIVE,
+			R.AGENDA_GRP,
+			R.SALIENCE,
+			R.EFFECTIVE_DT,
+			R.EXPIRES_DT,
+			R.ENABLED,
+			R.DURATION,
+			R.ATTR_THEN,
+			R.NUM_OF_TGT,
+			PRM.PKG_ID,
+			R.CAMP_ID,
+			R.REG_DT
 		FROM
-			targetai.RULE
+			targetai.PKG_RULE_MAPPING PRM
+		    LEFT JOIN targetai.RULE R ON (PRM.RULE_ID = R.RULE_ID)
 		WHERE
-			PKG_ID = #{pkgId}
+			PRM.PKG_ID = #{pkgId}
 	</select>
 	
 	<!-- PKG 의 DRL_SOURCE 업데이트 -->
@@ -316,25 +317,17 @@
 	<!-- 패키지와 연결 가능한 RULE 목록 조회 -->
 	<select id="getConRuleList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT 
-		    PRM.PKG_RULE_MAPPING_ID,
-		    PRM.PKG_ID,
-		    R.RULE_ID,
-		    R.RULE_NM
+			RULE_ID,
+			RULE_NM
 		FROM
-			targetai.RULE R
-		    LEFT JOIN targetai.PKG_RULE_MAPPING PRM ON (PRM.RULE_ID = R.RULE_ID)
+			targetai.RULE
+		<if test="!mappingRuleList.isEmpty()">
 		WHERE
-			(PRM.PKG_ID IS NULL 
-		    OR PRM.RULE_ID NOT IN (
-					SELECT 
-						SPRM.RULE_ID
-					FROM targetai.RULE SR
-					LEFT JOIN targetai.PKG_RULE_MAPPING SPRM ON (SPRM.RULE_ID = SR.RULE_ID)
-					WHERE
-						SPRM.PKG_ID = #{pkgId}
-				)
-		    ) 
-		    <if test="ruleNm != null and ruleNm != ''">AND R.RULE_NM LIKE CONCAT('%',#{ruleNm},'%')</if>
+			RULE_ID NOT IN
+			<foreach collection="mappingRuleList" item="list" open="(" close=")" separator=",">
+				#{list.RULE_ID}								
+			</foreach>
+		</if>
 	</select>
 	
 	<!-- 맵핑된 RULE 목록 조회 -->
@@ -350,4 +343,34 @@
 		WHERE
 			PRM.PKG_ID = #{pkgId}	
 	</select>
+	
+	<delete id="delRuleMappingByPkgId" parameterType="java.util.HashMap">
+		DELETE FROM targetai.PKG_RULE_MAPPING
+		WHERE
+			PKG_ID = #{pkgId}
+	</delete>
+	
+	<!-- 패키지에 연결된 Rule 맵핑 정보 삭제 -->
+	<delete id="delRuleMappingByPkgIds" parameterType="java.util.HashMap">
+		DELETE FROM targetai.PKG_RULE_MAPPING
+		WHERE
+			PKG_ID IN 
+		<foreach collection="pkgIdArr" item="pkgId" separator="," open="(" close=")">
+			#{pkgId}
+		</foreach>
+	</delete>
+	
+	<!-- 새로운 Rule 맵핑 연결 (upsert) -->
+	<insert id="addRuleMappingByPkgId" parameterType="java.util.HashMap">
+		INSERT INTO targetai.PKG_RULE_MAPPING (
+			PKG_ID,
+			RULE_ID
+		) VALUES 
+		<foreach collection="mappingRuleIds" item="ruleId" separator=",">
+		(
+			#{pkgId},
+			#{ruleId}
+		)
+		</foreach>
+	</insert>
 </mapper>

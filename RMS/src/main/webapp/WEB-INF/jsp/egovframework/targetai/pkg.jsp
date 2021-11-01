@@ -546,7 +546,7 @@
 																		</div>
 																		<!-- 본문 -->
 																		<div class="modal_body" style="height: 500px;">
-																			<div class="progress_loading">
+																			<div class="progress_loading" style="display: none;">
 																				<div id="modal_ruleMappingLoading">
 																					<img src="/targetai_publish/images/ajax-loader1.gif" />
 																				</div>
@@ -566,7 +566,7 @@
 																							</header>
 																							<!-- 경고 -->
 																							<div class="card-body">
-																								<div id="conRuleList" style="height: 370px; overflow: auto;"></div>
+																								<div id="conRuleList" style="height: 361px; overflow: auto;"></div>
 																							</div>
 																							<!-- //경고 -->
 																						</div>
@@ -605,8 +605,8 @@
 																				<div class="row">
 																					<!-- 버튼 -->
 																					<div class="modal-footer">
-																						<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('modal_ruleMapping');"><i class="far fa-times-circle custom-btn-i"></i> 취소</button>
-																						<button type="button" class="btn btn-sm btn-green" id="outPutAcceptBtn"><i class="far fa-check-circle custom-btn-i"></i> 적용</button>
+																						<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('modal_ruleMapping');"><i class="far fa-times-circle custom-btn-i"></i> 닫기</button>
+																						<button type="button" class="btn btn-sm btn-green" id="ruleMappingSaveBtn"><i class="far fa-check-circle custom-btn-i"></i> 적용</button>
 																					</div>
 																					<!-- //버튼 -->
 																				</div>

@@ -81,8 +81,35 @@ public class PkgController {
 	@RequestMapping(value = "/getPkg.do", method = RequestMethod.POST)
 	public HashMap<String, Object> getPkg(@RequestBody HashMap<String, Object> param) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		// 패키지 상세 정보 조회
 		HashMap<String, Object> pkg = pkgService.getPkg(param);
+		// 맵핑된 RULE 목록 조회 
+		List<HashMap<String, Object>> mappingRuleList = pkgService.getMappingRuleList(param);
+		param.put("mappingRuleList", mappingRuleList);
+		// 패키지와 연결 가능한 RULE 목록 조회
+		List<HashMap<String, Object>> conRuleList = pkgService.getConRuleList(param);
+		
 		resultMap.put("pkg", pkg);
+		resultMap.put("conRuleList", conRuleList);
+		resultMap.put("mappingRuleList", mappingRuleList);
+		
+		return resultMap;
+	}
+	
+	/**
+	 * package 상세 조회
+	 * @param PKG_ID
+	 * @return pkg
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getConRuleList.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getConRuleList(@RequestBody HashMap<String, Object> param) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		param.put("mappingRuleList", new ArrayList<>());
+		// 패키지와 연결 가능한 RULE 목록 조회
+		List<HashMap<String, Object>> conRuleList = pkgService.getConRuleList(param);
+		
+		resultMap.put("conRuleList", conRuleList);
 		
 		return resultMap;
 	}
@@ -174,12 +201,26 @@ public class PkgController {
 		
 		// PKG 저장
 		pkgService.addPkg(param);
+		param.put("pkgId", param.get("PKG_ID"));
+		
 		// DRL 파일명 업데이트
 		String drlNm = param.get("pkgNm") + "_" + param.get("PKG_ID") + ".drl";
 		param.put("drlNm", drlNm);
 		pkgService.updateDrlFileNm(param);
 		
-		param.put("pkgId", (int) param.get("PKG_ID"));
+		// 연결된 Rule 맵핑 정보 삭제
+		int delRes = pkgService.delRuleMappingByPkgId(param);
+		// 새로운 Rule 맵핑 연결
+		List<String> ruleIds = (List<String>) param.get("mappingRuleIds");
+		if(ruleIds.size() > 0) {
+			int addRes = pkgService.addRuleMappingByPkgId(param);
+			
+			// DRL 파일 수정
+			// RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
+			String pkgId = String.valueOf(param.get("pkgId"));
+			saveDRL(pkgId);
+		}
+		
 		HashMap<String, Object> pkg = pkgService.getPkg(param);
 		
 		return pkg;
@@ -198,6 +239,20 @@ public class PkgController {
 		param.put("REG_USER_ID", regUserId);
 		// 서비스 저장
 		pkgService.updatePkg(param);
+		
+		// 연결된 Rule 맵핑 정보 삭제
+		int delRes = pkgService.delRuleMappingByPkgId(param);
+		// 새로운 Rule 맵핑 연결
+		List<String> ruleIds = (List<String>) param.get("mappingRuleIds");
+		if(ruleIds.size() > 0) {
+			int addRes = pkgService.addRuleMappingByPkgId(param);
+		}
+		
+		// DRL 파일 수정
+		// RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
+		String pkgId = (String) param.get("pkgId");
+		saveDRL(pkgId);
+		
 		HashMap<String, Object> pkg = pkgService.getPkg(param);
 		
 		return pkg;
@@ -297,73 +352,10 @@ public class PkgController {
 	public boolean deletePkgById(@RequestBody HashMap<String, Object> param) {
 		// PKG 삭제
 		pkgService.deletePkgById(param);
-		// PKG_ID에 속한 RULE_ID 조회
-		List<String> ruleIds = pkgService.getRuleIdsByPkgId(param);
-		if(ruleIds.size() > 0) {
-			param.put("ruleIdArr", ruleIds);
-			// RULE 삭제
-			pkgService.deleteRuleById(param);
-			// RULE_ATTR 삭제
-			pkgService.deleteRuleAttrByIds(param);
-		}
+		// 연결된 Rule 맵핑 정보 삭제
+		int delRes = pkgService.delRuleMappingByPkgIds(param);
 		
 		return true;
-	}
-	
-	/**
-	 * RULE 삭제
-	 * @param param
-	 * @return resultMap
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/deleteRuleById.do", method = RequestMethod.POST)
-	public HashMap<String, Object> deleteRuleById(@RequestBody HashMap<String, Object> param) {
-		// RULE 삭제
-		pkgService.deleteRuleById(param);
-		// RULE_ATTR 삭제
-		pkgService.deleteRuleAttrByIds(param);
-		
-		// 해당 패키지에 등록된 RULE 개수 조회
-		HashMap<String, Object> resultMap = new HashMap<>();
-		resultMap.put("pkgId", param.get("pkgId"));
-		int ruleCount = ruleService.getRuleCount(resultMap);
-		resultMap.put("ruleCount", ruleCount);
-		
-		// RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
-		String pkgId = (String) param.get("pkgId");
-		saveDRL(pkgId);
-		
-		return resultMap;
-	}
-	
-	/**
-	 * 패키지와 연결 가능한 RULE 목록 조회
-	 * @param param
-	 * @return resultMap
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/getConRuleList.do", method = RequestMethod.POST)
-	public HashMap<String, Object> getConRuleList(@RequestBody HashMap<String, Object> param) {
-		HashMap<String, Object> resultMap = new HashMap<>();
-		List<HashMap<String, Object>> conRuleList = pkgService.getConRuleList(param);
-		resultMap.put("conRuleList", conRuleList);
-		
-		return resultMap;
-	}
-	
-	/**
-	 * 맵핑된 RULE 목록 조회
-	 * @param param
-	 * @return resultMap
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/getMappingRuleList.do", method = RequestMethod.POST)
-	public HashMap<String, Object> getMappingRuleList(@RequestBody HashMap<String, Object> param) {
-		HashMap<String, Object> resultMap = new HashMap<>();
-		List<HashMap<String, Object>> mappingRuleList = pkgService.getMappingRuleList(param);
-		resultMap.put("mappingRuleList", mappingRuleList);
-		
-		return resultMap;
 	}
 	
 	/**
@@ -416,7 +408,12 @@ public class PkgController {
 			drlSource += "end\n\n";
 		}
 		
-		pkg.put("DRL_SOURCE", drlImport + "\n" + drlSource);
+		if(ruleList.size() > 0) {
+			pkg.put("DRL_SOURCE", drlImport + "\n" + drlSource);
+		} else {
+			pkg.put("DRL_SOURCE", "");
+		}
+		
 		pkgService.updateDrlSource(pkg);
 		
 		// 물리 DRL파일 생성

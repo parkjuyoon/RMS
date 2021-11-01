@@ -4,6 +4,10 @@
  * @since 2021.05.25
  */
 
+// Rule 연결 목록 저장될 배열
+var conRuleList = [];
+var mappingRuleList = [];
+
 $(document).ready(function() {
 	// 패키지 리스트 조회
 	var searchObj = {};
@@ -82,7 +86,7 @@ $(document).ready(function() {
 		});
 		
 		if(pkgIdArr.length > 0) {
-			if(confirm(pkgIdArr.length + "건의 Package가 삭제되고\n하위에 속한 모든 RULE이 삭제됩니다.\n정말 삭제하시겠습니까?")) {
+			if(confirm(pkgIdArr.length + "건의 Package가 삭제됩니다.\n정말 삭제하시겠습니까?")) {
 				var param = {};
 				param.pkgIdArr = pkgIdArr;
 				
@@ -98,6 +102,9 @@ $(document).ready(function() {
 	$("#addNewPkgBtn").click(function() {
 		// PKG 관련 초기화
 		initPkgDetail();	// PKG 상세 초기화
+		
+		// RULE 연결 버튼 속성 초기화
+		fnInitRuleMappingList();
 		
 		$("#pkgCard").removeClass("card-collapsed");
 		$("#pkgCardBody").css("display", "");
@@ -152,6 +159,7 @@ $(document).ready(function() {
 			param.pkgId = $("#pkgId").text();
 			param.pkgNm = $("#pkgNm").val();
 			param.pkgDsc = $("#pkgDsc").val();
+			param.mappingRuleIds = mappingRuleIds;
 			
 			if(param.pkgId != '') {
 				// 수정
@@ -310,9 +318,29 @@ $(document).ready(function() {
 	
 	// 패키지 관리 > 패키지 상세 > RULE 연결 버튼 클릭
 	$("#ruleMappingBtn").click(function() {
-		var pkgId = $("#pkgId").text();
-		fnGetConRuleList(pkgId, null);	// 패키지와 연결가능한 RULE 목록 조회
-		fnGetMappingRuleList(pkgId);	// 맵핑된 RULE 목록 조회
+		var isUpdate = $("#ruleMappingSaveBtn").attr("data-update");
+		if(isUpdate == 'Y') {
+			return;
+		}
+		
+		// 맵핑된 RULE 목록
+		var html1 = "";
+		$.each(mappingRuleList, function(idx, mappingRule) {
+			html1 += "<div>";
+			html1 += "	<input type='checkbox' class='_mappingRuleCheck' data-ruleId='"+ mappingRule.RULE_ID +"'/>\t" + mappingRule.RULE_NM;
+			html1 += "</div>";
+		});
+		
+		var html2 = "";
+		// 패키지와 연결 가능한 RULE 목록
+		$.each(conRuleList, function(idx, conRule) {
+			html2 += "<div>";
+			html2 += "	<input type='checkbox' class='_conRuleCheck' data-ruleId='"+ conRule.RULE_ID +"'/>\t" + conRule.RULE_NM;
+			html2 += "</div>";
+		});
+		
+		$("#mappingRuleList").html(html1);
+		$("#conRuleList").html(html2);
 	});
 	
 	// 패키지 관리 > 패키지 상세 > RULE 연결 팝업 ADD 버튼
@@ -343,7 +371,22 @@ $(document).ready(function() {
 		$("#mappingRuleList").find("input[type='checkbox']").prop("checked", false);
 	});
 	
-	
+	// 패키지 관리 > 패키지 상세 > RULE 연결 적용버튼
+	var mappingRuleIds = [];
+	$("#ruleMappingSaveBtn").click(function() {
+		mappingRuleIds = [];
+		var ruleList = $("#mappingRuleList ._mappingRuleCheck");
+		var pkgId = $("#pkgId").text();
+		
+		for(var i=0; i<ruleList.length; i++) {
+			var ruleId = ruleList.eq(i).attr("data-ruleId");
+			
+			mappingRuleIds.push(ruleId);
+		}
+		
+		close_layerPop('modal_ruleMapping');
+		$(this).attr("data-update", "Y");
+	});
 });
 
 /**
@@ -455,6 +498,10 @@ function fnGetPkg(param) {
 			$("#pkgCardBody").css("display", "");
 			$("#pkgNmDupBtn").attr("data-isDup", "Y");
 			
+			// Rule 연결 리스트 배열에 추가
+			conRuleList = res.conRuleList;
+			mappingRuleList = res.mappingRuleList;
+			$("#ruleMappingSaveBtn").attr("data-update", "N");
 		},
 		beforeSend : function() {
 			$("#pkgLoading").show();
@@ -694,14 +741,11 @@ function fnRuleTest(param) {
 }
 
 /**
- * 패키지와 연결 가능한 RULE 목록 조회
- * @param pkgId, ruleNm(이름으로 검색조건 추가)
+ * RULE 연결 버튼 속성 초기화
  * @returns
  */
-function fnGetConRuleList(pkgId, ruleNm) {
+function fnInitRuleMappingList() {
 	var param = {};
-	param.pkgId = pkgId;
-	param.ruleNm = ruleNm;
 	
 	$.ajax({
 		method : "POST",
@@ -711,25 +755,16 @@ function fnGetConRuleList(pkgId, ruleNm) {
 		contentType:'application/json; charset=utf-8',
 		dataType : "json",
 		success : function(res) {
-			var conRuleList = res.conRuleList;
-			
-			console.log(conRuleList);
-			
-			var html = "";
-			$.each(conRuleList, function(idx, conRule) {
-				html += "<div>"
-				html += "	<input type='checkbox' class='_conRuleCheck' data-ruleId='"+ conRule.RULE_ID +"'/>\t" + conRule.RULE_NM;
-				html += "</div>"
-			});
-			
-			$("#conRuleList").html(html);
+			conRuleList = res.conRuleList;
+			mappingRuleList = [];
+			$("#ruleMappingSaveBtn").attr("data-update", "N");
 			
 		},
 		beforeSend : function() {
-			$("#modal_ruleMappingLoading").show();
+			$("#pkgLoading").show();
 		},
 		complete : function() {
-			$("#modal_ruleMappingLoading").hide();
+			$("#pkgLoading").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
@@ -739,49 +774,6 @@ function fnGetConRuleList(pkgId, ruleNm) {
 		}
 	});
 }
-
-/**
- * 맵핑된 RULE 목록 조회
- * @param pkgId
- * @returns
- */
-function fnGetMappingRuleList(pkgId) {
-	var param = {};
-	param.pkgId = pkgId;
-	
-	$.ajax({
-		method : "POST",
-		url : "/targetai/getMappingRuleList.do",
-		traditional: true,
-		data : JSON.stringify(param),
-		contentType:'application/json; charset=utf-8',
-		dataType : "json",
-		success : function(res) {
-			var mappingRuleList = res.mappingRuleList;
-			
-			var html = "";
-			$.each(mappingRuleList, function(idx, mappingRule) {
-				html += "<div>"
-				html += "	<input type='checkbox' class='_mappingRuleCheck' data-ruleId='"+ mappingRule.RULE_ID +"'/>\t" + mappingRule.RULE_NM;
-				html += "</div>"
-			});
-			
-			$("#mappingRuleList").html(html);
-		},
-		beforeSend : function() {
-			$("#modal_ruleMappingLoading").show();
-		},
-		complete : function() {
-			$("#modal_ruleMappingLoading").hide();
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
-			console.log(jqXHR);
-			console.log(textStatus);
-			console.log(errorThrown);
-		}
-	});
-}	
 
 /**
  * PKG 상세 초기화

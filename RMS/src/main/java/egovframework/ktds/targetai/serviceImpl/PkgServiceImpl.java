@@ -94,23 +94,8 @@ public class PkgServiceImpl extends EgovAbstractServiceImpl implements PkgServic
 	}
 
 	@Override
-	public void deleteRuleById(HashMap<String, Object> param) {
-		dao.deleteRuleById(param);		
-	}
-
-	@Override
-	public void deleteRuleAttrByIds(HashMap<String, Object> param) {
-		dao.deleteRuleAttrByIds(param);		
-	}
-
-	@Override
 	public void deletePkgById(HashMap<String, Object> param) {
 		dao.deletePkgById(param);		
-	}
-
-	@Override
-	public List<String> getRuleIdsByPkgId(HashMap<String, Object> param) {
-		return dao.getRuleIdsByPkgId(param);	
 	}
 
 	@Override
@@ -131,6 +116,21 @@ public class PkgServiceImpl extends EgovAbstractServiceImpl implements PkgServic
 	@Override
 	public List<HashMap<String, Object>> getMappingRuleList(HashMap<String, Object> param) {
 		return dao.getMappingRuleList(param);
+	}
+
+	@Override
+	public int delRuleMappingByPkgId(HashMap<String, Object> param) {
+		return dao.delRuleMappingByPkgId(param);
+	}
+
+	@Override
+	public int addRuleMappingByPkgId(HashMap<String, Object> param) {
+		return dao.addRuleMappingByPkgId(param);
+	}
+
+	@Override
+	public int delRuleMappingByPkgIds(HashMap<String, Object> param) {
+		return dao.delRuleMappingByPkgIds(param);
 	}
 
 }

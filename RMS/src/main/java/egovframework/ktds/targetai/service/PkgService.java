@@ -35,13 +35,7 @@ public interface PkgService {
 
 	void deleteRuleAttrById(HashMap<String, Object> param);
 
-	void deleteRuleById(HashMap<String, Object> param);
-
-	void deleteRuleAttrByIds(HashMap<String, Object> param);
-
 	void deletePkgById(HashMap<String, Object> param);
-
-	List<String> getRuleIdsByPkgId(HashMap<String, Object> param);
 
 	void updatePkg(HashMap<String, Object> param);
 
@@ -50,5 +44,11 @@ public interface PkgService {
 	List<HashMap<String, Object>> getConRuleList(HashMap<String, Object> param);
 
 	List<HashMap<String, Object>> getMappingRuleList(HashMap<String, Object> param);
+
+	int delRuleMappingByPkgId(HashMap<String, Object> param);
+
+	int addRuleMappingByPkgId(HashMap<String, Object> param);
+
+	int delRuleMappingByPkgIds(HashMap<String, Object> param);
 
 }

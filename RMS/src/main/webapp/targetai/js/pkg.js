@@ -484,8 +484,6 @@ function fnGetPkg(param) {
 				$("#pkgUdtDt").text(pkg.UDT_DT + "에 " + pkg.UDT_USRNM + "(님)이 수정함.");
 			}
 			
-			$("#ruleSearchBtn").attr("data-pkgId", pkg.PKG_ID);
-			
 			if(pkg.RULE_COUNT_IN_PKG > 0) {
 				var drlPath = pkg.PATH + "/" + pkg.PKG_NM + "/" + pkg.DRL_NM;
 				$("#ruleTestPop_resBtn").attr("data-drlPath", drlPath);

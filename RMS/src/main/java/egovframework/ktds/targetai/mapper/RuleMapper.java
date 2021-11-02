@@ -25,4 +25,18 @@ public interface RuleMapper {
 	HashMap<String, Object> getFactorById(HashMap<String, Object> param);
 
 	List<HashMap<String, Object>> getFactorVal(HashMap<String, Object> param);
+	
+	List<HashMap<String, Object>> getRuleListByPkgId(String pkgId);
+	
+	void updateDrlSource(HashMap<String, Object> pkg);
+	
+	void updateAttrThen(HashMap<String, Object> param);
+	
+	void ruleUpdate(HashMap<String, Object> param);
+
+	void deleteRuleAttrById(HashMap<String, Object> param);
+	
+	void ruleSave(HashMap<String, Object> param);
+
+	void ruleAttrSave(HashMap<String, Object> param);
 }

@@ -18,17 +18,11 @@ public interface PkgMapper {
 
 	List<HashMap<String, Object>> getFactorVal(HashMap<String, Object> param);
 
-	void ruleSave(HashMap<String, Object> param);
-
-	void ruleAttrSave(HashMap<String, Object> param);
-
 	String getDrlSource(String pkgId);
 
 	HashMap<String, Object> getPkgById(String pkgId);
 
 	void updateDrlSource(HashMap<String, Object> pkg);
-
-	void updateAttrThen(HashMap<String, Object> param);
 
 	int pkgNmCheck(HashMap<String, Object> param);
 
@@ -36,13 +30,7 @@ public interface PkgMapper {
 
 	void updateDrlFileNm(HashMap<String, Object> param);
 
-	void ruleUpdate(HashMap<String, Object> param);
-
-	void deleteRuleAttrById(HashMap<String, Object> param);
-
 	void deletePkgById(HashMap<String, Object> param);
-
-	List<HashMap<String, Object>> getRuleListByPkgId(String pkgId);
 
 	void updatePkg(HashMap<String, Object> param);
 

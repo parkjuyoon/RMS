@@ -157,8 +157,10 @@ public class SvcController {
 	@ResponseBody
 	@RequestMapping(value = "/deleteSvcById.do", method = RequestMethod.POST)
 	public boolean deleteSvcById(@RequestBody HashMap<String, Object> param) {
-		// PKG 삭제
+		// 서비스 삭제
 		svcService.deleteSvcById(param);
+		// output value 삭제
+		svcService.delSvcOutputValues(param);
 		
 		return true;
 	}

@@ -15,7 +15,6 @@ $(document).ready(function() {
 	getRuleList(searchObj);
 	fnSortableOption();
 	
-	// 220
 	// RULE 검색 > 조회 버튼 클릭
 	$("#ruleSearchBtn").click(function() {
 		var searchObj = {};
@@ -26,7 +25,6 @@ $(document).ready(function() {
 		getRuleList(searchObj);
 	});
 	
-	// 230
 	// RULE 목록 > RULE명 링크 클릭
 	$(document).on("click","._ruleNmLink", function (e) {
 		e.preventDefault(); // a링크 클릭이벤트 제거
@@ -562,6 +560,11 @@ $(document).ready(function() {
 		
 		getRuleList(searchObj);
 	});
+	
+	// RULE 상세 > 저장 버튼 클릭
+	$("#saveRuleBtn").click(function() {
+		 fnSaveRule();
+	})
 });
 
 /**
@@ -794,6 +797,39 @@ function getFactorVal(event, treeId, treeNode) {
 		},
 		complete : function() {
 			$("#factorTreeLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
+
+/**
+ * RULE 상세 > RULE 저장
+ * @returns
+ */
+function fnSaveRule() {
+	var param = {};
+	param.ruleId = $("#ruleId").text();
+	
+	$.ajax({
+		method : "POST",
+		url : "/targetai/ruleSave.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			messagePop("success", "RULE 저장 했습니다.", "", "");
+		},
+		beforeSend : function() {
+			$("#ruleLoading").show();
+		},
+		complete : function() {
+			$("#ruleLoading").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");

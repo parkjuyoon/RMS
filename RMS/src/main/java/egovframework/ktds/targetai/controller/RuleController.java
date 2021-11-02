@@ -141,4 +141,69 @@ public class RuleController {
 		}
 		return resultMap;
 	}
+	
+	/**
+	 * RULE 저장
+	 * @param param
+	 * @return resultMap
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/ruleSave.do", method = RequestMethod.POST)
+	public HashMap<String, Object> ruleSave(@RequestBody HashMap<String, Object> param, HttpSession session) {
+		String ruleId = (String) param.get("ruleId");
+		String regUserId = (String) session.getAttribute("member_id");
+		
+		param.put("REG_USER_ID", regUserId);
+		
+		if("".equals(ruleId)) {	// 신규 등록
+			// RULE 저장
+			ruleService.ruleSave(param);
+			ruleId = String.valueOf((int) param.get("RULE_ID"));
+			param.put("ruleId", (int) param.get("RULE_ID"));
+			// RULE_ATTR 저장
+			ruleService.ruleAttrSave(param);
+			
+		} else {	// 수정
+			param.put("ruleId", Integer.parseInt(ruleId));
+			// RULE 수정
+			ruleService.ruleUpdate(param);
+			List<HashMap<String, Object>> ruleObjList = (List<HashMap<String, Object>>) param.get("ruleObjArr");
+			
+			if(ruleObjList.size() > 0) {
+				// RULE_ATTR 삭제
+				ruleService.deleteRuleAttrById(param);
+				// RULE_ATTR 저장
+				ruleService.ruleAttrSave(param);
+			}
+		}
+		
+		// RULE 의 ATTR_THEN 업데이트
+		HashMap<String, Object> ruleMap = ruleService.getRule(param);
+		String attrThen = "$map.put(\"res_"+ ruleMap.get("RULE_ID") +"_"+ ruleMap.get("CAMP_ID") +"_"+ ruleMap.get("SALIENCE") +"\", \""+ ruleMap.get("RULE_NM") +"\");\n";
+		
+		attrThen = "";
+		attrThen += "$map.put(\"ruleId_"+ ruleMap.get("RULE_ID") + "\", " + ruleMap.get("RULE_ID") +");\n";
+		attrThen += "		$map.put(\"campId_"+ ruleMap.get("RULE_ID") + "\", " + ruleMap.get("CAMP_ID") +");\n";
+		attrThen += "		$map.put(\"salience_"+ ruleMap.get("RULE_ID") + "\", " + ruleMap.get("SALIENCE") +");\n";
+		attrThen += "		$map.put(\"ruleNm_"+ ruleMap.get("RULE_ID") + "\", \"" + ruleMap.get("RULE_NM") +"\");\n";
+		attrThen += "		$map.put(\"targetType_"+ ruleMap.get("RULE_ID") + "\", \"" + ruleMap.get("TARGET_TYPE") +"\");";
+		
+		param.put("ATTR_THEN", attrThen);
+		ruleService.updateAttrThen(param);
+		
+		// 해당 패키지에 등록된 RULE 개수 조회
+		HashMap<String, Object> resultMap = new HashMap<>();
+		resultMap.put("pkgId", param.get("pkgId"));
+		resultMap.put("ruleId", param.get("ruleId"));
+		int ruleCount = ruleService.getRuleCount(resultMap);
+		resultMap.put("ruleCount", ruleCount);
+		
+		// RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
+		String pkgId = (String) param.get("pkgId");
+		String path = ruleService.saveDRL(pkgId);
+		
+		resultMap.put("drlPath", path);
+		
+		return resultMap;
+	}
 }

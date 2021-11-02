@@ -64,13 +64,6 @@ $(document).ready(function() {
 			return;
 		}
 		
-		// 연결된 패키지 체크
-		var svcConnPkg = $("#svcConnPkg").val();
-		if(svcConnPkg == '') {
-			messagePop("warning", "서비스 연결 체크", "패키지를 연결하세요.", "#svcConnPkg");
-			return;
-		}
-		
 		if(confirm("변경사항을 저장하시겠습니까?")) {
 			var param = {};
 			param.svcId = $("#svcId").text();

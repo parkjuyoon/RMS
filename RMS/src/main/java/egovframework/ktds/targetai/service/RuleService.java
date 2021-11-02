@@ -22,4 +22,16 @@ public interface RuleService {
 	List<HashMap<String, Object>> getFactorVal(HashMap<String, Object> param);
 	
 	List<HashMap<String, Object>> getFactorFuncArgs(HashMap<String, Object> param);
+
+	String saveDRL(String pkgId);
+	
+	void ruleSave(HashMap<String, Object> param);
+
+	void ruleAttrSave(HashMap<String, Object> param);
+	
+	void ruleUpdate(HashMap<String, Object> param);
+
+	void deleteRuleAttrById(HashMap<String, Object> param);
+	
+	void updateAttrThen(HashMap<String, Object> param);
 }

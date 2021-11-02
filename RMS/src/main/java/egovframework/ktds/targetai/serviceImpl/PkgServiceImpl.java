@@ -34,16 +34,6 @@ public class PkgServiceImpl extends EgovAbstractServiceImpl implements PkgServic
 	}
 
 	@Override
-	public void ruleSave(HashMap<String, Object> param) {
-		dao.ruleSave(param);
-	}
-
-	@Override
-	public void ruleAttrSave(HashMap<String, Object> param) {
-		dao.ruleAttrSave(param);
-	}
-
-	@Override
 	public String getDrlSource(String pkgId) {
 		return dao.getDrlSource(pkgId);
 	}
@@ -54,18 +44,8 @@ public class PkgServiceImpl extends EgovAbstractServiceImpl implements PkgServic
 	}
 
 	@Override
-	public List<HashMap<String, Object>> getRuleListByPkgId(String pkgId) {
-		return dao.getRuleListByPkgId(pkgId);
-	}
-
-	@Override
 	public void updateDrlSource(HashMap<String, Object> pkg) {
 		dao.updateDrlSource(pkg);
-	}
-
-	@Override
-	public void updateAttrThen(HashMap<String, Object> param) {
-		dao.updateAttrThen(param);
 	}
 
 	@Override
@@ -81,16 +61,6 @@ public class PkgServiceImpl extends EgovAbstractServiceImpl implements PkgServic
 	@Override
 	public void updateDrlFileNm(HashMap<String, Object> param) {
 		dao.updateDrlFileNm(param);
-	}
-
-	@Override
-	public void ruleUpdate(HashMap<String, Object> param) {
-		dao.ruleUpdate(param);		
-	}
-
-	@Override
-	public void deleteRuleAttrById(HashMap<String, Object> param) {
-		dao.deleteRuleAttrById(param);		
 	}
 
 	@Override

@@ -25,4 +25,8 @@ public interface SvcService {
 
 	List<HashMap<String, Object>> getOutputValueList(HashMap<String, Object> param);
 
+	void updatePkgId(HashMap<String, Object> param);
+
+	void delSvcOutputValues(HashMap<String, Object> param);
+
 }

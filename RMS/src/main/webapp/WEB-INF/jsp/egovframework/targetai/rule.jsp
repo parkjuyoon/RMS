@@ -412,7 +412,7 @@
 															<span class="custom-green mg_l15" style="display: none;" id="ruleDupY"><i class="el el-idea"></i> 사용가능 RULE 명입니다.</span>
 														</td>
 													</tr>
-													<tr>
+													<tr style="display: none;">
 														<th class="t_left">NO-LOOP</th>
 														<td class="t_left">
 															<div class="radio-container mg_r0">
@@ -421,7 +421,7 @@
 															</div>
 														</td>
 													</tr>
-													<tr>
+													<tr style="display: none;">
 														<th class="t_left">LOCK-ON-ACTIVE</th>
 														<td class="t_left">
 															<div class="radio-container mg_r0">
@@ -431,11 +431,11 @@
 														</td>
 													</tr>
 													<tr>
-														<th class="t_left">SALIENCE</th>
+														<th class="t_left">우선순위</th>
 														<td class="t_left"><input type="text" class="wd150px" id="salience" value="" /></td>
 													</tr>
 													<tr>
-														<th class="t_left">TARGET TYPE</th>
+														<th class="t_left">타켓 유형</th>
 														<td class="t_left">
 															<select id="targetType" class="wd150px">
 																<option value="CUST">고객</option>
@@ -444,7 +444,7 @@
 														</td>
 													</tr>
 													<tr>
-														<th class="t_left">CONTENTS</th>
+														<th class="t_left">조건 내용</th>
 														<td class="t_left"><textarea rows="4" cols="7" class="txtsize_100 wd100" id="ruleWhenCont" placeholder="RULE EDITOR를 통해 생성하세요."
 																readonly="readonly"></textarea></td>
 													</tr>

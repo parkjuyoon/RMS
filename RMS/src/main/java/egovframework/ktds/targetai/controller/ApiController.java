@@ -40,8 +40,6 @@ public class ApiController {
 	
 	@Autowired
 	private ApiService apiService;
-	@Autowired
-	private PkgService pkgService;
 	
 	@Resource(name = "ruleService")
 	protected RuleService ruleService;
@@ -167,7 +165,7 @@ public class ApiController {
 			List<Integer> respRuleIds = new ArrayList<>();					// response 할 RULE_ID 리스트
 			
 			// DB 기준으로 DRL 파일 생성
-			saveDRL(String.valueOf(pkgId));
+			ruleService.saveDRL(String.valueOf(pkgId));
 			
 			for(HashMap<String, Object> activeMap : activeList) {
 				// DRL의 RULE 실행 결과
@@ -421,74 +419,5 @@ public class ApiController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	/**
-	 * RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
-	 * @param pkgId
-	 * @return
-	 */
-	public String saveDRL(String pkgId) {
-		// 함수 import 경로
-		String funcRootPath = "import static " + applicationProperties.getProperty("func.import.root_path");
-				
-		// PKG DRL_SOURCE 업데이트
-		HashMap<String, Object> pkg = pkgService.getPkgById(pkgId);
-		List<HashMap<String, Object>> ruleList = pkgService.getRuleListByPkgId(pkgId);
-		
-		String drlImport = "";
-		String drlSource = "";
-		
-		if(ruleList.size() > 0) {
-			drlImport += "package " + pkg.get("PKG_NM") + ";\n";
-			drlImport += "import java.util.Map;\n";
-		}
-		
-		for(HashMap<String, Object> m : ruleList) {
-			drlSource += "rule \"" + m.get("RULE_NM") + "\"\n";
-			drlSource += "	no-loop " + m.get("NO_LOOP") + "\n";
-			drlSource += "	lock-on-active " + m.get("LOCK_ON_ACTIVE") + "\n";
-			drlSource += "	salience " + m.get("SALIENCE") + "\n";
-			drlSource += "	when\n";
-			drlSource += "		$map : Map(\n";
-			
-			int ruleId = (int) m.get("RULE_ID");
-			List<HashMap<String, Object>> whenList = ruleService.getWhenList(ruleId);
-			
-			for(HashMap<String, Object> w : whenList) {
-				drlSource += "		" + w.get("ATTR_WHEN");
-				
-				if("함수".equals(w.get("FACTOR_GRP_NM"))) {
-					String factorNmEn = (String) w.get("FACTOR_NM_EN");
-					String importTxt= funcRootPath + "." + factorNmEn + "." + factorNmEn.toLowerCase() + ";\n";
-					if(!drlImport.contains(importTxt)) {
-						drlImport += importTxt;
-					}
-				}
-			}
-			
-			drlSource += "	)\n";
-			drlSource += "	then\n";
-			drlSource += "		" + m.get("ATTR_THEN") + "\n";
-			drlSource += "end\n\n";
-		}
-		
-		pkg.put("DRL_SOURCE", drlImport + "\n" + drlSource);
-		pkgService.updateDrlSource(pkg);
-		
-		// 물리 DRL파일 생성
-		String realPath = (String) pkg.get("PATH");
-		String path = realPath;
-		realPath = System.getProperty("user.home") + path;
-		realPath = realPath.replace("/", File.separator).replace("\\", File.separator);
-		String pkg_nm = (String) pkg.get("PKG_NM");
-		String drl_nm = (String) pkg.get("DRL_NM");
-		String drl_source = (String) pkg.get("DRL_SOURCE");
-		
-		DroolsUtil.outputDrl(realPath, pkg_nm, drl_nm, drl_source);
-		
-		path += "/" + pkg_nm + "/" + drl_nm;
-		
-		return path;
 	}
 }

@@ -81,7 +81,8 @@
 		    R.RULE_ID
 		FROM
 			targetai.SVC S
-			LEFT JOIN targetai.RULE R ON (R.PKG_ID = S.PKG_ID)
+			LEFT JOIN targetai.PKG_RULE_MAPPING PRM ON (S.PKG_ID = PRM.PKG_ID)
+    		LEFT JOIN targetai.RULE R ON (PRM.RULE_ID = R.RULE_ID)
 		WHERE
 			S.SVC_ID = #{svc_id}
 		ORDER BY R.SALIENCE ASC, R.RULE_ID ASC

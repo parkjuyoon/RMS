@@ -623,7 +623,7 @@
 													<tr>
 														<th class="t_left">RULE 테스트</th>
 														<td class="t_left" >
-															<button type="button" id="ruleTestPopBtn" style="display:none;" class="btn btn-sm btn-green">OPEN</button> 
+															<button type="button" id="ruleTestPopBtn" class="btn btn-sm btn-green">OPEN</button> 
 														</td>
 													</tr>
 													<tr>

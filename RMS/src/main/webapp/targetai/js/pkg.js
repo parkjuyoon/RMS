@@ -40,37 +40,7 @@ $(document).ready(function() {
 		var param = {};
 		param.pkgId = $(this).attr("data-pkgId");
 		
-		$.ajax({
-			method : "POST",
-			url : "/targetai/getPkg.do",
-			traditional: true,
-			data : JSON.stringify(param),
-			contentType:'application/json; charset=utf-8',
-			dataType : "json",
-			success : function(res) {
-				var pkg = res.pkg;
-
-				if(typeof pkg.DRL_SOURCE == 'undefined' || pkg.DRL_SOURCE == '') {
-					pkg.DRL_SOURCE = "내용이 없습니다.";
-				}
-				
-				$("#drlSourcePop_title").text(pkg.DRL_NM);
-				$("#drlSourcePop_contents").text(pkg.DRL_SOURCE);
-				$("#drlSourcePop").show();
-			},
-			beforeSend : function() {
-				$("#drlSourcePopLoading").show();
-			},
-			complete : function() {
-				$("#drlSourcePopLoading").hide();
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-				messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
-				console.log(jqXHR);
-				console.log(textStatus);
-				console.log(errorThrown);
-			}
-		});
+		fnGetDrlSouce(param);
 	});
 	
 	// PKG 삭제 버튼
@@ -109,7 +79,6 @@ $(document).ready(function() {
 		$("#pkgCard").removeClass("card-collapsed");
 		$("#pkgCardBody").css("display", "");
 		$("#pkgNm").focus();
-		$("#ruleTestPopBtn").hide();	// RULE TEST OPEN 버튼 감추기
 	});
 	
 	// PKG 상세 > PKG 명 변경시 중복체크  요청
@@ -209,7 +178,11 @@ $(document).ready(function() {
 		var param = {};
 		param.pkgId = $("#pkgId").text();
 		
-		fnRuleTest(param);
+		if(mappingRuleList.length > 0) {
+			fnRuleTest(param);
+		} else {
+			messagePop("warning", "연결된 RULE 없음", "RULE 연결을 먼저 진행하세요.", "");
+		}
 	});
 	
 	// 패키지 상세 > RULE TEST 팝업 > RULE 속성명 클릭
@@ -259,7 +232,7 @@ $(document).ready(function() {
 		var keyVal = $("input[name='ruleTestPop_value']");
 		
 		for(var i=0; i<keyArr.length; i++) {
-			var key = keyArr.eq(i).val();
+			var key = keyArr.eq(i).attr("data-valueEn");
 			var val = keyVal.eq(i).val();
 			
 			if(key == '' || val == '') {
@@ -487,10 +460,7 @@ function fnGetPkg(param) {
 			if(pkg.RULE_COUNT_IN_PKG > 0) {
 				var drlPath = pkg.PATH + "/" + pkg.PKG_NM + "/" + pkg.DRL_NM;
 				$("#ruleTestPop_resBtn").attr("data-drlPath", drlPath);
-				$("#ruleTestPopBtn").show();
-			} else {
-				$("#ruleTestPopBtn").hide()
-			}
+			} 
 			
 			$("#pkgCard").removeClass("card-collapsed");
 			$("#pkgCardBody").css("display", "");
@@ -538,7 +508,7 @@ function fnAddPkg(param) {
 			messagePop("success", "Package가 저장되었습니다.", "", "");
 			$("#pkgId").text(res.PKG_ID);
 			$("#pkgRegDt").text(res.REG_DT + "에 " + res.REG_USRNM + "(님)이 등록함.");
-			
+			fnGetPkg(param);
 		},
 		beforeSend : function() {
 			$("#pkgLoading").show();
@@ -576,6 +546,7 @@ function fnUpdatePkg(param) {
 			
 			messagePop("success", "Package가 수정되었습니다.", "", "");
 			$("#pkgUdtDt").text(res.UDT_DT + "에 " + res.UDT_USRNM + "(님)이 등록함.");
+			fnGetPkg(param);
 		},
 		beforeSend : function() {
 			$("#pkgLoading").show();
@@ -706,7 +677,7 @@ function fnRuleTest(param) {
 				
 				html2 += "<div class='oneline_group'>";
 				html2 += "	<div class='form_group'>";
-				html2 += "		<label for=''>KEY</label> <input type='text' name='ruleTestPop_key' value='"+ ruleAttr.FACTOR_NM +"' readonly='readonly'/>";
+				html2 += "		<label for=''>KEY</label> <input type='text' name='ruleTestPop_key' value='"+ ruleAttr.FACTOR_NM +"' data-valueEn='"+ ruleAttr.FACTOR_NM_EN +"' readonly='readonly'/>";
 				html2 += "	</div>";
 				html2 += "	<div class='form_group'>";
 				if(ruleAttr.FACTOR_GRP_NM == '함수') {
@@ -763,6 +734,45 @@ function fnInitRuleMappingList() {
 		},
 		complete : function() {
 			$("#pkgLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
+
+/**
+ * 패키지 목록 > DRL 소스 보기
+ * @param param
+ * @returns
+ */
+function fnGetDrlSouce(param) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/getDrlSouce.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			var pkg = res.pkg;
+
+			if(typeof pkg.DRL_SOURCE == 'undefined' || pkg.DRL_SOURCE == '') {
+				pkg.DRL_SOURCE = "내용이 없습니다.";
+			}
+			
+			$("#drlSourcePop_title").text(pkg.DRL_NM);
+			$("#drlSourcePop_contents").text(pkg.DRL_SOURCE);
+			$("#drlSourcePop").show();
+		},
+		beforeSend : function() {
+			$("#drlSourcePopLoading").show();
+		},
+		complete : function() {
+			$("#drlSourcePopLoading").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");

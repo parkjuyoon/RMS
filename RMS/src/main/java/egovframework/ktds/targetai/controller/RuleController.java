@@ -191,18 +191,10 @@ public class RuleController {
 		param.put("ATTR_THEN", attrThen);
 		ruleService.updateAttrThen(param);
 		
-		// 해당 패키지에 등록된 RULE 개수 조회
+		// RULE 개수 조회
 		HashMap<String, Object> resultMap = new HashMap<>();
-		resultMap.put("pkgId", param.get("pkgId"));
-		resultMap.put("ruleId", param.get("ruleId"));
 		int ruleCount = ruleService.getRuleCount(resultMap);
 		resultMap.put("ruleCount", ruleCount);
-		
-		// RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
-		String pkgId = (String) param.get("pkgId");
-		String path = ruleService.saveDRL(pkgId);
-		
-		resultMap.put("drlPath", path);
 		
 		return resultMap;
 	}

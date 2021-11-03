@@ -309,7 +309,7 @@
 							<div class="card" id="ruleListCard">
 								<header class="card-header card-header-pd-mobile">
 									<div class="card-actions card-header-position-mobile">
-										<span class="infonum"> <span class="txt_color_blue mg_l5 mg_r5" id="ruleCntInPkgBySearch"></span>건
+										<span class="infonum"> <span class="txt_color_blue mg_l5 mg_r5" id="ruleCntBySearch"></span>건
 										</span>
 										<a href="#" id="ruleListCardOpen" class="card-action card-action-toggle"></a>
 									</div>

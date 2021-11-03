@@ -103,6 +103,27 @@ public class PkgController {
 	 * @return pkg
 	 */
 	@ResponseBody
+	@RequestMapping(value = "/getDrlSouce.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getDrlSouce(@RequestBody HashMap<String, Object> param) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		// DRL 소스 업데이트
+		String pkgId = String.valueOf(param.get("pkgId"));
+		ruleService.saveDRL(pkgId);
+		
+		// 패키지 상세 정보 조회
+		HashMap<String, Object> pkg = pkgService.getPkg(param);
+		resultMap.put("pkg", pkg);
+		
+		return resultMap;
+	}
+	
+	/**
+	 * package 상세 조회
+	 * @param PKG_ID
+	 * @return pkg
+	 */
+	@ResponseBody
 	@RequestMapping(value = "/getConRuleList.do", method = RequestMethod.POST)
 	public HashMap<String, Object> getConRuleList(@RequestBody HashMap<String, Object> param) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
@@ -171,14 +192,10 @@ public class PkgController {
 			path = System.getProperty("user.home") + path;
 			path = path.replace("/", File.separator).replace("\\", File.separator);
 			
-			List<HashMap<String, Object>> getResultList = ApiController.getResultList(path, paramMap, new ArrayList<>());
+			String pkgId = (String) param.get("pkgId");
 			
-			if(getResultList == null) {
-				String pkgId = (String) param.get("pkgId");
-				
-				ruleService.saveDRL(pkgId);
-				getResultList = ApiController.getResultList(path, paramMap, new ArrayList<>());
-			}
+			ruleService.saveDRL(pkgId);
+			List<HashMap<String, Object>> getResultList = ApiController.getResultList(path, paramMap, new ArrayList<>());
 			
 			HashMap<String, Object> resultMap = new HashMap<>();
 			resultMap.put("RESULT", getResultList);

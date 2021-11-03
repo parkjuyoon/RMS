@@ -4,12 +4,12 @@
  * @since 2021.10.12
  */
 
+var ruleObj = {};
+var ruleObjArr = [];
+var tmpObj = {};
+var tmpArr = [];
+
 $(document).ready(function() {
-	var ruleObj = {};
-	var ruleObjArr = [];
-	var tmpObj = {};
-	var tmpArr = [];
-	
 	var searchObj = {};
 	searchObj.currentPage = 1;
 	getRuleList(searchObj);
@@ -134,7 +134,6 @@ $(document).ready(function() {
 	// RULE 상세 > 중복체크 버튼 클릭
 	$("#ruleNmDupBtn").click(function(){
 		var ruleNm = $("#ruleNm").val();
-		var pkgId = $("#pkgId").text();
 		var ruleId = $("#ruleId").text();
 		
 		if(ruleNm == '') {
@@ -144,7 +143,6 @@ $(document).ready(function() {
 		
 		var param = {};
 		param.ruleNm = ruleNm;
-		param.pkgId = pkgId;
 		param.ruleId = ruleId;
 		
 		$.ajax({
@@ -158,14 +156,14 @@ $(document).ready(function() {
 				if(res == false) {	// RULE 명 중복
 					$("#ruleDupY").css("display", "none");
 					$("#ruleDupN").css("display", "");
-					$("#ruleNmDupBtn").data("isDup", "N");
+					$("#ruleNmDupBtn").attr("data-isDup", "N");
 					$("#ruleNm").focus();
 					return;
 				}
 				
 				$("#ruleDupY").css("display", "");
 				$("#ruleDupN").css("display", "none");
-				$("#ruleNmDupBtn").data("isDup", "Y");
+				$("#ruleNmDupBtn").attr("data-isDup", "Y");
 			}
 		});
 	});
@@ -613,18 +611,10 @@ function getRuleList(searchObj) {
 			}
 			
 			$("#ruleList").html(html);
-			$("#ruleCntInPkgBySearch").text(searchObj.totalCount);
-			$("#ruleCntInPkg").text(searchObj.totalCount + "개");
+			$("#ruleCntBySearch").text(searchObj.totalCount);
 			fnPaging("#ruleListPaging", searchObj);
 			$("#ruleListCard").removeClass("card-collapsed");
 			$("#ruleListCardBody").css("display", "");
-			
-			// 패키지당 RULE 한개이상 생성되면 RULE TEST OPEN 버튼 보임
-			if(searchObj.totalCount > 0) {
-				$("#ruleTestPopBtn").show();
-			} else {
-				$("#ruleTestPopBtn").hide();
-			}
 			
 			// 전체 체크 해제
 			$("#ruleListAllChkBox").prop("checked", false);
@@ -813,7 +803,26 @@ function getFactorVal(event, treeId, treeNode) {
  */
 function fnSaveRule() {
 	var param = {};
+	// rule 저장값
 	param.ruleId = $("#ruleId").text();
+	param.ruleNm = $("#ruleNm").val();
+	param.salience = $("#salience").val();
+	param.targetType = $("#targetType").val();
+	param.noLoop = $("input:radio[name='noLoop']").prop("checked") + "";
+	param.lockOnActive = $("input:radio[name='lockOnActive']").prop("checked") + "";
+	
+	// ruleAttr 저장값
+	param.ruleObjArr = ruleObjArr;
+	
+	if($("#ruleNmDupBtn").attr("data-isDup") != 'Y') {
+		messagePop("warning", "RULE 명의 중복체크가 필요합니다.", "", "");
+		return;
+	}
+	
+	if($("#ruleWhenCont").val() == '') {
+		messagePop("warning", "조건 내용을 추가하세요.", "", "");
+		return;
+	}
 	
 	$.ajax({
 		method : "POST",
@@ -823,7 +832,12 @@ function fnSaveRule() {
 		contentType:'application/json; charset=utf-8',
 		dataType : "json",
 		success : function(res) {
+			var ruleCount = res.ruleCount;
 			messagePop("success", "RULE 저장 했습니다.", "", "");
+			
+			var searchObj = {};
+			searchObj.currentPage = 1;
+			getRuleList(searchObj);
 		},
 		beforeSend : function() {
 			$("#ruleLoading").show();

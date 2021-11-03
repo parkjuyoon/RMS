@@ -166,10 +166,11 @@
 			RA.ATTR_WHEN_CONTENTS
 		FROM
 			targetai.PKG P
-		    LEFT JOIN targetai.RULE R ON (P.PKG_ID = R.PKG_ID)
+			LEFT JOIN targetai.PKG_RULE_MAPPING PRM ON (P.PKG_ID = PRM.PKG_ID)
+		    LEFT JOIN targetai.RULE R ON (PRM.RULE_ID = R.RULE_ID)
 		    LEFT JOIN targetai.RULE_ATTR RA ON (R.RULE_ID = RA.RULE_ID)
 		WHERE
-			R.PKG_ID = #{pkgId}
+			P.PKG_ID = #{pkgId}
 		ORDER BY SALIENCE ASC, RULE_ID ASC, RULE_ATTR_ID ASC
 	</select>
 	

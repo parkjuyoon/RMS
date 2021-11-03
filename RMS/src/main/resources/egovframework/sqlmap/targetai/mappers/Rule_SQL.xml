@@ -203,7 +203,6 @@
 			LOCK_ON_ACTIVE,
 			SALIENCE,
 			TARGET_TYPE,
-			PKG_ID,
 			REG_USRID
 		) VALUES (
 			#{ruleNm},
@@ -211,7 +210,6 @@
 			#{lockOnActive},
 			#{salience},
 			#{targetType},
-			#{pkgId},
 			#{REG_USER_ID}
 		)
 		<selectKey keyProperty="RULE_ID" resultType="int" order="AFTER">
@@ -267,7 +265,6 @@
 			LOCK_ON_ACTIVE = #{lockOnActive},
 			SALIENCE = #{salience},
 			TARGET_TYPE = #{targetType},
-			PKG_ID = #{pkgId},
 			UDT_DT = NOW(),
 			UDT_USRID = #{USER_ID}
 		WHERE

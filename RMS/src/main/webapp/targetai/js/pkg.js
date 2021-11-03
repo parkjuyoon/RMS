@@ -291,6 +291,7 @@ $(document).ready(function() {
 	
 	// 패키지 관리 > 패키지 상세 > RULE 연결 버튼 클릭
 	$("#ruleMappingBtn").click(function() {
+		$("#modal_ruleMappingLoading").show();
 		var isUpdate = $("#ruleMappingSaveBtn").attr("data-update");
 		if(isUpdate == 'Y') {
 			return;
@@ -314,6 +315,7 @@ $(document).ready(function() {
 		
 		$("#mappingRuleList").html(html1);
 		$("#conRuleList").html(html2);
+		$("#modal_ruleMappingLoading").hide();
 	});
 	
 	// 패키지 관리 > 패키지 상세 > RULE 연결 팝업 ADD 버튼
@@ -360,6 +362,7 @@ $(document).ready(function() {
 		close_layerPop('modal_ruleMapping');
 		$(this).attr("data-update", "Y");
 	});
+	
 });
 
 /**
@@ -782,6 +785,48 @@ function fnGetDrlSouce(param) {
 		}
 	});
 }
+
+/**
+ * 패키지 상세 > RULE 연결 > RULE 검색
+ * @returns
+ */
+function fnRuleSearch(searchVal) {
+	var param = {};
+	param.ruleNm = searchVal;
+	
+	$.ajax({
+		method : "POST",
+		url : "/targetai/getConRuleList.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			var conRuleList = res.conRuleList;
+			
+			var html = "";
+			$.each(conRuleList, function(idx, conRule) {
+				html += "<div>";
+				html += "	<input type='checkbox' class='_conRuleCheck' data-ruleId='"+ conRule.RULE_ID +"'/>\t" + conRule.RULE_NM;
+				html += "</div>";
+			});
+			
+			$("#conRuleList").html(html);
+		},
+		beforeSend : function() {
+			$("#modal_ruleMappingLoading").show();
+		},
+		complete : function() {
+			$("#modal_ruleMappingLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+} 
 
 /**
  * PKG 상세 초기화

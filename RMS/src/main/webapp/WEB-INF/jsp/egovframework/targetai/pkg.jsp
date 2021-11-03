@@ -546,7 +546,7 @@
 																		</div>
 																		<!-- 본문 -->
 																		<div class="modal_body" style="height: 500px;">
-																			<div class="progress_loading" style="display: none;">
+																			<div class="progress_loading">
 																				<div id="modal_ruleMappingLoading">
 																					<img src="/targetai_publish/images/ajax-loader1.gif" />
 																				</div>
@@ -560,7 +560,7 @@
 																								<div class="card-actions card-header-position-mobile"></div>
 																								<div class="form_group">
 																									<h2 class="card-title_txt" id="">Available:
-																											<input type="text" id="" class="wd150px" value="" />
+																										<input type="text" onkeypress="javascript:if(event.keyCode==13) {fnRuleSearch(this.value);}" name="ruleSearch" class="wd150px" value="" />
 																									</h2>
 																								</div>
 																							</header>

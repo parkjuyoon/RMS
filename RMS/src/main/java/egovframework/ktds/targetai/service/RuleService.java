@@ -11,8 +11,6 @@ public interface RuleService {
 	
 	HashMap<String, Object> getRule(HashMap<String, Object> param);
 	
-	List<HashMap<String, Object>> getWhenList(int ruleId);
-	
 	int ruleNmCheck(HashMap<String, Object> param);
 	
 	List<HashMap<String, Object>> getFactorList(HashMap<String, Object> param);
@@ -27,11 +25,11 @@ public interface RuleService {
 	
 	void ruleSave(HashMap<String, Object> param);
 
-	void ruleAttrSave(HashMap<String, Object> param);
-	
 	void ruleUpdate(HashMap<String, Object> param);
 
-	void deleteRuleAttrById(HashMap<String, Object> param);
-	
 	void updateAttrThen(HashMap<String, Object> param);
+
+	void deleteRuleById(HashMap<String, Object> param);
+
+	void delRuleMappingByRuleIds(HashMap<String, Object> param);
 }

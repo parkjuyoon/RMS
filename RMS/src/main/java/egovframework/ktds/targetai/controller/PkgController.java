@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONObject;
+import org.kie.api.runtime.KieSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -195,7 +196,14 @@ public class PkgController {
 			String pkgId = (String) param.get("pkgId");
 			
 			ruleService.saveDRL(pkgId);
-			List<HashMap<String, Object>> getResultList = ApiController.getResultList(path, paramMap, new ArrayList<>());
+			
+			// Drools 세션 생성
+			KieSession kieSession = DroolsUtil.getKieSession(path);
+						
+			List<HashMap<String, Object>> getResultList = ApiController.getResultList(kieSession, paramMap, new ArrayList<>());
+			
+			// drools 세션 dispose
+			kieSession.dispose();
 			
 			HashMap<String, Object> resultMap = new HashMap<>();
 			resultMap.put("RESULT", getResultList);
@@ -252,6 +260,7 @@ public class PkgController {
 	@ResponseBody
 	@RequestMapping(value = "/updatePkg.do", method = RequestMethod.POST)
 	public HashMap<String, Object> updatePkg(@RequestBody HashMap<String, Object> param, HttpSession session) {
+		try {
 		String regUserId = (String) session.getAttribute("member_id");
 		
 		param.put("REG_USER_ID", regUserId);
@@ -271,28 +280,13 @@ public class PkgController {
 		String pkgId = (String) param.get("pkgId");
 		ruleService.saveDRL(pkgId);
 		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		HashMap<String, Object> pkg = pkgService.getPkg(param);
 		
 		return pkg;
-	}
-	
-	/**
-	 * RULE 상세 > 상세정보 조회
-	 * @param param
-	 * @return resultMap
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/getRuleAttrByRuleId.do", method = RequestMethod.POST)
-	public HashMap<String, Object> getRuleAttrByRuleId(@RequestBody HashMap<String, Object> param) {
-		
-		HashMap<String, Object> resultMap = new HashMap<>();
-		
-		int ruleId = Integer.parseInt((String) param.get("ruleId"));
-		List<HashMap<String, Object>> ruleAttrList = ruleService.getWhenList(ruleId);
-		
-		resultMap.put("ruleAttrList", ruleAttrList);
-		
-		return resultMap;
 	}
 	
 	/**

@@ -15,7 +15,7 @@
 		    R.EXPIRES_DT,
 		    R.ENABLED,
 		    R.DURATION,
-		    R.ATTR_THEN,
+		    R.RULE_THEN,
 		    R.NUM_OF_TGT,
 		    R.CAMP_ID,
 		    DATE_FORMAT(R.REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
@@ -61,7 +61,9 @@
 		    R.EXPIRES_DT,
 		    R.ENABLED,
 		    R.DURATION,
-		    R.ATTR_THEN,
+		    R.RULE_WHEN,
+		    R.RULE_WHEN_KOR,
+		    R.RULE_THEN,
 		    R.NUM_OF_TGT,
 		    R.CAMP_ID,
 		    R.TARGET_TYPE,
@@ -72,30 +74,6 @@
 		FROM targetai.RULE R
 		WHERE
 			R.RULE_ID = #{ruleId}
-	</select>
-	
-	<!-- RULE_ATTR 정보 조회 -->
-	<select id="getWhenList" parameterType="int" resultType="java.util.HashMap">
-		SELECT
-			RA.RULE_ATTR_ID,
-			RA.RULE_ID,
-			RA.ATTR_WHEN,
-		    RA.ATTR_WHEN_CONTENTS,
-		    RA.FACTOR_GRP_NM,
-		    RA.FACTOR_ID,
-		    RA.FACTOR_NM,
-		    RA.FACTOR_NM_EN,
-		    RA.FACTOR_VAL,
-		    RA.LOGICAL,
-		    RA.RELATION,
-		    F.DATA_TYPE
-		FROM
-			targetai.RULE_ATTR RA
-		    LEFT JOIN targetai.FACTOR F ON (RA.FACTOR_ID = F.FACTOR_ID)
-		WHERE
-			RA.RULE_ID = #{pkgId}
-		ORDER BY 
-			RULE_ATTR_ID ASC
 	</select>
 	
 	<!-- RULE 이름 중복체크 -->
@@ -183,7 +161,8 @@
 			R.EXPIRES_DT,
 			R.ENABLED,
 			R.DURATION,
-			R.ATTR_THEN,
+			R.RULE_WHEN,
+			R.RULE_THEN,
 			R.NUM_OF_TGT,
 			PRM.PKG_ID,
 			R.CAMP_ID,
@@ -202,6 +181,8 @@
 			NO_LOOP,
 			LOCK_ON_ACTIVE,
 			SALIENCE,
+			RULE_WHEN,
+			RULE_WHEN_KOR,
 			TARGET_TYPE,
 			REG_USRID
 		) VALUES (
@@ -209,6 +190,8 @@
 			#{noLoop},
 			#{lockOnActive},
 			#{salience},
+			#{RULE_WHEN},
+			#{RULE_WHEN_KOR},
 			#{targetType},
 			#{REG_USER_ID}
 		)
@@ -217,44 +200,14 @@
 		</selectKey>
 	</insert>	
 	
-	<!-- RULE 의 ATTR_WHEN 업데이트 -->
+	<!-- RULE 의 RULE_WHEN 업데이트 -->
 	<update id="updateAttrThen" parameterType="java.util.HashMap">
 		UPDATE targetai.RULE
 		SET
-			ATTR_THEN = #{ATTR_THEN}
+			RULE_THEN = #{RULE_THEN}
 		WHERE
 			RULE_ID = #{ruleId}
 	</update>
-	
-	<!-- RULE ATTR 저장 -->
-	<insert id="ruleAttrSave" parameterType="java.util.HashMap">
-		INSERT INTO targetai.RULE_ATTR (
-			RULE_ID,
-			ATTR_WHEN,
-			ATTR_WHEN_CONTENTS,
-			FACTOR_GRP_NM,
-			FACTOR_ID,
-			FACTOR_NM,
-			FACTOR_NM_EN,
-			FACTOR_VAL,
-			LOGICAL,
-			RELATION
-		) VALUES 
-		<foreach collection="ruleObjArr" item="ruleAttr" separator=",">
-		(
-			#{ruleId},
-			#{ruleAttr.ruleAttr_source},
-			#{ruleAttr.ruleAttr_txt},
-			#{ruleAttr.factorGrpNm},
-			#{ruleAttr.factorId},
-			#{ruleAttr.factorNm},
-			#{ruleAttr.factorNmEn},
-			#{ruleAttr.factorVal},
-			#{ruleAttr.logical_txt},
-			#{ruleAttr.relation_txt}
-		)
-		</foreach>
-	</insert>
 	
 	<!-- RULE 수정 -->
 	<update id="ruleUpdate" parameterType="java.util.HashMap">
@@ -264,18 +217,14 @@
 			NO_LOOP = #{noLoop},
 			LOCK_ON_ACTIVE = #{lockOnActive},
 			SALIENCE = #{salience},
+			RULE_WHEN = #{RULE_WHEN},
+			RULE_WHEN_KOR = #{RULE_WHEN_KOR},
 			TARGET_TYPE = #{targetType},
 			UDT_DT = NOW(),
 			UDT_USRID = #{USER_ID}
 		WHERE
 			RULE_ID = #{ruleId}
 	</update>	
-	
-	<!-- RULE ATTR 삭제 -->
-	<delete id="deleteRuleAttrById" parameterType="java.util.HashMap">
-		DELETE FROM targetai.RULE_ATTR
-		WHERE RULE_ID = #{ruleId}
-	</delete>
 	
 	<!-- RULE 삭제 -->
 	<delete id="deleteRuleById" parameterType="java.util.HashMap">
@@ -286,9 +235,9 @@
 		</foreach>
 	</delete>
 	
-	<!-- RULE ATTR 삭제 -->
-	<delete id="deleteRuleAttrByIds" parameterType="java.util.HashMap">
-		DELETE FROM targetai.RULE_ATTR
+	<!-- RULE 맵핑 정보 삭제 -->
+	<delete id="delRuleMappingByRuleIds" parameterType="java.util.HashMap">
+		DELETE FROM targetai.PKG_RULE_MAPPING
 		WHERE RULE_ID IN 
 		<foreach collection="ruleIdArr" item="ruleId" separator="," open="(" close=")">
 			#{ruleId}

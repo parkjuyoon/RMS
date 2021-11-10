@@ -40,6 +40,27 @@ public class RuleController {
 	}
 	
 	/**
+	 * RULE 삭제
+	 * @param param
+	 * @return resultMap
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/deleteRuleById.do", method = RequestMethod.POST)
+	public HashMap<String, Object> deleteRuleById(@RequestBody HashMap<String, Object> param) {
+		// RULE 삭제
+		ruleService.deleteRuleById(param);
+		// PKG_RULE_MAPPING 삭제
+		ruleService.delRuleMappingByRuleIds(param);
+		
+		// 해당 패키지에 등록된 RULE 개수 조회
+		HashMap<String, Object> resultMap = new HashMap<>();
+		int ruleCount = ruleService.getRuleCount(resultMap);
+		resultMap.put("ruleCount", ruleCount);
+		
+		return resultMap;
+	}
+	
+	/**
 	 * Rule 리스트 조회
 	 * @param searchObj
 	 * @return ruleList, ruleCount
@@ -65,12 +86,14 @@ public class RuleController {
 	@RequestMapping(value = "/getRule.do", method = RequestMethod.POST)
 	public HashMap<String, Object> getRule(@RequestBody HashMap<String, Object> param) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		HashMap<String, Object> rule = ruleService.getRule(param);
-		resultMap.put("rule", rule);
 		
-		int ruleId = (int) rule.get("RULE_ID");
-		List<HashMap<String, Object>> ruleAttrList = ruleService.getWhenList(ruleId);
-		resultMap.put("ruleAttrList", ruleAttrList);
+		try {
+			HashMap<String, Object> rule = ruleService.getRule(param);
+			resultMap.put("rule", rule);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		return resultMap;
 	}
@@ -147,6 +170,7 @@ public class RuleController {
 	 * @param param
 	 * @return resultMap
 	 */
+	@SuppressWarnings("unchecked")
 	@ResponseBody
 	@RequestMapping(value = "/ruleSave.do", method = RequestMethod.POST)
 	public HashMap<String, Object> ruleSave(@RequestBody HashMap<String, Object> param, HttpSession session) {
@@ -155,29 +179,38 @@ public class RuleController {
 		
 		param.put("REG_USER_ID", regUserId);
 		
+		// RULE 의 RULE_WHEN 업데이트
+		List<HashMap<String, Object>> ruleObjList = (List<HashMap<String, Object>>) param.get("ruleObjArr");
+		String ruleWhen = "";
+		String ruleWhenKor = "";
+		
+		for(int i=0; i<ruleObjList.size(); i++) {
+			if(i < ruleObjList.size()-1) {
+				ruleWhen += ruleObjList.get(i).get("ruleAttr_source") + "\n";
+				ruleWhenKor += ruleObjList.get(i).get("ruleAttr_txt") + "\n";
+				
+			} else {
+				ruleWhen += ruleObjList.get(i).get("ruleAttr_source");
+				ruleWhenKor += ruleObjList.get(i).get("ruleAttr_txt");
+			}
+		}
+		
+		param.put("RULE_WHEN", ruleWhen);
+		param.put("RULE_WHEN_KOR", ruleWhenKor);
+		
 		if("".equals(ruleId)) {	// 신규 등록
 			// RULE 저장
 			ruleService.ruleSave(param);
 			ruleId = String.valueOf((int) param.get("RULE_ID"));
 			param.put("ruleId", (int) param.get("RULE_ID"));
-			// RULE_ATTR 저장
-			ruleService.ruleAttrSave(param);
 			
 		} else {	// 수정
 			param.put("ruleId", Integer.parseInt(ruleId));
 			// RULE 수정
 			ruleService.ruleUpdate(param);
-			List<HashMap<String, Object>> ruleObjList = (List<HashMap<String, Object>>) param.get("ruleObjArr");
-			
-			if(ruleObjList.size() > 0) {
-				// RULE_ATTR 삭제
-				ruleService.deleteRuleAttrById(param);
-				// RULE_ATTR 저장
-				ruleService.ruleAttrSave(param);
-			}
 		}
 		
-		// RULE 의 ATTR_THEN 업데이트
+		// RULE 의 RULE_THEN 업데이트
 		HashMap<String, Object> ruleMap = ruleService.getRule(param);
 		String attrThen = "$map.put(\"res_"+ ruleMap.get("RULE_ID") +"_"+ ruleMap.get("CAMP_ID") +"_"+ ruleMap.get("SALIENCE") +"\", \""+ ruleMap.get("RULE_NM") +"\");\n";
 		
@@ -188,7 +221,7 @@ public class RuleController {
 		attrThen += "		$map.put(\"ruleNm_"+ ruleMap.get("RULE_ID") + "\", \"" + ruleMap.get("RULE_NM") +"\");\n";
 		attrThen += "		$map.put(\"targetType_"+ ruleMap.get("RULE_ID") + "\", \"" + ruleMap.get("TARGET_TYPE") +"\");";
 		
-		param.put("ATTR_THEN", attrThen);
+		param.put("RULE_THEN", attrThen);
 		ruleService.updateAttrThen(param);
 		
 		// RULE 개수 조회

@@ -183,9 +183,8 @@ function fnSaveFuncSetting() {
 	for(var i=0; i<paramArray1.length; i++) {
 		var paramType = paramArray1.eq(i).find("._paramTypeSelect").val();
 		var paramVal = paramArray1.eq(i).find("._paramVal").val();
-		
-		console.log(paramType)
 		var paramObj = {};
+		
 		paramObj.paramType = paramType;
 		paramObj.paramVal = paramVal;
 		paramObj.order = i+1;

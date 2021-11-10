@@ -34,9 +34,9 @@ public interface RuleMapper {
 	
 	void ruleUpdate(HashMap<String, Object> param);
 
-	void deleteRuleAttrById(HashMap<String, Object> param);
-	
 	void ruleSave(HashMap<String, Object> param);
 
-	void ruleAttrSave(HashMap<String, Object> param);
+	void deleteRuleById(HashMap<String, Object> param);
+
+	void delRuleMappingByRuleIds(HashMap<String, Object> param);
 }

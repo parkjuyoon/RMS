@@ -49,13 +49,16 @@ function fnRequestApi(param) {
 		success : function(res) {
 			var code = res.CODE;
 			
-			if(code != 200) {
+			if(code == 404) {
+				messagePop("warning", "유효한 서비스가 아닙니다.", "서비스 아이디를 확인하세요.", "");
+				
+			} else if(code == 501) {
 				messagePop("warning", "DRL 문법에러", "DRL 문법에 오류가 있습니다. 확인하세요.", "");
+				
+			} else {	// code == 200 성공
+				var jsonStr = JSON.stringify(res, null, 4);
+				$("#resultArea").val(jsonStr);
 			}
-			
-			var jsonStr = JSON.stringify(res, null, 4);
-			
-			$("#resultArea").val(jsonStr);
 		},
 		beforeSend : function() {
 			$("#apiLoading").show();

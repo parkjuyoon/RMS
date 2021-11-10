@@ -40,6 +40,8 @@ $(document).ready(function() {
 		var param = {};
 		param.pkgId = $(this).attr("data-pkgId");
 		
+		$("#drlSourcePop_contents").text("");
+		$("#drlSourcePop").show();
 		fnGetDrlSouce(param);
 	});
 	
@@ -291,7 +293,6 @@ $(document).ready(function() {
 	
 	// 패키지 관리 > 패키지 상세 > RULE 연결 버튼 클릭
 	$("#ruleMappingBtn").click(function() {
-		$("#modal_ruleMappingLoading").show();
 		var isUpdate = $("#ruleMappingSaveBtn").attr("data-update");
 		if(isUpdate == 'Y') {
 			return;
@@ -762,14 +763,13 @@ function fnGetDrlSouce(param) {
 		dataType : "json",
 		success : function(res) {
 			var pkg = res.pkg;
-
+			
 			if(typeof pkg.DRL_SOURCE == 'undefined' || pkg.DRL_SOURCE == '') {
 				pkg.DRL_SOURCE = "내용이 없습니다.";
 			}
 			
 			$("#drlSourcePop_title").text(pkg.DRL_NM);
 			$("#drlSourcePop_contents").text(pkg.DRL_SOURCE);
-			$("#drlSourcePop").show();
 		},
 		beforeSend : function() {
 			$("#drlSourcePopLoading").show();

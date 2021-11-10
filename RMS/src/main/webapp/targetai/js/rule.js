@@ -59,37 +59,37 @@ $(document).ready(function() {
 				
 				// -- RULE 속성 객체 세팅 --
 				ruleObjArr = [];
-				var contents = "";
+				var ruleAttr = "";
+				var ruleAttrKor = "";
 				var ruleHtml = "";
 				
-				var ruleAttrList = res.ruleAttrList;
+				var ruleAttrList = rule.RULE_WHEN.split("\n");
+				var ruleAttrKorList = rule.RULE_WHEN_KOR.split("\n");
 				
-				$.each(ruleAttrList, function(idx, ruleAttr) {
+				for(var i=0; i<ruleAttrList.length; i++) {
 					ruleObj = {};
-					ruleObj.factorGrpNm = ruleAttr.FACTOR_GRP_NM;
-					ruleObj.factorId = ruleAttr.FACTOR_ID;
-					ruleObj.factorNm = ruleAttr.FACTOR_NM;
-					ruleObj.factorNmEn = ruleAttr.FACTOR_NM_EN;
-					ruleObj.factorValType = ruleAttr.DATA_TYPE;
-					ruleObj.factorVal = ruleAttr.FACTOR_VAL;
 					
-					ruleObj.logical_txt = ruleAttr.LOGICAL;
-					ruleObj.relation_txt = ruleAttr.RELATION;
-					ruleObj.ruleAttr_txt = ruleAttr.ATTR_WHEN_CONTENTS;
-					ruleObj.ruleAttr_source = ruleAttr.ATTR_WHEN;
-					
-					ruleObjArr.push(ruleObj);
+					if(i < ruleAttrList.length - 1) {
+						ruleAttrKor += ruleAttrKorList[i] + "\n";
+						ruleAttr += ruleAttrList[i] + "\n";
+						
+					} else {
+						ruleAttrKor += ruleAttrKorList[i];
+						ruleAttr += ruleAttrList[i];
+					}
 					
 					ruleHtml += "<div class='alert fade show mg_b10' role='alert'>";
 					ruleHtml += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
-					ruleHtml += 		ruleAttr.ATTR_WHEN_CONTENTS;
+					ruleHtml += 		ruleAttrKorList[i];
 					ruleHtml += "</div>";
 					
-					contents += ruleAttr.ATTR_WHEN_CONTENTS;
-				});
+					ruleObj.ruleAttr_txt = ruleAttrKorList[i];
+					ruleObj.ruleAttr_source = ruleAttrList[i];
+					ruleObjArr.push(ruleObj);
+				}
 				
 				$("#ruleAttrData").append(ruleHtml);
-				$("#ruleWhenCont").val(contents);
+				$("#ruleWhenCont").val(ruleAttrKor);
 				
 				tmpArr = cloneArr(ruleObjArr);	// 취소시 되돌리기 위한 변수에도 초기값 세팅
 			},
@@ -475,10 +475,10 @@ $(document).ready(function() {
 			}
 		}
 		
-		if(!(relation == "relation4" || relation == "relation3" || Object.keys(tmpObj).length < 1)) {
-			tmpObj.ruleAttr_txt = tmpObj.ruleAttr_txt + "\n";
-			tmpObj.ruleAttr_source = tmpObj.ruleAttr_source + "\n";
-		}
+//		if(!(relation == "relation4" || relation == "relation3" || Object.keys(tmpObj).length < 1)) {
+//			tmpObj.ruleAttr_txt = tmpObj.ruleAttr_txt + "\n";
+//			tmpObj.ruleAttr_source = tmpObj.ruleAttr_source + "\n";
+//		}
 		
 		if(tmpArr.length > 0) {
 			tmpArr[tmpArr.length-1] = tmpObj;
@@ -503,27 +503,16 @@ $(document).ready(function() {
 			return;
 		}
 		
-		// RULE 속성 정합성 체크
-		for(var i=0; i<tmpArr.length; i++) {
-			if(i < tmpArr.length-1) {
-				if(tmpArr[i].relation_txt === '') {
-					messagePop("warning", "RULE 속성 정의가 올바르지 않습니다.", "", "");
-					return;
-				}
-				
-			} else {
-				if(tmpArr[i].relation_txt != '') {
-					messagePop("warning", "RULE 속성 정의가 올바르지 않습니다.", "", "");
-					return;
-				}
-			}
-		}
-		
 		ruleObjArr = cloneArr(tmpArr);
 		
-		var contents = ""
+		var contents = "";
 		$.each(ruleObjArr, function(idx, ruleObj) {
-			contents += ruleObj.ruleAttr_txt;
+			if(idx < ruleObjArr.length-1) {
+				contents += ruleObj.ruleAttr_txt + "\n";
+				
+			} else {
+				contents += ruleObj.ruleAttr_txt;
+			}
 		});
 		
 		$("#ruleWhenCont").val(contents);
@@ -537,7 +526,12 @@ $(document).ready(function() {
 		
 		var contents = "";
 		$.each(ruleObjArr, function(idx, ruleObj) {
-			contents += ruleObj.ruleAttr_txt;
+			if(idx < ruleObjArr.length-1) {
+				contents += ruleObj.ruleAttr_txt + "\n";
+				
+			} else {
+				contents += ruleObj.ruleAttr_txt;
+			}
 		});
 		
 		$("#ruleWhenCont").val(contents);
@@ -563,7 +557,77 @@ $(document).ready(function() {
 	$("#saveRuleBtn").click(function() {
 		 fnSaveRule();
 	})
+	
+	// RULE 목록 > 삭제 버튼 클릭
+	$("#delRuleBtn").click(function() {
+		$(":focus").blur();
+		var ruleListChkBox = $("._ruleListChkBox:checked");
+		
+		var ruleIdArr = [];
+		$.each(ruleListChkBox, function(idx, ruleChkBox){
+			var ruleId = ruleListChkBox.eq(idx).attr("data-ruleId");
+		
+			ruleIdArr.push(ruleId);
+		});
+		
+		if(ruleIdArr.length > 0) {
+			if(confirm(ruleIdArr.length + "건의 RULE이 삭제됩니다.\n정말 삭제하시겠습니까?")) {
+				var param = {};
+				param.ruleIdArr = ruleIdArr;
+				fnDeleteRule(param);
+				
+				// RULE 관련 초기화
+				ruleObj = {};	tmpObj = {};
+				ruleObjArr = [];	tmpArr = [];
+				initRuleDetail();	// RULE 상세 초기화
+				initRuleEditor();	// RULE EDITOR 초기화
+			}
+			
+		} else {
+			messagePop("warning", "RULE 삭제", "삭제할 RULE을 선택하세요.", "");
+		}
+	});
 });
+
+/**
+ * RULE 목록 > 삭제
+ * @param param
+ * @returns
+ */
+function fnDeleteRule(param) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/deleteRuleById.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			
+			var searchObj = {};
+			searchObj.currentPage = 1;
+			getRuleList(searchObj);
+			
+			messagePop("success", "RULE이 삭제되었습니다.", "", "");
+			
+			$("#ruleCard").addClass("card-collapsed");
+			$("#ruleCardBody").css("display", "none");
+			$("#ruleCntInPkg").text(res.ruleCount + "개");
+		},
+		beforeSend : function() {
+			$("#ruleLoading").show();
+		},
+		complete : function() {
+			$("#ruleLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
 
 /**
  * RULE 리스트 조회

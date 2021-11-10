@@ -98,6 +98,7 @@ public class ApiController {
 		StringBuilder sb = null;
 		
 		try {
+			HashMap<String, Object> responseMap = new HashMap<>();
 			
 			long beforeTime = System.currentTimeMillis();
 			
@@ -123,7 +124,8 @@ public class ApiController {
 			HashMap<String, Object> pkg = apiService.getPkgBySvcId(param_svcId);
 			
 			if(pkg == null) {
-				response.getWriter().print(new JSONObject());
+				responseMap.put("CODE", 404);
+				response.getWriter().print(new JSONObject(responseMap));
 				return;
 			}
 			
@@ -144,18 +146,13 @@ public class ApiController {
 			param.put("val", param_custId);
 			
 			List<HashMap<String, Object>> activeList = apiService.getActiveList(param);
-			HashMap<String, Object> responseMap = new HashMap<>();
 				
-			long afterTime = System.currentTimeMillis();
-			long diffTime = (afterTime - beforeTime)/1000;
-			
 			responseMap.put("EXE_TYPE", "TARGET_AI");
 			responseMap.put("SVC_ID", param_svcId);
 			responseMap.put("NUM_OF_OFFER", pkg.get("NUM_OF_OFFER"));
 			responseMap.put("SVC_TARGET_TYPE", svcTargetType);
 			responseMap.put("CUST_ID", param_custId);
 			responseMap.put("NUM_OF_OFFER", numOfOffer == null ? "ALL" : (int) numOfOffer);	// ALL 이면 모든 RULE 표시, 제한있으면 제한된 만큼 RULE 표시
-			responseMap.put("RUN_TIME", diffTime);
 			responseMap.put("RUN_TIME_UNIT", "sec");
 			
 			List<Integer> ruleIds = apiService.getRuleIdsBySvcId(param_svcId);	// 등록된 모든 RULE 의 RULE_ID를 SALIENCE ASC, ORDER ASC 순으로 정렬하여 조회
@@ -167,10 +164,13 @@ public class ApiController {
 			// DB 기준으로 DRL 파일 생성
 			ruleService.saveDRL(String.valueOf(pkgId));
 			
+			// Drools 세션 생성
+			KieSession kieSession = DroolsUtil.getKieSession(drlPath);
+			
 			for(HashMap<String, Object> activeMap : activeList) {
 				// DRL의 RULE 실행 결과
 				activeMap.put("SVC_TARGET_TYPE", svcTargetType);
-				List<HashMap<String, Object>> resultList = getResultList(drlPath, activeMap, outPutValList);
+				List<HashMap<String, Object>> resultList = getResultList(kieSession, activeMap, outPutValList);
 				
 				// 파일이 없을경우 또는 문법이 틀린 DRL 파일 경우 null 리턴
 				if(resultList == null) {
@@ -187,6 +187,9 @@ public class ApiController {
 					resultTmp.add(res);
 				}
 			}
+			
+			// drools 세션 dispose
+			kieSession.dispose();
 
 			// SVC TARGET TYPE 이 CUST 인경우
 			if("CUST".equals(svcTargetType)) {	
@@ -287,6 +290,11 @@ public class ApiController {
 			
 			responseMap.put("TRANSACTION_ID", logMap.get("SVCLOG_ID"));
 			*/
+			
+			long afterTime = System.currentTimeMillis();
+			long diffTime = (afterTime - beforeTime)/1000;
+			responseMap.put("RUN_TIME", diffTime);
+			
 			response.getWriter().print(new JSONObject(responseMap));
 			
 		} catch (Exception e) {
@@ -304,11 +312,8 @@ public class ApiController {
 	 * @param obj
 	 * @return
 	 */
-	public static List<HashMap<String, Object>> getResultList(String path, HashMap<String, Object> activeMap, List<HashMap<String, Object>> outPutValList) {
+	public static List<HashMap<String, Object>> getResultList(KieSession kieSession, HashMap<String, Object> activeMap, List<HashMap<String, Object>> outPutValList) {
 		List<HashMap<String, Object>> sortResList = new ArrayList<>();
-		
-		// Drools 실행
-		KieSession kieSession = DroolsUtil.getKieSession(path);
 		
 		// 파일이 없을경우 또는 문법이 틀린 DRL 파일 경우 null 리턴
 		if(kieSession == null) {
@@ -317,7 +322,6 @@ public class ApiController {
 		
 		kieSession.insert(activeMap);
 		kieSession.fireAllRules();
-		kieSession.dispose();
 		
 		// 결과화면에 정렬되게 보이기 위해 변환
 		Iterator<String> iter = activeMap.keySet().iterator();

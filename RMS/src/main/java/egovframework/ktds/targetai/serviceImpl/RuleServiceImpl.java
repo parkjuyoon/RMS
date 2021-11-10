@@ -43,11 +43,6 @@ public class RuleServiceImpl implements RuleService {
 	}
 	
 	@Override
-	public List<HashMap<String, Object>> getWhenList(int ruleId) {
-		return ruleDao.getWhenList(ruleId);
-	}
-	
-	@Override
 	public int ruleNmCheck(HashMap<String, Object> param) {
 		return ruleDao.ruleNmCheck(param);
 	}
@@ -83,20 +78,10 @@ public class RuleServiceImpl implements RuleService {
 	}
 
 	@Override
-	public void deleteRuleAttrById(HashMap<String, Object> param) {
-		ruleDao.deleteRuleAttrById(param);		
-	}
-
-	@Override
 	public void ruleSave(HashMap<String, Object> param) {
 		ruleDao.ruleSave(param);
 	}
 
-	@Override
-	public void ruleAttrSave(HashMap<String, Object> param) {
-		ruleDao.ruleAttrSave(param);
-	}
-	
 	@Override
 	public String saveDRL(String pkgId) {
 		// 함수 import 경로
@@ -121,25 +106,27 @@ public class RuleServiceImpl implements RuleService {
 			drlSource += "	salience " + m.get("SALIENCE") + "\n";
 			drlSource += "	when\n";
 			drlSource += "		$map : Map(\n";
+			drlSource += "		" + String.valueOf(m.get("RULE_WHEN")).replaceAll("\n", "\n" + "		");
 			
-			int ruleId = (int) m.get("RULE_ID");
-			List<HashMap<String, Object>> whenList = ruleDao.getWhenList(ruleId);
-			
-			for(HashMap<String, Object> w : whenList) {
-				drlSource += "		" + w.get("ATTR_WHEN");
-				
-				if("함수".equals(w.get("FACTOR_GRP_NM"))) {
-					String factorNmEn = (String) w.get("FACTOR_NM_EN");
-					String importTxt= funcRootPath + "." + factorNmEn + "." + factorNmEn.toLowerCase() + ";\n";
-					if(!drlImport.contains(importTxt)) {
-						drlImport += importTxt;
-					}
-				}
-			}
+			// 삭제
+//			int ruleId = (int) m.get("RULE_ID");
+//			List<HashMap<String, Object>> whenList = ruleDao.getWhenList(ruleId);
+//			
+//			for(HashMap<String, Object> w : whenList) {
+//				drlSource += "		" + w.get("ATTR_WHEN");
+//				
+//				if("함수".equals(w.get("FACTOR_GRP_NM"))) {
+//					String factorNmEn = (String) w.get("FACTOR_NM_EN");
+//					String importTxt= funcRootPath + "." + factorNmEn + "." + factorNmEn.toLowerCase() + ";\n";
+//					if(!drlImport.contains(importTxt)) {
+//						drlImport += importTxt;
+//					}
+//				}
+//			}
 			
 			drlSource += "	)\n";
 			drlSource += "	then\n";
-			drlSource += "		" + m.get("ATTR_THEN") + "\n";
+			drlSource += "		" + m.get("RULE_THEN") + "\n";
 			drlSource += "end\n\n";
 		}
 		
@@ -165,5 +152,15 @@ public class RuleServiceImpl implements RuleService {
 		path += "/" + pkg_nm + "/" + drl_nm;
 		
 		return path;
+	}
+
+	@Override
+	public void deleteRuleById(HashMap<String, Object> param) {
+		ruleDao.deleteRuleById(param);
+	}
+
+	@Override
+	public void delRuleMappingByRuleIds(HashMap<String, Object> param) {
+		ruleDao.delRuleMappingByRuleIds(param);
 	}
 }

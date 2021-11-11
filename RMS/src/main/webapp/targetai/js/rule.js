@@ -65,6 +65,11 @@ $(document).ready(function() {
 				
 				var ruleAttrList = rule.RULE_WHEN.split("\n");
 				var ruleAttrKorList = rule.RULE_WHEN_KOR.split("\n");
+				var funcNmList = [];
+				
+				if(typeof rule.FUNC_NMS != 'undefined') {
+					funcNmList = rule.FUNC_NMS.split(",");
+				}
 				
 				for(var i=0; i<ruleAttrList.length; i++) {
 					ruleObj = {};
@@ -85,6 +90,12 @@ $(document).ready(function() {
 					
 					ruleObj.ruleAttr_txt = ruleAttrKorList[i];
 					ruleObj.ruleAttr_source = ruleAttrList[i];
+					
+					if(ruleAttrList[i].startsWith("eval")) {
+						ruleObj.factorNmEn = funcNmList.shift();
+						ruleObj.factorGrpNm = "함수";
+					}
+					
 					ruleObjArr.push(ruleObj);
 				}
 				

@@ -84,9 +84,6 @@ public class RuleServiceImpl implements RuleService {
 
 	@Override
 	public String saveDRL(String pkgId) {
-		// 함수 import 경로
-		String funcRootPath = "import static " + applicationProperties.getProperty("func.import.root_path");
-		
 		// PKG DRL_SOURCE 업데이트
 		HashMap<String, Object> pkg = pkgDao.getPkgById(pkgId);
 		List<HashMap<String, Object>> ruleList = ruleDao.getRuleListByPkgId(pkgId);
@@ -108,21 +105,17 @@ public class RuleServiceImpl implements RuleService {
 			drlSource += "		$map : Map(\n";
 			drlSource += "		" + String.valueOf(m.get("RULE_WHEN")).replaceAll("\n", "\n" + "		");
 			
-			// 삭제
-//			int ruleId = (int) m.get("RULE_ID");
-//			List<HashMap<String, Object>> whenList = ruleDao.getWhenList(ruleId);
-//			
-//			for(HashMap<String, Object> w : whenList) {
-//				drlSource += "		" + w.get("ATTR_WHEN");
-//				
-//				if("함수".equals(w.get("FACTOR_GRP_NM"))) {
-//					String factorNmEn = (String) w.get("FACTOR_NM_EN");
-//					String importTxt= funcRootPath + "." + factorNmEn + "." + factorNmEn.toLowerCase() + ";\n";
-//					if(!drlImport.contains(importTxt)) {
-//						drlImport += importTxt;
-//					}
-//				}
-//			}
+			// 함수 import 정보 추가
+			if(m.get("FUNC_IMPORTS") != null) {
+				String funcImport = (String) m.get("FUNC_IMPORTS");
+				String[] funcImports = funcImport.split("\n");
+				
+				for(String s : funcImports) {
+					if(!drlImport.contains(s)) {
+						drlImport += s + "\n";
+					}
+				}
+			}
 			
 			drlSource += "	)\n";
 			drlSource += "	then\n";

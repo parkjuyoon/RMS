@@ -3,6 +3,7 @@ package egovframework.ktds.targetai.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -22,6 +23,9 @@ public class RuleController {
 
 	@Resource(name = "ruleService")
 	protected RuleService ruleService;
+	
+	@Resource(name = "applicationProperties")
+	protected Properties applicationProperties;
 	
 	/**
 	 * package 관리 화면 이동
@@ -184,7 +188,28 @@ public class RuleController {
 		String ruleWhen = "";
 		String ruleWhenKor = "";
 		
+		// 함수 import 경로
+		String importRootPath = applicationProperties.getProperty("func.import.root_path");
+				
+		String funcImports = "";
+		String funcNms = "";
+		
 		for(int i=0; i<ruleObjList.size(); i++) {
+			String factorGrpNm = String.valueOf(ruleObjList.get(i).get("factorGrpNm"));
+			
+			if("함수".equals(factorGrpNm)) {
+				String factorNmEn = (String) ruleObjList.get(i).get("factorNmEn");
+				
+				funcImports += "import static " + importRootPath + "." + factorNmEn + "." + factorNmEn.toLowerCase() + ";\n";
+				
+				if(i < ruleObjList.size()-1) {
+					funcNms += (String) ruleObjList.get(i).get("factorNmEn") + ",";
+					
+				} else {
+					funcNms += (String) ruleObjList.get(i).get("factorNmEn");
+				}
+			}
+			
 			if(i < ruleObjList.size()-1) {
 				ruleWhen += ruleObjList.get(i).get("ruleAttr_source") + "\n";
 				ruleWhenKor += ruleObjList.get(i).get("ruleAttr_txt") + "\n";
@@ -194,7 +219,9 @@ public class RuleController {
 				ruleWhenKor += ruleObjList.get(i).get("ruleAttr_txt");
 			}
 		}
-		
+				
+		param.put("FUNC_IMPORTS", "".equals(funcImports) ? null : funcImports);
+		param.put("FUNC_NMS", "".equals(funcNms) ? null : funcNms);
 		param.put("RULE_WHEN", ruleWhen);
 		param.put("RULE_WHEN_KOR", ruleWhenKor);
 		

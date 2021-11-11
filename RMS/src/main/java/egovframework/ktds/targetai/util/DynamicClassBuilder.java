@@ -3,15 +3,11 @@ package egovframework.ktds.targetai.util;
 import java.io.File;
 import java.io.FileWriter;
 import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
-
-import egovframework.ktds.targetai.controller.SettingController;
 
 public class DynamicClassBuilder {
 

@@ -910,6 +910,8 @@ function fnSaveRule() {
 			var ruleCount = res.ruleCount;
 			messagePop("success", "RULE 저장 했습니다.", "", "");
 			
+			$("#ruleId").text(res.ruleId);
+			
 			var searchObj = {};
 			searchObj.currentPage = 1;
 			getRuleList(searchObj);

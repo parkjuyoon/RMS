@@ -255,6 +255,7 @@ public class RuleController {
 		HashMap<String, Object> resultMap = new HashMap<>();
 		int ruleCount = ruleService.getRuleCount(resultMap);
 		resultMap.put("ruleCount", ruleCount);
+		resultMap.put("ruleId", param.get("ruleId"));
 		
 		return resultMap;
 	}

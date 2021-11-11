@@ -656,10 +656,29 @@ function fnRuleTest(param) {
 		contentType:'application/json; charset=utf-8',
 		dataType : "json",
 		success : function(res) {
-			var ruleAttrList = res.ruleAttrList;
+			var ruleWhenKors = res.ruleAttrList;
 			var html = "";
 			var html2 = "";
 			
+			$.each(ruleWhenKors, function(idx, ruleWhenKor) {
+				html += "[" + ruleWhenKor.RULE_NM + "]";
+				html += "<div style='padding-left:30px;'><a href='#' class='_ruleWhenKor'>" + ruleWhenKor.RULE_WHEN_KOR + "</a></div>";
+				
+				var arr = ruleWhenKor.RULE_WHEN_KOR.split("\n");
+				
+				for(var i in arr) {
+					// 해야할곳
+				}
+				
+				html2 += "[" + ruleWhenKor.RULE_NM + "]";
+				html2 += "<div class='form_group' style='width:709px;'>";
+				html2 += "<input type='text' class='wd150px' style='margin-right:10px;' value=''>";
+				html2 += " = "
+				html2 += "<input type='text' class='wd150px' style='margin-left:10px;' value=''>";
+				html2 += "</div><br/><br/>";
+			});
+			
+/*			
 			$.each(ruleAttrList, function(idx, ruleAttr) {
 				if(idx != 0 && ruleAttrList[idx-1].RELATION == '') {
 					html += "\n";
@@ -693,7 +712,7 @@ function fnRuleTest(param) {
 				html2 += "	<button type='button' class='btn btn-sm btn-red _ruleTestPop_del' style='color: white'>삭제</button>";
 				html2 += "</div>";
 			});
-			
+*/			
 			$("#ruleTestPop_input").append(html2);
 			$("#ruleAttrPreView").html(html);
 			$("#modal_ruleTest").show();

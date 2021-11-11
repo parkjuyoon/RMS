@@ -164,9 +164,13 @@ public class PkgController {
 	public HashMap<String, Object> getRuleAttrByPkgId(@RequestBody HashMap<String, Object> param) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		
-		List<HashMap<String, Object>> ruleAttrList = pkgService.getRuleAttrByPkgId(param);
-		
-		resultMap.put("ruleAttrList", ruleAttrList);
+		try {
+			List<HashMap<String, Object>> ruleAttrList = pkgService.getRuleAttrByPkgId(param);
+			resultMap.put("ruleAttrList", ruleAttrList);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		return resultMap;
 	}

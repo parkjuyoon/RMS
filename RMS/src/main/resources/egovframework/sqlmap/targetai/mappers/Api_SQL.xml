@@ -31,11 +31,13 @@
 	<insert id="addSvclogIn" parameterType="java.util.HashMap">
 		INSERT INTO targetai.SVCLOG (
 			IO_FLAG,
+			SEQ,
 			SVC_ID,
 			PARAM,
 			VAL
 		) VALUES (
 			"IN",
+			1,
 			#{SVC_ID},
 			#{PARAM},
 			#{VAL}
@@ -49,6 +51,7 @@
 		INSERT INTO targetai.SVCLOG (
 			SVCLOG_ID,
 			IO_FLAG,
+			SEQ,
 			SVC_ID,
 			PARAM,
 			VAL,
@@ -58,6 +61,7 @@
 		(
 			#{SVCLOG_ID},
 			"OUT",
+			#{res.ORDER},
 			#{SVC_ID},
 			#{PARAM},
 			#{VAL},

@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import egovframework.ktds.drools.config.DroolsUtil;
 import egovframework.ktds.targetai.service.ApiService;
-import egovframework.ktds.targetai.service.PkgService;
 import egovframework.ktds.targetai.service.RuleService;
 import egovframework.ktds.targetai.util.CommonUtil;
 
@@ -274,13 +273,13 @@ public class ApiController {
 			
 			// RESULT OUTPUT
 			responseMap.put("RESULT", respList);
-			/*
+			
 			// SVCLOG 저장(INPUT/OUTPUT)
 			HashMap<String, Object> logMap = new HashMap<>();
 			logMap.put("RESULT", respList);
-			logMap.put("SVC_ID", svc_id);
+			logMap.put("SVC_ID", param_svcId);
 			logMap.put("PARAM", "CUST_NO");	// pk 중복 에러
-			logMap.put("VAL", param_val);
+			logMap.put("VAL", param_custId);
 			
 			apiService.addSvclogIn(logMap);
 			
@@ -289,7 +288,6 @@ public class ApiController {
 			}
 			
 			responseMap.put("TRANSACTION_ID", logMap.get("SVCLOG_ID"));
-			*/
 			
 			long afterTime = System.currentTimeMillis();
 			long diffTime = (afterTime - beforeTime)/1000;

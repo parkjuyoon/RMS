@@ -26,7 +26,13 @@ public class DynamicClassBuilder {
 			String classNm = funcNmEn;
 			String packageNm = funcRootPath;
 			String methodNm = funcNmEn.toLowerCase();
-			String filePath = path + funcRootPath.replaceAll("\\.", "/") + "/" + classNm;
+			String filePath = path + funcRootPath.replaceAll("\\.", "/") + "/";
+			
+			if(!new File(filePath).exists()) {
+				new File(filePath).mkdirs();
+			}
+			
+			filePath += classNm;
 			
 			File sourceFile = new File(filePath +".java");
 			String source = this.getSource(packageNm, classNm, methodNm, parameterList, body);

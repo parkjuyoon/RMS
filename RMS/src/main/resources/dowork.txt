@@ -20,3 +20,7 @@
 조성희팀장 ishcho@kt.com
 
 https://developers.google.com/chart/interactive/docs/gallery/candlestickchart?hl=ko
+
+// 통계관련 대시보드 관련
+건수가 클경우 잘라서 보여준다던지 하는 스케일링
+line : hAxis.maxValue, hAxis.minValue

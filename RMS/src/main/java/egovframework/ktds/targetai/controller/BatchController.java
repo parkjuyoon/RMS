@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import egovframework.ktds.targetai.service.BatchService;
 
-@RequestMapping("/batch")
+@RequestMapping("/targetai/batch")
 @Controller
 public class BatchController {
 
@@ -17,20 +17,32 @@ public class BatchController {
 	protected BatchService batchService;
 	
 	/**
+	 * STAT_INFO 저장
+	 * @param model
+	 */
+	@RequestMapping(value = "/addStatInfo.do")
+	public void addStatInfo(HttpServletRequest req, ModelMap model) {
+		// STAT_INFO 데이터 쌓음.
+		batchService.addStatInfo();
+	}
+	
+	/**
 	 * IB_REAL_STAT 저장
 	 * @param model
 	 */
-	@RequestMapping(value = "/inBound.do")
-	public void inRealStat(HttpServletRequest req, ModelMap model) {
-		
+	@RequestMapping(value = "/addInRealStat.do")
+	public void addInRealStat(HttpServletRequest req, ModelMap model) {
+		// IB_REAL_STAT 데이터 쌓음.
+		batchService.addInRealStat();
 	}
 	
 	/**
 	 * OB_REAL_STAT 저장
 	 * @param model
 	 */
-	@RequestMapping(value = "/outBound.do")
-	public void obRearStat(HttpServletRequest req, ModelMap model) {
-		
+	@RequestMapping(value = "/addObRealStat.do")
+	public void addObRealStat(HttpServletRequest req, ModelMap model) {
+		// IB_REAL_STAT 데이터 쌓음.
+		batchService.addObRealStat();
 	}
 }

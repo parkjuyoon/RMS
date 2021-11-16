@@ -1,6 +1,7 @@
 package egovframework.ktds.targetai.controller;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -42,13 +43,34 @@ public class DashboardController {
 	 * @return resultMap
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/getSvclogList.do", method = RequestMethod.POST)
-	public HashMap<String, Object> getSvclogList(@RequestBody HashMap<String, Object> param, HttpSession session) {
+	@RequestMapping(value = "/ib_drawChart.do", method = RequestMethod.POST)
+	public HashMap<String, Object> ib_drawChart(@RequestBody HashMap<String, Object> param, HttpSession session) {
 		HashMap<String, Object> resultMap = new HashMap<>();
 		
-		String regUserId = (String) session.getAttribute("member_id");
-		param.put("REG_USER_ID", regUserId);
 		
+		// 한시간 내 표시될 채널 조회
+//		List<String> channelNmList = dashboardService.getChannelNmList();
+		
+//		SELECT
+//			CHANNEL_NM
+//		FROM
+//			targetai.IB_REAL_STAT
+//		WHERE
+//			CREATE_DT
+//				BETWEEN 
+//						DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 HOUR), '%Y-%m-%d %H:%i:%S') 
+//					AND 
+//						DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%S')
+//		GROUP BY
+//			CHANNEL_NM
+		
+		// 한시간 동안 채널 리스트로 FOR 문 돌면서 조회
+//		for(String channelNm : channelNmList) {
+//			
+//		}
+		
+//		
+//		resultMap.put("data", data);
 		
 		return resultMap;
 	}

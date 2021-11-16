@@ -169,7 +169,7 @@
 									<div class="card-actions card-header-position-mobile">
 										<a href="#" id="" class="card-action card-action-toggle"></a>
 									</div>
-									<h2 class="card-title_txt">IN Bound 현황</h2>
+									<h2 class="card-title_txt">채널별 인입 현황</h2>
 								</header>
 								<!-- 본문페이지 -->
 								<div class="card-body" id="">
@@ -180,7 +180,7 @@
 									</div>
 									<!-- 라인차트 -->
 									<div class="panel bd_b_none nobordertop">
-										<div id="ib_chart_div" style="height: 250px;"></div>
+										<div id="ib_chart_div" style="height: 350px;"></div>
 									</div>
 									<!-- //라인차트 -->
 								</div>

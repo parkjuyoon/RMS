@@ -24,17 +24,29 @@ public class BatchServiceImpl implements BatchService {
 	public void addInRealStat() {
 		// STAT_INFO 기준 정보 조회
 		HashMap<String, Object> statInfo = dao.getStatInfo();
-		dao.addInRealStat(statInfo);
-		// STAT_INFO 의 IB_APPLY_YN 업데이트
-		dao.updateIbApplyYn(statInfo);		
+		
+		if(!statInfo.isEmpty()) {
+			// IN BOUND 데이터 적재
+			int result = dao.addInRealStat(statInfo);
+			if(result > 0) {
+				// STAT_INFO 의 IB_APPLY_YN 업데이트
+				dao.updateIbApplyYn(statInfo);
+			}
+		}
 	}
 
 	@Override
 	public void addObRealStat() {
 		// STAT_INFO 기준 정보 조회
 		HashMap<String, Object> statInfo = dao.getStatInfo();
-		dao.addInRealStat(statInfo);
-		// STAT_INFO 의 OB_APPLY_YN 업데이트
-		dao.updateObApplyYn(statInfo);
+		
+		if(!statInfo.isEmpty()) {
+			// OUT BOUND 데이터 적재
+			int result = dao.addObRealStat(statInfo);
+			if(result > 0) {
+				// STAT_INFO 의 OB_APPLY_YN 업데이트
+				dao.updateObApplyYn(statInfo);
+			}
+		}
 	}
 }

@@ -14,14 +14,25 @@
 	</insert>
 	
 	<!-- IN BOUND 데이터 적재 -->
-	<insert id="addInRealStat">
+	<insert id="addInRealStat" parameterType="java.util.HashMap">
+		INSERT INTO targetai.IB_REAL_STAT (
+			BASE_DAY,
+			SEQ,
+			SVC_ID,
+			CNT,
+			BEGIN_LOG_DT,
+			END_LOG_DT,
+			CHANNEL_NM,
+			PKG_NM,
+			CREATE_DT
+		)
 		SELECT
 			DATE_FORMAT(NOW(), '%Y-%m-%d') AS BASE_DAY,
-			A.SVC_ID,
-		    '#{SEQ}' AS SEQ,
+			#{SEQ} AS SEQ,
+		    A.SVC_ID,
 		    A.CNT,
-		    '#{BEGIN_LOG_DT}' AS BEGIN_LOG_DT,
-		    '#{END_LOG_DT}' AS END_LOG_DT,
+		    #{BEGIN_LOG_DT} AS BEGIN_LOG_DT,
+		    #{END_LOG_DT} AS END_LOG_DT,
 		    C.CHANNEL_NM,
 		    P.PKG_NM,
 		    NOW() AS CREATE_DT
@@ -32,21 +43,63 @@
 			FROM 
 				targetai.SVCLOG
 			WHERE
-				IO_FLAG = 'OUT'
-				AND CREATE_DT BETWEEN DATE_FORMAT(NOW(), '2021-11-15 18:01:00') AND DATE_FORMAT(NOW(), '2021-11-15 18:01:59')
+				IO_FLAG = 'IN'
+				AND CREATE_DT 
+					BETWEEN #{BEGIN_LOG_DT} AND #{END_LOG_DT}
 			GROUP BY
 				SVC_ID
 		) A
 		LEFT JOIN targetai.SVC S ON (A.SVC_ID = S.SVC_ID)
 		LEFT JOIN targetai.`CHANNEL` C ON (S.CHANNEL_ID = C.CHANNEL_ID)
 		LEFT JOIN targetai.PKG P ON (S.PKG_ID = P.PKG_ID)
+		
 	</insert>
 	
 	<!-- OUT BOUND 데이터 적재 -->
-	<insert id="addObRealStat">
-	
+	<insert id="addObRealStat" parameterType="java.util.HashMap">
+		INSERT INTO targetai.OB_REAL_STAT (
+			BASE_DAY,
+			SEQ,
+			SVC_ID,
+			RSPNS_CD,
+			CNT,
+			BEGIN_LOG_DT,
+			END_LOG_DT,
+			CHANNEL_NM,
+			PKG_NM,
+			CREATE_DT
+		)
+		SELECT
+			DATE_FORMAT(NOW(), '%Y-%m-%d') AS BASE_DAY,
+			#{SEQ} AS SEQ,
+		    A.SVC_ID,
+		    A.RSPNS_CD,
+		    A.CNT,
+		    #{BEGIN_LOG_DT} AS BEGIN_LOG_DT,
+		    #{END_LOG_DT} AS END_LOG_DT,
+		    C.CHANNEL_NM,
+		    P.PKG_NM,
+		    NOW() AS CREATE_DT
+		FROM (
+			SELECT
+				SVC_ID,
+		        RSPNS_CD,
+				COUNT(*) AS CNT
+			FROM 
+				targetai.SVCLOG
+			WHERE
+				IO_FLAG = 'OUT'
+				AND CREATE_DT 
+					BETWEEN #{BEGIN_LOG_DT} AND #{END_LOG_DT}
+			GROUP BY
+				SVC_ID, RSPNS_CD
+		) A
+		LEFT JOIN targetai.SVC S ON (A.SVC_ID = S.SVC_ID)
+		LEFT JOIN targetai.`CHANNEL` C ON (S.CHANNEL_ID = C.CHANNEL_ID)
+		LEFT JOIN targetai.PKG P ON (S.PKG_ID = P.PKG_ID)
 	</insert>
 	
+	<!-- STAT_INFO 기준 정보 조회 -->
 	<select id="getStatInfo" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT 
 			SEQ,
@@ -65,4 +118,24 @@
 				AND 
 					DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MINUTE), '%Y-%m-%d %H:%i:59')
 	</select>
+	
+	<!-- STAT_INFO 의 IB_APPLY_YN 업데이트 -->
+	<update id="updateIbApplyYn" parameterType="java.util.HashMap">
+		UPDATE targetai.STAT_INFO
+		SET
+			IB_APPLY_YN = 'Y',
+			MODIFY_DT = NOW()
+		WHERE
+			SEQ = #{SEQ}
+	</update>
+	
+	<!-- STAT_INFO 의 OB_APPLY_YN 업데이트 -->
+	<update id="updateObApplyYn" parameterType="java.util.HashMap">
+		UPDATE targetai.STAT_INFO
+		SET
+			OB_APPLY_YN = 'Y',
+			MODIFY_DT = NOW()
+		WHERE
+			SEQ = #{SEQ}
+	</update>
 </mapper>

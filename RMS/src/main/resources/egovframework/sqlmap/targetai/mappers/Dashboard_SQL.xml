@@ -36,7 +36,7 @@
 				LEFT OUTER JOIN targetai.IB_REAL_STAT IRS ON (SI.SEQ = IRS.SEQ)
 			WHERE
 			<![CDATA[
-				SI.CREATE_DT > DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 10 MINUTE), '%Y-%m-%d %H:%i:00') 
+				SI.CREATE_DT > DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 30 MINUTE), '%Y-%m-%d %H:%i:00') 
 				AND SI.CREATE_DT < DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:00')
 			]]>
 		) T

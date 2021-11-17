@@ -47,30 +47,22 @@ public class DashboardController {
 	public HashMap<String, Object> ib_drawChart(@RequestBody HashMap<String, Object> param, HttpSession session) {
 		HashMap<String, Object> resultMap = new HashMap<>();
 		
+		String timeUnit = "HOUR";
+		
+		if("HOUR".equals(timeUnit)) {
+			
+		}
+		
+		param.put("limit", 5);
 		
 		// 한시간 내 표시될 채널 조회
-//		List<String> channelNmList = dashboardService.getChannelNmList();
+		List<String> channelNmList = dashboardService.getChannelNmList(param);
+		param.put("channelNmList", channelNmList);
+		// 차트 데이터 조회
+		List<HashMap<String, Object>> ibCharDataList = dashboardService.ibCharDataListByChannelNm(param);
 		
-//		SELECT
-//			CHANNEL_NM
-//		FROM
-//			targetai.IB_REAL_STAT
-//		WHERE
-//			CREATE_DT
-//				BETWEEN 
-//						DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 HOUR), '%Y-%m-%d %H:%i:%S') 
-//					AND 
-//						DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%S')
-//		GROUP BY
-//			CHANNEL_NM
-		
-		// 한시간 동안 채널 리스트로 FOR 문 돌면서 조회
-//		for(String channelNm : channelNmList) {
-//			
-//		}
-		
-//		
-//		resultMap.put("data", data);
+		resultMap.put("channelNmList", channelNmList);
+		resultMap.put("ibCharDataList", ibCharDataList);
 		
 		return resultMap;
 	}

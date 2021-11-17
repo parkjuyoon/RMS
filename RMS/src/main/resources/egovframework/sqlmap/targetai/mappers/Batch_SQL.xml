@@ -74,6 +74,7 @@
 			#{SEQ} AS SEQ,
 		    A.SVC_ID,
 		    A.RSPNS_CD,
+		    A.RULE_ID,
 		    A.CNT,
 		    #{BEGIN_LOG_DT} AS BEGIN_LOG_DT,
 		    #{END_LOG_DT} AS END_LOG_DT,
@@ -83,6 +84,7 @@
 		FROM (
 			SELECT
 				SVC_ID,
+				RULE_ID,
 		        RSPNS_CD,
 				COUNT(*) AS CNT
 			FROM 
@@ -92,7 +94,7 @@
 				AND CREATE_DT 
 					BETWEEN #{BEGIN_LOG_DT} AND #{END_LOG_DT}
 			GROUP BY
-				SVC_ID, RSPNS_CD
+				SVC_ID, RULE_ID, RSPNS_CD
 		) A
 		LEFT JOIN targetai.SVC S ON (A.SVC_ID = S.SVC_ID)
 		LEFT JOIN targetai.`CHANNEL` C ON (S.CHANNEL_ID = C.CHANNEL_ID)

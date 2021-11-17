@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.ktds.targetai.mapper.DashboardMapper">
+
+	<!--  -->
+	<select id="getChannelNmList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT
+			REPLACE(CHANNEL_NM, '.', '|dot|') AS CHANNEL_NM
+		FROM 
+			targetai.IB_REAL_STAT
+		WHERE
+		<![CDATA[
+			CREATE_DT > DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 HOUR), '%Y-%m-%d %H:%i:00') 
+			AND CREATE_DT < DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:00')
+		]]>
+		GROUP BY
+			CHANNEL_NM
+		ORDER BY
+			CHANNEL_NM ASC
+		LIMIT #{limit}
+	</select>
+	
+	<!--  -->
+	<select id="ibCharDataListByChannelNm" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT
+			DISPLAY_DT
+			<foreach collection="channelNmList" item="item">
+			,IFNULL(MAX(CASE WHEN CHANNEL_NM = REPLACE(#{item.CHANNEL_NM}, '|dot|', '.') THEN CNT END), 0) AS '${item.CHANNEL_NM}'
+			</foreach>
+		FROM (
+			SELECT 
+				DATE_FORMAT(DATE_ADD(SI.END_LOG_DT, INTERVAL 1 MINUTE), '%H:%i') DISPLAY_DT,
+				IRS.*
+			FROM
+				targetai.STAT_INFO SI
+				LEFT OUTER JOIN targetai.IB_REAL_STAT IRS ON (SI.SEQ = IRS.SEQ)
+			WHERE
+			<![CDATA[
+				SI.CREATE_DT > DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 10 MINUTE), '%Y-%m-%d %H:%i:00') 
+				AND SI.CREATE_DT < DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:00')
+			]]>
+		) T
+		GROUP BY DISPLAY_DT			
+	</select>
+</mapper>

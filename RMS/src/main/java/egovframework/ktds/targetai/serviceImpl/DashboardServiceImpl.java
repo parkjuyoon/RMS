@@ -1,5 +1,8 @@
 package egovframework.ktds.targetai.serviceImpl;
 
+import java.util.HashMap;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -12,5 +15,15 @@ import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 public class DashboardServiceImpl extends EgovAbstractServiceImpl implements DashboardService {
 
 	@Resource(name = "dashboardMapper")
-	private DashboardMapper dbdao;
+	private DashboardMapper dao;
+
+	@Override
+	public List<String> getChannelNmList(HashMap<String, Object> param) {
+		return dao.getChannelNmList(param);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> ibCharDataListByChannelNm(HashMap<String, Object> param) {
+		return dao.ibCharDataListByChannelNm(param);
+	}
 }

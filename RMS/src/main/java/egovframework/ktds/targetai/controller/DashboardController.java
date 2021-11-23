@@ -43,8 +43,8 @@ public class DashboardController {
 	 * @return resultMap
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/ib_drawChart.do", method = RequestMethod.POST)
-	public HashMap<String, Object> ib_drawChart(@RequestBody HashMap<String, Object> param, HttpSession session) {
+	@RequestMapping(value = "/getChartData.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getChartData(@RequestBody HashMap<String, Object> param, HttpSession session) {
 		HashMap<String, Object> resultMap = new HashMap<>();
 		
 		String timeUnit = "HOUR";
@@ -58,11 +58,15 @@ public class DashboardController {
 		// 한시간 내 표시될 채널 조회
 		List<String> channelNmList = dashboardService.getChannelNmList(param);
 		param.put("channelNmList", channelNmList);
-		// 차트 데이터 조회
+		// IB 차트 데이터 조회
 		List<HashMap<String, Object>> ibCharDataList = dashboardService.ibCharDataListByChannelNm(param);
+		
+		// OB 차트 데이터 조회
+		List<HashMap<String, Object>> obCharDataList = dashboardService.obCharDataListByChannelNm(param);
 		
 		resultMap.put("channelNmList", channelNmList);
 		resultMap.put("ibCharDataList", ibCharDataList);
+		resultMap.put("obCharDataList", obCharDataList);
 		
 		return resultMap;
 	}

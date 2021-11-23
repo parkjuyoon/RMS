@@ -2,6 +2,12 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<style type="text/css">
+	.factorValSpanTitle {
+		font-weight: bold;
+		font-style: italic;
+	}
+</style>
 <%@ include file="../targetai/comm/header.jsp"%>
 </head>
 <body class="loading" data-layout-mode="two-column"
@@ -122,7 +128,14 @@
 															<tr>
 																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3" colspan="2">
 																	<div class="overflow_detail">
-																		<div class="alert fade show mg_b10 _factorVal" role="alert" id="factorVal" data-type=""></div>
+																		<div class="alert fade show mg_b10 _factorVal" role="alert" id="factorVal" data-type="">
+																			<div style="1px solid black;">
+																				<label>제목</label>
+																			</div>
+																			<div style="1px solid black;">
+																				<input class="wd250px;">
+																			</div>
+																		</div>
 																		<input type="text" id="factorVal_direct" value="" placeholder="요소값을 입력하세요." style="display: none;">
 																	</div>
 																</td>

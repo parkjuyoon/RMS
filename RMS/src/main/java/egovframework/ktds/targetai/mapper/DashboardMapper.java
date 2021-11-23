@@ -12,4 +12,6 @@ public interface DashboardMapper {
 
 	List<HashMap<String, Object>> ibCharDataListByChannelNm(HashMap<String, Object> param);
 
+	List<HashMap<String, Object>> obCharDataListByChannelNm(HashMap<String, Object> param);
+
 }

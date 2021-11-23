@@ -840,12 +840,18 @@ function getFactorVal(event, treeId, treeNode) {
 				
 			} else if(dataType == 'ARGS') {
 				$.each(factorVal, function(idx, func){
-					html += "<label for='' class='mg_r10'>"+ func.ARG_NM +"</label>";
-					html += "<input type='text' class='wd250px' name='detAttrChk' data-dataType='"+ func.DATA_TYPE +"' value=''/>";
-					html += "<br />";
+					html += "<div>";
+					html += "	<span for='' class='mg_r10 factorValSpanTitle'>"+ func.ARG_NM +"</span>";
+					html += "</div>";
+					html += "<div>";
+					html += "	<input type='text' class='wd250px' name='detAttrChk' data-dataType='"+ func.DATA_TYPE +"' value=''/>";
+					html += "	<button type='button' class='btn btn-sm btn-gray'>";
+					html += "		<i class='far fa-times-circle custom-btn-i'></i> 속성선택";
+					html += "	</button>";
+					html += "</div>";
 				});
 				
-				html += "<label for='' class='mg_r10'>결과 </label>";
+				html += "<span for='' class='mg_r10 factorValSpanTitle'>결과 </span>";
 				html += "<input type='radio' name='detAttrChk' id='' value='true' checked><label for='' class='mg_r10'>&nbsp;true </label>";
 				html += "<input type='radio' name='detAttrChk' id='' value='false'><label for='' class='mg_r10'>&nbsp;false </label>";
 				

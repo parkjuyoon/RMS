@@ -26,4 +26,9 @@ public class DashboardServiceImpl extends EgovAbstractServiceImpl implements Das
 	public List<HashMap<String, Object>> ibCharDataListByChannelNm(HashMap<String, Object> param) {
 		return dao.ibCharDataListByChannelNm(param);
 	}
+
+	@Override
+	public List<HashMap<String, Object>> obCharDataListByChannelNm(HashMap<String, Object> param) {
+		return dao.obCharDataListByChannelNm(param);
+	}
 }

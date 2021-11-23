@@ -10,7 +10,7 @@
 			targetai.IB_REAL_STAT
 		WHERE
 		<![CDATA[
-			CREATE_DT > DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 HOUR), '%Y-%m-%d %H:%i:00') 
+			CREATE_DT > DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 30 MINUTE), '%Y-%m-%d %H:%i:00') 
 			AND CREATE_DT < DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:00')
 		]]>
 		GROUP BY
@@ -39,6 +39,32 @@
 				SI.CREATE_DT > DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 30 MINUTE), '%Y-%m-%d %H:%i:00') 
 				AND SI.CREATE_DT < DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:00')
 			]]>
+		) T
+		GROUP BY DISPLAY_DT			
+	</select>
+	
+	<!--  -->
+	<select id="obCharDataListByChannelNm" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT
+			DISPLAY_DT
+			<foreach collection="channelNmList" item="item">
+			,IFNULL(MAX(CASE WHEN CHANNEL_NM = REPLACE(#{item.CHANNEL_NM}, '|dot|', '.') THEN CNT END), 0) AS '${item.CHANNEL_NM}'
+			</foreach>
+		FROM (
+		
+			SELECT 
+				DATE_FORMAT(DATE_ADD(SI.END_LOG_DT, INTERVAL 1 MINUTE), '%H:%i') DISPLAY_DT,
+				SUM(ORS.CNT) CNT,
+				CHANNEL_NM
+			FROM
+				targetai.STAT_INFO SI
+				LEFT OUTER JOIN targetai.OB_REAL_STAT ORS ON (SI.SEQ = ORS.SEQ)
+			WHERE
+			<![CDATA[
+				SI.CREATE_DT > DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 30 MINUTE), '%Y-%m-%d %H:%i:00')
+				AND SI.CREATE_DT < DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:00')
+			]]>
+			GROUP BY DISPLAY_DT, CHANNEL_NM
 		) T
 		GROUP BY DISPLAY_DT			
 	</select>

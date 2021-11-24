@@ -101,6 +101,13 @@
 		    targetai.FACTOR
 	    WHERE
 			ATTR_USE_YN = 'Y'
+		<if test="notIn != null and notIn != ''">
+			AND FACTOR_NM != '함수'
+            AND FACTOR_TYPE != #{notIn}
+		</if>
+		<if test="dataType != null and dataType != ''">
+			AND (FACTOR_TYPE = 'GROUP' OR FACTOR_TYPE = 'DATA' AND DATA_TYPE = #{dataType});
+		</if>
 	</select>
 	
 	<!-- Factor 조회 -->

@@ -69,20 +69,28 @@ public class DynamicClassBuilder {
 		// java source를 생성한다.
 		sb.append("package " + packageNm + ";\n\n");
 		sb.append("public class " + classNm + "{\n");
-		sb.append("	public static boolean " + methodNm + "(Object[] params) throws Exception {\n");
-		for(int i=0; i<params.length; i++) {
-			switch (params[i].getClass().getSimpleName()) {
-			case "String":
-				sb.append("		String code = (String) params["+ i +"];\n");
-				break;
-			case "Integer":
-				sb.append("		int day = (int) params["+ i +"];\n");
-				break;
-
-			default:
-				break;
-			}
-		}
+		
+		sb.append("	public static boolean " + methodNm + "(Object code, Object day) throws Exception {\n");
+		sb.append("\t\t code = (String)code;\n");
+		sb.append("\t\t day = (int)day;\n");
+		sb.append("\t\t System.out.println(code);\n");
+		sb.append("\t\t System.out.println(day);\n");
+		sb.append("\t\t return true;\n");
+		
+//		sb.append("	public static boolean " + methodNm + "(Object[] params) throws Exception {\n");
+//		for(int i=0; i<params.length; i++) {
+//			switch (params[i].getClass().getSimpleName()) {
+//			case "String":
+//				sb.append("		String code = (String) params["+ i +"];\n");
+//				break;
+//			case "Integer":
+//				sb.append("		int day = (int) params["+ i +"];\n");
+//				break;
+//
+//			default:
+//				break;
+//			}
+//		}
 		sb.append(body);
 		sb.append("	}\n}");
 		

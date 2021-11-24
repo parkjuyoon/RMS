@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -97,13 +98,18 @@ public class RuleServiceImpl implements RuleService {
 		}
 		
 		for(HashMap<String, Object> m : ruleList) {
+			
 			drlSource += "rule \"" + m.get("RULE_NM") + "\"\n";
 			drlSource += "	no-loop " + m.get("NO_LOOP") + "\n";
 			drlSource += "	lock-on-active " + m.get("LOCK_ON_ACTIVE") + "\n";
 			drlSource += "	salience " + m.get("SALIENCE") + "\n";
 			drlSource += "	when\n";
 			drlSource += "		$map : Map(\n";
-			drlSource += "		" + String.valueOf(m.get("RULE_WHEN")).replaceAll("\n", "\n" + "		");
+			
+			String ruleWhen = String.valueOf(m.get("RULE_WHEN")).replaceAll("\n", "\n" + "		");
+			ruleWhen = ruleWhen.replaceAll("#\\{", "\\$map.get(\"").replaceAll("\\}", "\")");
+			
+			drlSource += "		" + ruleWhen;
 			
 			// 함수 import 정보 추가
 			if(m.get("FUNC_IMPORTS") != null) {

@@ -2,17 +2,17 @@ package drl;
 import java.util.Map;
 import static main.func.DaySinceLastEvent.run;
 
-rule "CheckIsEmpty1"
+rule "함수 object 테스트 2"
 	no-loop true
 	lock-on-active true
 	salience 1
 	when
 		$map : Map(
-			this["INSUR_PROD_SBSC_YN"]=="Y" &&
-			this["IPTV_SBSC_YN"]<"50" ||
-		    eval(run(new Object[] {"wa01", 30}) == false)
-		)
+		eval(run($map.get("MPHON_COMB_YN"), $map.get("CUST_AGE")) == true)	)
 	then
-	    $map.put("function_result1", "결과값");
+		$map.put("ruleId_560", 560);
+		$map.put("campId_560", null);
+		$map.put("salience_560", 1);
+		$map.put("ruleNm_560", "함수 object 테스트 2");
+		$map.put("targetType_560", "CUST");
 end
-

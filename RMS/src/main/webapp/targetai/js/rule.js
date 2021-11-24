@@ -382,7 +382,14 @@ $(document).ready(function() {
 					pTmp += (idx == factorVal_Tag.length-1 ? paramVal : paramVal + ", ");
 					
 				} else {
-					pTmp += (idx == factorVal_Tag.length-1 ? "\"" + paramVal + "\"" : "\"" + paramVal + "\", ");
+					var pattern_obj = /^#\{(.*?)\}$/;
+					
+					if(pattern_obj.test(paramVal)) {
+						pTmp += (idx == factorVal_Tag.length-1 ? paramVal : paramVal + ", ");
+						
+					} else {
+						pTmp += (idx == factorVal_Tag.length-1 ? "\"" + paramVal + "\"" : "\"" + paramVal + "\", ");
+					}
 				}
 			}
 			
@@ -597,6 +604,77 @@ $(document).ready(function() {
 		} else {
 			messagePop("warning", "RULE 삭제", "삭제할 RULE을 선택하세요.", "");
 		}
+	});
+	
+	// RULE EDITOR > 함수 선택시 > 요소값 > 속성선택 버튼
+	$(document).on("click", "._selectAttributeBtn", function() {
+		$("#selectFactorTree").html("");
+		$("#selectAttribute").show();
+		var param = {};
+		param.notIn = "FUNC";
+		param.dataType = $(this).attr("data-dataType").toUpperCase();
+		
+		var $this = $(this);
+		
+		$.ajax({
+			method : "POST",
+			url : "/targetai/getFactorList.do",
+			traditional: true,
+			data : JSON.stringify(param),
+			contentType:'application/json; charset=utf-8',
+			dataType : "json",
+			success : function(res) {
+				var factorList = res.factorList;
+				var factorArr = [];
+				
+				$.each(factorList, function(idx, factor) {
+					var factorObj = {};
+					factorObj.id = factor.FACTOR_ID;
+					factorObj.pId = factor.PID;
+					factorObj.name = factor.FACTOR_NM;
+					factorObj.name_en = factor.FACTOR_NM_EN;
+					if(factor.FACTOR_TYPE == 'GROUP') {
+						factorObj.isParent = true;
+						factorObj.open = false;
+					}
+					
+					factorArr.push(factorObj);
+				});
+				
+				// zTree 설정 
+				var setting = {
+					data: {
+						simpleData: {
+							enable: true
+						}
+					},
+					callback: {
+						onClick: function(event, treeId, treeNode) {
+							var factorNm = treeNode.name;
+							var factorNmEn = treeNode.name_en;
+							
+							$this.siblings("input").val("#{" + factorNmEn + "}");
+							close_layerPop('selectAttribute');
+						}
+					}
+				};
+				
+				// zTree 초기화 후 생성
+				$.fn.zTree.init($("#selectFactorTree"), setting, factorArr);
+			},
+			beforeSend : function() {
+				$("#selectAttributeLoading").show();
+			},
+			complete : function() {
+				$("#selectAttributeLoading").hide();
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+				console.log(jqXHR);
+				console.log(textStatus);
+				console.log(errorThrown);
+			}
+		});
 	});
 });
 
@@ -841,16 +919,17 @@ function getFactorVal(event, treeId, treeNode) {
 			} else if(dataType == 'ARGS') {
 				$.each(factorVal, function(idx, func){
 					html += "<div>";
-					html += "	<span for='' class='mg_r10 factorValSpanTitle'>"+ func.ARG_NM +"</span>";
+					html += "	<span for='' class='mg_r10 factorValSpanTitle'>"+ func.ARG_NM +"("+ func.DATA_TYPE +")</span>";
 					html += "</div>";
 					html += "<div>";
 					html += "	<input type='text' class='wd250px' name='detAttrChk' data-dataType='"+ func.DATA_TYPE +"' value=''/>";
-					html += "	<button type='button' class='btn btn-sm btn-gray'>";
-					html += "		<i class='far fa-times-circle custom-btn-i'></i> 속성선택";
+					html += "	<button type='button' class='btn btn-sm btn-green _selectAttributeBtn' data-dataType='"+ func.DATA_TYPE +"'>";
+					html += "		<i class='far fa-check-circle custom-btn-i'></i> 속성선택";
 					html += "	</button>";
 					html += "</div>";
 				});
 				
+				html += "<br/>";
 				html += "<span for='' class='mg_r10 factorValSpanTitle'>결과 </span>";
 				html += "<input type='radio' name='detAttrChk' id='' value='true' checked><label for='' class='mg_r10'>&nbsp;true </label>";
 				html += "<input type='radio' name='detAttrChk' id='' value='false'><label for='' class='mg_r10'>&nbsp;false </label>";

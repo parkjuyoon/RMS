@@ -72,26 +72,38 @@ public class DynamicClassBuilder {
 		sb.append("public class " + classNm + "{\n");
 		sb.append("	public static boolean " + methodNm);
 		
+		String paramCast = "";
 		String paramTxt = "(";
 		int cnt=0;
 		for(HashMap<String, Object> pt : parameterList) {
 			String paramType = (String) pt.get("paramType");
 			String paramVal = (String) pt.get("paramVal");
+			String paramVal1 = (String) pt.get("paramVal");
 			
 			cnt ++;
 			if(cnt == parameterList.size()) {
-				paramTxt += paramType + " " + paramVal;
+				paramTxt += "Object " + paramType + "_" + paramVal;
 			} else {
-				paramTxt += paramType + " " + paramVal + ", ";
+				paramTxt += "Object " + paramType + "_" + paramVal + ", ";
+			}
+			
+			paramVal = "String.valueOf("+ paramType + "_" + paramVal +")";
+			
+			// 형변환
+			if("int".equals(paramType)) {
+				paramCast += "		" + paramType + " " + paramVal1 + " = " + "Integer.parseInt(" + paramVal + ");\n";
+			} else {
+				paramCast += "		" + paramType + " " + paramVal1 + " = " + paramVal + ";\n";
 			}
 		}
 		paramTxt += ") ";
 		
 		sb.append(paramTxt);
 		sb.append("throws Exception {\n");
+		// 형변환
+		sb.append(paramCast);
 		sb.append(body);
-		sb.append("	}\n}");
-		
+		sb.append("	}\n}\n");
 		
 		return sb.toString();
 	}

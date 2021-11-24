@@ -19,13 +19,13 @@
 		<%@ include file="../targetai/comm/alertPop.jsp"%>
 
 		<!-- DRL 소스 보기 modal_pop -->
-		<div id="drlSourcePop" class="modal_pop">
-			<div class="modal_content" style="width: 800px;">
+		<div id="selectAttribute" class="modal_pop" style="z-index: 99999;">
+			<div class="modal_content" style="width: 400px;">
 				<!-- 팝업항상중앙띄우기 -->
 				<div class="modla_center">
 					<div class="modal_header">
-						<span class="close" onclick="close_layerPop('drlSourcePop');" data-focusId="" id="messagePop_close">&times;</span>
-						<h2>DRL Source 확인</h2>
+						<span class="close" onclick="close_layerPop('selectAttribute');" data-focusId="" id="messagePop_close">&times;</span>
+						<h2>속성 선택</h2>
 					</div>
 					<!-- 본문 -->
 					<div class="modal_body" style="height: calc(100% - 25vh); overflow-x: hidden; overflow-y: auto;">
@@ -37,7 +37,7 @@
 										<!-- 본문페이지 -->
 										<div class="card-body body-header" style="">
 											<div class="progress_loading">
-												<div id="drlSourcePopLoading">
+												<div id="selectAttributeLoading">
 													<img src="/targetai_publish/images/ajax-loader1.gif" />
 												</div>
 											</div>
@@ -47,10 +47,10 @@
 											</header>
 											<!-- 경고 -->
 											<div class="card-body">
-												<textarea rows="30" cols="60" class="txtsize_100 wd100" id="drlSourcePop_contents" readonly="readonly"></textarea>
+												<ul id="selectFactorTree" class="ztree treewrap" style="width: 100%;"></ul>
 												<!-- 버튼 -->
 												<div class="card-actions-foot">
-													<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('drlSourcePop');">
+													<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('selectAttribute');">
 														<i class="far fa-times-circle custom-btn-i"></i> 닫기
 													</button>
 												</div>
@@ -79,7 +79,7 @@
 				<div class="modla_center">
 					<div class="modal_header">
 						<span class="close" onclick="close_layerPop('modal_ruleEditor');">&times;</span>
-						<h2>Package 관리</h2>
+						<h2>RULE 관리</h2>
 					</div>
 					<!-- 본문 -->
 					<div class="modal_body" style="height: calc(100% - 25vh); overflow-x: hidden; overflow-y: auto;">

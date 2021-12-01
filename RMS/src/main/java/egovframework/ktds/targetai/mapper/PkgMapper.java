@@ -49,4 +49,20 @@ public interface PkgMapper {
 	int addRuleMappingByPkgId(HashMap<String, Object> param);
 
 	int delRuleMappingByPkgIds(HashMap<String, Object> param);
+
+	int addPkgVer(HashMap<String, Object> param);
+
+	List<Integer> getMappingRuleIdsByPkgId(HashMap<String, Object> param);
+
+	List<HashMap<String, Object>> getDeployVerListByPkgId(HashMap<String, Object> param);
+
+	int getDeployVerCountByPkgId(HashMap<String, Object> param);
+
+	void endDeployVer(HashMap<String, Object> parameter);
+
+	void startDeployVer(HashMap<String, Object> parameter);
+
+	void deletePkgVerById(HashMap<String, Object> param);
+
+	HashMap<String, Object> getPkgByVer(HashMap<String, Object> param);
 }

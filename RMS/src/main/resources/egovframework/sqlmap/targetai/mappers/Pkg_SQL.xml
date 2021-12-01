@@ -7,19 +7,33 @@
 		SELECT 
 			P.PKG_ID,
 		    P.PKG_NM,
-		    P.DRL_NM,
-		    CAST(P.DRL_SOURCE AS CHAR(10000) CHARACTER SET utf8) AS DRL_SOURCE,
-		    P.DIALECT,
-		    P.PATH,
+		    PV.DRL_NM,
+		    PV.PKG_VER_ID,
+		    PV.VER,
+		    CAST(PV.DRL_SOURCE AS CHAR(10000) CHARACTER SET utf8) AS DRL_SOURCE,
+		    PV.DIALECT,
+		    PV.PATH,
 		    P.REG_USRID,
 		    M.MEMBER_NAME REG_USRNM,
 		    DATE_FORMAT(P.REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
-		    PKG_DSC,
+		    P.PKG_DSC,
 		    DATE_FORMAT(P.UDT_DT, '%Y-%m-%d %h:%i:%s') AS UDT_DT,
 		    P.UDT_USRID,
 		    M1.MEMBER_NAME UDT_USRNM
 		FROM 
 			targetai.PKG P
+			LEFT JOIN (
+				SELECT 
+					A.*
+				FROM
+					targetai.PKG_VER A
+					INNER JOIN (SELECT 
+									MAX(PKG_VER_ID) PKG_VER_ID
+								FROM
+									targetai.PKG_VER
+								GROUP BY PKG_ID
+					) B ON (A.PKG_VER_ID = B.PKG_VER_ID)
+		    ) PV ON (P.PKG_ID = PV.PKG_ID)
 			LEFT JOIN targetai.MEMBER M ON (P.REG_USRID = M.MEMBER_ID)
 		    LEFT JOIN targetai.MEMBER M1 ON (P.UDT_USRID = M1.MEMBER_ID)
 		WHERE 1=1
@@ -47,10 +61,12 @@
 		SELECT 
 			P.PKG_ID,
 			P.PKG_NM,
-			P.DRL_NM,
-			CAST(P.DRL_SOURCE AS CHAR(10000) CHARACTER SET utf8) AS DRL_SOURCE,
-			P.DIALECT,
-			P.PATH,
+			PV.DRL_NM,
+			PV.VER,
+			(SELECT VER FROM targetai.PKG_VER WHERE PKG_ID = #{pkgId} AND `STATUS` = 'Y') AS DEPLOY_VER,
+			CAST(PV.DRL_SOURCE AS CHAR(10000) CHARACTER SET utf8) AS DRL_SOURCE,
+			PV.DIALECT,
+			PV.PATH,
 			P.REG_USRID,
 			M.MEMBER_NAME REG_USRNM,
 			DATE_FORMAT(P.REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
@@ -61,15 +77,65 @@
 		    (SELECT COUNT(*) FROM targetai.PKG_RULE_MAPPING WHERE PKG_ID = P.PKG_ID) AS RULE_COUNT_IN_PKG
 		FROM 
 			targetai.PKG P
+			LEFT JOIN (
+				SELECT 
+					A.*
+				FROM
+					targetai.PKG_VER A
+					INNER JOIN (SELECT 
+									MAX(PKG_VER_ID) PKG_VER_ID
+								FROM
+									targetai.PKG_VER
+								GROUP BY PKG_ID
+					) B ON (A.PKG_VER_ID = B.PKG_VER_ID)
+		    ) PV ON (P.PKG_ID = PV.PKG_ID)
 			LEFT JOIN targetai.MEMBER M ON (P.REG_USRID = M.MEMBER_ID)
 		    LEFT JOIN targetai.MEMBER M1 ON (P.UDT_USRID = M1.MEMBER_ID)
 		WHERE
-			PKG_ID = #{pkgId}
+			P.PKG_ID = #{pkgId}
+	</select>
+	
+	<!-- 해당 버전의 패키지 상세 조회 -->
+	<select id="getPkgByVer" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 
+			P.PKG_ID,
+			P.PKG_NM,
+			PV.DRL_NM,
+			PV.VER,
+			(SELECT VER FROM targetai.PKG_VER WHERE PKG_ID = #{pkgId} AND `STATUS` = 'Y') AS DEPLOY_VER,
+			CAST(PV.DRL_SOURCE AS CHAR(10000) CHARACTER SET utf8) AS DRL_SOURCE,
+			PV.DIALECT,
+			PV.PATH,
+			P.REG_USRID,
+			M.MEMBER_NAME REG_USRNM,
+			DATE_FORMAT(P.REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
+			P.PKG_DSC,
+			DATE_FORMAT(UDT_DT, '%Y-%m-%d %h:%i:%s') AS UDT_DT,
+			P.UDT_USRID,
+			M1.MEMBER_NAME UDT_USRNM,
+		    (SELECT COUNT(*) FROM targetai.PKG_RULE_MAPPING WHERE PKG_ID = P.PKG_ID) AS RULE_COUNT_IN_PKG
+		FROM 
+			targetai.PKG P
+			LEFT JOIN targetai.PKG_VER PV ON (P.PKG_ID = PV.PKG_ID)
+			LEFT JOIN targetai.MEMBER M ON (P.REG_USRID = M.MEMBER_ID)
+		    LEFT JOIN targetai.MEMBER M1 ON (P.UDT_USRID = M1.MEMBER_ID)
+		WHERE
+			PV.PKG_VER_ID = #{pkgVerId}
 	</select>
 	
 	<!-- package 삭제 -->
 	<delete id="deletePkgById" parameterType="java.util.HashMap">
 		DELETE FROM targetai.PKG
+		WHERE
+			PKG_ID IN 
+		<foreach collection="pkgIdArr" item="pkgId" separator="," open="(" close=")">
+			#{pkgId}
+		</foreach>
+	</delete
+	>
+	<!-- PKG_VER 삭제 -->
+	<delete id="deletePkgVerById" parameterType="java.util.HashMap">
+		DELETE FROM targetai.PKG_VER
 		WHERE
 			PKG_ID IN 
 		<foreach collection="pkgIdArr" item="pkgId" separator="," open="(" close=")">
@@ -93,17 +159,35 @@
 		INSERT INTO targetai.PKG (
 			PKG_NM,
 			PKG_DSC,
-			PATH,
 			REG_USRID
 		) VALUES (
 			#{pkgNm},
 			#{pkgDsc},
-			#{PATH},
 			#{REG_USER_ID}
 		)
 		<selectKey keyProperty="PKG_ID" resultType="int" order="AFTER">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
+	</insert>
+	
+	<!-- PKG_VER 저장 -->
+	<insert id="addPkgVer" parameterType="java.util.HashMap">
+		<selectKey keyProperty="VER" resultType="int" order="BEFORE">
+			SELECT IFNULL(MAX(VER) + 1, 1) FROM targetai.PKG_VER WHERE PKG_ID = #{PKG_ID}
+		</selectKey>
+		INSERT INTO targetai.PKG_VER (
+			PKG_ID,
+			VER,
+			PATH,
+			STATUS,
+			RUN_START_DATE
+		) VALUES (
+			#{PKG_ID},
+			#{VER},
+			#{PATH},
+			#{STATUS},
+			#{RUN_START_DATE}
+		)
 	</insert>
 	
 	<!-- PKG 저장시 DRL 파일명 업데이트 -->
@@ -120,35 +204,41 @@
 	
 	<!-- PKG 저장시 DRL 파일명 업데이트 -->
 	<update id="updateDrlFileNm" parameterType="java.util.HashMap">
-		UPDATE targetai.PKG
+		UPDATE targetai.PKG_VER
 		SET
 			DRL_NM = #{drlNm}
 		WHERE
 			PKG_ID = #{PKG_ID}
+			AND VER = #{VER}
 	</update>
 	
 	<!-- PKG 정보 조회 -->
 	<select id="getPkgById" parameterType="string" resultType="java.util.HashMap">
 		SELECT
-			PKG_ID,
-		    PKG_NM,
-		    DRL_NM,
-		    CAST(DRL_SOURCE AS CHAR(10000) CHARACTER SET utf8) AS DRL_SOURCE,
-		    DIALECT,
-		    PATH
+			P.PKG_ID,
+			PV.VER,
+		    P.PKG_NM,
+		    PV.DRL_NM,
+		    CAST(PV.DRL_SOURCE AS CHAR(10000) CHARACTER SET utf8) AS DRL_SOURCE,
+		    PV.DIALECT,
+		    PV.PATH
 		FROM
-			targetai.PKG
+			targetai.PKG P
+			LEFT JOIN targetai.PKG_VER PV ON (P.PKG_ID = PV.PKG_ID)
 		WHERE
-			PKG_ID = #{pkgId}
+			P.PKG_ID = #{pkgId}
+		ORDER BY PKG_VER_ID DESC
+        LIMIT 1
 	</select>
 	
 	<!-- PKG 의 DRL_SOURCE 업데이트 -->
 	<update id="updateDrlSource" parameterType="java.util.HashMap">
-		UPDATE targetai.PKG
+		UPDATE targetai.PKG_VER
 		SET
 			DRL_SOURCE = #{DRL_SOURCE}
 		WHERE
 			PKG_ID = #{PKG_ID}
+			AND VER = #{VER}
 	</update>
 	
 	<!-- RULE TEST OPEN 팝업 내 RULE 속성 -->
@@ -229,4 +319,74 @@
 		)
 		</foreach>
 	</insert>
+	
+	<!-- 맵핑된 룰  -->
+	<select id="getMappingRuleIdsByPkgId" parameterType="java.util.HashMap" resultType="Integer">
+		SELECT
+			PRM.RULE_ID
+		FROM 
+			targetai.PKG P
+		    LEFT JOIN targetai.PKG_RULE_MAPPING PRM ON (P.PKG_ID = PRM.PKG_ID)
+		WHERE
+			P.PKG_ID = #{pkgId}
+	</select>
+	
+	<!-- 해당패키지의 버전목록 조회 -->
+	<select id="getDeployVerListByPkgId" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 
+		    `PKG_VER`.`PKG_VER_ID`,
+		    `PKG_VER`.`PKG_ID`,
+		    `PKG_VER`.`VER`,
+		    `PKG_VER`.`VER_DESC`,
+		    `PKG_VER`.`DRL_NM`,
+		    `PKG_VER`.`DRL_SOURCE`,
+		    `PKG_VER`.`DIALECT`,
+		    `PKG_VER`.`PATH`,
+		    `PKG_VER`.`STATUS`,
+		    DATE_FORMAT(`PKG_VER`.`RUN_START_DATE`, '%Y-%m-%d %H:%i:%s') AS RUN_START_DATE,
+		    DATE_FORMAT(`PKG_VER`.`RUN_END_DATE`, '%Y-%m-%d %H:%i:%s') AS RUN_END_DATE
+		FROM
+		    `targetai`.`PKG_VER`
+		WHERE
+			`PKG_VER`.`PKG_ID` = #{pkgId}
+			<if test="ver != null and ver != ''">AND `VER` LIKE CONCAT('%', #{ver}, '%')</if>
+			<if test="status != null and status != ''">AND `STATUS` = #{status}</if>
+		ORDER BY `VER` DESC
+		LIMIT #{limit}
+		OFFSET #{offset}
+	</select>
+	
+	<select id="getDeployVerCountByPkgId" parameterType="java.util.HashMap" resultType="int">
+		SELECT 
+		    COUNT(*)
+		FROM
+		    `targetai`.`PKG_VER`
+		WHERE
+			`PKG_VER`.`PKG_ID` = #{pkgId}
+			<if test="ver != null and ver != ''">AND `VER` LIKE CONCAT('%', #{ver}, '%')</if>
+			<if test="status != null and status != ''">AND `STATUS` = #{status}</if>
+		ORDER BY `STATUS` DESC, `VER` DESC
+	</select>
+	
+	<!-- 기존 배포 가동종료 -->
+	<update id="endDeployVer" parameterType="java.util.HashMap">
+		UPDATE targetai.PKG_VER
+		SET
+			`STATUS` = 'N'
+			,RUN_END_DATE = #{NOW_DATE}
+		WHERE
+			PKG_ID = #{PKG_ID}
+			AND `STATUS` = 'Y'
+	</update>
+	
+	<!-- 선택된 배포버전으로 가동시작 -->
+	<update id="startDeployVer" parameterType="java.util.HashMap">
+		UPDATE targetai.PKG_VER
+		SET
+			`STATUS` = 'Y'
+			,RUN_START_DATE = #{NOW_DATE}
+			,RUN_END_DATE = null
+		WHERE
+			PKG_VER_ID = #{PKG_VER_ID}
+	</update>
 </mapper>

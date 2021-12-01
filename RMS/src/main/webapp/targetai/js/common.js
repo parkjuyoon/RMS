@@ -68,7 +68,7 @@ function fnSortableOption() {
  */
 function fnPaging(elementId, searchObj) {
 	const totalCount = searchObj.totalCount;
-	const currentPage = searchObj.currentPage;
+	const currentPage = searchObj.currentPage * 1;
 	
     const dataPerPage = 10;
     const pageCount = 10;

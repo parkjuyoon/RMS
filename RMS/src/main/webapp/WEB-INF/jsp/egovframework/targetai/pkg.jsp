@@ -13,7 +13,7 @@
 		<%@ include file="../targetai/comm/alertPop.jsp"%>
 
 		<!-- DRL 소스 보기 modal_pop -->
-		<div id="drlSourcePop" class="modal_pop">
+		<div id="drlSourcePop" class="modal_pop" style="z-index: 99999;">
 			<div class="modal_content" style="width: 800px;">
 				<!-- 팝업항상중앙띄우기 -->
 				<div class="modla_center">
@@ -65,170 +65,6 @@
 			</div>
 		</div>
 		<!-- //modal_pop -->
-		
-		<!-- RULE EDITOR modal_pop -->
-		<div id="modal_ruleEditor" class="modal_pop rule_pop">
-			<div class="modal_content" style="width: 1850px;">
-				<!-- 팝업항상중앙띄우기 -->
-				<div class="modla_center">
-					<div class="modal_header">
-						<span class="close" onclick="close_layerPop('modal_ruleEditor');">&times;</span>
-						<h2>Package 관리</h2>
-					</div>
-					<!-- 본문 -->
-					<div class="modal_body" style="height: calc(100% - 25vh); overflow-x: hidden; overflow-y: auto;">
-						<div class="modal_wrap">
-							<!-- 상세영역 -->
-							<div class="row">
-								<div class="col">
-									<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
-									<div class="card mg_b0">
-										<header class="card-header card-header-pd-mobile">
-											<div class="card-actions card-header-position-mobile"></div>
-											<h2 class="card-title_txt">RULE EDITOR</h2>
-										</header>
-										<!-- 본문페이지 -->
-										<div class="card-body" style="">
-											<!-- 테이블 -->
-											<div class="panel nobordertop">
-												<div class="sform_head">
-													<table class="sform_type_pop modal_table">
-														<colgroup>
-															<col style="width: 280px" />
-															<col style="width: 250px" />
-															<col style="width: 250px" />
-															<col style="width: 180px" />
-															<col style="width: auto" />
-														</colgroup>
-														<tbody>
-															<tr>
-																<td class="t_left bd_b_none bg01 v_top" rowspan="6">
-																	<div class="progress_loading">
-																		<div id="factorTreeLoading" style="display: none;">
-																			<img src="/targetai_publish/images/ajax-loader1.gif" />
-																		</div>
-																	</div> 
-																	<!-- 트리메뉴 -->
-																	<ul id="factorTree" class="ztree treewrap"></ul>
-																</td>
-																<th class="t_left icon02" colspan="2">요소 값
-																	<button type="button" class="btn btn-sm btn-green btn_left" id="changeInputBtn">직접 입력</button>
-																</th>
-																<th class="t_left icon01">논리 연산
-																	<button type="button" class="btn btn-sm btn-sky" id="addValBtn1">&gt;&gt;</button>
-																</th>
-																<th class="t_left icon03">RULE 속성</th>
-															</tr>
-															<tr>
-																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3" colspan="2">
-																	<div class="overflow_detail">
-																		<div class="alert fade show mg_b10 _factorVal" role="alert" id="factorVal" data-type=""></div>
-																		<input type="text" id="factorVal_direct" value="" placeholder="요소값을 입력하세요." style="display: none;">
-																	</div>
-																</td>
-																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top">
-																	<input type="radio" name="logicalRadios" id="logicalRadio1" value="logical1" checked /> 
-																	<label for="logicalRadio1" class="mg_r10">==</label> 
-																	<br /> 
-																	<input type="radio" name="logicalRadios" id="logicalRadio2" value="logical2" /> 
-																	<label for="logicalRadio2" class="mg_r10">&gt;</label> 
-																	<br /> 
-																	<input type="radio" name="logicalRadios" id="logicalRadio3" value="logical3" /> 
-																	<label for="logicalRadio3" class="mg_r10">&lt;</label>
-																	<br /> 
-																	<input type="radio" name="logicalRadios" id="logicalRadio4" value="logical4" /> 
-																	<label for="logicalRadio4" class="mg_r10">&gt;=</label> 
-																	<br /> 
-																	<input type="radio" name="logicalRadios" id="logicalRadio5" value="logical5" /> 
-																	<label for="logicalRadio5" class="mg_r10">&lt;=</label> 
-																	<br /> 
-																	<input type="radio" name="logicalRadios" id="logicalRadio6" value="logical6" /> 
-																	<label for="logicalRadio6" class="mg_r10">in</label> 
-																	<br /> 
-																	<input type="radio" name="logicalRadios" id="logicalRadio7" value="logical7" /> 
-																	<label for="logicalRadio7" class="mg_r10">not in</label>
-																</td>
-																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3">
-																	<div class="overflow_rule" id="ruleAttrData"></div>
-																</td>
-															</tr>
-															<tr>
-																<th class="t_left icon04">관계 연산
-																	<button type="button" class="btn btn-sm btn-sky" id="addValBtn2">&gt;&gt;</button>
-																</th>
-															</tr>
-															<tr>
-																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top">
-																	<input type="radio" name="relationRadios" id="relationRadio1" value="relation1" /> 
-																	<label for="relationRadio1" class="mg_r10">AND</label> 
-																	<br /> 
-																	<input type="radio" name="relationRadios" id="relationRadio2" value="relation2" /> 
-																	<label for="relationRadio2" class="mg_r10">OR</label> 
-																	<br /> 
-																	<input type="radio" name="relationRadios" id="relationRadio3" value="relation3" /> 
-																	<label for="relationRadio3" class="mg_r10">(</label>
-																	<br /> 
-																	<input type="radio" name="relationRadios" id="relationRadio4" value="relation4" /> 
-																	<label for="relationRadio4" class="mg_r10">)</label>
-																</td>
-															</tr>
-															<tr>
-																<th class="t_left icon05">통계 VIEW</th>
-																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_middle bd_b_none" rowspan="2" colspan="4">
-																	<div class="graph_left">
-																		<div style="width: 100%;">
-																			<img src="/targetai_publish/images/modal_graph_ex01.png" alt="" />
-																		</div>
-																	</div>
-																	<div class="graph_right">
-																		<div style="width: 100%;">
-																			<img src="/targetai_publish/images/modal_graph_ex02.png" alt="" />
-																		</div>
-																	</div>
-																	<div class="clear"></div>
-																</td>
-															</tr>
-															<tr>
-																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top">
-																	<ul class="ulvalue">
-																		<li>최대값 :</li>
-																		<li>최소값 :</li>
-																		<li>평균값 :</li>
-																		<li>etc :</li>
-																	</ul>
-																</td>
-															</tr>
-														</tbody>
-													</table>
-												</div>
-											</div>
-											<!-- //테이블 -->
-
-											<!-- 버튼 -->
-											<div class="card-actions-foot">
-												<button type="button" class="btn btn-lg btn-gray" id="ruleEditorCancel">
-													<i class="far fa-times-circle custom-btn-i"></i> 취소
-												</button>
-												<button type="button" class="btn btn-lg btn-green" id="ruleEditorSave">
-													<i class="far fa-check-circle custom-btn-i"></i> 적용
-												</button>
-											</div>
-											<!-- //버튼 -->
-										</div>
-										<!-- //본문페이지 -->
-									</div>
-								</div>
-							</div>
-							<!-- //상세영역 -->
-						</div>
-					</div>
-					<!-- //본문 -->
-				</div>
-				<!-- //팝업항상중앙띄우기 -->
-			</div>
-		</div>
-		<!-- //modal_pop -->
-		
 		<!-- RULE 테스트 팝업 -->
 		<div id="modal_ruleTest" class="modal_pop">
 			<div class="modal_content" style="width: 800px;">
@@ -529,6 +365,118 @@
 															<span class="custom-green mg_l15" style="display: none;" id="pkgDupY">
 																<i class="el el-idea"></i> 사용가능 한 Package 명입니다.
 															</span>
+														</td>
+													</tr>
+													<tr>
+														<th class="t_left">현재 배포버전</th>
+														<td class="t_left">
+															<input type="text" class="wd150px" id="deployVerNm" value="" readonly="readonly"/>
+															<button type="button" id="deployVerPopBtn" class="btn_onlyico_search btnModal" title="조회">새창 열기</button>
+
+															<!-- modal_pop -->
+															<div id="modal_deployVer" class="modal_pop">
+																<div class="modal_content" style="width:1000px;">
+																	<!-- 팝업항상중앙띄우기 -->
+																	<div class="modla_center">
+																		<div class="modal_header">
+																			<span class="close" onclick="close_layerPop('modal_deployVer');">&times;</span>
+																			<h2>배포버전 관리</h2>
+																		</div>
+																		<!-- 본문 -->
+																		<div class="modal_body" style="height:calc(100% - 25vh); overflow-x:hidden; overflow-y:auto;">
+																			<div class="modal_wrap">
+																				<!-- 상세영역 -->
+																				<div class="row">
+																					<div class="col">
+																						<div class="card mg_b0">
+																							<header class="card-header card-header-pd-mobile">
+																								<div class="card-actions card-header-position-mobile">
+																								</div>
+																								<h2 class="card-title_txt">배포 버전 선택</h2>
+																							</header>
+																							<!-- 본문페이지 -->
+																							<div class="card-body" style="">
+																								<div class="progress_loading">
+																									<div id="modal_deployVerLoading">
+																										<img src="/targetai_publish/images/ajax-loader1.gif" />
+																									</div>
+																								</div>
+																								<!-- 조회 -->
+																								<div class="searcharea">
+																									<div class="search_btn-bottom">
+																										<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-darkblue" id="modal_deployVerSearchBtn">
+																											<i class="fas fa-search custom-btn-i"></i>조회
+																										</button>
+																									</div>
+																									<div class="search_input">
+																										<div class="search_col">
+																											<div class="form_group">
+																												<label for="">배포 버전</label>
+																												<input type="text" class="wd150px" id="modal_deployVer_search" value="" />
+																											</div>
+																											<div class="form_group">
+																												<label for="">상태</label>
+																												<select id="deployStatus" class="wd150px">
+																													<option value="">전체</option>
+																													<option value="Y">적용</option>
+																													<option value="N">미적용</option>
+																												</select>
+																											</div>
+																										</div>
+																									</div>
+																								</div>
+																								<!-- //조회 -->
+
+																								<!-- 테이블 -->
+																								<div class="mg_t20 panel bd_b_none nobordertop">
+																									<table class="tb_type01">
+																										<colgroup>
+																											<col style="width:8%;" />
+																											<col style="width:12%;" />
+																											<col style="width:auto;" />
+																											<col style="width:10%;" />
+																											<col style="width:18%;" />
+																											<col style="width:18%;" />
+																										</colgroup>
+																										<thead>
+																											<tr>
+																												<th></th>
+																												<th>배포버전</th>
+																												<th>배포 DRL</th>
+																												<th>상태</th>
+																												<th>가동시작</th>
+																												<th>가동 종료</th>
+																											</tr>
+																										</thead>
+																										<tbody id="modal_deployVerList"></tbody>
+																									</table>
+																								</div>
+																								<!-- //테이블 -->
+
+																								<!-- 페이징 -->
+																								<div class="custom-paging" id="modal_deployVerPaging"></div>
+																								<!-- //페이징 -->
+
+																								<!-- 버튼 -->
+																								<div class="card-actions-foot">
+																									<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('modal_deployVer');"><i class="far fa-times-circle custom-btn-i"></i> 닫기</button>
+																									<button type="button" class="btn btn-sm btn-green" id="modal_deployVerSaveBtn"><i class="far fa-check-circle custom-btn-i"></i> 적용</button>
+																								</div>
+																								<!-- //버튼 -->
+																							</div>
+																							<!-- //본문페이지 -->
+																						</div>
+																					</div>
+																				</div>
+																				<!-- //상세영역 -->
+																			</div>
+																		</div>
+																		<!-- //본문 -->
+																	</div>
+																	<!-- //팝업항상중앙띄우기 -->
+																</div>
+															</div>
+															<!-- //modal_pop -->
 														</td>
 													</tr>
 													<tr>

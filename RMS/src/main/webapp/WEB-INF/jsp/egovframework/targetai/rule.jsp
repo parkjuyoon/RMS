@@ -18,7 +18,7 @@
 		<%@ include file="../targetai/comm/side_menu.jsp"%>
 		<%@ include file="../targetai/comm/alertPop.jsp"%>
 
-		<!-- DRL 소스 보기 modal_pop -->
+		<!-- 속성선택 modal_pop -->
 		<div id="selectAttribute" class="modal_pop" style="z-index: 99999;">
 			<div class="modal_content" style="width: 400px;">
 				<!-- 팝업항상중앙띄우기 -->

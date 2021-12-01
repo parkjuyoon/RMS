@@ -1,10 +1,12 @@
 package egovframework.ktds.targetai.controller;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -113,7 +115,7 @@ public class PkgController {
 		ruleService.saveDRL(pkgId);
 		
 		// 패키지 상세 정보 조회
-		HashMap<String, Object> pkg = pkgService.getPkg(param);
+		HashMap<String, Object> pkg = pkgService.getPkgByVer(param);
 		resultMap.put("pkg", pkg);
 		
 		return resultMap;
@@ -228,13 +230,24 @@ public class PkgController {
 		
 		param.put("REG_USER_ID", regUserId);
 		param.put("PATH", "/drl_files");
+		// 신규패키지는 자동배포
+		param.put("STATUS", "Y");
+		param.put("RUN_START_DATE", LocalDateTime.now());
 		
 		// PKG 저장
 		pkgService.addPkg(param);
 		param.put("pkgId", param.get("PKG_ID"));
+		// PKG_VER 저장
+		String status = (String) param.get("status");
+		
+		if("Y".equals(status)) {
+			param.put("RUN_START_DATE", LocalDateTime.now());
+		}
+		
+		pkgService.addPkgVer(param);
 		
 		// DRL 파일명 업데이트
-		String drlNm = param.get("pkgNm") + "_" + param.get("PKG_ID") + ".drl";
+		String drlNm = param.get("pkgNm") + "_" + param.get("PKG_ID") + "_v" + param.get("VER") +".drl";
 		param.put("drlNm", drlNm);
 		pkgService.updateDrlFileNm(param);
 		
@@ -265,24 +278,53 @@ public class PkgController {
 	@RequestMapping(value = "/updatePkg.do", method = RequestMethod.POST)
 	public HashMap<String, Object> updatePkg(@RequestBody HashMap<String, Object> param, HttpSession session) {
 		try {
-		String regUserId = (String) session.getAttribute("member_id");
-		
-		param.put("REG_USER_ID", regUserId);
-		// 서비스 저장
-		pkgService.updatePkg(param);
-		
-		// 연결된 Rule 맵핑 정보 삭제
-		int delRes = pkgService.delRuleMappingByPkgId(param);
-		// 새로운 Rule 맵핑 연결
-		List<String> ruleIds = (List<String>) param.get("mappingRuleIds");
-		if(ruleIds.size() > 0) {
-			int addRes = pkgService.addRuleMappingByPkgId(param);
-		}
-		
-		// DRL 파일 수정
-		// RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
-		String pkgId = (String) param.get("pkgId");
-		ruleService.saveDRL(pkgId);
+			String regUserId = (String) session.getAttribute("member_id");
+			
+			param.put("REG_USER_ID", regUserId);
+			param.put("PATH", "/drl_files");
+			
+			// 패키지 저장
+			pkgService.updatePkg(param);
+			// 배포버전 변경
+			HashMap<String, Object> rtnVerInfo = pkgService.deployVer(param);
+			
+			List<Integer> mappingRuleIds1= pkgService.getMappingRuleIdsByPkgId(param);
+			Collections.sort(mappingRuleIds1);
+			List<Object> param_mappingRuleIds = (List<Object>) param.get("mappingRuleIds");
+			List<Integer> mappingRuleIds2 = new ArrayList<>();
+			
+			for(Object id : param_mappingRuleIds) {
+				mappingRuleIds2.add(Integer.parseInt(String.valueOf(id)));
+			}
+			Collections.sort(mappingRuleIds2);
+			
+			// RULE MAPPING 정보가 변경되었는지 확인
+			boolean ruleMappingEditTF = Arrays.deepEquals(mappingRuleIds1.toArray(), mappingRuleIds2.toArray());
+			
+			if(!ruleMappingEditTF) {
+				// PKG_VER 저장
+				param.put("PKG_ID", param.get("pkgId"));
+				param.put("status", "N");
+				pkgService.addPkgVer(param);
+				
+				// DRL 파일명 업데이트
+				String drlNm = param.get("pkgNm") + "_" + param.get("PKG_ID") + "_v" + param.get("VER") +".drl";
+				param.put("drlNm", drlNm);
+				pkgService.updateDrlFileNm(param);
+				
+				// 연결된 Rule 맵핑 정보 삭제
+				int delRes = pkgService.delRuleMappingByPkgId(param);
+				// 새로운 Rule 맵핑 연결
+				List<String> ruleIds = (List<String>) param.get("mappingRuleIds");
+				if(ruleIds.size() > 0) {
+					int addRes = pkgService.addRuleMappingByPkgId(param);
+				}
+				
+				// DRL 파일 수정
+				// RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
+				String pkgId = (String) param.get("pkgId");
+				ruleService.saveDRL(pkgId);
+			}
 		
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -291,6 +333,26 @@ public class PkgController {
 		HashMap<String, Object> pkg = pkgService.getPkg(param);
 		
 		return pkg;
+	}
+	
+	/**
+	 * 패키지 배포버전 목록 조회
+	 * @param param
+	 * @return resultMap
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getDeployVerList.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getDeployVerList(@RequestBody HashMap<String, Object> param, HttpSession session) {
+		HashMap<String, Object> resultMap = new HashMap<>();
+		
+		// 해당패키지의 버전목록 조회
+		List<HashMap<String, Object>> verList = pkgService.getDeployVerListByPkgId(param);
+		int verCount = pkgService.getDeployVerCountByPkgId(param);
+		
+		resultMap.put("verList", verList);
+		resultMap.put("verCount", verCount);
+		
+		return resultMap;
 	}
 	
 	/**
@@ -303,8 +365,6 @@ public class PkgController {
 	public boolean deletePkgById(@RequestBody HashMap<String, Object> param) {
 		// PKG 삭제
 		pkgService.deletePkgById(param);
-		// 연결된 Rule 맵핑 정보 삭제
-		int delRes = pkgService.delRuleMappingByPkgIds(param);
 		// 연결된 서비스의 PKG 아이디 삭제
 		svcService.updatePkgId(param);
 		

@@ -77,4 +77,14 @@ public class SvcServiceImpl extends EgovAbstractServiceImpl implements SvcServic
 		dao.delSvcOutputValues(param);
 	}
 
+	@Override
+	public List<HashMap<String, Object>> getConPkgList(HashMap<String, Object> param) {
+		return dao.getConPkgList(param);
+	}
+
+	@Override
+	public int getConPkgCount(HashMap<String, Object> param) {
+		return dao.getConPkgCount(param);
+	}
+
 }

@@ -702,7 +702,7 @@ function fnPkgList(searchObj) {
 	
 	$.ajax({
 		method : "POST",
-		url : "/targetai/getPkgList.do",
+		url : "/targetai/getConPkgList.do",
 		traditional: true,
 		data : JSON.stringify(searchObj),
 		contentType:'application/json; charset=utf-8',

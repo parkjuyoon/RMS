@@ -32,4 +32,8 @@ public interface SvcMapper {
 
 	void delSvcOutputValues(HashMap<String, Object> param);
 
+	List<HashMap<String, Object>> getConPkgList(HashMap<String, Object> param);
+
+	int getConPkgCount(HashMap<String, Object> param);
+
 }

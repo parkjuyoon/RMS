@@ -163,4 +163,21 @@ public class SvcController {
 		
 		return true;
 	}
+	
+	/**
+	 * 연결가능한 패키지 목록 조회
+	 * @param searchObj
+	 * @return pkgList, pkgCount
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getConPkgList.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getConPkgList(@RequestBody HashMap<String, Object> searchObj) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		List<HashMap<String, Object>> pkgList = svcService.getConPkgList(searchObj);
+		int pkgCount = svcService.getConPkgCount(searchObj);
+		resultMap.put("pkgList", pkgList);
+		resultMap.put("pkgCount", pkgCount);
+			
+		return resultMap;
+	}
 }

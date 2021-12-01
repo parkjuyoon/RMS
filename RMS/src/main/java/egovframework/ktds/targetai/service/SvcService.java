@@ -29,4 +29,8 @@ public interface SvcService {
 
 	void delSvcOutputValues(HashMap<String, Object> param);
 
+	List<HashMap<String, Object>> getConPkgList(HashMap<String, Object> searchObj);
+
+	int getConPkgCount(HashMap<String, Object> searchObj);
+
 }

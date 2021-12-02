@@ -288,7 +288,10 @@ public class PkgController {
 			// 패키지 저장
 			pkgService.updatePkg(param);
 			// 배포버전 변경
-			HashMap<String, Object> rtnVerInfo = pkgService.deployVer(param);
+			String ver = (String) param.get("ver");
+			if(ver != null) {
+				HashMap<String, Object> rtnVerInfo = pkgService.deployVer(param);
+			}
 			
 			List<Integer> mappingRuleIds1= pkgService.getMappingRuleIdsByPkgId(param);
 			Collections.sort(mappingRuleIds1);
@@ -306,7 +309,7 @@ public class PkgController {
 			if(!ruleMappingEditTF) {
 				// PKG_VER 저장
 				param.put("PKG_ID", param.get("pkgId"));
-				param.put("status", "N");
+				param.put("STATUS", "N");
 				pkgService.addPkgVer(param);
 				
 				// DRL 파일명 업데이트

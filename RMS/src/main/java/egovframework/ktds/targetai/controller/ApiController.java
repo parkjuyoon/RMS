@@ -161,6 +161,7 @@ public class ApiController {
 			List<Integer> respRuleIds = new ArrayList<>();					// response 할 RULE_ID 리스트
 			
 			// DB 기준으로 DRL 파일 생성
+			pkg.put("apicall", "Y");
 			ruleService.saveDRL(pkg);
 			
 			// Drools 세션 생성

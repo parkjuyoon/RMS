@@ -86,53 +86,57 @@ public class RuleServiceImpl implements RuleService {
 	@Override
 	public String saveDRL(HashMap<String, Object> pkg) {
 		// PKG DRL_SOURCE 업데이트
-		String pkgId = String.valueOf(pkg.get("pkgId")); 
-		List<HashMap<String, Object>> ruleList = ruleDao.getRuleListByPkgId(pkgId);
+		String pkgId = String.valueOf(pkg.get("PKG_ID")); 
+		String apicall = (String) pkg.get("apicall");
 		
-		String drlImport = "";
-		String drlSource = "";
-		
-		if(ruleList.size() > 0) {
-			drlImport += "package " + pkg.get("PKG_NM") + ";\n";
-			drlImport += "import java.util.Map;\n";
-		}
-		
-		for(HashMap<String, Object> m : ruleList) {
+		if(apicall == null) {
+			List<HashMap<String, Object>> ruleList = ruleDao.getRuleListByPkgId(pkgId);
 			
-			drlSource += "rule \"" + m.get("RULE_NM") + "\"\n";
-			drlSource += "	no-loop " + m.get("NO_LOOP") + "\n";
-			drlSource += "	lock-on-active " + m.get("LOCK_ON_ACTIVE") + "\n";
-			drlSource += "	salience " + m.get("SALIENCE") + "\n";
-			drlSource += "	when\n";
-			drlSource += "		$map : Map(\n";
+			String drlImport = "";
+			String drlSource = "";
 			
-			String ruleWhen = String.valueOf(m.get("RULE_WHEN")).replaceAll("\n", "\n" + "		");
-			ruleWhen = ruleWhen.replaceAll("#\\{", "\\$map.get(\"").replaceAll("\\}", "\")");
-			
-			drlSource += "		" + ruleWhen;
-			
-			// 함수 import 정보 추가
-			if(m.get("FUNC_IMPORTS") != null) {
-				String funcImport = (String) m.get("FUNC_IMPORTS");
-				String[] funcImports = funcImport.split("\n");
-				
-				for(String s : funcImports) {
-					if(!drlImport.contains(s)) {
-						drlImport += s + "\n";
-					}
-				}
+			if(ruleList.size() > 0) {
+				drlImport += "package " + pkg.get("PKG_NM") + ";\n";
+				drlImport += "import java.util.Map;\n";
 			}
 			
-			drlSource += "	)\n";
-			drlSource += "	then\n";
-			drlSource += "		" + m.get("RULE_THEN") + "\n";
-			drlSource += "end\n\n";
-		}
-		
-		if(ruleList.size() > 0) {
-			pkg.put("DRL_SOURCE", drlImport + "\n" + drlSource);
-		} else {
-			pkg.put("DRL_SOURCE", "");
+			for(HashMap<String, Object> m : ruleList) {
+				
+				drlSource += "rule \"" + m.get("RULE_NM") + "\"\n";
+				drlSource += "	no-loop " + m.get("NO_LOOP") + "\n";
+				drlSource += "	lock-on-active " + m.get("LOCK_ON_ACTIVE") + "\n";
+				drlSource += "	salience " + m.get("SALIENCE") + "\n";
+				drlSource += "	when\n";
+				drlSource += "		$map : Map(\n";
+				
+				String ruleWhen = String.valueOf(m.get("RULE_WHEN")).replaceAll("\n", "\n" + "		");
+				ruleWhen = ruleWhen.replaceAll("#\\{", "\\$map.get(\"").replaceAll("\\}", "\")");
+				
+				drlSource += "		" + ruleWhen;
+				
+				// 함수 import 정보 추가
+				if(m.get("FUNC_IMPORTS") != null) {
+					String funcImport = (String) m.get("FUNC_IMPORTS");
+					String[] funcImports = funcImport.split("\n");
+					
+					for(String s : funcImports) {
+						if(!drlImport.contains(s)) {
+							drlImport += s + "\n";
+						}
+					}
+				}
+				
+				drlSource += "	)\n";
+				drlSource += "	then\n";
+				drlSource += "		" + m.get("RULE_THEN") + "\n";
+				drlSource += "end\n\n";
+			}
+			
+			if(ruleList.size() > 0) {
+				pkg.put("DRL_SOURCE", drlImport + "\n" + drlSource);
+			} else {
+				pkg.put("DRL_SOURCE", "");
+			}
 		}
 		
 		pkgDao.updateDrlSource(pkg);

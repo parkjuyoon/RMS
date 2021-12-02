@@ -21,7 +21,7 @@ public interface RuleService {
 	
 	List<HashMap<String, Object>> getFactorFuncArgs(HashMap<String, Object> param);
 
-	String saveDRL(String pkgId);
+	String saveDRL(HashMap<String, Object> pkg);
 	
 	void ruleSave(HashMap<String, Object> param);
 

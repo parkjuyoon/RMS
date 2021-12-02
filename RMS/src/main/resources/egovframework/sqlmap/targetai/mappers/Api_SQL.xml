@@ -16,16 +16,19 @@
 	<select id="getPkgBySvcId" parameterType="string" resultType="java.util.HashMap">
 		SELECT
 			P.PKG_ID,
-			P.PATH,
+			PV.PATH,
+			CAST(PV.DRL_SOURCE AS CHAR(10000) CHARACTER SET utf8) AS DRL_SOURCE,
 			P.PKG_NM,
-			P.DRL_NM,
+			PV.DRL_NM,
 			S.NUM_OF_OFFER,
     		S.TARGET_TYPE
 		FROM
 			targetai.SVC S
 			LEFT JOIN targetai.PKG P ON (S.PKG_ID = P.PKG_ID)
+            LEFT JOIN targetai.PKG_VER PV ON (P.PKG_ID = PV.PKG_ID)
 		WHERE
 			S.SVC_ID = #{svc_id}
+			AND PV.`STATUS` = 'Y'
 	</select>
 	
 	<insert id="addSvclogIn" parameterType="java.util.HashMap">

@@ -101,7 +101,7 @@ public class PkgController {
 	}
 	
 	/**
-	 * package 상세 조회
+	 * drl 소스 조회
 	 * @param PKG_ID
 	 * @return pkg
 	 */
@@ -112,11 +112,12 @@ public class PkgController {
 		
 		// DRL 소스 업데이트
 		String pkgId = String.valueOf(param.get("pkgId"));
-		ruleService.saveDRL(pkgId);
+		HashMap<String, Object> pkg = pkgService.getPkgById(pkgId);
+		ruleService.saveDRL(pkg);
 		
 		// 패키지 상세 정보 조회
-		HashMap<String, Object> pkg = pkgService.getPkgByVer(param);
-		resultMap.put("pkg", pkg);
+		HashMap<String, Object> pkgByVer = pkgService.getPkgByVer(param);
+		resultMap.put("pkg", pkgByVer);
 		
 		return resultMap;
 	}
@@ -200,8 +201,8 @@ public class PkgController {
 			path = path.replace("/", File.separator).replace("\\", File.separator);
 			
 			String pkgId = (String) param.get("pkgId");
-			
-			ruleService.saveDRL(pkgId);
+			HashMap<String, Object> pkg = pkgService.getPkgById(pkgId);
+			ruleService.saveDRL(pkg);
 			
 			// Drools 세션 생성
 			KieSession kieSession = DroolsUtil.getKieSession(path);
@@ -261,7 +262,8 @@ public class PkgController {
 			// DRL 파일 수정
 			// RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
 			String pkgId = String.valueOf(param.get("pkgId"));
-			ruleService.saveDRL(pkgId);
+			HashMap<String, Object> pkg = pkgService.getPkgById(pkgId);
+			ruleService.saveDRL(pkg);
 		}
 		
 		HashMap<String, Object> pkg = pkgService.getPkg(param);
@@ -323,7 +325,8 @@ public class PkgController {
 				// DRL 파일 수정
 				// RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
 				String pkgId = (String) param.get("pkgId");
-				ruleService.saveDRL(pkgId);
+				HashMap<String, Object> pkg = pkgService.getPkgById(pkgId);
+				ruleService.saveDRL(pkg);
 			}
 		
 		} catch (Exception e) {

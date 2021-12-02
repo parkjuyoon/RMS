@@ -67,6 +67,7 @@ public class DroolsUtil {
 	        kieSession = KieServices.Factory.get().newKieContainer(kieRepository.getDefaultReleaseId()).newKieSession().getKieBase().newKieSession();
         
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 		

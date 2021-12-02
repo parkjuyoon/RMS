@@ -84,9 +84,9 @@ public class RuleServiceImpl implements RuleService {
 	}
 
 	@Override
-	public String saveDRL(String pkgId) {
+	public String saveDRL(HashMap<String, Object> pkg) {
 		// PKG DRL_SOURCE 업데이트
-		HashMap<String, Object> pkg = pkgDao.getPkgById(pkgId);
+		String pkgId = String.valueOf(pkg.get("pkgId")); 
 		List<HashMap<String, Object>> ruleList = ruleDao.getRuleListByPkgId(pkgId);
 		
 		String drlImport = "";

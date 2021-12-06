@@ -31,6 +31,13 @@ $(document).ready(function() {
 		var param = {};
 		param.pkgId = $(this).attr("data-pkgId");
 		
+		// 패키지 상세 열림
+		$("#pkgCard").removeClass("card-collapsed");
+		$("#pkgCardBody").css("display", "block");
+		
+		// 패키지 버전 목록 열림
+		$("#pkgVerCardList").removeClass("card-collapsed");
+		$("#pkgVerCardListBody").css("display", "block");
 		fnGetPkg(param);
 	});
 	
@@ -387,7 +394,7 @@ $(document).ready(function() {
 			var searchObj = {};
 			searchObj.currentPage = 1;
 			searchObj.pkgId = pkgId;
-			fnGetDeployVerList(searchObj);
+			fnGetPkgVerList(searchObj);
 		}
 	});
 	
@@ -411,12 +418,12 @@ $(document).ready(function() {
 		searchObj.ver = $("#modal_deployVer_search").val();
 		searchObj.status = $("#deployStatus :selected").val();
 		
-		fnGetDeployVerList(searchObj);
+		fnGetPkgVerList(searchObj);
 	});
 	
 	
-	// 패키지 상세 > 현재 배포버전 돋보기 버튼 클릭 > 페이징 버튼 클릭이벤트
-	$("#modal_deployVerPaging").on("click", "._paging", function(e) {
+	// 패키지 상세 > 패키지 버전 목록 > 페이징 버튼 클릭이벤트
+	$("#pkgVerListPaging").on("click", "._paging", function(e) {
 		var cls = $(this).attr("class");
 		const pageNum = $(this).attr("data-page_num");
 		
@@ -428,7 +435,7 @@ $(document).ready(function() {
 		searchObj.ver = $("#modal_deployVer_search").val();
 		searchObj.status = $("#deployStatus :selected").val();
 		
-		fnGetDeployVerList(searchObj);
+		fnGetPkgVerList(searchObj);
 	});
 	
 	// 패키지 상세 > 현재 배포버전 돋보기 버튼 클릭 > 페이징 버튼 클릭이벤트
@@ -447,13 +454,13 @@ $(document).ready(function() {
  * 배포버전 조회
  * @returns
  */
-function fnGetDeployVerList(searchObj) {
+function fnGetPkgVerList(searchObj) {
 	searchObj.limit = 10;
 	searchObj.offset = searchObj.currentPage*searchObj.limit-searchObj.limit;
 	
 	$.ajax({
 		method : "POST",
-		url : "/targetai/getDeployVerList.do",
+		url : "/targetai/getPkgVerList.do",
 		traditional: true,
 		data : JSON.stringify(searchObj),
 		contentType:'application/json; charset=utf-8',
@@ -466,23 +473,24 @@ function fnGetDeployVerList(searchObj) {
 			
 			if(verList.length == 0) {
 				html += "<tr>";
-				html += "	<td colspan='6' class='t_center'>조회된 내용이 없습니다.</td>";
+				html += "	<td colspan='5' class='t_center'>조회된 내용이 없습니다.</td>";
 				html += "</tr>";
 				
 			} else {
 				$.each(verList, function(idx, ver){
+//					삭제코드
 					html += "<tr>";
-					html += "	<td class='t_center'>";
-					html += "		<div class='checkbox-container'>";
-					if(ver.STATUS == "Y") {
-						html += "			<input type='radio' class='_channelListRadio' name='deployVerListRadio' data-pkgVerId='"+ ver.PKG_VER_ID +"' data-ver='"+ ver.VER +"' checked/>";
-						
-					} else {
-						html += "			<input type='radio' class='_channelListRadio' name='deployVerListRadio' data-pkgVerId='"+ ver.PKG_VER_ID +"' data-ver='"+ ver.VER +"'/>";
-					}
-					html += "			<label for='_deployVerListRadio'></label>";
-					html += "		</div>";
-					html += "	</td>";
+//					html += "	<td class='t_center'>";
+//					html += "		<div class='checkbox-container'>";
+//					if(ver.STATUS == "Y") {
+//						html += "			<input type='radio' class='_channelListRadio' name='deployVerListRadio' data-pkgVerId='"+ ver.PKG_VER_ID +"' data-ver='"+ ver.VER +"' checked/>";
+//						
+//					} else {
+//						html += "			<input type='radio' class='_channelListRadio' name='deployVerListRadio' data-pkgVerId='"+ ver.PKG_VER_ID +"' data-ver='"+ ver.VER +"'/>";
+//					}
+//					html += "			<label for='_deployVerListRadio'></label>";
+//					html += "		</div>";
+//					html += "	</td>";
 					html += "	<td class='t_center'>" + ver.VER + "</td>";
 					html += "	<td class='t_center'><a href='#' class='_verDrlSourceLink' data-pkgVerId='"+ ver.PKG_VER_ID +"'>" + ver.DRL_NM + "</a></td>";
 					html += "	<td class='t_center'>" + (ver.STATUS == "Y" ? "적용" : "미적용") + "</td>";
@@ -492,16 +500,14 @@ function fnGetDeployVerList(searchObj) {
 				});
 			}
 			
-			$("#modal_deployVerList").html(html);
-			fnPaging("#modal_deployVerPaging", searchObj);
-			
-			$("#modal_deployVer").show();
+			$("#pkgVerList").html(html);
+			fnPaging("#pkgVerListPaging", searchObj);
 		},
 		beforeSend : function() {
-			$("#modal_deployVerLoading").show();
+			$("#pkgVerListLoading").show();
 		},
 		complete : function() {
-			$("#modal_deployVerLoading").hide();
+			$("#pkgVerListLoading").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
@@ -551,6 +557,7 @@ function getPkgList(searchObj) {
 					html += "	<td class='t_center'>" + pkgList[i].PKG_ID + "</td>";
 					html += "	<td class='t_center'><a href='#' class='_pkgNmLink' data-pkgId='"+ pkgList[i].PKG_ID +"'>" + pkgList[i].PKG_NM + "</a></td>";
 					html += "	<td class='t_center'><a href='#' class='_drlNmLink' data-pkgId='"+ pkgList[i].PKG_ID +"' data-pkgVerId='"+ pkgList[i].PKG_VER_ID +"'>" + (typeof pkgList[i].DRL_NM == 'undefined' ? '-' : pkgList[i].DRL_NM) + "</a></td>";
+					html += "	<td class='t_center'><a href='#' class='_drlNmLink' data-pkgId='"+ pkgList[i].PKG_ID +"' data-pkgVerId='"+ pkgList[i].PKG_VER_ID +"'>" + (typeof pkgList[i].DRL_NM == 'undefined' ? '-' : pkgList[i].DRL_NM) + "</a></td>";
 					html += "	<td class='t_center'>" + (typeof pkgList[i].UDT_DT == 'undefined' ? '-' : pkgList[i].UDT_DT) + "</td>";
 					html += "	<td class='t_center'>" + (typeof pkgList[i].UDT_USRNM == 'undefined' ? '-' : pkgList[i].UDT_USRNM) + "</td>";
 					html += "	<td class='t_center'>" + pkgList[i].REG_DT + "</td>";
@@ -567,10 +574,10 @@ function getPkgList(searchObj) {
 			$("#pkgListAllChkBox").prop("checked", false);
 		},
 		beforeSend : function() {
-			$("#pkgLoading").show();
+			$("#pkgListLoading").show();
 		},
 		complete : function() {
-			$("#pkgLoading").hide();
+			$("#pkgListLoading").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
@@ -622,6 +629,12 @@ function fnGetPkg(param) {
 			mappingRuleList = res.mappingRuleList;
 			
 			$("#ruleMappingSaveBtn").attr("data-update", "N");
+			
+			// 패키지 버전 목록 조회
+			var searchObj = {};
+			searchObj.currentPage = 1;
+			searchObj.pkgId = param.pkgId;
+//			fnGetPkgVerList(searchObj);
 		},
 		beforeSend : function() {
 			$("#pkgLoading").show();

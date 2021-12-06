@@ -1,0 +1,4 @@
+전달사항
+
+PKG 테이블의 DRL_NM, DRL_SOURCE, DIALECT, PATH 컬럼 삭제
+PKG_VER 테이블 추가

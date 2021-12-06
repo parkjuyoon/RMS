@@ -342,13 +342,13 @@ public class PkgController {
 	}
 	
 	/**
-	 * 패키지 배포버전 목록 조회
+	 * 패키지 버전 목록 조회
 	 * @param param
 	 * @return resultMap
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/getDeployVerList.do", method = RequestMethod.POST)
-	public HashMap<String, Object> getDeployVerList(@RequestBody HashMap<String, Object> param, HttpSession session) {
+	@RequestMapping(value = "/getPkgVerList.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getPkgVerList(@RequestBody HashMap<String, Object> param, HttpSession session) {
 		HashMap<String, Object> resultMap = new HashMap<>();
 		
 		// 해당패키지의 버전목록 조회

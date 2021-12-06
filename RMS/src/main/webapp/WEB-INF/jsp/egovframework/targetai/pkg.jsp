@@ -263,12 +263,12 @@
 										</span>
 										<a href="#" class="card-action card-action-toggle" data-card-toggle></a>
 									</div>
-									<h2 class="card-title_txt">패키지 목록</h2>
+									<h2 class="card-title_txt">전체 패키지 목록</h2>
 								</header>
 								<!-- 본문페이지 -->
 								<div class="card-body" id="pkgCardListBody" style="">
 									<div class="progress_loading">
-										<div id="pkgLoading">
+										<div id="pkgListLoading">
 											<img src="/targetai_publish/images/ajax-loader1.gif" />
 										</div>
 									</div>
@@ -278,6 +278,7 @@
 											<colgroup>
 												<col style="width: 5%;" />
 												<col style="width: 7%;" />
+												<col style="width: auto;" />
 												<col style="width: auto;" />
 												<col style="width: 15%;" />
 												<col style="width: 12%;" />
@@ -293,9 +294,10 @@
 															<label for="pkgListAllChkBox"></label>
 														</div>
 													</th>
-													<th>ID</th>
+													<th>패키지 ID</th>
 													<th>패키지명<label class="_sortable"></label></th>
-													<th>DRL</th>
+													<th>운영중인 DRL</th>
+													<th>개발중인 DRL</th>
 													<th>수정일시</th>
 													<th>수정자</th>
 													<th>등록일시<label class="_sortable"></label></th>
@@ -340,7 +342,12 @@
 									<h2 class="card-title_txt">패키지 상세</h2>
 								</header>
 								<!-- 본문페이지 -->
-								<div class="card-body" id="pkgCardBody" style="display: none;">
+								<div class="card-body" id="pkgCardBody" style="height: 380px; display: none;">
+									<div class="progress_loading">
+										<div id="pkgLoading">
+											<img src="/targetai_publish/images/ajax-loader1.gif" />
+										</div>
+									</div>
 									<!-- 테이블 -->
 									<div class="panel nobordertop">
 										<div class="sform_head">
@@ -367,118 +374,119 @@
 															</span>
 														</td>
 													</tr>
-													<tr>
-														<th class="t_left">현재 배포버전</th>
-														<td class="t_left">
-															<input type="text" class="wd150px" id="deployVerNm" value="" readonly="readonly"/>
-															<button type="button" id="deployVerPopBtn" class="btn_onlyico_search btnModal" title="조회">새창 열기</button>
+<!-- 													삭제코드 -->
+<!-- 													<tr> -->
+<!-- 														<th class="t_left">현재 배포버전</th> -->
+<!-- 														<td class="t_left"> -->
+<!-- 															<input type="text" class="wd150px" id="deployVerNm" value="" readonly="readonly"/> -->
+<!-- 															<button type="button" id="deployVerPopBtn" class="btn_onlyico_search btnModal" title="조회">새창 열기</button> -->
 
-															<!-- modal_pop -->
-															<div id="modal_deployVer" class="modal_pop">
-																<div class="modal_content" style="width:1000px;">
-																	<!-- 팝업항상중앙띄우기 -->
-																	<div class="modla_center">
-																		<div class="modal_header">
-																			<span class="close" onclick="close_layerPop('modal_deployVer');">&times;</span>
-																			<h2>배포버전 관리</h2>
-																		</div>
-																		<!-- 본문 -->
-																		<div class="modal_body" style="height:calc(100% - 25vh); overflow-x:hidden; overflow-y:auto;">
-																			<div class="modal_wrap">
-																				<!-- 상세영역 -->
-																				<div class="row">
-																					<div class="col">
-																						<div class="card mg_b0">
-																							<header class="card-header card-header-pd-mobile">
-																								<div class="card-actions card-header-position-mobile">
-																								</div>
-																								<h2 class="card-title_txt">배포 버전 선택</h2>
-																							</header>
-																							<!-- 본문페이지 -->
-																							<div class="card-body" style="">
-																								<div class="progress_loading">
-																									<div id="modal_deployVerLoading">
-																										<img src="/targetai_publish/images/ajax-loader1.gif" />
-																									</div>
-																								</div>
-																								<!-- 조회 -->
-																								<div class="searcharea">
-																									<div class="search_btn-bottom">
-																										<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-darkblue" id="modal_deployVerSearchBtn">
-																											<i class="fas fa-search custom-btn-i"></i>조회
-																										</button>
-																									</div>
-																									<div class="search_input">
-																										<div class="search_col">
-																											<div class="form_group">
-																												<label for="">배포 버전</label>
-																												<input type="text" class="wd150px" id="modal_deployVer_search" value="" />
-																											</div>
-																											<div class="form_group">
-																												<label for="">상태</label>
-																												<select id="deployStatus" class="wd150px">
-																													<option value="">전체</option>
-																													<option value="Y">적용</option>
-																													<option value="N">미적용</option>
-																												</select>
-																											</div>
-																										</div>
-																									</div>
-																								</div>
-																								<!-- //조회 -->
+<!-- 															modal_pop -->
+<!-- 															<div id="modal_deployVer" class="modal_pop"> -->
+<!-- 																<div class="modal_content" style="width:1000px;"> -->
+<!-- 																	팝업항상중앙띄우기 -->
+<!-- 																	<div class="modla_center"> -->
+<!-- 																		<div class="modal_header"> -->
+<!-- 																			<span class="close" onclick="close_layerPop('modal_deployVer');">&times;</span> -->
+<!-- 																			<h2>배포버전 관리</h2> -->
+<!-- 																		</div> -->
+<!-- 																		본문 -->
+<!-- 																		<div class="modal_body" style="height:calc(100% - 25vh); overflow-x:hidden; overflow-y:auto;"> -->
+<!-- 																			<div class="modal_wrap"> -->
+<!-- 																				상세영역 -->
+<!-- 																				<div class="row"> -->
+<!-- 																					<div class="col"> -->
+<!-- 																						<div class="card mg_b0"> -->
+<!-- 																							<header class="card-header card-header-pd-mobile"> -->
+<!-- 																								<div class="card-actions card-header-position-mobile"> -->
+<!-- 																								</div> -->
+<!-- 																								<h2 class="card-title_txt">배포 버전 선택</h2> -->
+<!-- 																							</header> -->
+<!-- 																							본문페이지 -->
+<!-- 																							<div class="card-body" style=""> -->
+<!-- 																								<div class="progress_loading"> -->
+<!-- 																									<div id="modal_deployVerLoading"> -->
+<!-- 																										<img src="/targetai_publish/images/ajax-loader1.gif" /> -->
+<!-- 																									</div> -->
+<!-- 																								</div> -->
+<!-- 																								조회 -->
+<!-- 																								<div class="searcharea"> -->
+<!-- 																									<div class="search_btn-bottom"> -->
+<!-- 																										<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-darkblue" id="modal_deployVerSearchBtn"> -->
+<!-- 																											<i class="fas fa-search custom-btn-i"></i>조회 -->
+<!-- 																										</button> -->
+<!-- 																									</div> -->
+<!-- 																									<div class="search_input"> -->
+<!-- 																										<div class="search_col"> -->
+<!-- 																											<div class="form_group"> -->
+<!-- 																												<label for="">배포 버전</label> -->
+<!-- 																												<input type="text" class="wd150px" id="modal_deployVer_search" value="" /> -->
+<!-- 																											</div> -->
+<!-- 																											<div class="form_group"> -->
+<!-- 																												<label for="">상태</label> -->
+<!-- 																												<select id="deployStatus" class="wd150px"> -->
+<!-- 																													<option value="">전체</option> -->
+<!-- 																													<option value="Y">적용</option> -->
+<!-- 																													<option value="N">미적용</option> -->
+<!-- 																												</select> -->
+<!-- 																											</div> -->
+<!-- 																										</div> -->
+<!-- 																									</div> -->
+<!-- 																								</div> -->
+<!-- 																								//조회 -->
 
-																								<!-- 테이블 -->
-																								<div class="mg_t20 panel bd_b_none nobordertop">
-																									<table class="tb_type01">
-																										<colgroup>
-																											<col style="width:8%;" />
-																											<col style="width:12%;" />
-																											<col style="width:auto;" />
-																											<col style="width:10%;" />
-																											<col style="width:18%;" />
-																											<col style="width:18%;" />
-																										</colgroup>
-																										<thead>
-																											<tr>
-																												<th></th>
-																												<th>배포버전</th>
-																												<th>배포 DRL</th>
-																												<th>상태</th>
-																												<th>가동시작</th>
-																												<th>가동 종료</th>
-																											</tr>
-																										</thead>
-																										<tbody id="modal_deployVerList"></tbody>
-																									</table>
-																								</div>
-																								<!-- //테이블 -->
+<!-- 																								테이블 -->
+<!-- 																								<div class="mg_t20 panel bd_b_none nobordertop"> -->
+<!-- 																									<table class="tb_type01"> -->
+<!-- 																										<colgroup> -->
+<!-- 																											<col style="width:8%;" /> -->
+<!-- 																											<col style="width:12%;" /> -->
+<!-- 																											<col style="width:auto;" /> -->
+<!-- 																											<col style="width:10%;" /> -->
+<!-- 																											<col style="width:18%;" /> -->
+<!-- 																											<col style="width:18%;" /> -->
+<!-- 																										</colgroup> -->
+<!-- 																										<thead> -->
+<!-- 																											<tr> -->
+<!-- 																												<th></th> -->
+<!-- 																												<th>배포버전</th> -->
+<!-- 																												<th>배포 DRL</th> -->
+<!-- 																												<th>상태</th> -->
+<!-- 																												<th>가동시작</th> -->
+<!-- 																												<th>가동 종료</th> -->
+<!-- 																											</tr> -->
+<!-- 																										</thead> -->
+<!-- 																										<tbody id="modal_deployVerList"></tbody> -->
+<!-- 																									</table> -->
+<!-- 																								</div> -->
+<!-- 																								//테이블 -->
 
-																								<!-- 페이징 -->
-																								<div class="custom-paging" id="modal_deployVerPaging"></div>
-																								<!-- //페이징 -->
+<!-- 																								페이징 -->
+<!-- 																								<div class="custom-paging" id="modal_deployVerPaging"></div> -->
+<!-- 																								//페이징 -->
 
-																								<!-- 버튼 -->
-																								<div class="card-actions-foot">
-																									<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('modal_deployVer');"><i class="far fa-times-circle custom-btn-i"></i> 닫기</button>
-																									<button type="button" class="btn btn-sm btn-green" id="modal_deployVerSaveBtn"><i class="far fa-check-circle custom-btn-i"></i> 적용</button>
-																								</div>
-																								<!-- //버튼 -->
-																							</div>
-																							<!-- //본문페이지 -->
-																						</div>
-																					</div>
-																				</div>
-																				<!-- //상세영역 -->
-																			</div>
-																		</div>
-																		<!-- //본문 -->
-																	</div>
-																	<!-- //팝업항상중앙띄우기 -->
-																</div>
-															</div>
-															<!-- //modal_pop -->
-														</td>
-													</tr>
+<!-- 																								버튼 -->
+<!-- 																								<div class="card-actions-foot"> -->
+<!-- 																									<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('modal_deployVer');"><i class="far fa-times-circle custom-btn-i"></i> 닫기</button> -->
+<!-- 																									<button type="button" class="btn btn-sm btn-green" id="modal_deployVerSaveBtn"><i class="far fa-check-circle custom-btn-i"></i> 적용</button> -->
+<!-- 																								</div> -->
+<!-- 																								//버튼 -->
+<!-- 																							</div> -->
+<!-- 																							//본문페이지 -->
+<!-- 																						</div> -->
+<!-- 																					</div> -->
+<!-- 																				</div> -->
+<!-- 																				//상세영역 -->
+<!-- 																			</div> -->
+<!-- 																		</div> -->
+<!-- 																		//본문 -->
+<!-- 																	</div> -->
+<!-- 																	//팝업항상중앙띄우기 -->
+<!-- 																</div> -->
+<!-- 															</div> -->
+<!-- 															//modal_pop -->
+<!-- 														</td> -->
+<!-- 													</tr> -->
 													<tr>
 														<th class="t_left">RULE 연결</th>
 														<td class="t_left">
@@ -582,11 +590,11 @@
 													</tr>
 													<tr>
 														<th class="t_left">최초 등록</th>
-														<td class="t_left" id="pkgRegDt">2021-04-01 11:30:29에 홍길동(님)이 등록함.</td>
+														<td class="t_left" id="pkgRegDt">-</td>
 													</tr>
 													<tr>
 														<th class="t_left">마지막 수정</th>
-														<td class="t_left" id="pkgUdtDt">2021-04-03 12:23:15에 홍길동(님)이 수정함.</td>
+														<td class="t_left" id="pkgUdtDt">-</td>
 													</tr>
 												</tbody>
 											</table>
@@ -604,7 +612,148 @@
 								</div>
 							</div>
 						</div>
+						<div class="col">
+							<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
+							<div class="card card-collapsed" id="pkgVerCardList">
+								<header class="card-header card-header-pd-mobile">
+									<div class="card-actions card-header-position-mobile">
+										<span class="infonum"> <span class="txt_color_blue mg_l5 mg_r5" id="pkgVerCountBySearch"></span>건
+										</span>
+										<a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+									</div>
+									<h2 class="card-title_txt">패키지 버전 목록</h2>
+								</header>
+								<!-- 본문페이지 -->
+								<div class="card-body" id="pkgVerCardListBody" style="display:none;">
+									<div class="progress_loading">
+										<div id="pkgVerListLoading" style="display: none;">
+											<img src="/targetai_publish/images/ajax-loader1.gif" />
+										</div>
+									</div>
+									<!-- 테이블 -->
+									<div class="panel bd_b_none nobordertop">
+										<table class="tb_type01 tablesorter">
+											<colgroup>
+												<col style="width: 15%;" />
+												<col style="width: auto;" />
+												<col style="width: 10%;" />
+												<col style="width: 20%;" />
+												<col style="width: 20%;" />
+											</colgroup>
+											<thead>
+												<tr>
+													<th>패키지 버전</th>
+													<th>DRL</th>
+													<th>상태</th>
+													<th>운영시작일</th>
+													<th>운영종료일</th>
+												</tr>
+											</thead>
+											<tbody id="pkgVerList">
+												<tr>
+													<td colspan="5" class="t_center">조회된 내용이 없습니다.</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<!-- //테이블 -->
+
+									<!-- 페이징 -->
+									<div class="custom-paging" id="pkgVerListPaging"></div>
+									<!-- //페이징 -->
+									
+									<!-- 버튼 -->
+									<div class="card-actions-foot">
+										<button type="button" class="btn btn-sm btn-green" id="">
+											<i class="el el-file-new custom-btn-i"></i> 개발중인 패키지 배포
+										</button>
+									</div>
+									<!-- //버튼 -->
+								</div>
+								<!-- //본문페이지 -->
+							</div>
+						</div>
 					</div>
+					<!-- 패키지 버전 그리드영역 -->
+					<div class="row">
+						<div class="col">
+							<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
+							<div class="card card-collapsed">
+								<header class="card-header card-header-pd-mobile">
+									<div class="card-actions card-header-position-mobile">
+										<a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+									</div>
+									<h2 class="card-title_txt">이벤트 목록</h2>
+								</header>
+								<!-- 본문페이지 -->
+								<div class="card-body" id="verEventCardBody" style="display: none;">
+									<!-- 테이블 -->
+									<div class="panel nobordertop">
+										<div class="sform_head">
+											<table class="sform_type">
+												<colgroup>
+													<col style="width: 180px" />
+													<col style="width: auto" />
+												</colgroup>
+												<tbody>
+													<tr>
+														<th class="t_left">패키지 명</th>
+														<td class="t_left" id=""></td>
+													</tr>
+													<tr>
+														<th class="t_left">이벤트 내용</th>
+														<td class="t_left">
+															<textarea rows="4" cols="7" style="height: 285px;" class="txtsize_100 wd100" id="evnetDsc" readonly="readonly" placeholder=""></textarea>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+									<!-- //테이블 -->
+								</div>
+							</div>
+						</div>
+						<div class="col">
+							<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
+							<div class="card card-collapsed" id="eventCard">
+								<header class="card-header card-header-pd-mobile">
+									<div class="card-actions card-header-position-mobile">
+										<a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+									</div>
+									<h2 class="card-title_txt">RULE 조건</h2>
+								</header>
+								<!-- 본문페이지 -->
+								<div class="card-body" id="eventCardBody" style="display: none;">
+									<!-- 테이블 -->
+									<div class="panel nobordertop">
+										<div class="sform_head">
+											<table class="sform_type">
+												<colgroup>
+													<col style="width: 180px" />
+													<col style="width: auto" />
+												</colgroup>
+												<tbody>
+													<tr>
+														<th class="t_left">패키지 명</th>
+														<td class="t_left" id=""></td>
+													</tr>
+													<tr>
+														<th class="t_left">이벤트 내용</th>
+														<td class="t_left">
+															<textarea rows="4" cols="7" class="txtsize_100 wd100" style="height: 353px;" id="evnetDsc" readonly="readonly" placeholder=""></textarea>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+									<!-- //테이블 -->
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- // 패키지 버전 그리드영역 -->
 				</div>
 			</div>
 		</div>

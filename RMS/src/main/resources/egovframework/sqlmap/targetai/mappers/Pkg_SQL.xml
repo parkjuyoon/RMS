@@ -7,14 +7,8 @@
 		SELECT 
 			P.PKG_ID,
 		    P.PKG_NM,
-		    PV.DRL_NM,
-		    PV.PKG_VER_ID,
-		    PV.VER,
-		    (SELECT VER FROM targetai.PKG_VER WHERE PKG_ID = #{pkgId} AND `STATUS` = 'Y') AS DEPLOY_VER,
-		    (SELECT PKG_VER_ID FROM targetai.PKG_VER WHERE PKG_ID = #{pkgId} AND `STATUS` = 'Y') AS DEPLOY_PKG_VER_ID,
-		    CAST(PV.DRL_SOURCE AS CHAR(10000) CHARACTER SET utf8) AS DRL_SOURCE,
-		    PV.DIALECT,
-		    PV.PATH,
+		    P.DRL_NM,
+		    P.VER,
 		    P.REG_USRID,
 		    M.MEMBER_NAME REG_USRNM,
 		    DATE_FORMAT(P.REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
@@ -24,18 +18,6 @@
 		    M1.MEMBER_NAME UDT_USRNM
 		FROM 
 			targetai.PKG P
-			LEFT JOIN (
-				SELECT 
-					A.*
-				FROM
-					targetai.PKG_VER A
-					INNER JOIN (SELECT 
-									MAX(PKG_VER_ID) PKG_VER_ID
-								FROM
-									targetai.PKG_VER
-								GROUP BY PKG_ID
-					) B ON (A.PKG_VER_ID = B.PKG_VER_ID)
-		    ) PV ON (P.PKG_ID = PV.PKG_ID)
 			LEFT JOIN targetai.MEMBER M ON (P.REG_USRID = M.MEMBER_ID)
 		    LEFT JOIN targetai.MEMBER M1 ON (P.UDT_USRID = M1.MEMBER_ID)
 		WHERE 1=1
@@ -63,12 +45,8 @@
 		SELECT 
 			P.PKG_ID,
 			P.PKG_NM,
-			PV.DRL_NM,
-			PV.VER,
-			(SELECT VER FROM targetai.PKG_VER WHERE PKG_ID = #{pkgId} AND `STATUS` = 'Y') AS DEPLOY_VER,
-			CAST(PV.DRL_SOURCE AS CHAR(10000) CHARACTER SET utf8) AS DRL_SOURCE,
-			PV.DIALECT,
-			PV.PATH,
+			P.DRL_NM,
+			P.VER,
 			P.REG_USRID,
 			M.MEMBER_NAME REG_USRNM,
 			DATE_FORMAT(P.REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
@@ -79,18 +57,6 @@
 		    (SELECT COUNT(*) FROM targetai.PKG_RULE_MAPPING WHERE PKG_ID = P.PKG_ID) AS RULE_COUNT_IN_PKG
 		FROM 
 			targetai.PKG P
-			LEFT JOIN (
-				SELECT 
-					A.*
-				FROM
-					targetai.PKG_VER A
-					INNER JOIN (SELECT 
-									MAX(PKG_VER_ID) PKG_VER_ID
-								FROM
-									targetai.PKG_VER
-								GROUP BY PKG_ID
-					) B ON (A.PKG_VER_ID = B.PKG_VER_ID)
-		    ) PV ON (P.PKG_ID = PV.PKG_ID)
 			LEFT JOIN targetai.MEMBER M ON (P.REG_USRID = M.MEMBER_ID)
 		    LEFT JOIN targetai.MEMBER M1 ON (P.UDT_USRID = M1.MEMBER_ID)
 		WHERE

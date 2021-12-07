@@ -39,6 +39,12 @@ $(document).ready(function() {
 		$("#pkgVerCardList").removeClass("card-collapsed");
 		$("#pkgVerCardListBody").css("display", "block");
 		fnGetPkg(param);
+		
+		// 패키지 버전 목록 조회
+		var searchObj = {};
+		searchObj.currentPage = 1;
+		searchObj.pkgId = param.pkgId;
+		fnGetPkgVerList(searchObj);
 	});
 	
 	// 패키지 목록 > DRL 파일명 클릭
@@ -85,6 +91,13 @@ $(document).ready(function() {
 		
 		// RULE 연결 버튼 속성 초기화
 		fnInitRuleMappingList();
+		
+		// 패키지 버전목록 초기화
+		fnInitPkgVerList();
+		// 이벤트 목록 초기화
+		fnInitEventList();
+		// RULE 조건 초기화
+		fnInitRuleCondition();
 		
 		$("#pkgCard").removeClass("card-collapsed");
 		$("#pkgCardBody").css("display", "");
@@ -138,10 +151,6 @@ $(document).ready(function() {
 			param.pkgId = $("#pkgId").text();
 			param.pkgNm = $("#pkgNm").val();
 			param.pkgDsc = $("#pkgDsc").val();
-			param.status = $("#deployVerPopBtn").attr("data-status");
-			// 버전정보 저장
-			param.ver = $("#deployVerNm").attr("data-ver");
-			param.pkgVerId = $("#deployVerNm").attr("data-pkgVerId");
 			
 			if(mappingRuleIds.length == 0) {
 				$.each(mappingRuleList, function(idx, mappingRule) {
@@ -403,8 +412,6 @@ $(document).ready(function() {
 		var ver = $("input[name='deployVerListRadio']:checked").attr("data-ver"); 
 		var pkgVerId = $("input[name='deployVerListRadio']:checked").attr("data-pkgVerId");
 		
-		$("#deployVerNm").attr("data-ver", ver);
-		$("#deployVerNm").attr("data-pkgVerId", pkgVerId);
 		close_layerPop('modal_deployVer');
 		messagePop("warning","패키지 저장시 반영됩니다.","","")
 	});
@@ -478,22 +485,10 @@ function fnGetPkgVerList(searchObj) {
 				
 			} else {
 				$.each(verList, function(idx, ver){
-//					삭제코드
 					html += "<tr>";
-//					html += "	<td class='t_center'>";
-//					html += "		<div class='checkbox-container'>";
-//					if(ver.STATUS == "Y") {
-//						html += "			<input type='radio' class='_channelListRadio' name='deployVerListRadio' data-pkgVerId='"+ ver.PKG_VER_ID +"' data-ver='"+ ver.VER +"' checked/>";
-//						
-//					} else {
-//						html += "			<input type='radio' class='_channelListRadio' name='deployVerListRadio' data-pkgVerId='"+ ver.PKG_VER_ID +"' data-ver='"+ ver.VER +"'/>";
-//					}
-//					html += "			<label for='_deployVerListRadio'></label>";
-//					html += "		</div>";
-//					html += "	</td>";
 					html += "	<td class='t_center'>" + ver.VER + "</td>";
 					html += "	<td class='t_center'><a href='#' class='_verDrlSourceLink' data-pkgVerId='"+ ver.PKG_VER_ID +"'>" + ver.DRL_NM + "</a></td>";
-					html += "	<td class='t_center'>" + (ver.STATUS == "Y" ? "적용" : "미적용") + "</td>";
+					html += "	<td class='t_center'>" + ver.VER_STATUS + "</td>";
 					html += "	<td class='t_center'>" + (typeof ver.RUN_START_DATE == "undefined" ? "-" : ver.RUN_START_DATE) + "</td>";
 					html += "	<td class='t_center'>" + (typeof ver.RUN_END_DATE == "undefined" ? "-" : ver.RUN_END_DATE) + "</td>";
 					html += "</tr>";
@@ -501,6 +496,7 @@ function fnGetPkgVerList(searchObj) {
 			}
 			
 			$("#pkgVerList").html(html);
+			$("#pkgVerCount").text(res.verCount);
 			fnPaging("#pkgVerListPaging", searchObj);
 		},
 		beforeSend : function() {
@@ -556,8 +552,8 @@ function getPkgList(searchObj) {
 					html += "	</td>";
 					html += "	<td class='t_center'>" + pkgList[i].PKG_ID + "</td>";
 					html += "	<td class='t_center'><a href='#' class='_pkgNmLink' data-pkgId='"+ pkgList[i].PKG_ID +"'>" + pkgList[i].PKG_NM + "</a></td>";
-					html += "	<td class='t_center'><a href='#' class='_drlNmLink' data-pkgId='"+ pkgList[i].PKG_ID +"' data-pkgVerId='"+ pkgList[i].PKG_VER_ID +"'>" + (typeof pkgList[i].DRL_NM == 'undefined' ? '-' : pkgList[i].DRL_NM) + "</a></td>";
-					html += "	<td class='t_center'><a href='#' class='_drlNmLink' data-pkgId='"+ pkgList[i].PKG_ID +"' data-pkgVerId='"+ pkgList[i].PKG_VER_ID +"'>" + (typeof pkgList[i].DRL_NM == 'undefined' ? '-' : pkgList[i].DRL_NM) + "</a></td>";
+					html += "	<td class='t_center'><a href='#' class='_drlNmLink' data-pkgId='"+ pkgList[i].PKG_ID +"' data-ver='"+ pkgList[i].VER +"'>" + (typeof pkgList[i].DRL_NM == 'undefined' ? '-' : pkgList[i].DRL_NM) + "</a></td>";
+					html += "	<td class='t_center'><a href='#' class='_drlNmLink' data-pkgId='"+ pkgList[i].PKG_ID +"' data-ver='"+ pkgList[i].DEV_VER +"'>" + (typeof pkgList[i].DEV_DRL_NM == 'undefined' ? '-' : pkgList[i].DEV_DRL_NM) + "</a></td>";
 					html += "	<td class='t_center'>" + (typeof pkgList[i].UDT_DT == 'undefined' ? '-' : pkgList[i].UDT_DT) + "</td>";
 					html += "	<td class='t_center'>" + (typeof pkgList[i].UDT_USRNM == 'undefined' ? '-' : pkgList[i].UDT_USRNM) + "</td>";
 					html += "	<td class='t_center'>" + pkgList[i].REG_DT + "</td>";
@@ -607,7 +603,6 @@ function fnGetPkg(param) {
 			$("#pkgNm").val(pkg.PKG_NM);
 			$("#pkgDsc").val(pkg.PKG_DSC);
 			$("#pkgActYn").val(pkg.PKG_ACT_YN);
-			$("#deployVerNm").val(pkg.DEPLOY_VER);
 			$("#pkgRegDt").text(pkg.REG_DT + "에 " + pkg.REG_USRNM + "(님)이 등록함.");
 			if(typeof pkg.UDT_USRID == 'undefined') {
 				$("#pkgUdtDt").text("수정 이력이 없습니다.");
@@ -629,12 +624,6 @@ function fnGetPkg(param) {
 			mappingRuleList = res.mappingRuleList;
 			
 			$("#ruleMappingSaveBtn").attr("data-update", "N");
-			
-			// 패키지 버전 목록 조회
-			var searchObj = {};
-			searchObj.currentPage = 1;
-			searchObj.pkgId = param.pkgId;
-//			fnGetPkgVerList(searchObj);
 		},
 		beforeSend : function() {
 			$("#pkgLoading").show();
@@ -713,6 +702,12 @@ function fnUpdatePkg(param) {
 			messagePop("success", "Package가 수정되었습니다.", "", "");
 			$("#pkgUdtDt").text(res.UDT_DT + "에 " + res.UDT_USRNM + "(님)이 등록함.");
 			fnGetPkg(param);
+			
+			// 패키지 버전 목록 조회
+			var searchObj = {};
+			searchObj.currentPage = 1;
+			searchObj.pkgId = param.pkgId;
+			fnGetPkgVerList(searchObj);
 		},
 		beforeSend : function() {
 			$("#pkgLoading").show();
@@ -982,7 +977,6 @@ function initPkgDetail() {
 	$("#pkgId").text("");
 	$("#pkgNm").val("");
 	$("#pkgDsc").val("");
-	$("#deployVerNm").val("");
 	$("#pkgRegDt").text("");
 	$("#pkgUdtDt").text("");
 	$("#pkgDupY").css("display", "none");
@@ -998,6 +992,46 @@ function fnInitPkgSearch() {
 	$("#pkgId_search").val("");
 	$("#pkgRegUsrId_search").val("");
 	$("#pkgNm_search").val("");
+}
+
+/**
+ * 패키지 버전목록 초기화
+ * @returns
+ */
+function fnInitPkgVerList() {
+	$("#pkgVerCount").text("");
+	var html = "";
+	html += "<tr>";
+	html += "	<td colspan='5' class='t_center'>조회된 내용이 없습니다.</td>";
+	html += "</tr>";
+	$("#pkgVerList").html(html);
+	$("#pkgVerCardList").removeClass("card-collapsed");
+	$("#pkgVerCardListBody").show();
+	$("#pkgVerListPaging").html("");
+}
+
+/**
+ * 이벤트 목록 초기화
+ * @returns
+ */
+function fnInitEventList() {
+	$("#eventCount").text("");
+	var html = "";
+	html += "<tr>";
+	html += "	<td colspan='5' class='t_center'>조회된 내용이 없습니다.</td>";
+	html += "</tr>";
+	$("#eventList").html(html);
+	$("#eventCardList").addClass("card-collapsed");
+	$("#eventCardListBody").hide();
+	$("#pkgVerListPaging").html("");
+}
+
+/**
+ * RULE 조건 초기화
+ * @returns
+ */ 
+function fnInitRuleCondition() {
+	
 }
 
 /**

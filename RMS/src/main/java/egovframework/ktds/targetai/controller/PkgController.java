@@ -279,66 +279,17 @@ public class PkgController {
 	@ResponseBody
 	@RequestMapping(value = "/updatePkg.do", method = RequestMethod.POST)
 	public HashMap<String, Object> updatePkg(@RequestBody HashMap<String, Object> param, HttpSession session) {
-		try {
-			String regUserId = (String) session.getAttribute("member_id");
-			
-			param.put("REG_USER_ID", regUserId);
-			param.put("PATH", "/drl_files");
-			
-			// 패키지 저장
-			pkgService.updatePkg(param);
-			// 배포버전 변경
-			String ver = (String) param.get("ver");
-			if(ver != null) {
-				HashMap<String, Object> rtnVerInfo = pkgService.deployVer(param);
-			}
-			
-			List<Integer> mappingRuleIds1= pkgService.getMappingRuleIdsByPkgId(param);
-			Collections.sort(mappingRuleIds1);
-			List<Object> param_mappingRuleIds = (List<Object>) param.get("mappingRuleIds");
-			List<Integer> mappingRuleIds2 = new ArrayList<>();
-			
-			for(Object id : param_mappingRuleIds) {
-				mappingRuleIds2.add(Integer.parseInt(String.valueOf(id)));
-			}
-			Collections.sort(mappingRuleIds2);
-			
-			// RULE MAPPING 정보가 변경되었는지 확인
-			boolean ruleMappingEditTF = Arrays.deepEquals(mappingRuleIds1.toArray(), mappingRuleIds2.toArray());
-			
-			if(!ruleMappingEditTF) {
-				// PKG_VER 저장
-				param.put("PKG_ID", param.get("pkgId"));
-				param.put("STATUS", "N");
-				pkgService.addPkgVer(param);
-				
-				// DRL 파일명 업데이트
-				String drlNm = param.get("pkgNm") + "_" + param.get("PKG_ID") + "_v" + param.get("VER") +".drl";
-				param.put("drlNm", drlNm);
-				pkgService.updateDrlFileNm(param);
-				
-				// 연결된 Rule 맵핑 정보 삭제
-				int delRes = pkgService.delRuleMappingByPkgId(param);
-				// 새로운 Rule 맵핑 연결
-				List<String> ruleIds = (List<String>) param.get("mappingRuleIds");
-				if(ruleIds.size() > 0) {
-					int addRes = pkgService.addRuleMappingByPkgId(param);
-				}
-				
-				// DRL 파일 수정
-				// RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
-				String pkgId = (String) param.get("pkgId");
-				HashMap<String, Object> pkg = pkgService.getPkgById(pkgId);
-				ruleService.saveDRL(pkg);
-			}
+		HashMap<String, Object> rtnMap = new HashMap<>();
 		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		String regUserId = (String) session.getAttribute("member_id");
 		
-		HashMap<String, Object> pkg = pkgService.getPkg(param);
+		param.put("REG_USER_ID", regUserId);
+		param.put("PATH", "/drl_files");
 		
-		return pkg;
+		// 패키지 업데이트
+		pkgService.updatePkg(param);
+		
+		return rtnMap;
 	}
 	
 	/**

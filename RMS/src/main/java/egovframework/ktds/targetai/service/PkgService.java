@@ -21,8 +21,6 @@ public interface PkgService {
 
 	void addPkg(HashMap<String, Object> param);
 
-	void updateDrlFileNm(HashMap<String, Object> param);
-
 	void deletePkgById(HashMap<String, Object> param);
 
 	void updatePkg(HashMap<String, Object> param);
@@ -33,15 +31,7 @@ public interface PkgService {
 
 	List<HashMap<String, Object>> getMappingRuleList(HashMap<String, Object> param);
 
-	int delRuleMappingByPkgId(HashMap<String, Object> param);
-
-	int addRuleMappingByPkgId(HashMap<String, Object> param);
-
 	int delRuleMappingByPkgIds(HashMap<String, Object> param);
-
-	int addPkgVer(HashMap<String, Object> param);
-
-	List<Integer> getMappingRuleIdsByPkgId(HashMap<String, Object> param);
 
 	List<HashMap<String, Object>> getDeployVerListByPkgId(HashMap<String, Object> param);
 

@@ -342,7 +342,7 @@
 									<h2 class="card-title_txt">패키지 상세</h2>
 								</header>
 								<!-- 본문페이지 -->
-								<div class="card-body" id="pkgCardBody" style="height: 380px; display: none;">
+								<div class="card-body" id="pkgCardBody" style="height: 379px; display: none;">
 									<div class="progress_loading">
 										<div id="pkgLoading">
 											<img src="/targetai_publish/images/ajax-loader1.gif" />
@@ -617,7 +617,7 @@
 							<div class="card card-collapsed" id="pkgVerCardList">
 								<header class="card-header card-header-pd-mobile">
 									<div class="card-actions card-header-position-mobile">
-										<span class="infonum"> <span class="txt_color_blue mg_l5 mg_r5" id="pkgVerCountBySearch"></span>건
+										<span class="infonum"> <span class="txt_color_blue mg_l5 mg_r5" id="pkgVerCount"></span>건
 										</span>
 										<a href="#" class="card-action card-action-toggle" data-card-toggle></a>
 									</div>
@@ -674,44 +674,59 @@
 							</div>
 						</div>
 					</div>
-					<!-- 패키지 버전 그리드영역 -->
+					<!-- 이벤트 목록 그리드영역 -->
 					<div class="row">
 						<div class="col">
 							<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
-							<div class="card card-collapsed">
+							<div class="card card-collapsed" id="eventCardList">
 								<header class="card-header card-header-pd-mobile">
 									<div class="card-actions card-header-position-mobile">
+										<span class="infonum"> <span class="txt_color_blue mg_l5 mg_r5" id="eventCount"></span>건
+										</span>
 										<a href="#" class="card-action card-action-toggle" data-card-toggle></a>
 									</div>
 									<h2 class="card-title_txt">이벤트 목록</h2>
 								</header>
 								<!-- 본문페이지 -->
-								<div class="card-body" id="verEventCardBody" style="display: none;">
-									<!-- 테이블 -->
-									<div class="panel nobordertop">
-										<div class="sform_head">
-											<table class="sform_type">
-												<colgroup>
-													<col style="width: 180px" />
-													<col style="width: auto" />
-												</colgroup>
-												<tbody>
-													<tr>
-														<th class="t_left">패키지 명</th>
-														<td class="t_left" id=""></td>
-													</tr>
-													<tr>
-														<th class="t_left">이벤트 내용</th>
-														<td class="t_left">
-															<textarea rows="4" cols="7" style="height: 285px;" class="txtsize_100 wd100" id="evnetDsc" readonly="readonly" placeholder=""></textarea>
-														</td>
-													</tr>
-												</tbody>
-											</table>
+								<div class="card-body" id="eventCardListBody" style="display:none;">
+									<div class="progress_loading">
+										<div id="eventListLoading" style="display: none;">
+											<img src="/targetai_publish/images/ajax-loader1.gif" />
 										</div>
 									</div>
+									<!-- 테이블 -->
+									<div class="panel bd_b_none nobordertop">
+										<table class="tb_type01 tablesorter">
+											<colgroup>
+												<col style="width: 15%;" />
+												<col style="width: auto;" />
+												<col style="width: 10%;" />
+												<col style="width: 20%;" />
+												<col style="width: 20%;" />
+											</colgroup>
+											<thead>
+												<tr>
+													<th>패키지 버전</th>
+													<th>DRL</th>
+													<th>상태</th>
+													<th>운영시작일</th>
+													<th>운영종료일</th>
+												</tr>
+											</thead>
+											<tbody id="eventList">
+												<tr>
+													<td colspan="5" class="t_center">조회된 내용이 없습니다.</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
 									<!-- //테이블 -->
+
+									<!-- 페이징 -->
+									<div class="custom-paging" id="eventListPaging"></div>
+									<!-- //페이징 -->
 								</div>
+								<!-- //본문페이지 -->
 							</div>
 						</div>
 						<div class="col">

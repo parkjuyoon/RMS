@@ -65,4 +65,8 @@ public interface PkgMapper {
 	void deletePkgVerById(HashMap<String, Object> param);
 
 	HashMap<String, Object> getPkgByVer(HashMap<String, Object> param);
+
+	HashMap<String, Object> getPkgVerByStatus(HashMap<String, Object> param);
+
+	void updatePkgVer(HashMap<String, Object> param);
 }

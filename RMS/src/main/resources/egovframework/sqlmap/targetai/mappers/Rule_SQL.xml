@@ -175,14 +175,15 @@
 			R.RULE_WHEN,
 			R.RULE_THEN,
 			R.NUM_OF_TGT,
-			PRM.PKG_ID,
+			RP.PKG_ID,
 			R.CAMP_ID,
 			R.REG_DT
 		FROM
-			targetai.PKG_RULE_MAPPING PRM
-		    LEFT JOIN targetai.RULE R ON (PRM.RULE_ID = R.RULE_ID)
+			targetai.RULE_PKG RP
+		    LEFT JOIN targetai.RULE R ON (RP.RULE_ID = R.RULE_ID)
 		WHERE
-			PRM.PKG_ID = #{pkgId}
+			RP.PKG_ID = #{pkgId}
+			AND RP.VER = #{VER}
 	</select>
 	
 	<!-- RULE 저장 -->

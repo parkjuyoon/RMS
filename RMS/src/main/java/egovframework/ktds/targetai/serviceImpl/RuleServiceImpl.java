@@ -86,7 +86,10 @@ public class RuleServiceImpl implements RuleService {
 	@Override
 	public String saveDRL(HashMap<String, Object> pkg) {
 		// PKG DRL_SOURCE 업데이트
-		String pkgId = String.valueOf(pkg.get("PKG_ID")); 
+		String pkgId = (String) pkg.get("PKG_ID");
+		String pkg_nm = (String) pkg.get("PKG_NM");
+		pkg_nm = (pkg_nm == null ? (String) pkg.get("pkgNm") : pkg_nm);
+		
 		String apicall = (String) pkg.get("apicall");
 		
 		if(apicall == null) {
@@ -96,7 +99,7 @@ public class RuleServiceImpl implements RuleService {
 			String drlSource = "";
 			
 			if(ruleList.size() > 0) {
-				drlImport += "package " + pkg.get("PKG_NM") + ";\n";
+				drlImport += "package " + pkg_nm + ";\n";
 				drlImport += "import java.util.Map;\n";
 			}
 			
@@ -146,7 +149,7 @@ public class RuleServiceImpl implements RuleService {
 		String path = realPath;
 		realPath = System.getProperty("user.home") + path;
 		realPath = realPath.replace("/", File.separator).replace("\\", File.separator);
-		String pkg_nm = (String) pkg.get("PKG_NM");
+		
 		String drl_nm = (String) pkg.get("DRL_NM");
 		String drl_source = (String) pkg.get("DRL_SOURCE");
 		

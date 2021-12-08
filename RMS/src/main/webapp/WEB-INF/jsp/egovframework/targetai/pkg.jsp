@@ -664,8 +664,8 @@
 									
 									<!-- 버튼 -->
 									<div class="card-actions-foot">
-										<button type="button" class="btn btn-sm btn-green" id="">
-											<i class="el el-file-new custom-btn-i"></i> 개발중인 패키지 배포
+										<button type="button" class="btn btn-sm btn-green" id="deployBtn">
+											<i class="el el-file-new custom-btn-i"></i>개발중인 패키지 배포
 										</button>
 									</div>
 									<!-- //버튼 -->
@@ -688,7 +688,7 @@
 									<h2 class="card-title_txt">이벤트 목록</h2>
 								</header>
 								<!-- 본문페이지 -->
-								<div class="card-body" id="eventCardListBody" style="display:none;">
+								<div class="card-body" id="eventCardListBody" style="display:none; height: 379px;">
 									<div class="progress_loading">
 										<div id="eventListLoading" style="display: none;">
 											<img src="/targetai_publish/images/ajax-loader1.gif" />
@@ -706,11 +706,11 @@
 											</colgroup>
 											<thead>
 												<tr>
-													<th>패키지 버전</th>
-													<th>DRL</th>
-													<th>상태</th>
-													<th>운영시작일</th>
-													<th>운영종료일</th>
+													<th>이벤트 버전</th>
+													<th>이벤트 명</th>
+													<th>순서</th>
+													<th>등록일</th>
+													<th>등록자</th>
 												</tr>
 											</thead>
 											<tbody id="eventList">
@@ -739,7 +739,12 @@
 									<h2 class="card-title_txt">RULE 조건</h2>
 								</header>
 								<!-- 본문페이지 -->
-								<div class="card-body" id="eventCardBody" style="display: none;">
+								<div class="card-body" id="eventCardBody" style="display: none; height: 379px;">
+									<div class="progress_loading">
+										<div id="eventLoading" style="display: none;">
+											<img src="/targetai_publish/images/ajax-loader1.gif" />
+										</div>
+									</div>
 									<!-- 테이블 -->
 									<div class="panel nobordertop">
 										<div class="sform_head">
@@ -750,13 +755,13 @@
 												</colgroup>
 												<tbody>
 													<tr>
-														<th class="t_left">패키지 명</th>
-														<td class="t_left" id=""></td>
+														<th class="t_left">이벤트 명</th>
+														<td class="t_left" id="eventNm"></td>
 													</tr>
 													<tr>
 														<th class="t_left">이벤트 내용</th>
 														<td class="t_left">
-															<textarea rows="4" cols="7" class="txtsize_100 wd100" style="height: 353px;" id="evnetDsc" readonly="readonly" placeholder=""></textarea>
+															<textarea rows="14" cols="7" class="txtsize_100 wd100" id="eventDsc" readonly="readonly" placeholder=""></textarea>
 														</td>
 													</tr>
 												</tbody>

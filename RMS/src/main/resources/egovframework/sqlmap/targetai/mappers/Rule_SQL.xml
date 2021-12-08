@@ -158,7 +158,7 @@
 	</select>
 	
 	<!-- RULE 정보 조회 -->
-	<select id="getRuleListByPkgId" parameterType="string" resultType="java.util.HashMap">
+	<select id="getRuleListByPkgVer" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT
 			R.RULE_ID,
 			R.RULE_NM,
@@ -182,7 +182,7 @@
 			targetai.RULE_PKG RP
 		    LEFT JOIN targetai.RULE R ON (RP.RULE_ID = R.RULE_ID)
 		WHERE
-			RP.PKG_ID = #{pkgId}
+			RP.PKG_ID = #{PKG_ID}
 			AND RP.VER = #{VER}
 	</select>
 	

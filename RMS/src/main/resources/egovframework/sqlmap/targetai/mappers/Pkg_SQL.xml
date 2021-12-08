@@ -24,9 +24,9 @@
 			LEFT JOIN targetai.MEMBER M ON (P.REG_USRID = M.MEMBER_ID)
 		    LEFT JOIN targetai.MEMBER M1 ON (P.UDT_USRID = M1.MEMBER_ID)
 		WHERE 1=1
-		<if test="pkgId_search != null and pkgId_search != ''">AND PKG_ID = #{pkgId_search}</if>
-		<if test="pkgNm_search != null and pkgNm_search != ''">AND PKG_NM LIKE CONCAT('%', #{pkgNm_search}, '%')</if>
-		<if test="pkgRegUsrId_search != null and pkgRegUsrId_search != ''">AND REG_USRID = #{pkgRegUsrId_search}</if>
+		<if test="pkgId_search != null and pkgId_search != ''">AND P.PKG_ID = #{pkgId_search}</if>
+		<if test="pkgNm_search != null and pkgNm_search != ''">AND P.PKG_NM LIKE CONCAT('%', #{pkgNm_search}, '%')</if>
+		<if test="pkgRegUsrId_search != null and pkgRegUsrId_search != ''">AND P.REG_USRID = #{pkgRegUsrId_search}</if>
 		ORDER BY PKG_ID DESC
 		LIMIT #{limit}
 		OFFSET #{offset}
@@ -66,32 +66,46 @@
 			P.PKG_ID = #{pkgId}
 	</select>
 	
-	<!-- 해당 버전의 패키지 상세 조회 -->
-	<select id="getPkgByVer" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	<!-- 패키지 버전 상세 조회 -->
+	<select id="getPkgVer" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT 
-			P.PKG_ID,
+			PV.PKG_ID,
 			P.PKG_NM,
-			PV.DRL_NM,
 			PV.VER,
-			(SELECT VER FROM targetai.PKG_VER WHERE PKG_ID = #{pkgId} AND `STATUS` = 'Y') AS DEPLOY_VER,
+			PV.VER_DESC,
+			PV.DRL_NM,
 			CAST(PV.DRL_SOURCE AS CHAR(10000) CHARACTER SET utf8) AS DRL_SOURCE,
 			PV.DIALECT,
 			PV.PATH,
-			P.REG_USRID,
-			M.MEMBER_NAME REG_USRNM,
-			DATE_FORMAT(P.REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
-			P.PKG_DSC,
-			DATE_FORMAT(UDT_DT, '%Y-%m-%d %h:%i:%s') AS UDT_DT,
-			P.UDT_USRID,
-			M1.MEMBER_NAME UDT_USRNM,
-		    (SELECT COUNT(*) FROM targetai.RULE_PKG WHERE PKG_ID = P.PKG_ID) AS RULE_COUNT_IN_PKG
-		FROM 
-			targetai.PKG P
-			LEFT JOIN targetai.PKG_VER PV ON (P.PKG_ID = PV.PKG_ID)
-			LEFT JOIN targetai.MEMBER M ON (P.REG_USRID = M.MEMBER_ID)
-		    LEFT JOIN targetai.MEMBER M1 ON (P.UDT_USRID = M1.MEMBER_ID)
+			PV.VER_STATUS,
+			PV.RUN_START_DATE,
+			PV.RUN_END_DATE
+		FROM
+			targetai.PKG_VER PV
+			LEFT JOIN targetai.PKG P ON (PV.PKG_ID = P.PKG_ID)
 		WHERE
-			PV.PKG_VER_ID = #{pkgVerId}
+			PV.PKG_ID = #{pkgId}
+			AND PV.VER = #{ver}	
+	</select>
+		
+	<!-- 개발중인 패키지가 있는지 확인 -->
+	<select id="getPkgVerByStatus" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 
+			PKG_ID,
+		    VER,
+		    VER_DESC,
+		    DRL_NM,
+		    CAST(DRL_SOURCE AS CHAR(10000) CHARACTER SET utf8) AS DRL_SOURCE,
+		    DIALECT,
+		    PATH,
+		    VER_STATUS,
+		    RUN_START_DATE,
+		    RUN_END_DATE
+		FROM
+		    targetai.PKG_VER
+		WHERE
+		    PKG_ID = #{pkgId} 
+		    AND VER_STATUS = #{VER_STATUS}	
 	</select>
 	
 	<!-- package 삭제 -->
@@ -102,8 +116,8 @@
 		<foreach collection="pkgIdArr" item="pkgId" separator="," open="(" close=")">
 			#{pkgId}
 		</foreach>
-	</delete
-	>
+	</delete>
+	
 	<!-- PKG_VER 삭제 -->
 	<delete id="deletePkgVerById" parameterType="java.util.HashMap">
 		DELETE FROM targetai.PKG_VER
@@ -130,11 +144,13 @@
 		INSERT INTO targetai.PKG (
 			PKG_NM,
 			PKG_DSC,
-			REG_USRID
+			REG_USRID,
+			REG_DT
 		) VALUES (
 			#{pkgNm},
 			#{pkgDsc},
-			#{REG_USER_ID}
+			#{REG_USER_ID},
+			#{currentTime}
 		)
 		<selectKey keyProperty="PKG_ID" resultType="int" order="AFTER">
 			SELECT LAST_INSERT_ID()
@@ -179,25 +195,6 @@
 			PKG_ID = #{PKG_ID}
 			AND VER = #{VER}
 	</update>
-	
-	<!-- PKG 정보 조회 -->
-	<select id="getPkgById" parameterType="string" resultType="java.util.HashMap">
-		SELECT
-			P.PKG_ID,
-			PV.VER,
-		    P.PKG_NM,
-		    PV.DRL_NM,
-		    CAST(PV.DRL_SOURCE AS CHAR(10000) CHARACTER SET utf8) AS DRL_SOURCE,
-		    PV.DIALECT,
-		    PV.PATH
-		FROM
-			targetai.PKG P
-			LEFT JOIN targetai.PKG_VER PV ON (P.PKG_ID = PV.PKG_ID)
-		WHERE
-			P.PKG_ID = #{pkgId}
-		ORDER BY PKG_VER_ID DESC
-        LIMIT 1
-	</select>
 	
 	<!-- PKG 의 DRL_SOURCE 업데이트 -->
 	<update id="updateDrlSource" parameterType="java.util.HashMap">
@@ -309,12 +306,25 @@
 	
 	<!-- 맵핑된 룰  -->
 	<select id="getMappingRuleIdsByPkgId" parameterType="java.util.HashMap" resultType="Integer">
-		SELECT
-			RULE_ID
-		FROM 
-		    targetai.RULE_PKG
+		SELECT 
+			R.RULE_ID
+		FROM
+			targetai.RULE R
+			LEFT JOIN targetai.RULE_PKG RP ON (RP.RULE_ID = R.RULE_ID)
 		WHERE
-			PKG_ID = #{pkgId}
+			RP.PKG_ID = #{pkgId}
+		    AND RP.VER = (
+				SELECT 
+					VER
+				FROM
+					targetai.PKG_VER
+				WHERE
+					PKG_ID = #{pkgId}
+				ORDER BY
+					VER DESC
+				LIMIT 1
+		    )
+		ORDER BY VER DESC
 	</select>
 	
 	<!-- 해당패키지의 버전목록 조회 -->
@@ -353,46 +363,74 @@
 		ORDER BY VER_STATUS DESC, VER DESC
 	</select>
 	
-	<!-- 기존 배포 가동종료 -->
+	<!-- 운영 배포버전 가동종료 -->
 	<update id="endDeployVer" parameterType="java.util.HashMap">
 		UPDATE targetai.PKG_VER
 		SET
-			`STATUS` = 'N'
-			,RUN_END_DATE = #{NOW_DATE}
+			VER_STATUS = 'T'
+			,RUN_END_DATE = #{currentTime}
 		WHERE
-			PKG_ID = #{PKG_ID}
-			AND `STATUS` = 'Y'
+			PKG_ID = #{pkgId}
+			AND VER_STATUS = 'R'
 	</update>
 	
-	<!-- 선택된 배포버전으로 가동시작 -->
+	<!-- 개발 배포버전으로 가동시작 -->
 	<update id="startDeployVer" parameterType="java.util.HashMap">
 		UPDATE targetai.PKG_VER
 		SET
-			`STATUS` = 'Y'
-			,RUN_START_DATE = #{NOW_DATE}
-			,RUN_END_DATE = null
+			VER_STATUS = 'R'
+			,RUN_START_DATE = #{currentTime}
 		WHERE
-			PKG_VER_ID = #{PKG_VER_ID}
+			PKG_ID = #{pkgId}
+			AND VER_STATUS = 'D'
 	</update>
 	
-	<!-- 개발중인 패키지가 있는지 확인 -->
-	<select id="getPkgVerByStatus" parameterType="java.util.HashMap" resultType="java.util.HashMap">
-		SELECT 
-			PKG_ID,
-		    VER,
-		    VER_DESC,
-		    DRL_NM,
-		    CAST(DRL_SOURCE AS CHAR(10000) CHARACTER SET utf8) AS DRL_SOURCE,
-		    DIALECT,
-		    PATH,
-		    VER_STATUS,
-		    RUN_START_DATE,
-		    RUN_END_DATE
-		FROM
-		    targetai.PKG_VER
+	<!-- 개발 배포버전으로 가동시작 -->
+	<update id="updatePkgRealVer" parameterType="java.util.HashMap">
+		UPDATE targetai.PKG
+		SET
+			DRL_NM = #{DRL_NM}
+			,PATH = #{PATH}
+			,VER = #{VER}
+			,UDT_USRID	 = #{REG_USER_ID}
+			,UDT_DT	 = #{currentTime}
 		WHERE
-		    PKG_ID = #{pkgId} 
-		    AND VER_STATUS = #{VER_STATUS}	
+			PKG_ID = #{PKG_ID}
+	</update>
+	
+	<!-- 해당 패키지 버전의 RULE(이벤트) 목록 조회 -->
+	<select id="getEventList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 
+			RP.PKG_ID,
+		    RP.RULE_ID,
+		    RP.VER,
+		    R.RULE_NM,
+		    R.SALIENCE,
+		    DATE_FORMAT(R.REG_DT, '%Y-%m-%d %H:%i:%s') AS REG_DT,
+		    R.REG_USRID,
+		    M.MEMBER_NAME
+		FROM
+		    targetai.RULE_PKG RP
+		    LEFT JOIN targetai.RULE R ON (RP.RULE_ID = R.RULE_ID)
+		    LEFT JOIN targetai.MEMBER M ON (R.REG_USRID = M.MEMBER_ID)
+		WHERE
+		    RP.PKG_ID = #{pkgId}
+		    AND RP.VER = #{ver}
+		    ORDER BY R.SALIENCE ASC, R.RULE_ID DESC
+	    LIMIT #{limit}
+		OFFSET #{offset}
 	</select>
 	
+	<!-- 해당 패키지 버전의 RULE(이벤트) 목록 개수 조회 -->
+	<select id="getEventListCount" parameterType="java.util.HashMap" resultType="int">
+		SELECT 
+		    COUNT(*)
+		FROM
+		    targetai.RULE_PKG RP
+		    LEFT JOIN targetai.RULE R ON (RP.RULE_ID = R.RULE_ID)
+		    LEFT JOIN targetai.MEMBER M ON (R.REG_USRID = M.MEMBER_ID)
+		WHERE
+		    RP.PKG_ID = #{pkgId}
+		    AND RP.VER = #{ver}
+	</select>
 </mapper>

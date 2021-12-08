@@ -154,7 +154,7 @@ public class ApiController {
 			responseMap.put("NUM_OF_OFFER", numOfOffer == null ? "ALL" : (int) numOfOffer);	// ALL 이면 모든 RULE 표시, 제한있으면 제한된 만큼 RULE 표시
 			responseMap.put("RUN_TIME_UNIT", "sec");
 			
-			List<Integer> ruleIds = apiService.getRuleIdsBySvcId(param_svcId);	// 등록된 모든 RULE 의 RULE_ID를 SALIENCE ASC, ORDER ASC 순으로 정렬하여 조회
+			List<Integer> ruleIds = apiService.getRuleIdsBySvcId(pkg);	// 등록된 모든 RULE 의 RULE_ID를 SALIENCE ASC, ORDER ASC 순으로 정렬하여 조회
 			List<HashMap<String, Object>> outPutValList = apiService.getOutPutValList(param_svcId);	// 서비스 아이디에 해당하는 output value 리스트 조회
 			List<HashMap<String, Object>> resultTmp = new ArrayList<>();	// 계약건수마다 걸린 RULE 을 한군데 넣어놓을 임시 리스트
 			List<HashMap<String, Object>> respList = new ArrayList<>();		// response 리스트

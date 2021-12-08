@@ -15,6 +15,7 @@
 	
 	<select id="getPkgBySvcId" parameterType="string" resultType="java.util.HashMap">
 		SELECT
+			S.SVC_ID,
 			P.PKG_ID,
 			PV.PATH,
 			PV.VER,
@@ -29,7 +30,7 @@
             LEFT JOIN targetai.PKG_VER PV ON (P.PKG_ID = PV.PKG_ID)
 		WHERE
 			S.SVC_ID = #{svc_id}
-			AND PV.`STATUS` = 'Y'
+			AND PV.VER_STATUS = 'R'
 	</select>
 	
 	<insert id="addSvclogIn" parameterType="java.util.HashMap">
@@ -84,15 +85,16 @@
 	</update>
 	
 	<!-- 서비스에 연결되어 있는 RULE 아이디 리스트 조회 -->
-	<select id="getRuleIdsBySvcId" parameterType="String" resultType="int">
+	<select id="getRuleIdsBySvcId" parameterType="java.util.HashMap" resultType="int">
 		SELECT
 		    R.RULE_ID
 		FROM
 			targetai.SVC S
-			LEFT JOIN targetai.PKG_RULE_MAPPING PRM ON (S.PKG_ID = PRM.PKG_ID)
-    		LEFT JOIN targetai.RULE R ON (PRM.RULE_ID = R.RULE_ID)
+			LEFT JOIN targetai.RULE_PKG RP ON (S.PKG_ID = RP.PKG_ID)
+    		LEFT JOIN targetai.RULE R ON (RP.RULE_ID = R.RULE_ID)
 		WHERE
-			S.SVC_ID = #{svc_id}
+			S.SVC_ID = #{SVC_ID}
+			AND RP.VER = #{VER}
 		ORDER BY R.SALIENCE ASC, R.RULE_ID ASC
 	</select>
 	

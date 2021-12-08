@@ -86,14 +86,13 @@ public class RuleServiceImpl implements RuleService {
 	@Override
 	public String saveDRL(HashMap<String, Object> pkg) {
 		// PKG DRL_SOURCE 업데이트
-		String pkgId = (String) pkg.get("PKG_ID");
 		String pkg_nm = (String) pkg.get("PKG_NM");
 		pkg_nm = (pkg_nm == null ? (String) pkg.get("pkgNm") : pkg_nm);
 		
 		String apicall = (String) pkg.get("apicall");
 		
 		if(apicall == null) {
-			List<HashMap<String, Object>> ruleList = ruleDao.getRuleListByPkgId(pkgId);
+			List<HashMap<String, Object>> ruleList = ruleDao.getRuleListByPkgVer(pkg);
 			
 			String drlImport = "";
 			String drlSource = "";

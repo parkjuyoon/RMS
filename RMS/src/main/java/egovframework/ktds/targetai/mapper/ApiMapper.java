@@ -18,7 +18,7 @@ public interface ApiMapper {
 
 	List<HashMap<String, Object>> getActiveList(HashMap<String, Object> param);
 
-	List<Integer> getRuleIdsBySvcId(String svc_id);
+	List<Integer> getRuleIdsBySvcId(HashMap<String, Object> param);
 
 	List<HashMap<String, Object>> getOutPutValList(String param_svcId);
 

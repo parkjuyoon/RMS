@@ -26,7 +26,7 @@ public interface RuleMapper {
 
 	List<HashMap<String, Object>> getFactorVal(HashMap<String, Object> param);
 	
-	List<HashMap<String, Object>> getRuleListByPkgId(String pkgId);
+	List<HashMap<String, Object>> getRuleListByPkgVer(HashMap<String, Object> pkg);
 	
 	void updateDrlSource(HashMap<String, Object> pkg);
 	

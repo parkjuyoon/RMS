@@ -13,8 +13,6 @@ public interface PkgService {
 
 	String getDrlSource(String pkgId);
 
-	HashMap<String, Object> getPkgById(String pkgId);
-
 	void updateDrlSource(HashMap<String, Object> pkg);
 
 	int pkgNmCheck(HashMap<String, Object> map);
@@ -37,8 +35,10 @@ public interface PkgService {
 
 	int getDeployVerCountByPkgId(HashMap<String, Object> param);
 
+	HashMap<String, Object> getPkgVer(HashMap<String, Object> param);
+
 	HashMap<String, Object> deployVer(HashMap<String, Object> param);
 
-	HashMap<String, Object> getPkgByVer(HashMap<String, Object> param);
+	HashMap<String, Object> getEventInfo(HashMap<String, Object> param);
 
 }

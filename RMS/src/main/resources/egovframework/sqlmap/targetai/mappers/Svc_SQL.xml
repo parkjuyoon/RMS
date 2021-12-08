@@ -202,30 +202,16 @@
 	<!-- 연결가능한 패키지 목록 조회 -->
 	<select id="getConPkgList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT 
-			P.PKG_ID,
-		    P.PKG_NM,
-		    PV.DRL_NM,
-		    PV.PKG_VER_ID,
-		    PV.VER,
-		    CAST(PV.DRL_SOURCE AS CHAR(10000) CHARACTER SET utf8) AS DRL_SOURCE,
-		    PV.DIALECT,
-		    PV.PATH,
-		    P.REG_USRID,
-		    M.MEMBER_NAME REG_USRNM,
-		    DATE_FORMAT(P.REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
-		    P.PKG_DSC,
-		    DATE_FORMAT(P.UDT_DT, '%Y-%m-%d %h:%i:%s') AS UDT_DT,
-		    P.UDT_USRID,
-		    M1.MEMBER_NAME UDT_USRNM
+			PKG_ID,
+		    PKG_NM,
+		    DRL_NM,
+		    VER
 		FROM 
-			targetai.PKG P
-			LEFT JOIN targetai.PKG_VER PV ON (P.PKG_ID = PV.PKG_ID AND PV.`STATUS` = 'Y')
-			LEFT JOIN targetai.MEMBER M ON (P.REG_USRID = M.MEMBER_ID)
-		    LEFT JOIN targetai.MEMBER M1 ON (P.UDT_USRID = M1.MEMBER_ID)
-		WHERE 1=1
-		<if test="pkgId_search != null and pkgId_search != ''">AND PKG_ID = #{pkgId_search}</if>
-		<if test="pkgNm_search != null and pkgNm_search != ''">AND PKG_NM LIKE CONCAT('%', #{pkgNm_search}, '%')</if>
-		<if test="pkgRegUsrId_search != null and pkgRegUsrId_search != ''">AND REG_USRID = #{pkgRegUsrId_search}</if>
+			targetai.PKG
+		WHERE VER IS NOT NULL
+		<if test="pkgId_search != null and pkgId_search != ''">AND P.PKG_ID = #{pkgId_search}</if>
+		<if test="pkgNm_search != null and pkgNm_search != ''">AND P.PKG_NM LIKE CONCAT('%', #{pkgNm_search}, '%')</if>
+		<if test="pkgRegUsrId_search != null and pkgRegUsrId_search != ''">AND P.REG_USRID = #{pkgRegUsrId_search}</if>
 		ORDER BY PKG_ID DESC
 		LIMIT #{limit}
 		OFFSET #{offset}

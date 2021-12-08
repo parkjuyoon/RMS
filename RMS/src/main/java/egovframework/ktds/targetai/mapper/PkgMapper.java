@@ -20,7 +20,7 @@ public interface PkgMapper {
 
 	String getDrlSource(String pkgId);
 
-	HashMap<String, Object> getPkgById(String pkgId);
+	HashMap<String, Object> getPkgVer(HashMap<String, Object> param);
 
 	void updateDrlSource(HashMap<String, Object> pkg);
 
@@ -64,9 +64,13 @@ public interface PkgMapper {
 
 	void deletePkgVerById(HashMap<String, Object> param);
 
-	HashMap<String, Object> getPkgByVer(HashMap<String, Object> param);
-
 	HashMap<String, Object> getPkgVerByStatus(HashMap<String, Object> param);
 
 	void updatePkgVer(HashMap<String, Object> param);
+
+	void updatePkgRealVer(HashMap<String, Object> pkgDevVer);
+
+	List<HashMap<String, Object>> getEventList(HashMap<String, Object> param);
+
+	int getEventListCount(HashMap<String, Object> param);
 }

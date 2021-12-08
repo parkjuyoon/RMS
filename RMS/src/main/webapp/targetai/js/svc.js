@@ -730,6 +730,7 @@ function fnPkgList(searchObj) {
 					html += "	<td class='t_center'>" + pkg.PKG_ID + "</td>";
 					html += "	<td class='t_center'>" + pkg.PKG_NM + "</td>";
 					html += "	<td class='t_center'>" + pkg.DRL_NM + "</td>";
+					html += "	<td class='t_center'>" + pkg.VER + "</td>";
 					html += "</tr>";
 				});
 			}

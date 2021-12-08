@@ -372,6 +372,7 @@
 																												<th>ID</th>
 																												<th>패키지 명</th>
 																												<th>DRL 명</th>
+																												<th>운영 버전</th>
 																											</tr>
 																										</thead>
 																										<tbody id="modal_svcConnPkgList"></tbody>

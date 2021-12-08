@@ -43,8 +43,8 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 	}
 
 	@Override
-	public HashMap<String, Object> getPkgById(String pkgId) {
-		return dao.getPkgById(pkgId);
+	public HashMap<String, Object> getPkgVer(HashMap<String, Object> param) {
+		return dao.getPkgVer(param);
 	}
 
 	@Override
@@ -59,7 +59,30 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 
 	@Override
 	public void addPkg(HashMap<String, Object> param) {
-		dao.addPkg(param);		
+		param.put("currentTime", LocalDateTime.now());
+		dao.addPkg(param);
+		
+		// PKG_VER 저장 (신규버전은 1 부터 시작하고, 개발버전('D')으로 생성)
+		param.put("pkgId", param.get("PKG_ID"));	// updatePkg.do 에서도 사용
+		param.put("VER", 1);
+		String drlNm = param.get("pkgNm") + "_" + param.get("PKG_ID") + "_v" + param.get("VER") +".drl";
+		param.put("DRL_NM", drlNm);
+		param.put("PATH", "/drl_files");
+		param.put("VER_STATUS", "D");
+		
+		dao.addPkgVer(param);
+		
+		// 연결된 Rule 맵핑 정보 삭제
+		int delRes = dao.delRuleMappingByPkgId(param);
+		// 새로운 Rule 맵핑 연결
+		List<String> ruleIds = (List<String>) param.get("mappingRuleIds");
+		if(ruleIds.size() > 0) {
+			dao.addRuleMappingByPkgId(param);
+			
+			// DRL 파일 수정
+			// RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
+			saveDRL(param);
+		}
 	}
 
 	@Override
@@ -177,35 +200,58 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 
 	@Override
 	public HashMap<String, Object> deployVer(HashMap<String, Object> param) {
-		HashMap<String, Object> res = new HashMap<>();
+		// 개발중인 패키지 버전이 있는지 확인
+		param.put("VER_STATUS", "D");
+		HashMap<String, Object> pkgDevVer = dao.getPkgVerByStatus(param);
 		
-		// 변수 선언
-		String pkgId = (String) param.get("pkgId");
-		String ver = (String) param.get("ver");
-		String pkgVerId = (String) param.get("pkgVerId");
-		HashMap<String, Object> parameter = new HashMap<>();
+		// 개발중인 패키지 버전이 없는 경우
+		if(pkgDevVer == null) {
+			param.put("rtnMsg", "개발중인 패키지 버전이 없습니다.");
+			return param;
+			
+		// 개발중인 패키지 버전이 있는 경우	
+		} else {
+			// 운영 배포버전 가동종료
+			param.put("currentTime", LocalDateTime.now());
+			dao.endDeployVer(param);
+			// 개발 배포버전으로 가동시작
+			dao.startDeployVer(param);
+			param.put("rtnMsg", "개발중인 패키지로 배포완료 했습니다.");
+			// PKG 테이블의 DRL_NM, VER, PATH을 운영 배포버전 정보로 업데이트
+			pkgDevVer.put("currentTime", LocalDateTime.now());
+			pkgDevVer.put("REG_USER_ID", param.get("REG_USER_ID"));
+			dao.updatePkgRealVer(pkgDevVer);
+		}
 		
-		parameter.put("PKG_ID", pkgId);
-		parameter.put("VER", ver);
-		parameter.put("PKG_VER_ID", pkgVerId);
-		parameter.put("NOW_DATE", LocalDateTime.now());
-		
-		// 기존 배포 가동종료
-		dao.endDeployVer(parameter);
-		
-		// 선택된 배포버전으로 가동시작
-		dao.startDeployVer(parameter);
-		
-		res = parameter;
-		
-		return res;
+		return param;
 	}
 
 	@Override
-	public HashMap<String, Object> getPkgByVer(HashMap<String, Object> param) {
-		return dao.getPkgByVer(param);
+	public HashMap<String, Object> getEventInfo(HashMap<String, Object> param) {
+		HashMap<String, Object> rtnMap = new HashMap<>();
+		
+		// 해당 패키지 버전의 RULE(이벤트) 목록 조회
+		List<HashMap<String, Object>> eventList = dao.getEventList(param);
+		// 해당 패키지 버전의 RULE(이벤트) 목록 개수 조회
+		int eventCount = dao.getEventListCount(param);
+		
+		rtnMap.put("eventList", eventList);
+		rtnMap.put("eventCount", eventCount);
+		
+		return rtnMap;
 	}
 
+	
+	
+	
+	
+	
+	
+//	@Override
+//	public HashMap<String, Object> getPkgById(String pkgId) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 //	@Override
 //	public void updateDrlFileNm(HashMap<String, Object> param) {
 //		// TODO Auto-generated method stub

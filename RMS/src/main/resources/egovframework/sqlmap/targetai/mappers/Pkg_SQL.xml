@@ -50,20 +50,29 @@
 			P.PKG_NM,
 			P.DRL_NM,
 			P.VER,
+			PV.DRL_NM AS CUR_DRL_NM,
+			CASE
+				WHEN PV.VER_STATUS = 'R' THEN '운영중'
+				WHEN PV.VER_STATUS = 'D' THEN '개발중'
+				WHEN PV.VER_STATUS = 'T' THEN '종료'
+			END AS CUR_VER_STATUS,
+			PV.VER AS CUR_VER,
 			P.REG_USRID,
 			M.MEMBER_NAME REG_USRNM,
 			DATE_FORMAT(P.REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
 			P.PKG_DSC,
 			DATE_FORMAT(UDT_DT, '%Y-%m-%d %h:%i:%s') AS UDT_DT,
 			P.UDT_USRID,
-			M1.MEMBER_NAME UDT_USRNM,
-		    (SELECT COUNT(*) FROM targetai.RULE_PKG WHERE PKG_ID = P.PKG_ID) AS RULE_COUNT_IN_PKG
+			M1.MEMBER_NAME UDT_USRNM
 		FROM 
 			targetai.PKG P
+			LEFT JOIN targetai.PKG_VER PV ON (P.PKG_ID = PV.PKG_ID)
 			LEFT JOIN targetai.MEMBER M ON (P.REG_USRID = M.MEMBER_ID)
 		    LEFT JOIN targetai.MEMBER M1 ON (P.UDT_USRID = M1.MEMBER_ID)
 		WHERE
 			P.PKG_ID = #{pkgId}
+		ORDER BY PV.VER DESC
+        LIMIT 1
 	</select>
 	
 	<!-- 패키지 버전 상세 조회 -->
@@ -186,16 +195,6 @@
 			PKG_ID = #{pkgId}
 	</update>
 	
-	<!-- PKG 저장시 DRL 파일명 업데이트 -->
-	<update id="updateDrlFileNm" parameterType="java.util.HashMap">
-		UPDATE targetai.PKG_VER
-		SET
-			DRL_NM = #{drlNm}
-		WHERE
-			PKG_ID = #{PKG_ID}
-			AND VER = #{VER}
-	</update>
-	
 	<!-- PKG 의 DRL_SOURCE 업데이트 -->
 	<update id="updateDrlSource" parameterType="java.util.HashMap">
 		UPDATE targetai.PKG_VER
@@ -219,6 +218,17 @@
 		    LEFT JOIN targetai.RULE R ON (RP.RULE_ID = R.RULE_ID)
 		WHERE
 			P.PKG_ID = #{pkgId}
+			AND RP.VER = (
+				SELECT 
+					VER
+				FROM
+					targetai.PKG_VER
+				WHERE
+					PKG_ID = #{pkgId}
+				ORDER BY
+					VER DESC
+				LIMIT 1
+		    )
 		ORDER BY SALIENCE ASC, RULE_ID ASC
 	</select>
 	
@@ -432,5 +442,17 @@
 		WHERE
 		    RP.PKG_ID = #{pkgId}
 		    AND RP.VER = #{ver}
+	</select>
+	
+	<!-- 개발중인 패키지의 연결된 RULE 이 있는지 확인 -->
+	<select id="isConRuleCnt" parameterType="java.util.HashMap" resultType="int">
+		SELECT 
+		    COUNT(*)
+		FROM
+		    targetai.RULE_PKG RP
+		    LEFT JOIN targetai.PKG_VER PV ON (RP.PKG_ID = PV.PKG_ID AND PV.VER = RP.VER)
+		WHERE
+		    RP.PKG_ID = #{pkgId} 
+		    AND PV.VER_STATUS = #{VER_STATUS}
 	</select>
 </mapper>

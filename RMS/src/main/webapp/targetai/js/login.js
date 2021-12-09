@@ -23,7 +23,7 @@ $(document).ready(function() {
 		
 		$.ajax({
 			method : "POST",
-			url : "/targetai/loginCheck.do",
+			url : "/targetai/login/loginCheck.do",
 			data : formData,
 			contentType : "application/x-www-form-urlencoded; charset=UTF-8",
 			processData : true,

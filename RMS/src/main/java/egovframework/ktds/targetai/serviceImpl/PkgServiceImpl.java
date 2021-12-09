@@ -38,18 +38,8 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 	}
 
 	@Override
-	public String getDrlSource(String pkgId) {
-		return dao.getDrlSource(pkgId);
-	}
-
-	@Override
 	public HashMap<String, Object> getPkgVer(HashMap<String, Object> param) {
 		return dao.getPkgVer(param);
-	}
-
-	@Override
-	public void updateDrlSource(HashMap<String, Object> pkg) {
-		dao.updateDrlSource(pkg);
 	}
 
 	@Override
@@ -154,6 +144,9 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 			} else {
 				// 개발중인 버전이 있을경우
 				if(pkgDevVer != null) {
+					ver = (int) pkgDevVer.get("VER");
+					param.put("VER", ver);
+					
 					// 연결된 RULE 연결 정보 삭제
 					dao.delRuleMappingByPkgId(param);
 				}
@@ -184,11 +177,6 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 	}
 
 	@Override
-	public int delRuleMappingByPkgIds(HashMap<String, Object> param) {
-		return dao.delRuleMappingByPkgIds(param);
-	}
-
-	@Override
 	public List<HashMap<String, Object>> getDeployVerListByPkgId(HashMap<String, Object> param) {
 		return dao.getDeployVerListByPkgId(param);
 	}
@@ -211,6 +199,15 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 			
 		// 개발중인 패키지 버전이 있는 경우	
 		} else {
+			// 개발중인 패키지의 연결된 RULE 이 있는지 확인
+			int isConRuleCnt = dao.isConRuleCnt(param);
+			
+			// 연결된 RULE이 없을경우 배포할 수 없음
+			if(isConRuleCnt < 1) {
+				param.put("rtnMsg", "RULE 연결 없이 배포할 수 없습니다.");
+				return param;
+			}
+			
 			// 운영 배포버전 가동종료
 			param.put("currentTime", LocalDateTime.now());
 			dao.endDeployVer(param);
@@ -240,45 +237,4 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 		
 		return rtnMap;
 	}
-
-	
-	
-	
-	
-	
-	
-//	@Override
-//	public HashMap<String, Object> getPkgById(String pkgId) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//	@Override
-//	public void updateDrlFileNm(HashMap<String, Object> param) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	public int delRuleMappingByPkgId(HashMap<String, Object> param) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	@Override
-//	public int addRuleMappingByPkgId(HashMap<String, Object> param) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	@Override
-//	public int addPkgVer(HashMap<String, Object> param) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	@Override
-//	public List<Integer> getMappingRuleIdsByPkgId(HashMap<String, Object> param) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 }

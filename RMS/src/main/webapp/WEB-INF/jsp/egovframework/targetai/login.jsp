@@ -35,7 +35,7 @@
 	<script src="/targetai/js/login.js" type="text/javascript"></script>
 </head>
 <body>
-	<form id="loginForm" action="/targetai/login.do" method="post">
+	<form id="loginForm" action="/targetai/login/login.do" method="post">
 		<div class="wrap">
 			<div class="wrap_box">
 				<div><img src="/targetai_publish/images/login_logo.png" alt="Target AI" /></div>

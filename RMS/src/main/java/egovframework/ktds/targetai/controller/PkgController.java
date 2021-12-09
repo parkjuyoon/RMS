@@ -1,10 +1,7 @@
 package egovframework.ktds.targetai.controller;
 
 import java.io.File;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -50,12 +47,6 @@ public class PkgController {
 	 */
 	@RequestMapping(value = "/pkg.do")
 	public String main(HttpSession session, ModelMap model) {
-		String member_id = (String) session.getAttribute("member_id");
-		
-		if(member_id == null) {
-			return "redirect:/targetai/main.do";
-		}
-		
 		return "/targetai/pkg";
 	}
 	
@@ -85,17 +76,23 @@ public class PkgController {
 	@RequestMapping(value = "/getPkg.do", method = RequestMethod.POST)
 	public HashMap<String, Object> getPkg(@RequestBody HashMap<String, Object> param) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		// 패키지 상세 정보 조회
-		HashMap<String, Object> pkg = pkgService.getPkg(param);
-		// 맵핑된 RULE 목록 조회 
-		List<HashMap<String, Object>> mappingRuleList = pkgService.getMappingRuleList(param);
-		param.put("mappingRuleList", mappingRuleList);
-		// 패키지와 연결 가능한 RULE 목록 조회
-		List<HashMap<String, Object>> conRuleList = pkgService.getConRuleList(param);
 		
-		resultMap.put("pkg", pkg);
-		resultMap.put("conRuleList", conRuleList);
-		resultMap.put("mappingRuleList", mappingRuleList);
+		try {
+			// 맵핑된 RULE 목록 조회 
+			List<HashMap<String, Object>> mappingRuleList = pkgService.getMappingRuleList(param);
+			param.put("mappingRuleList", mappingRuleList);
+			// 패키지와 연결 가능한 RULE 목록 조회
+			List<HashMap<String, Object>> conRuleList = pkgService.getConRuleList(param);
+			// 최근 수정 중인 패키지 상세 조회
+			HashMap<String, Object> pkg = pkgService.getPkg(param);
+			
+			resultMap.put("pkg", pkg);
+			resultMap.put("conRuleList", conRuleList);
+			resultMap.put("mappingRuleList", mappingRuleList);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		return resultMap;
 	}

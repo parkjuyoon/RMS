@@ -42,7 +42,7 @@ public class LoginController {
 	 * @param model
 	 * @return /targetai/login.jsp
 	 */
-	@RequestMapping(value = "/login.do", method = RequestMethod.POST)
+	@RequestMapping(value = "/login/login.do", method = RequestMethod.POST)
 	public String login(HttpServletRequest req) {
 		try {
 			String id = req.getParameter("id");
@@ -59,7 +59,7 @@ public class LoginController {
 			session.setAttribute("member_name", member.get("MEMBER_NAME"));
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "redirect:/targetai/loginCheck.do";
+			return "redirect:/targetai/login/loginCheck.do";
 		}
 		
 		return "redirect:/targetai/dashboard.do";
@@ -71,7 +71,7 @@ public class LoginController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/loginCheck.do", method = RequestMethod.POST)
+	@RequestMapping(value = "/login/loginCheck.do", method = RequestMethod.POST)
 	public boolean loginCheck(HttpServletRequest req) {
 		try {
 			String id = req.getParameter("id");
@@ -99,7 +99,7 @@ public class LoginController {
 	 * @param model
 	 * @return /targetai/login.jsp
 	 */
-	@RequestMapping(value = "/logout.do")
+	@RequestMapping(value = "/login/logout.do")
 	public String logout(HttpServletRequest req, HttpServletResponse resp) {
 		HttpSession session = req.getSession();
 		session.invalidate();

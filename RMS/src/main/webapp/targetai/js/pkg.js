@@ -156,13 +156,6 @@ $(document).ready(function() {
 			param.pkgId = $("#pkgId").text();
 			param.pkgNm = $("#pkgNm").val();
 			param.pkgDsc = $("#pkgDsc").val();
-			
-			if(mappingRuleIds.length == 0) {
-				$.each(mappingRuleList, function(idx, mappingRule) {
-					mappingRuleIds.push(mappingRule.RULE_ID);
-				});
-			}
-			
 			param.mappingRuleIds = mappingRuleIds;
 			
 			if(param.pkgId != '') {
@@ -206,122 +199,6 @@ $(document).ready(function() {
 	// 패키지 검색 > 초기화 버튼 클릭
 	$("#pkgResetBtn").click(function() {
 		fnInitPkgSearch();
-	});
-	
-	// 패키지 상세 > RULE TEST OPEN 버튼 클릭
-	$("#ruleTestPopBtn").click(function() {
-		var param = {};
-		param.pkgId = $("#pkgId").text();
-		
-		if(mappingRuleList.length > 0) {
-			fnRuleTest(param);
-		} else {
-			messagePop("warning", "연결된 RULE 없음", "RULE 연결을 먼저 진행하세요.", "");
-		}
-	});
-	
-	// 패키지 상세 > RULE TEST 팝업 > RULE 속성명 클릭
-	$(document).on("click", "._ruleTestPop_factorNm", function(e) {
-		e.preventDefault();
-		
-		var factorNmEn = $(this).attr("data-factorNmEn");
-		var factorVal = $(this).attr("data-factorVal");
-		var factorNm = $(this).text();
-		var factorGrpNm = $(this).attr("data-factorGrpNm");
-		
-		var html = "";
-		html += "<div class='oneline_group'>";
-		html += "	<div class='form_group'>";
-		html += "		<label for=''>KEY</label> <input type='text' name='ruleTestPop_key' value='"+ factorNmEn +"' readonly='readonly'/>";
-		html += "	</div>";
-		html += "	<div class='form_group'>";
-		if(factorGrpNm == '함수') {
-			html += "		<label for=''>VALUE</label> <input type='text' name='ruleTestPop_value' class='wd150px' value='"+ factorVal.replaceAll("\"", "") +"' readonly='readonly'/>";
-		} else {
-			html += "		<label for=''>VALUE</label> <input type='text' name='ruleTestPop_value' class='wd150px' value='"+ factorVal.replaceAll("\"", "") +"'/>";
-		}
-		html += "	</div>";
-		html += "	<button type='button' class='btn btn-sm btn-red _ruleTestPop_del' style='color: white'>삭제</button>";
-		html += "</div>";
-		
-		$("#ruleTestPop_input").append(html);
-	});
-	
-	// RULE TEST 메뉴 > 속성 삭제 버튼 클릭
-	$(document).on("click", "._ruleTestPop_del", function() {
-		var delIdx = $("._ruleTestPop_del").index(this);
-		$(this).closest(".oneline_group").remove();
-	});
-
-	// RULE TEST 메뉴 결과확인 버튼 클릭
-	var keyValueArr = [];
-	$(document).on("click", "#ruleTestPop_resBtn", function() {
-		var drlPath = $(this).attr("data-drlPath");
-		
-		if(drlPath == '-1') {
-			messagePop("warning", "RULE TEST 체크", "Package를 선택하세요.", "");
-			return;
-		}
-		
-		var keyArr = $("input[name='ruleTestPop_key']");
-		var keyVal = $("input[name='ruleTestPop_value']");
-		
-		for(var i=0; i<keyArr.length; i++) {
-			var key = keyArr.eq(i).attr("data-valueEn");
-			var val = keyVal.eq(i).val();
-			
-			if(key == '' || val == '') {
-				messagePop("warning", "KEY / VALUE 체크", "빈값을 포함할 수 없습니다.", "");
-				return;
-			}
-			
-			var keyValue = key + ":" + val;
-			
-			keyValueArr.push(keyValue);
-		}
-		
-		var param = {};
-		param.pkgId = $("#pkgId").text();
-		param.drlPath = drlPath;
-		param.keyValueArr = keyValueArr;
-		
-		$.ajax({
-			method : "POST",
-			url : "/targetai/ruleTest.do",
-			traditional: true,
-			data : JSON.stringify(param),
-			contentType:'application/json; charset=utf-8',
-			dataType : "json",
-			success : function(res) {
-				if(res.length < 1) {
-					$("#ruleTestResPop_res").val("Output 결과가 없습니다.");
-					
-				} else {
-					$("#ruleTestResPop_res").val(JSON.stringify(res, null, 4));
-				}
-				
-				$("#ruleTestResPop").show();
-			},
-			beforeSend : function() {
-				$("#ruleTestPopLoading").show();
-			},
-			complete : function() {
-				$("#ruleTestPopLoading").hide();
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-				messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
-				console.log(jqXHR);
-				console.log(textStatus);
-				console.log(errorThrown);
-			}
-		});
-		
-		keyValueArr = [];
-	});
-
-	// RULE TEST 팝업 닫기
-	$(document).on("click", "._ruleTestPop_close", function() {
-		$("#ruleTestPop_input").html("");
 	});
 	
 	// 패키지 관리 > 패키지 상세 > RULE 연결 버튼 클릭
@@ -397,44 +274,7 @@ $(document).ready(function() {
 		$(this).attr("data-update", "Y");
 	});
 	
-	// 패키지 상세 > 현재 배포버전 돋보기 버튼 클릭
-	$("#deployVerPopBtn").click(function(){
-		var pkgId = $("#pkgId").text();
-		
-		if(pkgId == '') {
-			messagePop("success", "신규 패키지는 자동 배포 됩니다.", "", "");
-			
-		} else {
-			var searchObj = {};
-			searchObj.currentPage = 1;
-			searchObj.pkgId = pkgId;
-			fnGetPkgVerList(searchObj);
-		}
-	});
-	
-	// 패키지 상세 > 현재 배포버전 돋보기 버튼 클릭 > 적용버튼
-	$("#modal_deployVerSaveBtn").click(function() {
-		var ver = $("input[name='deployVerListRadio']:checked").attr("data-ver"); 
-		var pkgVerId = $("input[name='deployVerListRadio']:checked").attr("data-pkgVerId");
-		
-		close_layerPop('modal_deployVer');
-		messagePop("warning","패키지 저장시 반영됩니다.","","")
-	});
-	
-	// 패키지 상세 > 현재 배포버전 돋보기 버튼 클릭 > 조회 버튼 클릭
-	$("#modal_deployVerSearchBtn").click(function() {
-		var searchObj = {};
-		searchObj.currentPage = 1;
-		searchObj.pkgId = $("#pkgId").text();
-		// 조회 필터
-		searchObj.ver = $("#modal_deployVer_search").val();
-		searchObj.status = $("#deployStatus :selected").val();
-		
-		fnGetPkgVerList(searchObj);
-	});
-	
-	
-	// 패키지 상세 > 패키지 버전 목록 > 페이징 버튼 클릭이벤트
+	// 패키지 버전 목록 > 페이징 버튼 클릭이벤트
 	$("#pkgVerListPaging").on("click", "._paging", function(e) {
 		var cls = $(this).attr("class");
 		const pageNum = $(this).attr("data-page_num");
@@ -443,9 +283,6 @@ $(document).ready(function() {
 		searchObj.currentPage = 1;
 		searchObj.pkgId = $("#pkgId").text();
 		searchObj.currentPage = pageNum;
-		// 조회 필터
-		searchObj.ver = $("#modal_deployVer_search").val();
-		searchObj.status = $("#deployStatus :selected").val();
 		
 		fnGetPkgVerList(searchObj);
 	});
@@ -796,12 +633,7 @@ function fnGetPkg(param) {
 			} else {
 				$("#pkgUdtDt").text(pkg.UDT_DT + "에 " + pkg.UDT_USRNM + "(님)이 수정함.");
 			}
-			
-			if(pkg.RULE_COUNT_IN_PKG > 0) {
-				var drlPath = pkg.PATH + "/" + pkg.PKG_NM + "/" + pkg.DRL_NM;
-				$("#ruleTestPop_resBtn").attr("data-drlPath", drlPath);
-			} 
-			
+			$("#curPkgStatus").text(pkg.CUR_DRL_NM + " ("+ pkg.CUR_VER_STATUS +")")
 			$("#pkgCard").removeClass("card-collapsed");
 			$("#pkgCardBody").css("display", "");
 			$("#pkgNmDupBtn").attr("data-isDup", "Y");
@@ -994,61 +826,6 @@ function fnPkgNmCheck(param) {
 }
 
 /**
- * RULE TEST OPEN 팝업 내 RULE 속성
- * @param param
- * @returns
- */
-function fnRuleTest(param) {
-	$.ajax({
-		method : "POST",
-		url : "/targetai/getRuleAttrByPkgId.do",
-		traditional: true,
-		data : JSON.stringify(param),
-		contentType:'application/json; charset=utf-8',
-		dataType : "json",
-		success : function(res) {
-			var ruleWhenKors = res.ruleAttrList;
-			var html = "";
-			var html2 = "";
-			
-			$.each(ruleWhenKors, function(idx, ruleWhenKor) {
-				html += "[" + ruleWhenKor.RULE_NM + "]";
-				html += "<div style='padding-left:30px;'><a href='#' class='_ruleWhenKor'>" + ruleWhenKor.RULE_WHEN_KOR + "</a></div>";
-				
-				var arr = ruleWhenKor.RULE_WHEN_KOR.split("\n");
-				
-				for(var i in arr) {
-					// 해야할곳
-				}
-				
-				html2 += "[" + ruleWhenKor.RULE_NM + "]";
-				html2 += "<div class='form_group' style='width:709px;'>";
-				html2 += "<input type='text' class='wd150px' style='margin-right:10px;' value=''>";
-				html2 += " = "
-				html2 += "<input type='text' class='wd150px' style='margin-left:10px;' value=''>";
-				html2 += "</div><br/><br/>";
-			});
-			
-			$("#ruleTestPop_input").append(html2);
-			$("#ruleAttrPreView").html(html);
-			$("#modal_ruleTest").show();
-		},
-		beforeSend : function() {
-			$("#ruleTestPopLoading").show();
-		},
-		complete : function() {
-			$("#ruleTestPopLoading").hide();
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
-			console.log(jqXHR);
-			console.log(textStatus);
-			console.log(errorThrown);
-		}
-	});
-}
-
-/**
  * RULE 연결 버튼 속성 초기화
  * @returns
  */
@@ -1174,6 +951,8 @@ function initPkgDetail() {
 	$("#pkgDupY").css("display", "none");
 	$("#pkgDupN").css("display", "none");
 	$("#pkgNmDupBtn").data("isDup", "N");
+	$("#curPkgStatus").text("");
+	mappingRuleIds = [];
 }
 
 /**

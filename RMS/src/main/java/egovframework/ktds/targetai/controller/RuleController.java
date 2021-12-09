@@ -34,12 +34,6 @@ public class RuleController {
 	 */
 	@RequestMapping(value = "/rule.do")
 	public String main(HttpSession session, ModelMap model) {
-		String member_id = (String) session.getAttribute("member_id");
-		
-		if(member_id == null) {
-			return "redirect:/targetai/main.do";
-		}
-		
 		return "/targetai/rule";
 	}
 	

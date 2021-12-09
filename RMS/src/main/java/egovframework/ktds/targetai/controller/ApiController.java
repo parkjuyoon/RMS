@@ -53,13 +53,6 @@ public class ApiController {
 	 */
 	@RequestMapping(value = "/api.do")
 	public String main(HttpServletRequest req, ModelMap model) {
-		HttpSession session = req.getSession();
-		String member_id = (String) session.getAttribute("member_id");
-		
-		if(member_id == null) {
-			return "redirect:/targetai/main.do";
-		}
-		
 		model.put("rootDomain", req.getRequestURL().toString().replace(req.getRequestURI(), ""));
 		
 		return "/targetai/api";

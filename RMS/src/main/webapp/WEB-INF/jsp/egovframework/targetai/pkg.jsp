@@ -65,116 +65,6 @@
 			</div>
 		</div>
 		<!-- //modal_pop -->
-		<!-- RULE 테스트 팝업 -->
-		<div id="modal_ruleTest" class="modal_pop">
-			<div class="modal_content" style="width: 800px;">
-				<!-- 팝업항상중앙띄우기 -->
-				<div class="modla_center">
-					<div class="modal_header">
-						<span class="close _ruleTestPop_close" onclick="close_layerPop('modal_ruleTest');" data-focusId="">&times;</span>
-						<h2>RULE TEST</h2>
-					</div>
-					<!-- 본문 -->
-					<div class="modal_body" style="height: calc(100% - 25vh); overflow-x: hidden; overflow-y: auto;">
-						<div class="modal_wrap">
-							<!-- 상세영역 -->
-							<div class="row">
-								<div class="col">
-									<div class="card mg_b0">
-										<!-- 본문페이지 -->
-										<div class="card-body body-header" style="">
-											<div class="progress_loading">
-												<div id="ruleTestPopLoading">
-													<img src="/targetai_publish/images/ajax-loader1.gif" />
-												</div>
-											</div>
-											<header class="card-header card-header-pd-mobile">
-												<div class="card-actions card-header-position-mobile"></div>
-												<h2 class="card-title_txt" id="ruleTestPop_title">결과 확인</h2>
-											</header>
-											<!-- 경고 -->
-											<div class="card-body">
-												<div id="ruleTestPop_input" style="height: 150px; overflow: auto;"></div>
-												<br />
-		
-												<!-- 버튼 -->
-												<div class="card-actions-foot">
-													<button type="button" class="btn btn-sm btn-sky" id="ruleTestPop_resBtn">
-														<i class="far fa-times-circle custom-btn-i"></i> 결과확인
-													</button>
-													<button type="button" class="btn btn-sm btn-gray _ruleTestPop_close" onclick="close_layerPop('modal_ruleTest');">
-														<i class="far fa-times-circle custom-btn-i"></i> 닫기
-													</button>
-												</div>
-												<!-- //버튼 -->
-												
-												<!-- RULE 테스트 결과 팝업(JSON) -->
-												<div id="ruleTestResPop" class="modal_pop">
-													<div class="modal_content" style="width: 500px;">
-														<!-- 팝업항상중앙띄우기 -->
-														<div class="modla_center">
-															<div class="modal_header">
-																<span class="close" onclick="close_layerPop('ruleTestResPop');" data-focusId="">&times;</span>
-																<h2>Result Drools OutPut</h2>
-															</div>
-															<!-- 본문 -->
-															<div class="modal_body" style="height: calc(100% - 25vh); overflow-x: hidden; overflow-y: auto;">
-																<div class="modal_wrap">
-																<!-- 상세영역 -->
-																	<div class="row">
-																		<div class="col">
-																			<div class="card mg_b0">
-																				<!-- 경고 -->
-																				<div class="card-body">
-																					<textarea rows="30" cols="60" class="txtsize_100 wd100" id="ruleTestResPop_res" style="white-space: pre;" readonly="readonly">JSON 내용</textarea>
-																					<!-- 버튼 -->
-																					<div class="card-actions-foot">
-																						<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('ruleTestResPop');">
-																							<i class="far fa-times-circle custom-btn-i"></i> 닫기
-																						</button>
-																					</div>
-																					<!-- //버튼 -->
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</div>
-															<!-- //본문 -->
-														</div>
-														<!-- //팝업항상중앙띄우기 -->
-													</div>
-												</div>
-												<!-- //RULE 테스트 결과 팝업(JSON) -->
-												
-											</div>
-											<!-- //경고 -->
-										</div>
-										<!-- //본문페이지 -->
-										
-										<!-- DRL SOURCE 조회영역  -->
-										<div class="card-body body-header" style="">
-											<header class="card-header card-header-pd-mobile">
-												<div class="card-actions card-header-position-mobile"></div>
-												<h2 class="card-title_txt" id="ruleTestPop_title">RULE 속성</h2>
-											</header>
-											<!-- 경고 -->
-											<div class="card-body" id="ruleAttrPreView" style="white-space: pre; height: 372px; overflow: auto;"></div>
-											<!-- //경고 -->
-										</div>
-										<!-- //DRL SOURCE 조회영역 -->
-									</div>
-								</div>
-							</div>
-							<!-- //상세영역 -->
-						</div>
-					</div>
-					<!-- //본문 -->
-				</div>
-				<!-- //팝업항상중앙띄우기 -->
-			</div>
-		</div>
-		<!-- //RULE 테스트 팝업 -->
 
 		<!-- 본문영역 -->
 		<div class="content-page">
@@ -374,123 +264,11 @@
 															</span>
 														</td>
 													</tr>
-<!-- 													삭제코드 -->
-<!-- 													<tr> -->
-<!-- 														<th class="t_left">현재 배포버전</th> -->
-<!-- 														<td class="t_left"> -->
-<!-- 															<input type="text" class="wd150px" id="deployVerNm" value="" readonly="readonly"/> -->
-<!-- 															<button type="button" id="deployVerPopBtn" class="btn_onlyico_search btnModal" title="조회">새창 열기</button> -->
-
-<!-- 															modal_pop -->
-<!-- 															<div id="modal_deployVer" class="modal_pop"> -->
-<!-- 																<div class="modal_content" style="width:1000px;"> -->
-<!-- 																	팝업항상중앙띄우기 -->
-<!-- 																	<div class="modla_center"> -->
-<!-- 																		<div class="modal_header"> -->
-<!-- 																			<span class="close" onclick="close_layerPop('modal_deployVer');">&times;</span> -->
-<!-- 																			<h2>배포버전 관리</h2> -->
-<!-- 																		</div> -->
-<!-- 																		본문 -->
-<!-- 																		<div class="modal_body" style="height:calc(100% - 25vh); overflow-x:hidden; overflow-y:auto;"> -->
-<!-- 																			<div class="modal_wrap"> -->
-<!-- 																				상세영역 -->
-<!-- 																				<div class="row"> -->
-<!-- 																					<div class="col"> -->
-<!-- 																						<div class="card mg_b0"> -->
-<!-- 																							<header class="card-header card-header-pd-mobile"> -->
-<!-- 																								<div class="card-actions card-header-position-mobile"> -->
-<!-- 																								</div> -->
-<!-- 																								<h2 class="card-title_txt">배포 버전 선택</h2> -->
-<!-- 																							</header> -->
-<!-- 																							본문페이지 -->
-<!-- 																							<div class="card-body" style=""> -->
-<!-- 																								<div class="progress_loading"> -->
-<!-- 																									<div id="modal_deployVerLoading"> -->
-<!-- 																										<img src="/targetai_publish/images/ajax-loader1.gif" /> -->
-<!-- 																									</div> -->
-<!-- 																								</div> -->
-<!-- 																								조회 -->
-<!-- 																								<div class="searcharea"> -->
-<!-- 																									<div class="search_btn-bottom"> -->
-<!-- 																										<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-darkblue" id="modal_deployVerSearchBtn"> -->
-<!-- 																											<i class="fas fa-search custom-btn-i"></i>조회 -->
-<!-- 																										</button> -->
-<!-- 																									</div> -->
-<!-- 																									<div class="search_input"> -->
-<!-- 																										<div class="search_col"> -->
-<!-- 																											<div class="form_group"> -->
-<!-- 																												<label for="">배포 버전</label> -->
-<!-- 																												<input type="text" class="wd150px" id="modal_deployVer_search" value="" /> -->
-<!-- 																											</div> -->
-<!-- 																											<div class="form_group"> -->
-<!-- 																												<label for="">상태</label> -->
-<!-- 																												<select id="deployStatus" class="wd150px"> -->
-<!-- 																													<option value="">전체</option> -->
-<!-- 																													<option value="Y">적용</option> -->
-<!-- 																													<option value="N">미적용</option> -->
-<!-- 																												</select> -->
-<!-- 																											</div> -->
-<!-- 																										</div> -->
-<!-- 																									</div> -->
-<!-- 																								</div> -->
-<!-- 																								//조회 -->
-
-<!-- 																								테이블 -->
-<!-- 																								<div class="mg_t20 panel bd_b_none nobordertop"> -->
-<!-- 																									<table class="tb_type01"> -->
-<!-- 																										<colgroup> -->
-<!-- 																											<col style="width:8%;" /> -->
-<!-- 																											<col style="width:12%;" /> -->
-<!-- 																											<col style="width:auto;" /> -->
-<!-- 																											<col style="width:10%;" /> -->
-<!-- 																											<col style="width:18%;" /> -->
-<!-- 																											<col style="width:18%;" /> -->
-<!-- 																										</colgroup> -->
-<!-- 																										<thead> -->
-<!-- 																											<tr> -->
-<!-- 																												<th></th> -->
-<!-- 																												<th>배포버전</th> -->
-<!-- 																												<th>배포 DRL</th> -->
-<!-- 																												<th>상태</th> -->
-<!-- 																												<th>가동시작</th> -->
-<!-- 																												<th>가동 종료</th> -->
-<!-- 																											</tr> -->
-<!-- 																										</thead> -->
-<!-- 																										<tbody id="modal_deployVerList"></tbody> -->
-<!-- 																									</table> -->
-<!-- 																								</div> -->
-<!-- 																								//테이블 -->
-
-<!-- 																								페이징 -->
-<!-- 																								<div class="custom-paging" id="modal_deployVerPaging"></div> -->
-<!-- 																								//페이징 -->
-
-<!-- 																								버튼 -->
-<!-- 																								<div class="card-actions-foot"> -->
-<!-- 																									<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('modal_deployVer');"><i class="far fa-times-circle custom-btn-i"></i> 닫기</button> -->
-<!-- 																									<button type="button" class="btn btn-sm btn-green" id="modal_deployVerSaveBtn"><i class="far fa-check-circle custom-btn-i"></i> 적용</button> -->
-<!-- 																								</div> -->
-<!-- 																								//버튼 -->
-<!-- 																							</div> -->
-<!-- 																							//본문페이지 -->
-<!-- 																						</div> -->
-<!-- 																					</div> -->
-<!-- 																				</div> -->
-<!-- 																				//상세영역 -->
-<!-- 																			</div> -->
-<!-- 																		</div> -->
-<!-- 																		//본문 -->
-<!-- 																	</div> -->
-<!-- 																	//팝업항상중앙띄우기 -->
-<!-- 																</div> -->
-<!-- 															</div> -->
-<!-- 															//modal_pop -->
-<!-- 														</td> -->
-<!-- 													</tr> -->
 													<tr>
 														<th class="t_left">RULE 연결</th>
 														<td class="t_left">
 															<button type="button" id="ruleMappingBtn" data-modalclass="modal_ruleMapping" title="팝업" class="btn btn-sm btn-green btnModal">연결</button>
+															<span id="curPkgStatus"></span>
 															<!-- outPut Value 선택 팝업 -->
 															<div id="modal_ruleMapping" class="modal_pop">
 																<div class="modal_content" style="width: 800px;">
@@ -574,12 +352,6 @@
 																</div>
 															</div>
 															<!-- //outPut Value 선택 팝업 팝업 -->
-														</td>
-													</tr>
-													<tr>
-														<th class="t_left">RULE 테스트</th>
-														<td class="t_left" >
-															<button type="button" id="ruleTestPopBtn" class="btn btn-sm btn-green">OPEN</button> 
 														</td>
 													</tr>
 													<tr>

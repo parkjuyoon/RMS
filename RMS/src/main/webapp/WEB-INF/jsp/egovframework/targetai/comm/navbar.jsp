@@ -11,7 +11,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="/targetai/logout.do" class="notification-icon bg_02">
+				<a href="/targetai/login/logout.do" class="notification-icon bg_02">
 					<span class="icon02">LogOut</span>
 				</a>
 			</li>

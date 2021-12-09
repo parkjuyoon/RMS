@@ -14,10 +14,6 @@ public interface PkgMapper {
 
 	int getPkgCount(HashMap<String, Object> searchObj);
 
-	int getRuleCount(HashMap<String, Object> searchObj);
-
-	List<HashMap<String, Object>> getFactorVal(HashMap<String, Object> param);
-
 	String getDrlSource(String pkgId);
 
 	HashMap<String, Object> getPkgVer(HashMap<String, Object> param);
@@ -28,45 +24,39 @@ public interface PkgMapper {
 
 	void addPkg(HashMap<String, Object> param);
 
-	void updateDrlFileNm(HashMap<String, Object> param);
+	void addPkgVer(HashMap<String, Object> param);
+
+	int delRuleMappingByPkgId(HashMap<String, Object> param);
+
+	void addRuleMappingByPkgId(HashMap<String, Object> param);
+
+	void deletePkgVerById(HashMap<String, Object> param);
 
 	void deletePkgById(HashMap<String, Object> param);
+
+	int delRuleMappingByPkgIds(HashMap<String, Object> param);
+
+	List<Integer> getMappingRuleIdsByPkgId(HashMap<String, Object> param);
+
+	HashMap<String, Object> getPkgVerByStatus(HashMap<String, Object> param);
 
 	void updatePkg(HashMap<String, Object> param);
 
 	List<HashMap<String, Object>> getRuleAttrByPkgId(HashMap<String, Object> param);
 
-	List<HashMap<String, Object>> getFactorFuncArgs(HashMap<String, Object> param);
-
-	HashMap<String, Object> getFactorById(HashMap<String, Object> param);
-
 	List<HashMap<String, Object>> getConRuleList(HashMap<String, Object> param);
 
 	List<HashMap<String, Object>> getMappingRuleList(HashMap<String, Object> param);
-
-	int delRuleMappingByPkgId(HashMap<String, Object> param);
-
-	int addRuleMappingByPkgId(HashMap<String, Object> param);
-
-	int delRuleMappingByPkgIds(HashMap<String, Object> param);
-
-	int addPkgVer(HashMap<String, Object> param);
-
-	List<Integer> getMappingRuleIdsByPkgId(HashMap<String, Object> param);
 
 	List<HashMap<String, Object>> getDeployVerListByPkgId(HashMap<String, Object> param);
 
 	int getDeployVerCountByPkgId(HashMap<String, Object> param);
 
-	void endDeployVer(HashMap<String, Object> parameter);
+	int isConRuleCnt(HashMap<String, Object> param);
 
-	void startDeployVer(HashMap<String, Object> parameter);
+	void endDeployVer(HashMap<String, Object> param);
 
-	void deletePkgVerById(HashMap<String, Object> param);
-
-	HashMap<String, Object> getPkgVerByStatus(HashMap<String, Object> param);
-
-	void updatePkgVer(HashMap<String, Object> param);
+	void startDeployVer(HashMap<String, Object> param);
 
 	void updatePkgRealVer(HashMap<String, Object> pkgDevVer);
 

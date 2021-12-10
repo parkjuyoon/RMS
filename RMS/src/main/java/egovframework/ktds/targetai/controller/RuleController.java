@@ -1,5 +1,6 @@
 package egovframework.ktds.targetai.controller;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -252,5 +253,35 @@ public class RuleController {
 		resultMap.put("ruleId", param.get("ruleId"));
 		
 		return resultMap;
+	}
+	
+	/**
+	 * RULE 테스트
+	 * @param param
+	 * @return resultMap
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/ruleTest.do", method = RequestMethod.POST)
+	public HashMap<String, Object> ruleTest(@RequestBody HashMap<String, Object> param, HttpSession session) {
+			int officeNumber = (int) session.getAttribute("office_number");
+			param.put("officeNumber", officeNumber);
+			
+			// 물리 DRL파일 path
+			String path = applicationProperties.getProperty("drl.unit_test.root_path");
+			param.put("rootPath", path);
+			
+			// DRL 파일 생성에 필요한 정보 세팅
+			String realPath = System.getProperty("user.home") + "/" + path;
+			realPath = realPath.replace("/", File.separator).replace("\\", File.separator);
+			String package_nm = "test";
+			String drl_file_nm = officeNumber + ".drl";
+			param.put("realPath", realPath);
+			param.put("package_nm", package_nm);
+			param.put("drl_file_nm", drl_file_nm);
+			
+			// 임시 DRL파일 생성 후 RULE 단위테스트 결과 리턴
+			HashMap<String, Object> rtnMap = ruleService.ruleTest(param);
+			
+			return rtnMap;
 	}
 }

@@ -205,33 +205,6 @@
 			AND VER = #{VER}
 	</update>
 	
-	<!-- RULE TEST OPEN 팝업 내 RULE 속성 -->
-	<select id="getRuleAttrByPkgId" parameterType="java.util.HashMap" resultType="java.util.HashMap">
-		SELECT
-			R.RULE_ID,
-			R.RULE_NM,
-		    R.SALIENCE,
-			R.RULE_WHEN_KOR
-		FROM
-			targetai.PKG P
-			LEFT JOIN targetai.RULE_PKG RP ON (P.PKG_ID = RP.PKG_ID)
-		    LEFT JOIN targetai.RULE R ON (RP.RULE_ID = R.RULE_ID)
-		WHERE
-			P.PKG_ID = #{pkgId}
-			AND RP.VER = (
-				SELECT 
-					VER
-				FROM
-					targetai.PKG_VER
-				WHERE
-					PKG_ID = #{pkgId}
-				ORDER BY
-					VER DESC
-				LIMIT 1
-		    )
-		ORDER BY SALIENCE ASC, RULE_ID ASC
-	</select>
-	
 	<!-- 패키지와 연결 가능한 RULE 목록 조회 -->
 	<select id="getConRuleList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT 

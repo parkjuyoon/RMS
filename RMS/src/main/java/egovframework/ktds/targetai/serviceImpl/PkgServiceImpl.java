@@ -162,11 +162,6 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 	}
 
 	@Override
-	public List<HashMap<String, Object>> getRuleAttrByPkgId(HashMap<String, Object> param) {
-		return dao.getRuleAttrByPkgId(param);
-	}
-
-	@Override
 	public List<HashMap<String, Object>> getConRuleList(HashMap<String, Object> param) {
 		return dao.getConRuleList(param);
 	}

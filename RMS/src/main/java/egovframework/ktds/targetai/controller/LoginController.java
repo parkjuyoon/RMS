@@ -57,6 +57,7 @@ public class LoginController {
 			HttpSession session = req.getSession();
 			session.setAttribute("member_id", member.get("MEMBER_ID"));
 			session.setAttribute("member_name", member.get("MEMBER_NAME"));
+			session.setAttribute("office_number", member.get("OFFICE_NUMBER"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "redirect:/targetai/login/loginCheck.do";

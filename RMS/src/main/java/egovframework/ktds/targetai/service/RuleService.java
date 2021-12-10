@@ -32,4 +32,6 @@ public interface RuleService {
 	void deleteRuleById(HashMap<String, Object> param);
 
 	void delRuleMappingByRuleIds(HashMap<String, Object> param);
+
+	HashMap<String, Object> ruleTest(HashMap<String, Object> param);
 }

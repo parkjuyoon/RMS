@@ -259,6 +259,11 @@
 								<div class="col">
 									<div class="card mg_b0">
 										<div class="card-body body-header" style="">
+											<div class="progress_loading">
+												<div id="ruleTestLoading" style="display: none;">
+													<img src="/targetai_publish/images/ajax-loader1.gif" />
+												</div>
+											</div>
 											<header class="card-header card-header-pd-mobile">
 												<div class="card-actions card-header-position-mobile"></div>
 												<h2 class="card-title_txt">RULE 속성</h2>
@@ -281,15 +286,15 @@
 												<h2 class="card-title_txt">테스트 실행</h2>
 											</header>
 											<div class="card-body" style="height: 100px;">
-												<div class="form_group">
-													<label for="">고객 아이디</label> <input type="text" class="wd150px" id="ruleTestCustNo" value="" /><br/><br/>
-													<label for="">결과</label> <input type="text" class="wd150px" id="ruleTestResult" value="" readonly="readonly" />
+												<div class="form_group" style="width: 100%;">
+													<label for="">고객 아이디</label> <input type="text" class="wd300px" id="ruleTestCustNo" value="" /><br/><br/>
+													<label for="">결과</label> <input type="text" class="wd300px" id="ruleTestResult" value="" readonly="readonly" />
 												</div>
 											</div>
 											
 											<!-- 버튼 -->
 											<div class="card-actions-foot">
-												<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-green" id="">
+												<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-green" id="ruleTestRunBtn">
 													<i class="far fa-times-circle custom-btn-i"></i> 실행
 												</button>
 												<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-gray" onclick="close_layerPop('modal_ruleTest');">

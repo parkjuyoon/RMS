@@ -19,10 +19,6 @@ public interface PkgService {
 
 	int pkgNmCheck(HashMap<String, Object> param);
 
-	List<HashMap<String, Object>> getRuleAttrByPkgId(HashMap<String, Object> param);
-
-	HashMap<String, Object> getPkgById(String pkgId);
-
 	void addPkg(HashMap<String, Object> param);
 
 	List<HashMap<String, Object>> getDeployVerListByPkgId(HashMap<String, Object> param);

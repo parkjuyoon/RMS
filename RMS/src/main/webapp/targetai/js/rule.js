@@ -52,6 +52,9 @@ $(document).ready(function() {
 				$("#ruleDupY").css("display", "none");
 				$("#ruleDupN").css("display", "none");
 				$("#ruleNmDupBtn").data("isDup", "Y");
+				$("#ruleTestRunBtn").attr("data-ruleId", rule.RULE_ID);
+				$("#ruleTestCustNo").val("");
+				$("#ruleTestResult").val("");
 				// -- RULE 상세페이지 초기화 끝 --
 				
 				$("#ruleNm").focus();
@@ -684,180 +687,59 @@ $(document).ready(function() {
 		});
 	});
 	
-	// 패키지 상세 > RULE TEST OPEN 버튼 클릭
+	// RULE 상세 > 단위 테스트 실행 버튼
 	$("#ruleTestPopBtn").click(function() {
 		$("#modal_ruleTest").show();
-		
-		
-//		var param = {};
-//		param.pkgId = $("#pkgId").text();
-//		
-//		if(mappingRuleList.length > 0) {
-//			fnRuleTest(param);
-//		} else {
-//			messagePop("warning", "연결된 RULE 없음", "RULE 연결을 먼저 진행하세요.", "");
-//		}
 	});
 	
-	// 패키지 상세 > RULE TEST 팝업 > RULE 속성명 클릭
-//	$(document).on("click", "._ruleTestPop_factorNm", function(e) {
-//		e.preventDefault();
-//		
-//		var factorNmEn = $(this).attr("data-factorNmEn");
-//		var factorVal = $(this).attr("data-factorVal");
-//		var factorNm = $(this).text();
-//		var factorGrpNm = $(this).attr("data-factorGrpNm");
-//		
-//		var html = "";
-//		html += "<div class='oneline_group'>";
-//		html += "	<div class='form_group'>";
-//		html += "		<label for=''>KEY</label> <input type='text' name='ruleTestPop_key' value='"+ factorNmEn +"' readonly='readonly'/>";
-//		html += "	</div>";
-//		html += "	<div class='form_group'>";
-//		if(factorGrpNm == '함수') {
-//			html += "		<label for=''>VALUE</label> <input type='text' name='ruleTestPop_value' class='wd150px' value='"+ factorVal.replaceAll("\"", "") +"' readonly='readonly'/>";
-//		} else {
-//			html += "		<label for=''>VALUE</label> <input type='text' name='ruleTestPop_value' class='wd150px' value='"+ factorVal.replaceAll("\"", "") +"'/>";
-//		}
-//		html += "	</div>";
-//		html += "	<button type='button' class='btn btn-sm btn-red _ruleTestPop_del' style='color: white'>삭제</button>";
-//		html += "</div>";
-//		
-//		$("#ruleTestPop_input").append(html);
-//	});
-//	
-//	// RULE TEST 메뉴 > 속성 삭제 버튼 클릭
-//	$(document).on("click", "._ruleTestPop_del", function() {
-//		var delIdx = $("._ruleTestPop_del").index(this);
-//		$(this).closest(".oneline_group").remove();
-//	});
-//
-//	// RULE TEST 메뉴 결과확인 버튼 클릭
-//	var keyValueArr = [];
-//	$(document).on("click", "#ruleTestPop_resBtn", function() {
-//		var drlPath = $(this).attr("data-drlPath");
-//		
-//		if(drlPath == '-1') {
-//			messagePop("warning", "RULE TEST 체크", "Package를 선택하세요.", "");
-//			return;
-//		}
-//		
-//		var keyArr = $("input[name='ruleTestPop_key']");
-//		var keyVal = $("input[name='ruleTestPop_value']");
-//		
-//		for(var i=0; i<keyArr.length; i++) {
-//			var key = keyArr.eq(i).attr("data-valueEn");
-//			var val = keyVal.eq(i).val();
-//			
-//			if(key == '' || val == '') {
-//				messagePop("warning", "KEY / VALUE 체크", "빈값을 포함할 수 없습니다.", "");
-//				return;
-//			}
-//			
-//			var keyValue = key + ":" + val;
-//			
-//			keyValueArr.push(keyValue);
-//		}
-//		
-//		var param = {};
-//		param.pkgId = $("#pkgId").text();
-//		param.drlPath = drlPath;
-//		param.keyValueArr = keyValueArr;
-//		
-//		$.ajax({
-//			method : "POST",
-//			url : "/targetai/ruleTest.do",
-//			traditional: true,
-//			data : JSON.stringify(param),
-//			contentType:'application/json; charset=utf-8',
-//			dataType : "json",
-//			success : function(res) {
-//				if(res.length < 1) {
-//					$("#ruleTestResPop_res").val("Output 결과가 없습니다.");
-//					
-//				} else {
-//					$("#ruleTestResPop_res").val(JSON.stringify(res, null, 4));
-//				}
-//				
-//				$("#ruleTestResPop").show();
-//			},
-//			beforeSend : function() {
-//				$("#ruleTestPopLoading").show();
-//			},
-//			complete : function() {
-//				$("#ruleTestPopLoading").hide();
-//			},
-//			error : function(jqXHR, textStatus, errorThrown) {
-//				messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
-//				console.log(jqXHR);
-//				console.log(textStatus);
-//				console.log(errorThrown);
-//			}
-//		});
-//		
-//		keyValueArr = [];
-//	});
-//
-//	// RULE TEST 팝업 닫기
-//	$(document).on("click", "._ruleTestPop_close", function() {
-//		$("#ruleTestPop_input").html("");
-//	});
+	// RULE 상세 > 단위 테스트 실행 팝업 > 실행 버튼 클릭
+	$("#ruleTestRunBtn").click(function() {
+		var custNo = $("#ruleTestCustNo").val();
+		
+		if(custNo == '') {
+			messagePop("warning","고객 아이디를 입력하세요.","","");
+			return;
+		}
+
+		var param = {};
+		param.custNo = $("#ruleTestCustNo").val();
+		param.ruleId = $(this).attr("data-ruleId");
+		
+		// RULE 단위 테스트 실행
+		fnRuleTest(param);
+	});
 });
 
 /**
- * RULE TEST OPEN 팝업 내 RULE 속성
+ * RULE 단위 테스트 실행
  * @param param
  * @returns
  */
-//function fnRuleTest(param) {
-//	$.ajax({
-//		method : "POST",
-//		url : "/targetai/getRuleAttrByPkgId.do",
-//		traditional: true,
-//		data : JSON.stringify(param),
-//		contentType:'application/json; charset=utf-8',
-//		dataType : "json",
-//		success : function(res) {
-//			var ruleWhenKors = res.ruleAttrList;
-//			var html = "";
-//			var html2 = "";
-//			
-//			$.each(ruleWhenKors, function(idx, ruleWhenKor) {
-//				html += "[" + ruleWhenKor.RULE_NM + "]";
-//				html += "<div style='padding-left:30px;'><a href='#' class='_ruleWhenKor'>" + ruleWhenKor.RULE_WHEN_KOR + "</a></div>";
-//				
-//				var arr = ruleWhenKor.RULE_WHEN_KOR.split("\n");
-//				
-//				for(var i in arr) {
-//					// 해야할곳
-//				}
-//				
-//				html2 += "[" + ruleWhenKor.RULE_NM + "]";
-//				html2 += "<div class='form_group' style='width:709px;'>";
-//				html2 += "<input type='text' class='wd150px' style='margin-right:10px;' value=''>";
-//				html2 += " = "
-//				html2 += "<input type='text' class='wd150px' style='margin-left:10px;' value=''>";
-//				html2 += "</div><br/><br/>";
-//			});
-//			
-//			$("#ruleTestPop_input").append(html2);
-//			$("#ruleAttrPreView").html(html);
-//			$("#modal_ruleTest").show();
-//		},
-//		beforeSend : function() {
-//			$("#ruleTestPopLoading").show();
-//		},
-//		complete : function() {
-//			$("#ruleTestPopLoading").hide();
-//		},
-//		error : function(jqXHR, textStatus, errorThrown) {
-//			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
-//			console.log(jqXHR);
-//			console.log(textStatus);
-//			console.log(errorThrown);
-//		}
-//	});
-//}
+function fnRuleTest(param) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/ruleTest.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			$("#ruleTestResult").val(res.resMsg);
+		},
+		beforeSend : function() {
+			$("#ruleTestLoading").show();
+		},
+		complete : function() {
+			$("#ruleTestLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
 
 /**
  * RULE 목록 > 삭제

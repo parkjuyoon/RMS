@@ -348,7 +348,6 @@ function fnGetEvent(param) {
 		dataType : "json",
 		success : function(res) {
 			var rule = res.rule;
-			console.log(res);
 			
 			$("#eventNm").text(rule.RULE_NM);
 			$("#eventDsc").val(rule.RULE_WHEN_KOR);

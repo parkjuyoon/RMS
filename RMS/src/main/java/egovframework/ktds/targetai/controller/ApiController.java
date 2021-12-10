@@ -65,7 +65,7 @@ public class ApiController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/reqUrl.do", method = RequestMethod.POST)
-	public JSONObject reqUrl(@RequestBody JSONObject param) {
+	public JSONObject reqUrl(@RequestBody JSONObject param, HttpServletRequest request) {
 		JSONObject responseJSON = new JSONObject();
 		String req_url = (String) param.get("req_url");
 		

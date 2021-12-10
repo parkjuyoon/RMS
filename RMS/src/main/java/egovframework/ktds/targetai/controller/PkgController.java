@@ -148,68 +148,6 @@ public class PkgController {
 	}
 	
 	/**
-	 * RULE TEST OPEN 팝업 내 RULE 속성
-	 * @param param
-	 * @return resultMap
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/getRuleAttrByPkgId.do", method = RequestMethod.POST)
-	public HashMap<String, Object> getRuleAttrByPkgId(@RequestBody HashMap<String, Object> param) {
-		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		
-		try {
-			List<HashMap<String, Object>> ruleAttrList = pkgService.getRuleAttrByPkgId(param);
-			resultMap.put("ruleAttrList", ruleAttrList);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return resultMap;
-	}
-	
-	/**
-	 * RULE 테스트
-	 * @param param
-	 * @return resultMap
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/ruleTest.do", method = RequestMethod.POST, produces="application/text; charset=UTF-8")
-	public String ruleTest(@RequestBody HashMap<String, Object> param) {
-			HashMap<String, Object> paramMap = new HashMap<String, Object>();
-			List<String> keyValueArr = (List<String>) param.get("keyValueArr");
-			
-			for(String s : keyValueArr) {
-				String key = s.split(":")[0];
-				String value = s.split(":")[1];
-				paramMap.put(key, value);
-			}
-			
-			// 물리 DRL파일 path
-			String path = (String) param.get("drlPath");
-			path = System.getProperty("user.home") + path;
-			path = path.replace("/", File.separator).replace("\\", File.separator);
-			
-			String pkgId = (String) param.get("pkgId");
-			HashMap<String, Object> pkg = pkgService.getPkgById(pkgId);
-			ruleService.saveDRL(pkg);
-			
-			// Drools 세션 생성
-			KieSession kieSession = DroolsUtil.getKieSession(path);
-						
-			List<HashMap<String, Object>> getResultList = ApiController.getResultList(kieSession, paramMap, new ArrayList<>());
-			
-			// drools 세션 dispose
-			kieSession.dispose();
-			
-			HashMap<String, Object> resultMap = new HashMap<>();
-			resultMap.put("RESULT", getResultList);
-			JSONObject resultJSON = new JSONObject(resultMap);
-			
-			return resultJSON.toJSONString();
-	}
-	
-	/**
 	 * PKG 저장
 	 * @param param
 	 * @return resultMap

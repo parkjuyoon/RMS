@@ -705,7 +705,7 @@ $(document).ready(function() {
 		param.custNo = $("#ruleTestCustNo").val();
 		param.ruleId = $(this).attr("data-ruleId");
 		
-		// RULE 단위 테스트 실행
+		// RULE 단위 테스트 실행.
 		fnRuleTest(param);
 	});
 });

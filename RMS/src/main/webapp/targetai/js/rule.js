@@ -46,7 +46,6 @@ $(document).ready(function() {
 				$("#ruleNm").val(rule.RULE_NM);
 				$("input:radio[name='noLoop']:radio[value='"+ rule.NO_LOOP +"']").prop("checked", true);
 				$("input:radio[name='lockOnActive']:radio[value='"+ rule.LOCK_ON_ACTIVE +"']").prop("checked", true);
-				$("#salience").val(rule.SALIENCE);
 				$("#ruleCard").removeClass("card-collapsed");
 				$("#ruleCardBody").css("display", "");
 				$("#ruleDupY").css("display", "none");
@@ -803,7 +802,7 @@ function getRuleList(searchObj) {
 			
 			if(ruleList.length == 0) {
 				html += "<tr>";
-				html += "	<td colspan='8' class='t_center'>조회된 내용이 없습니다.</td>";
+				html += "	<td colspan='7' class='t_center'>조회된 내용이 없습니다.</td>";
 				html += "</tr>";
 				
 			} else {
@@ -817,7 +816,6 @@ function getRuleList(searchObj) {
 					html += "	</td>";
 					html += "	<td class='t_center'>" + ruleList[i].RULE_ID + "</td>";
 					html += "	<td class='t_center'><a href='#' class='_ruleNmLink' data-ruleId='"+ ruleList[i].RULE_ID +"'>" + ruleList[i].RULE_NM + "</a></td>";
-					html += "	<td class='t_center'>" + ruleList[i].SALIENCE + "</td>";
 					html += "	<td class='t_center'>" + (typeof ruleList[i].UDT_DT == 'undefined' ? "-" : ruleList[i].UDT_DT) + "</td>";
 					html += "	<td class='t_center'>" + (typeof ruleList[i].UDT_USRNM == 'undefined' ? "-" : ruleList[i].UDT_USRNM) + "</td>";
 					html += "	<td class='t_center'>" + ruleList[i].REG_DT + "</td>";
@@ -1029,7 +1027,6 @@ function fnSaveRule() {
 	// rule 저장값
 	param.ruleId = $("#ruleId").text();
 	param.ruleNm = $("#ruleNm").val();
-	param.salience = $("#salience").val();
 	param.targetType = $("#targetType").val();
 	param.noLoop = $("input:radio[name='noLoop']").prop("checked") + "";
 	param.lockOnActive = $("input:radio[name='lockOnActive']").prop("checked") + "";
@@ -1113,7 +1110,6 @@ function initRuleDetail() {
 	$("#ruleDupN").css("display", "none");
 	$("input:radio[name='noLoop']:radio[value='true']").prop("checked", true);
 	$("input:radio[name='lockOnActive']:radio[value='true']").prop("checked", true);
-	$("#salience").val("");
 	$("#ruleWhenCont").val("");
 }
 

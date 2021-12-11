@@ -417,7 +417,6 @@
 												<col style="width: 10%;" />
 												<col style="width: auto;" />
 												<col style="width: 12%;" />
-												<col style="width: 12%;" />
 												<col style="width: 10%;" />
 												<col style="width: 12%;" />
 												<col style="width: 10%;" />
@@ -431,7 +430,6 @@
 													</th>
 													<th>ID</th>
 													<th>RULE 명<label class="_sortable"></label></th>
-													<th>우선순위</th>
 													<th>수정일시</th>
 													<th>수정자</th>
 													<th>등록일시<label class="_sortable"></label></th>
@@ -516,10 +514,6 @@
 																	type="radio" name="lockOnActive" value="false" id="" /> <label for="lockOnActive" class="mg_r10">FALSE</label>
 															</div>
 														</td>
-													</tr>
-													<tr>
-														<th class="t_left">우선순위</th>
-														<td class="t_left"><input type="text" class="wd150px" id="salience" value="" /></td>
 													</tr>
 													<tr>
 														<th class="t_left">타켓 유형</th>

@@ -218,14 +218,38 @@ $(document).ready(function() {
 		
 		var html2 = "";
 		// 패키지와 연결 가능한 RULE 목록
-		$.each(conRuleList, function(idx, conRule) {
-			html2 += "<div>";
-			html2 += "	<input type='checkbox' class='_conRuleCheck' data-ruleId='"+ conRule.RULE_ID +"'/>\t" + conRule.RULE_NM;
-			html2 += "</div>";
-		});
 		
-		$("#mappingRuleList").html(html1);
-		$("#conRuleList").html(html2);
+		html2 +="<div class='panel bd_b_none nobordertop'>";
+		html2 +="<table class='tb_type01 tablesorter'>";
+		html2 +="	<colgroup>";
+		html2 +="		<col style='width: 10%;' />";
+		html2 +="		<col style='width: 15%;' />";
+		html2 +="		<col style='width: auto;' />";
+	html2 +="		</colgroup>";
+		html2 +="	<thead>";
+		html2 +="		<tr>";
+		html2 +="			<th>";
+		html2 +="				<div class='checkbox-container'>";
+		html2 +="					<input type='checkbox' id=''/>"; 
+		html2 +="					<label for='pkgListAllChkBox'></label>";
+		html2 +="				</div>";
+		html2 +="			</th>";
+		html2 +="			<th>순서</th>";
+		html2 +="			<th>RULE 명<label class='_sortable'></label></th>";
+		html2 +="		</tr>";
+		html2 +="	</thead>";
+		html2 +="	<tbody id=''></tbody>";
+		html2 +="	</table>";
+		html2 +="</div>";
+	
+//		$.each(conRuleList, function(idx, conRule) {
+//			html2 += "<div>";
+//			html2 += "	<input type='checkbox' class='_conRuleCheck' data-ruleId='"+ conRule.RULE_ID +"'/>\t" + conRule.RULE_NM;
+//			html2 += "</div>";
+//		});
+		
+		$("#conRuleList").html(html1);
+		$("#mappingRuleList").html(html2);
 		$("#modal_ruleMappingLoading").hide();
 	});
 	

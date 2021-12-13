@@ -88,13 +88,15 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 	@Override
 	public void updatePkg(HashMap<String, Object> param) {
 		// RULE 맵핑정보가 변경되었는지 확인
-		List<Integer> mappingRuleIds1= dao.getMappingRuleIdsByPkgId(param);
+		List<String> mappingRuleIds1= dao.getMappingRuleIdsByPkgId(param);
 		Collections.sort(mappingRuleIds1);
-		List<Object> param_mappingRuleIds = (List<Object>) param.get("mappingRuleIds");
-		List<Integer> mappingRuleIds2 = new ArrayList<>();
 		
-		for(Object id : param_mappingRuleIds) {
-			mappingRuleIds2.add(Integer.parseInt(String.valueOf(id)));
+		List<HashMap<String, Object>> param_mappingRules = (List<HashMap<String, Object>>) param.get("mappingRuleList");
+		
+		List<String> mappingRuleIds2 = new ArrayList<>();
+		
+		for(HashMap<String, Object> m : param_mappingRules) {
+			mappingRuleIds2.add((int) m.get("RULE_ID") + "_" + (int) m.get("SALIENCE"));
 		}
 		Collections.sort(mappingRuleIds2);
 		
@@ -126,7 +128,7 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 			
 			// RULE 연결정보 수정
 			// 새로운 RULE 연결 정보가 있을때
-			if(param_mappingRuleIds.size() > 0) {
+			if(param_mappingRules.size() > 0) {
 				// 개발중인 버전이 있을경우
 				if(pkgDevVer != null) {
 					ver = (int) pkgDevVer.get("VER");

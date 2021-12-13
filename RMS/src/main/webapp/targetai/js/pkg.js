@@ -156,7 +156,7 @@ $(document).ready(function() {
 			param.pkgId = $("#pkgId").text();
 			param.pkgNm = $("#pkgNm").val();
 			param.pkgDsc = $("#pkgDsc").val();
-			param.mappingRuleIds = mappingRuleIds;
+			param.mappingRuleList = mappingRuleList;
 			
 			if(param.pkgId != '') {
 				// 수정
@@ -166,6 +166,7 @@ $(document).ready(function() {
 				// 신규등록
 				fnAddPkg(param);
 			}
+			
 		}
 	});
 	
@@ -208,94 +209,72 @@ $(document).ready(function() {
 			return;
 		}
 		
-		// 맵핑된 RULE 목록
-		var html1 = "";
-		$.each(mappingRuleList, function(idx, mappingRule) {
-			html1 += "<div>";
-			html1 += "	<input type='checkbox' class='_mappingRuleCheck' data-ruleId='"+ mappingRule.RULE_ID +"'/>\t" + mappingRule.RULE_NM;
-			html1 += "</div>";
-		});
+		// 적용될 배열에 있는 값으로 리스트 갱신
+		drawGridMappingRuleList(mappingRuleList);
+		drawGridConRuleList(conRuleList);
 		
-		var html2 = "";
-		// 패키지와 연결 가능한 RULE 목록
-		
-		html2 +="<div class='panel bd_b_none nobordertop'>";
-		html2 +="<table class='tb_type01 tablesorter'>";
-		html2 +="	<colgroup>";
-		html2 +="		<col style='width: 10%;' />";
-		html2 +="		<col style='width: 15%;' />";
-		html2 +="		<col style='width: auto;' />";
-	html2 +="		</colgroup>";
-		html2 +="	<thead>";
-		html2 +="		<tr>";
-		html2 +="			<th>";
-		html2 +="				<div class='checkbox-container'>";
-		html2 +="					<input type='checkbox' id=''/>"; 
-		html2 +="					<label for='pkgListAllChkBox'></label>";
-		html2 +="				</div>";
-		html2 +="			</th>";
-		html2 +="			<th>순서</th>";
-		html2 +="			<th>RULE 명<label class='_sortable'></label></th>";
-		html2 +="		</tr>";
-		html2 +="	</thead>";
-		html2 +="	<tbody id=''></tbody>";
-		html2 +="	</table>";
-		html2 +="</div>";
-	
-//		$.each(conRuleList, function(idx, conRule) {
-//			html2 += "<div>";
-//			html2 += "	<input type='checkbox' class='_conRuleCheck' data-ruleId='"+ conRule.RULE_ID +"'/>\t" + conRule.RULE_NM;
-//			html2 += "</div>";
-//		});
-		
-		$("#conRuleList").html(html1);
-		$("#mappingRuleList").html(html2);
 		$("#modal_ruleMappingLoading").hide();
 	});
 	
 	// 패키지 관리 > 패키지 상세 > RULE 연결 팝업 ADD 버튼
-	$("#mappingAddBtn").click(function() {
-		var checkedItems = $("._conRuleCheck:checked");
+	$(document).on("click", "._ruleAdd", function() {
+		var ruleNm = $(this).closest("tr").find("a").text();
+		var ruleId = $(this).closest("tr").find("a").attr("data-ruleId");
 		
-		for(var i=0; i<checkedItems.length; i++) {
-			checkedItems.eq(i).attr("class", "_mappingRuleCheck");
-			var html = checkedItems.eq(i).parent("div")[0];
-			$("#mappingRuleList").append(html);
-		}
+		var rule = {};
+		rule.RULE_ID = ruleId * 1;
+		rule.RULE_NM = ruleNm;
 		
-		$("#conRuleList").find("input[type='checkbox']").prop("checked", false);
-		$("#mappingRuleList").find("input[type='checkbox']").prop("checked", false);
+		// 선택된 index
+		var idx = $(this).closest("tr").index();
+		conRuleList.splice(idx, 1);	// 연결 가능한 RULE 목록에서 삭제
+		mappingRuleList.push(rule);	// 연결 예정중인 RULE 목록에 추가
+		
+		// 적용될 배열에 있는 값으로 리스트 갱신
+		drawGridMappingRuleList(mappingRuleList);
+		drawGridConRuleList(conRuleList);
 	});
 	
-	// 패키지 관리 > 패키지 상세 > RULE 연결 팝업 ADD 버튼
-	$("#mappingRemoveBtn").click(function() {
-		var checkedItems = $("._mappingRuleCheck:checked");
+	// 패키지 관리 > 패키지 상세 > RULE 연결 팝업 DEL 버튼
+	$(document).on("click", "._ruleDel", function() {
+		var ruleNm = $(this).closest("tr").find("a").text();
+		var ruleId = $(this).closest("tr").find("a").attr("data-ruleId");
 		
-		for(var i=0; i<checkedItems.length; i++) {
-			checkedItems.eq(i).attr("class", "_conRuleCheck");
-			var html = checkedItems.eq(i).parent("div")[0];
-			$("#conRuleList").append(html);
-		}
+		var rule = {};
+		rule.RULE_ID = ruleId * 1;
+		rule.RULE_NM = ruleNm;
 		
-		$("#conRuleList").find("input[type='checkbox']").prop("checked", false);
-		$("#mappingRuleList").find("input[type='checkbox']").prop("checked", false);
+		// 선택된 index
+		var idx = $(this).closest("tr").index();
+		mappingRuleList.splice(idx, 1);	// 연결 가능한 RULE 목록에서 삭제
+		conRuleList.push(rule);	// 연결 예정중인 RULE 목록에 추가
+		
+		// 적용될 배열에 있는 값으로 리스트 갱신
+		drawGridMappingRuleList(mappingRuleList);
+		drawGridConRuleList(conRuleList);
 	});
 	
 	// 패키지 관리 > 패키지 상세 > RULE 연결 적용버튼
 	var mappingRuleIds = [];
 	$("#ruleMappingSaveBtn").click(function() {
-		mappingRuleIds = [];
-		var ruleList = $("#mappingRuleList ._mappingRuleCheck");
-		var pkgId = $("#pkgId").text();
+		var salienceArr = $("._salience");
 		
-		for(var i=0; i<ruleList.length; i++) {
-			var ruleId = ruleList.eq(i).attr("data-ruleId");
+		var isOk = true;
+		$.each(salienceArr, function(idx, salience) {
+			if(salienceArr.eq(idx).val() === '' || isNaN(salienceArr.eq(idx).val() * 1)) {
+				messagePop("warning","연결 순서를 확인하세요.","","");
+				isOk = false;
+			}
+		});
+		
+		if(isOk) {
+			$.each(mappingRuleList, function(idx, mappingRule) {
+				mappingRule.SALIENCE = salienceArr.eq(idx).val() * 1;
+			});
 			
-			mappingRuleIds.push(ruleId);
+			close_layerPop('modal_ruleMapping');
+			$(this).attr("data-update", "Y");
 		}
-		
-		close_layerPop('modal_ruleMapping');
-		$(this).attr("data-update", "Y");
 	});
 	
 	// 패키지 버전 목록 > 페이징 버튼 클릭이벤트
@@ -356,6 +335,59 @@ $(document).ready(function() {
 		fnGetEvent(param);
 	});
 });
+
+/**
+ * 적용될 배열에 있는 값으로 리스트 갱신
+ * @param conRuleList
+ * @param mappingRuleList
+ * @returns
+ */
+function drawGridConRuleList(conRuleList) {
+	// 패키지와 연결 가능한 RULE 목록
+	var html = "";
+	if(conRuleList.length == 0) {
+		html += "<tr>";
+		html += "	<td colspan='2' class='t_center'>조회된 내용이 없습니다.</td>";
+		html += "</tr>";
+		
+	} else {
+		$.each(conRuleList, function(idx, rule){
+			html += "<tr>";
+			html += "	<td class='t_center'><button type='button' class='btn-add _ruleAdd' data-bs-dismiss='alert' aria-label='Close'></button></td>";
+			html += "	<td class='t_center'><a href='#' class='' data-ruleId='"+ rule.RULE_ID +"'>" + rule.RULE_NM + "</a></td>";
+			html += "</tr>";
+		});
+	}
+	
+	$("#conRuleList").html(html);
+}
+
+/**
+ * 적용될 배열에 있는 값으로 리스트 갱신
+ * @param conRuleList
+ * @param mappingRuleList
+ * @returns
+ */
+function drawGridMappingRuleList(mappingRuleList) {
+	// 맵핑된 RULE 목록
+	var html = "";
+	if(mappingRuleList.length == 0) {
+		html += "<tr>";
+		html += "	<td colspan='3' class='t_center'>조회된 내용이 없습니다.</td>";
+		html += "</tr>";
+		
+	} else {
+		$.each(mappingRuleList, function(idx, rule){
+			html += "<tr>";
+			html += "	<td class='t_center'><button type='button' class='btn-del _ruleDel' data-bs-dismiss='alert' aria-label='Close'></button></td>";
+			html += "	<td class='t_center'><input type='text' class='_salience' value='"+ (typeof rule.SALIENCE == 'undefined' ? '' : rule.SALIENCE) +"' /></td>";
+			html += "	<td class='t_center'><a href='#' class='' data-ruleId='"+ rule.RULE_ID +"'>" + rule.RULE_NM + "</a></td>";
+			html += "</tr>";
+		});
+	}
+	
+	$("#mappingRuleList").html(html);
+}
 
 /**
  * 해당 이벤트(RULE)의 상세내용 조회
@@ -920,45 +952,35 @@ function fnGetDrlSouce(param) {
 }
 
 /**
- * 패키지 상세 > RULE 연결 > RULE 검색
+ * 패키지 상세 > RULE 연결 > 연결가능한 RULE 검색
  * @returns
  */
-function fnRuleSearch(searchVal) {
-	var param = {};
-	param.ruleNm = searchVal;
+function fnConRuleSearch(searchVal) {
+	var conRuleList_tmp = [];
 	
-	$.ajax({
-		method : "POST",
-		url : "/targetai/getConRuleList.do",
-		traditional: true,
-		data : JSON.stringify(param),
-		contentType:'application/json; charset=utf-8',
-		dataType : "json",
-		success : function(res) {
-			var conRuleList = res.conRuleList;
-			
-			var html = "";
-			$.each(conRuleList, function(idx, conRule) {
-				html += "<div>";
-				html += "	<input type='checkbox' class='_conRuleCheck' data-ruleId='"+ conRule.RULE_ID +"'/>\t" + conRule.RULE_NM;
-				html += "</div>";
-			});
-			
-			$("#conRuleList").html(html);
-		},
-		beforeSend : function() {
-			$("#modal_ruleMappingLoading").show();
-		},
-		complete : function() {
-			$("#modal_ruleMappingLoading").hide();
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
-			console.log(jqXHR);
-			console.log(textStatus);
-			console.log(errorThrown);
+	$.each(conRuleList, function(idx, conRule) {
+		if(conRule.RULE_NM.indexOf(searchVal) != -1) {
+			conRuleList_tmp.push(conRule);
 		}
 	});
+	
+	drawGridConRuleList(conRuleList_tmp);
+} 
+
+/**
+ * 패키지 상세 > RULE 연결 > 연결 예정인 RULE 검색
+ * @returns
+ */
+function fnMappingRuleSearch(searchVal) {
+	var mappingRuleList_tmp = [];
+	
+	$.each(mappingRuleList, function(idx, mappingRule) {
+		if(mappingRule.RULE_NM.indexOf(searchVal) != -1) {
+			mappingRuleList_tmp.push(mappingRule);
+		}
+	});
+	
+	drawGridMappingRuleList(mappingRuleList_tmp);
 } 
 
 /**

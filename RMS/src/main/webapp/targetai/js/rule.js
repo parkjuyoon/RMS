@@ -196,6 +196,7 @@ $(document).ready(function() {
 		initRuleDetail();	// RULE 상세 초기화
 		initRuleEditor();	// RULE EDITOR 초기화
 		
+		$("#ruleAttrPreView").html("");	// 단위테스트 RULE 속성 부분 조기화
 		$("#ruleCard").removeClass("card-collapsed");
 		$("#ruleCardBody").css("display", "");
 		$("#ruleNmDupBtn").data("isDup", "N");
@@ -802,7 +803,7 @@ function getRuleList(searchObj) {
 			
 			if(ruleList.length == 0) {
 				html += "<tr>";
-				html += "	<td colspan='7' class='t_center'>조회된 내용이 없습니다.</td>";
+				html += "	<td colspan='8' class='t_center'>조회된 내용이 없습니다.</td>";
 				html += "</tr>";
 				
 			} else {
@@ -816,6 +817,7 @@ function getRuleList(searchObj) {
 					html += "	</td>";
 					html += "	<td class='t_center'>" + ruleList[i].RULE_ID + "</td>";
 					html += "	<td class='t_center'><a href='#' class='_ruleNmLink' data-ruleId='"+ ruleList[i].RULE_ID +"'>" + ruleList[i].RULE_NM + "</a></td>";
+					html += "	<td class='t_center'>연결중</td>";
 					html += "	<td class='t_center'>" + (typeof ruleList[i].UDT_DT == 'undefined' ? "-" : ruleList[i].UDT_DT) + "</td>";
 					html += "	<td class='t_center'>" + (typeof ruleList[i].UDT_USRNM == 'undefined' ? "-" : ruleList[i].UDT_USRNM) + "</td>";
 					html += "	<td class='t_center'>" + ruleList[i].REG_DT + "</td>";

@@ -287,53 +287,66 @@
 																			</div>
 																			<div class="modal_wrap">
 																				<div class="row">
-																					<div class="col">
+																					<div class="col" style="overflow:auto; height: 430px;">
 																						<!-- 본문페이지 -->
-																						<div class="card-body body-header" style="width: 42%; float: left;">
+																						<div class="card-body body-header">
 																							<header class="card-header card-header-pd-mobile">
 																								<div class="card-actions card-header-position-mobile"></div>
 																								<div class="form_group">
-																									<h2 class="card-title_txt" id="">Available:
-																										<input type="text" onkeypress="javascript:if(event.keyCode==13) {fnRuleSearch(this.value);}" name="ruleSearch" class="wd150px" value="" />
+																									<h2 class="card-title_txt" id="">연결 가능한 RULE : 
+																										<input type="text" onkeypress="javascript:if(event.keyCode==13) {fnConRuleSearch(this.value);}" name="ruleSearch" class="wd150px" value="" />
 																									</h2>
 																								</div>
 																							</header>
-																							<!-- 경고 -->
 																							<div class="card-body">
-																								<div id="conRuleList" style="height: 361px; overflow: auto;"></div>
-																							</div>
-																							<!-- //경고 -->
-																						</div>
-																						<!-- //본문페이지 -->
-																						<!-- 본문페이지 -->
-																						<div class="" style="width: 13%;
-																										    float: left;
-																										    margin-left: 10px;
-																										    margin-right: 10px;
-																										    display: flex;
-																										    justify-content: center;
-																										    align-items: center;
-																										    height: 100%;">
-																							<div>
-																								<button type="button" id="mappingAddBtn" class="btn btn-sm btn-sky" style="width: 100%; margin-bottom: 10px;">Add &gt;</button>
-																								<button type="button" id="mappingRemoveBtn" class="btn btn-sm btn-gray" style="width: 100%;">&lt; Remove</button>
+																								<div class="panel bd_b_none nobordertop">
+																								<table class="tb_type01 tablesorter">
+																									<colgroup>
+																										<col style="width: 10%;" />
+																										<col style="width: auto;" />
+																									</colgroup>
+																									<thead>
+																										<tr>
+																											<th></th>
+																											<th>RULE 명</th>
+																										</tr>
+																									</thead>
+																									<tbody id="conRuleList"></tbody>
+																									</table>
+																								</div>
 																							</div>
 																						</div>
-																						<!-- //본문페이지 -->
+																					</div>
+																					<div class="col" style="overflow:auto; height: 430px;">
 																						<!-- 본문페이지 -->
-																						<div class="card-body body-header" style="width: 42%; float: left;">
+																						<div class="card-body body-header">
 																							<header class="card-header card-header-pd-mobile">
 																								<div class="card-actions card-header-position-mobile"></div>
-																								<h2 class="card-title_txt" id="">Configured:</h2>
+																								<h2 class="card-title_txt" id="">연결 예정인 RULE : 
+																									<input type="text" onkeypress="javascript:if(event.keyCode==13) {fnMappingRuleSearch(this.value);}" name="ruleSearch" class="wd150px" value="" />
+																								</h2>
 																							</header>
-																							<!-- 경고 -->
 																							<div class="card-body">
-																								<div id="mappingRuleList" style="height: 370px; overflow: auto;"></div>
+																								<div class="panel bd_b_none nobordertop">
+																								<table class="tb_type01 tablesorter">
+																									<colgroup>
+																										<col style="width: 10%;" />
+																										<col style="width: 25%;" />
+																										<col style="width: auto;" />
+																									</colgroup>
+																									<thead>
+																										<tr>
+																											<th></th>
+																											<th>순서</th>
+																											<th>RULE 명<label class="_sortable"></label></th>
+																										</tr>
+																									</thead>
+																									<tbody id="mappingRuleList"></tbody>
+																									</table>
+																								</div>
 																							</div>
-																							<!-- //경고 -->
 																						</div>
 																						<!-- //본문페이지 -->
-																						
 																					</div>
 																				</div>
 																				<div class="row">

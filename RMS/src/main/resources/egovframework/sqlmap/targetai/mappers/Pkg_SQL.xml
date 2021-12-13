@@ -227,10 +227,9 @@
 	<!-- 맵핑된 RULE 목록 조회 -->
 	<select id="getMappingRuleList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT 
-			RP.PKG_ID,
 			R.RULE_ID,
 			R.RULE_NM,
-		    RP.VER
+			RP.SALIENCE
 		FROM
 			targetai.RULE R
 			LEFT JOIN targetai.RULE_PKG RP ON (RP.RULE_ID = R.RULE_ID)
@@ -273,14 +272,16 @@
 			PKG_ID,
 			RULE_ID,
 			VER,
+			SALIENCE,
 			CREATE_DT,
 			CREATOR_ID
 		) VALUES 
-		<foreach collection="mappingRuleIds" item="ruleId" separator=",">
+		<foreach collection="mappingRuleList" item="mappingRule" separator=",">
 		(
 			#{pkgId},
-			#{ruleId},
+			#{mappingRule.RULE_ID},
 			#{VER},
+			#{mappingRule.SALIENCE},
 			#{currentTime},
 			#{REG_USER_ID}
 		)
@@ -288,9 +289,9 @@
 	</insert>
 	
 	<!-- 맵핑된 룰  -->
-	<select id="getMappingRuleIdsByPkgId" parameterType="java.util.HashMap" resultType="Integer">
+	<select id="getMappingRuleIdsByPkgId" parameterType="java.util.HashMap" resultType="String">
 		SELECT 
-			R.RULE_ID
+			CONCAT(R.RULE_ID, '_', RP.SALIENCE) AS RULE_SALIENCE
 		FROM
 			targetai.RULE R
 			LEFT JOIN targetai.RULE_PKG RP ON (RP.RULE_ID = R.RULE_ID)

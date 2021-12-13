@@ -36,7 +36,7 @@ public interface PkgMapper {
 
 	int delRuleMappingByPkgIds(HashMap<String, Object> param);
 
-	List<Integer> getMappingRuleIdsByPkgId(HashMap<String, Object> param);
+	List<String> getMappingRuleIdsByPkgId(HashMap<String, Object> param);
 
 	HashMap<String, Object> getPkgVerByStatus(HashMap<String, Object> param);
 

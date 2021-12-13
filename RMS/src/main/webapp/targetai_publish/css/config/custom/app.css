@@ -2654,6 +2654,10 @@ a.btnModal {text-decoration:none;}
 .btn-del:hover {color:#000; text-decoration:none; opacity:0.75;}
 .btn-del:focus {outline:0; box-shadow:0 0 0 0.15rem rgba(40, 146, 253, 0.25); opacity:1;}
 .btn-del:disabled, .btn-close.disabled {pointer-events:none; -webkit-user-select:none; user-select:none; opacity:0.25;}
+.btn-add {box-sizing:content-box; width:13px; height:13px; padding:0; color:#000; border:0; border-radius:0; background:url("../../../images/icons/icon_btn_add.png") no-repeat 0 0;}
+.btn-add:hover {color:#000; text-decoration:none; opacity:0.75;}
+.btn-add:focus {outline:0; box-shadow:0 0 0 0.15rem rgba(40, 146, 253, 0.25); opacity:1;}
+.btn-add:disabled, .btn-close.disabled {pointer-events:none; -webkit-user-select:none; user-select:none; opacity:0.25;}
 .alert button.btn-del{position:absolute; top:6px; left:0;}
 td .alert {padding:0 0 0 20px !important;}
 .alert label.view_label {font-weight:700 !important; margin-right:10px; position:relative; top:2px;}

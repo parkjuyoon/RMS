@@ -416,6 +416,7 @@
 												<col style="width: 5%;" />
 												<col style="width: 10%;" />
 												<col style="width: auto;" />
+												<col style="width: 8%;" />
 												<col style="width: 12%;" />
 												<col style="width: 10%;" />
 												<col style="width: 12%;" />
@@ -430,6 +431,7 @@
 													</th>
 													<th>ID</th>
 													<th>RULE 명<label class="_sortable"></label></th>
+													<th>연결상태</th>
 													<th>수정일시</th>
 													<th>수정자</th>
 													<th>등록일시<label class="_sortable"></label></th>

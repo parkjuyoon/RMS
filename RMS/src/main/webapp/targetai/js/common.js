@@ -24,15 +24,27 @@ function fnSortableOption() {
 				var firstCell = rows[i].cells[cellIndex];
 				var secondCell = rows[i+1].cells[cellIndex];
 				
+				var firstText = firstCell.textContent;
+				var secondText = secondCell.textContent;
+				
+				// 원래는 td 안의 text로 정렬하는데 td 안의 input 안의 value일경우
+				if(firstText == '') {
+					firstText = firstCell.getElementsByTagName("input")[0].value;
+				}
+				if(secondText == '') {
+					secondText = secondCell.getElementsByTagName("input")[0].value;
+				}
+				
+				// 정렬
 				if(orderby == 'desc') {
-					if(firstCell.textContent.toLowerCase() > secondCell.textContent.toLowerCase()) {
+					if(firstText.toLowerCase() > secondText.toLowerCase()) {
 						rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
 						return false;
 					}
 				} 
 				
 				if(orderby == 'asc'){
-					if(firstCell.textContent.toLowerCase() < secondCell.textContent.toLowerCase()) {
+					if(firstText.toLowerCase() < secondText.toLowerCase()) {
 						rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
 						return false;
 					}

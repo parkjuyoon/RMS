@@ -32,6 +32,8 @@ $(document).ready(function() {
 		fnInitEventList();
 		// RULE 조건 초기화
 		fnInitRuleCondition();
+		// 패키지 상세 > RULE 연결 팝업 > WHEN 컨디션 부분 초기화
+		fnInitRuleMappingPopDetail();
 		
 		var param = {};
 		param.pkgId = $(this).attr("data-pkgId");
@@ -334,6 +336,40 @@ $(document).ready(function() {
 		// 해당 이벤트(RULE)의 상세내용 조회
 		fnGetEvent(param);
 	});
+	
+	// 패키지 상세 > RULE 연결 팝업 > RULE 명 클릭시 WHEN 컨디션 확인
+	// _cmRuleLink = conRule + mappingRule + Link
+	$(document).on("click", "._cmRuleLink", function() {
+		var param = {};
+		param.ruleId = $(this).attr("data-ruleId");
+		
+		$.ajax({
+			method : "POST",
+			url : "/targetai/getRule.do",
+			traditional: true,
+			data : JSON.stringify(param),
+			contentType:'application/json; charset=utf-8',
+			dataType : "json",
+			success : function(res) {
+				var rule = res.rule;
+				
+				$("#ruleMappingRuleNm").text(rule.RULE_NM);
+				$("#ruleMappingWhen").val(rule.RULE_WHEN_KOR);
+			},
+			beforeSend : function() {
+				$("#eventLoading").show();
+			},
+			complete : function() {
+				$("#eventLoading").hide();
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+				console.log(jqXHR);
+				console.log(textStatus);
+				console.log(errorThrown);
+			}
+		});
+	});
 });
 
 /**
@@ -354,7 +390,7 @@ function drawGridConRuleList(conRuleList) {
 		$.each(conRuleList, function(idx, rule){
 			html += "<tr>";
 			html += "	<td class='t_center'><button type='button' class='btn-add _ruleAdd' data-bs-dismiss='alert' aria-label='Close'></button></td>";
-			html += "	<td class='t_center'><a href='#' class='' data-ruleId='"+ rule.RULE_ID +"'>" + rule.RULE_NM + "</a></td>";
+			html += "	<td class='t_center'><a href='#' class='_cmRuleLink' data-ruleId='"+ rule.RULE_ID +"'>" + rule.RULE_NM + "</a></td>";
 			html += "</tr>";
 		});
 	}
@@ -381,7 +417,7 @@ function drawGridMappingRuleList(mappingRuleList) {
 			html += "<tr>";
 			html += "	<td class='t_center'><button type='button' class='btn-del _ruleDel' data-bs-dismiss='alert' aria-label='Close'></button></td>";
 			html += "	<td class='t_center'><input type='text' class='_salience' value='"+ (typeof rule.SALIENCE == 'undefined' ? '' : rule.SALIENCE) +"' /></td>";
-			html += "	<td class='t_center'><a href='#' class='' data-ruleId='"+ rule.RULE_ID +"'>" + rule.RULE_NM + "</a></td>";
+			html += "	<td class='t_center'><a href='#' class='_cmRuleLink' data-ruleId='"+ rule.RULE_ID +"'>" + rule.RULE_NM + "</a></td>";
 			html += "</tr>";
 		});
 	}
@@ -1039,6 +1075,15 @@ function fnInitEventList() {
 	$("#eventList").html(html);
 	$("#eventCardList").addClass("card-collapsed");
 	$("#eventCardListBody").hide();
+}
+
+/**
+ * 패키지 상세 > RULE 연결 팝업 > WHEN 컨디션 부분 초기화
+ * @returns
+ */
+function fnInitRuleMappingPopDetail() {
+	$("#ruleMappingRuleNm").text("");
+	$("#ruleMappingWhen").val("");
 }
 
 /**

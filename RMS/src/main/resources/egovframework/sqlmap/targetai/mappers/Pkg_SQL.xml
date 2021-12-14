@@ -389,7 +389,7 @@
 		    RP.RULE_ID,
 		    RP.VER,
 		    R.RULE_NM,
-		    R.SALIENCE,
+		    RP.SALIENCE,
 		    DATE_FORMAT(R.REG_DT, '%Y-%m-%d %H:%i:%s') AS REG_DT,
 		    R.REG_USRID,
 		    M.MEMBER_NAME
@@ -400,7 +400,7 @@
 		WHERE
 		    RP.PKG_ID = #{pkgId}
 		    AND RP.VER = #{ver}
-		    ORDER BY R.SALIENCE ASC, R.RULE_ID DESC
+		    ORDER BY RP.SALIENCE ASC, R.RULE_ID DESC
 	    LIMIT #{limit}
 		OFFSET #{offset}
 	</select>

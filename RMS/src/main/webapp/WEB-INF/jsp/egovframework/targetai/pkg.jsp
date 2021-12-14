@@ -279,7 +279,7 @@
 																			<h2>RULE 연결</h2>
 																		</div>
 																		<!-- 본문 -->
-																		<div class="modal_body" style="height: 500px;">
+																		<div class="modal_body" style="height: 800px;">
 																			<div class="progress_loading">
 																				<div id="modal_ruleMappingLoading">
 																					<img src="/targetai_publish/images/ajax-loader1.gif" />
@@ -337,8 +337,8 @@
 																									<thead>
 																										<tr>
 																											<th></th>
-																											<th>순서</th>
-																											<th>RULE 명<label class="_sortable"></label></th>
+																											<th>순서<label class="_sortable"></label></th>
+																											<th>RULE 명</th>
 																										</tr>
 																									</thead>
 																									<tbody id="mappingRuleList"></tbody>
@@ -351,12 +351,30 @@
 																				</div>
 																				<div class="row">
 																					<!-- 버튼 -->
-																					<div class="modal-footer">
+																					<div class="modal-footer" style="justify-content: center !important;">
 																						<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('modal_ruleMapping');"><i class="far fa-times-circle custom-btn-i"></i> 닫기</button>
 																						<button type="button" class="btn btn-sm btn-green" id="ruleMappingSaveBtn"><i class="far fa-check-circle custom-btn-i"></i> 적용</button>
 																					</div>
 																					<!-- //버튼 -->
 																				</div>
+																				<!-- when 컨디션 ROW -->
+																				<div class="row">
+																					<div class="col">
+																						<div class="card-body body-header">
+																							<header class="card-header card-header-pd-mobile">
+																								<div class="card-actions card-header-position-mobile"></div>
+																								<div class="form_group">
+																									<h2 class="card-title_txt" id="ruleMappingRuleNm"> 
+																									</h2>
+																								</div>
+																							</header>
+																							<div class="card-body" style="height: 230px;">
+																								<textarea rows="9" cols="7" class="txtsize_100 wd100" id="ruleMappingWhen" readonly="readonly" placeholder=""></textarea>
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																				<!-- // when 컨디션 ROW -->
 																			</div>
 																		</div>
 																		<!-- //본문 -->

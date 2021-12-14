@@ -6,6 +6,7 @@
 	<select id="getRuleList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT 
 			R.RULE_ID,
+			(SELECT COUNT(*) FROM targetai.RULE_PKG WHERE RULE_ID = R.RULE_ID) AS RULE_PKG_COUNT,
 		    R.RULE_NM,
 		    R.NO_LOOP,
 		    R.LOCK_ON_ACTIVE,
@@ -51,6 +52,7 @@
 	<select id="getRule" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT 
 			R.RULE_ID,
+			(SELECT COUNT(*) FROM targetai.RULE_PKG WHERE RULE_ID = R.RULE_ID) AS RULE_PKG_COUNT,
 		    R.RULE_NM,
 		    R.NO_LOOP,
 		    R.LOCK_ON_ACTIVE,

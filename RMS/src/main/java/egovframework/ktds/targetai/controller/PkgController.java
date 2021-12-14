@@ -1,6 +1,5 @@
 package egovframework.ktds.targetai.controller;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,8 +7,6 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
-import org.json.simple.JSONObject;
-import org.kie.api.runtime.KieSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import egovframework.ktds.drools.config.DroolsUtil;
 import egovframework.ktds.targetai.service.PkgService;
 import egovframework.ktds.targetai.service.RuleService;
 import egovframework.ktds.targetai.service.SvcService;

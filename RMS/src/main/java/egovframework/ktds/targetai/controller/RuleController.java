@@ -232,23 +232,16 @@ public class RuleController {
 			ruleService.ruleUpdate(param);
 		}
 		
-		
-		/* 패키지 저장시점으로 변경
 		// RULE 의 RULE_THEN 업데이트
 		HashMap<String, Object> ruleMap = ruleService.getRule(param);
-		String attrThen = "$map.put(\"res_"+ ruleMap.get("RULE_ID") +"_"+ ruleMap.get("CAMP_ID") +"_"+ ruleMap.get("SALIENCE") +"\", \""+ ruleMap.get("RULE_NM") +"\");\n";
-		
-		attrThen = "";
+		String attrThen = "";
 		attrThen += "$map.put(\"ruleId_"+ ruleMap.get("RULE_ID") + "\", " + ruleMap.get("RULE_ID") +");\n";
 		attrThen += "		$map.put(\"campId_"+ ruleMap.get("RULE_ID") + "\", " + ruleMap.get("CAMP_ID") +");\n";
-		attrThen += "		$map.put(\"salience_"+ ruleMap.get("RULE_ID") + "\", " + ruleMap.get("SALIENCE") +");\n";
 		attrThen += "		$map.put(\"ruleNm_"+ ruleMap.get("RULE_ID") + "\", \"" + ruleMap.get("RULE_NM") +"\");\n";
 		attrThen += "		$map.put(\"targetType_"+ ruleMap.get("RULE_ID") + "\", \"" + ruleMap.get("TARGET_TYPE") +"\");";
 		
 		param.put("RULE_THEN", attrThen);
 		ruleService.updateAttrThen(param);
-		*/
-		
 		
 		// RULE 개수 조회
 		HashMap<String, Object> resultMap = new HashMap<>();

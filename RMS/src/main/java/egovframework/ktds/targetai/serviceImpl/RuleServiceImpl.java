@@ -130,6 +130,7 @@ public class RuleServiceImpl extends ApiServiceImpl implements RuleService {
 				drlSource += "	)\n";
 				drlSource += "	then\n";
 				drlSource += "		" + m.get("RULE_THEN") + "\n";
+				drlSource += "		$map.put(\"salience_"+ m.get("RULE_ID") + "\", " + m.get("SALIENCE") +");\n";
 				drlSource += "end\n\n";
 			}
 			
@@ -186,7 +187,7 @@ public class RuleServiceImpl extends ApiServiceImpl implements RuleService {
 		drlSource += "rule \"" + rule.get("RULE_NM") + "\"\n";
 		drlSource += "	no-loop " + rule.get("NO_LOOP") + "\n";
 		drlSource += "	lock-on-active " + rule.get("LOCK_ON_ACTIVE") + "\n";
-		drlSource += "	salience " + rule.get("SALIENCE") + "\n";
+		drlSource += "	salience 1\n";
 		drlSource += "	when\n";
 		drlSource += "		$map : Map(\n";
 		
@@ -197,7 +198,8 @@ public class RuleServiceImpl extends ApiServiceImpl implements RuleService {
 		
 		drlSource += "	)\n";
 		drlSource += "	then\n";
-		drlSource += "		" + rule.get("RULE_THEN") + "\n";
+		drlSource += "		$map.put(\"result\", \"Y\");\n";
+		
 		drlSource += "end\n\n";
 		
 		// DRL 파일 물리적으로 생성
@@ -217,13 +219,17 @@ public class RuleServiceImpl extends ApiServiceImpl implements RuleService {
 		List<HashMap<String, Object>> activeList = getActiveList(custInfo);
 		
 		int cnt = 0;
+		try {
 		for(HashMap<String, Object> activeMap : activeList) {
 			kieSession.insert(activeMap);
 			kieSession.fireAllRules();
 			
-			if(activeMap.get("ruleId_" + rule.get("RULE_ID")) != null) {
+			if(activeMap.get("result") != null) {
 				cnt++;
 			}
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		// drools 세션 dispose

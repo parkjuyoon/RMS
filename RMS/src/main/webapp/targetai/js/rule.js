@@ -572,11 +572,10 @@ $(document).ready(function() {
 		const pageNum = $(this).attr("data-page_num");
 		
 		var searchObj = {};
-		searchObj.pkgId = $("#ruleSearchBtn").attr("data-pkgId");
 		searchObj.ruleId_search = $("#ruleId_search").val();
 		searchObj.ruleRegUsrId_search = $("#ruleRegUsrId_search").val();
 		searchObj.ruleNm_search = $("#ruleNm_search").val();
-		searchObj.currentPage = 1;
+		searchObj.currentPage = pageNum;
 		
 		getRuleList(searchObj);
 	});
@@ -817,7 +816,7 @@ function getRuleList(searchObj) {
 					html += "	</td>";
 					html += "	<td class='t_center'>" + ruleList[i].RULE_ID + "</td>";
 					html += "	<td class='t_center'><a href='#' class='_ruleNmLink' data-ruleId='"+ ruleList[i].RULE_ID +"'>" + ruleList[i].RULE_NM + "</a></td>";
-					html += "	<td class='t_center'>연결중</td>";
+					html += "	<td class='t_center'>"+ (ruleList[i].RULE_PKG_COUNT > 0 ? "연결중" : "미연결") +"</td>";
 					html += "	<td class='t_center'>" + (typeof ruleList[i].UDT_DT == 'undefined' ? "-" : ruleList[i].UDT_DT) + "</td>";
 					html += "	<td class='t_center'>" + (typeof ruleList[i].UDT_USRNM == 'undefined' ? "-" : ruleList[i].UDT_USRNM) + "</td>";
 					html += "	<td class='t_center'>" + ruleList[i].REG_DT + "</td>";

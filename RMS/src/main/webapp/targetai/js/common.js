@@ -3,6 +3,11 @@
  */
 $(document).on("click", "a[href='#']", function(e) {
 	e.preventDefault();
+	e.stopPropagation();
+});
+
+$(document).on("click", "td", function(e) {
+	$(this).find("a").click();
 });
 
 /**
@@ -37,16 +42,40 @@ function fnSortableOption() {
 				
 				// 정렬
 				if(orderby == 'desc') {
-					if(firstText.toLowerCase() > secondText.toLowerCase()) {
-						rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
-						return false;
+					// 텍스트가 문자 일 경우
+					if(isNaN(firstText*1)) {
+						if(firstText.toLowerCase() > secondText.toLowerCase()) {
+							rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+							return false;
+						}
+					// 텍스트가 숫자일 경우
+					} else {
+						firstText = firstText*1;
+						secondText = secondText*1;
+						
+						if(firstText > secondText) {
+							rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+							return false;
+						}
 					}
 				} 
 				
 				if(orderby == 'asc'){
-					if(firstText.toLowerCase() < secondText.toLowerCase()) {
-						rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
-						return false;
+					// 텍스트가 문자 일 경우
+					if(isNaN(firstText*1)) {
+						if(firstText.toLowerCase() < secondText.toLowerCase()) {
+							rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+							return false;
+						}
+					// 텍스트가 숫자일 경우
+					} else {
+						firstText = firstText*1;
+						secondText = secondText*1;
+						
+						if(firstText < secondText) {
+							rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+							return false;
+						}
 					}
 				}
 			}

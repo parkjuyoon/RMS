@@ -59,6 +59,20 @@ public class ApiController {
 	}
 	
 	/**
+	 * 서비스 리스트 조회
+	 * @param searchObj
+	 * @return pkgList, pkgCount
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getSvcListPop.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getSvcListPop(@RequestBody HashMap<String, Object> searchObj) {
+		// 서비스 목록 조회
+		HashMap<String, Object> resultMap = apiService.getSvcListPop(searchObj);
+		
+		return resultMap;
+	}
+	
+	/**
 	 * API Request
 	 * @param type, value, svc_id
 	 * @return json

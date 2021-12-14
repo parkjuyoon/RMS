@@ -112,4 +112,50 @@
 		WHERE
 			SOV.SVC_ID = #{param_svcId}
 	</select>
+	
+	<!-- 서비스 리스트 조회 -->
+	<select id="getSvcList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 
+		    S.SVC_ID,
+		    S.SVC_NM,
+		    S.EVENT_ID,
+		    S.CHANNEL_ID,
+		    C.CHANNEL_NM,
+		    S.PKG_ID,
+		    P.PKG_NM,
+		    S.SVC_ACT_YN,
+		    S.SVC_DSC,
+		    S.REG_USRID,
+		    M.MEMBER_NAME REG_USRNM,
+		    DATE_FORMAT(S.REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
+		    DATE_FORMAT(S.UDT_DT, '%Y-%m-%d %h:%i:%s') AS UDT_DT,
+		    S.UDT_USRID,
+		    M1.MEMBER_NAME UDT_USRNM
+		FROM
+		    targetai.SVC S
+		    LEFT JOIN targetai.CHANNEL C ON (S.CHANNEL_ID = C.CHANNEL_ID)
+		    LEFT JOIN targetai.PKG P ON (S.PKG_ID = P.PKG_ID)
+		    LEFT JOIN targetai.MEMBER M ON (S.REG_USRID = M.MEMBER_ID)
+		    LEFT JOIN targetai.MEMBER M1 ON (S.UDT_USRID = M1.MEMBER_ID)
+		WHERE 1=1
+		<if test="svcId_search != null and svcId_search != ''">AND SVC_ID = #{svcId_search}</if>
+		<if test="svcNm_search != null and svcNm_search != ''">AND SVC_NM LIKE CONCAT('%', #{svcNm_search}, '%')</if>
+		<if test="svcActYn_search != null and svcActYn_search != ''">AND SVC_ACT_YN = #{svcActYn_search}</if>
+		<if test="svcRegUsrId_search != null and svcRegUsrId_search != ''">AND REG_USRID = #{svcRegUsrId_search}</if>
+		ORDER BY SVC_ID DESC
+		LIMIT #{limit}
+		OFFSET #{offset}
+	</select>
+	
+	<!-- 서비스 조회된 개수 조회 -->
+	<select id="getSvcCount" parameterType="java.util.HashMap" resultType="int">
+		SELECT 
+			COUNT(*) AS CNT
+		FROM targetai.SVC
+		WHERE 1=1
+		<if test="svcId_search != null and svcId_search != ''">AND SVC_ID = #{svcId_search}</if>
+		<if test="svcNm_search != null and svcNm_search != ''">AND SVC_NM LIKE CONCAT('%', #{svcNm_search}, '%')</if>
+		<if test="svcActYn_search != null and svcActYn_search != ''">AND SVC_ACT_YN = #{svcActYn_search}</if>
+		<if test="svcRegUsrId_search != null and svcRegUsrId_search != ''">AND REG_USRID = #{svcRegUsrId_search}</if>
+	</select>
 </mapper>

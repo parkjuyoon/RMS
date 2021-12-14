@@ -19,4 +19,6 @@ public interface ApiService {
 
 	List<HashMap<String, Object>> getOutPutValList(String param_svcId);
 
+	HashMap<String, Object> getSvcListPop(HashMap<String, Object> searchObj);
+
 }

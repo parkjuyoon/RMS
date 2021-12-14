@@ -22,4 +22,8 @@ public interface ApiMapper {
 
 	List<HashMap<String, Object>> getOutPutValList(String param_svcId);
 
+	List<HashMap<String, Object>> getSvcList(HashMap<String, Object> searchObj);
+
+	int getSvcCount(HashMap<String, Object> searchObj);
+
 }

@@ -44,7 +44,7 @@ public class SvcController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getSvcList.do", method = RequestMethod.POST)
-	public HashMap<String, Object> getPkgList(@RequestBody HashMap<String, Object> searchObj) {
+	public HashMap<String, Object> getSvcList(@RequestBody HashMap<String, Object> searchObj) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		List<HashMap<String, Object>> pkgList = svcService.getSvcList(searchObj);
 		int totalCount = svcService.getSvcCount(searchObj);

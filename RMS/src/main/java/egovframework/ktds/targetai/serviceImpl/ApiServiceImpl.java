@@ -53,4 +53,15 @@ public class ApiServiceImpl extends EgovAbstractServiceImpl implements ApiServic
 		return dao.getOutPutValList(param_svcId);
 	}
 
+	@Override
+	public HashMap<String, Object> getSvcListPop(HashMap<String, Object> searchObj) {
+		HashMap<String, Object> rtnMap = new HashMap<>();
+		List<HashMap<String, Object>> svcList = dao.getSvcList(searchObj);
+		int totalCount = dao.getSvcCount(searchObj);
+		rtnMap.put("svcList", svcList);
+		rtnMap.put("svcCount", totalCount);
+		
+		return rtnMap;
+	}
+
 }

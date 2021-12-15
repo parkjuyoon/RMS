@@ -238,7 +238,7 @@ $(document).ready(function() {
 	});
 	
 	// 패키지 관리 > 패키지 상세 > RULE 연결 팝업 DEL 버튼
-	$(document).on("click", "._ruleDel", function() {
+	$(document).on("click", "._ruleDel", function(e) {
 		var ruleNm = $(this).closest("tr").find("a").text();
 		var ruleId = $(this).closest("tr").find("a").attr("data-ruleId");
 		

@@ -65,6 +65,123 @@
 			</div>
 		</div>
 		<!-- //modal_pop -->
+		
+		<!-- RULE 연결 선택 팝업 -->
+		<div id="modal_ruleMapping" class="modal_pop">
+			<div class="modal_content" style="width: 800px;">
+				<!-- 팝업항상중앙띄우기 -->
+				<div class="modla_center">
+					<div class="modal_header">
+						<span class="close _ruleMappingPop_close" onclick="close_layerPop('modal_ruleMapping');" data-focusId="">&times;</span>
+						<h2>RULE 연결</h2>
+					</div>
+					<!-- 본문 -->
+					<div class="modal_body" style="height: 800px;">
+						<div class="progress_loading">
+							<div id="modal_ruleMappingLoading">
+								<img src="/targetai_publish/images/ajax-loader1.gif" />
+							</div>
+						</div>
+						<div class="modal_wrap">
+							<div class="row">
+								<div class="col" style="overflow:auto; height: 430px;">
+									<!-- 본문페이지 -->
+									<div class="card-body body-header">
+										<header class="card-header card-header-pd-mobile">
+											<div class="card-actions card-header-position-mobile"></div>
+											<div class="form_group">
+												<h2 class="card-title_txt" id="">연결 가능한 RULE : 
+													<input type="text" onkeypress="javascript:if(event.keyCode==13) {fnConRuleSearch(this.value);}" name="ruleSearch" class="wd150px" value="" style="min-width: 155px;"/>
+												</h2>
+											</div>
+										</header>
+										<div class="card-body">
+											<div class="panel bd_b_none nobordertop">
+											<table class="tb_type01 tablesorter">
+												<colgroup>
+													<col style="width: 10%;" />
+													<col style="width: auto;" />
+												</colgroup>
+												<thead>
+													<tr>
+														<th></th>
+														<th>RULE 명</th>
+													</tr>
+												</thead>
+												<tbody id="conRuleList"></tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col" style="overflow:auto; height: 430px;">
+									<!-- 본문페이지 -->
+									<div class="card-body body-header">
+										<header class="card-header card-header-pd-mobile">
+											<div class="card-actions card-header-position-mobile"></div>
+											<div class="form_group">
+												<h2 class="card-title_txt" id="">연결 예정인 RULE : 
+													<input type="text" onkeypress="javascript:if(event.keyCode==13) {fnMappingRuleSearch(this.value);}" name="ruleSearch" class="wd150px" value="" style="min-width: 155px;"/>
+												</h2>
+											</div>
+										</header>
+										<div class="card-body">
+											<div class="panel bd_b_none nobordertop">
+												<table class="tb_type01 tablesorter">
+													<colgroup>
+														<col style="width: 10%;" />
+														<col style="width: 25%;" />
+														<col style="width: auto;" />
+													</colgroup>
+													<thead>
+														<tr>
+															<th></th>
+															<th>순서<label class="_sortable"></label></th>
+															<th>RULE 명</th>
+														</tr>
+													</thead>
+													<tbody id="mappingRuleList"></tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+									<!-- //본문페이지 -->
+								</div>
+							</div>
+							<div class="row">
+								<!-- 버튼 -->
+								<div class="modal-footer" style="justify-content: center !important;">
+									<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('modal_ruleMapping');"><i class="far fa-times-circle custom-btn-i"></i> 닫기</button>
+									<button type="button" class="btn btn-sm btn-green" id="ruleMappingSaveBtn"><i class="far fa-check-circle custom-btn-i"></i> 적용</button>
+								</div>
+								<!-- //버튼 -->
+							</div>
+							<!-- when 컨디션 ROW -->
+							<div class="row">
+								<div class="col">
+									<div class="card-body body-header">
+										<header class="card-header card-header-pd-mobile">
+											<div class="card-actions card-header-position-mobile"></div>
+											<div class="form_group">
+												<h2 class="card-title_txt" id="ruleMappingRuleNm"> 
+												</h2>
+											</div>
+										</header>
+										<div class="card-body" style="height: 230px;">
+											<textarea rows="9" cols="7" class="txtsize_100 wd100" id="ruleMappingWhen" readonly="readonly" placeholder=""></textarea>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- // when 컨디션 ROW -->
+						</div>
+					</div>
+					<!-- //본문 -->
+				</div>
+				<!-- //팝업항상중앙띄우기 -->
+			</div>
+		</div>
+		<!-- //RULE 연결 선택 팝업 -->
 
 		<!-- 본문영역 -->
 		<div class="content-page">
@@ -269,120 +386,6 @@
 														<td class="t_left">
 															<button type="button" id="ruleMappingBtn" data-modalclass="modal_ruleMapping" title="팝업" class="btn btn-sm btn-green btnModal">연결</button>
 															<span id="curPkgStatus"></span>
-															<!-- outPut Value 선택 팝업 -->
-															<div id="modal_ruleMapping" class="modal_pop">
-																<div class="modal_content" style="width: 800px;">
-																	<!-- 팝업항상중앙띄우기 -->
-																	<div class="modla_center">
-																		<div class="modal_header">
-																			<span class="close _ruleMappingPop_close" onclick="close_layerPop('modal_ruleMapping');" data-focusId="">&times;</span>
-																			<h2>RULE 연결</h2>
-																		</div>
-																		<!-- 본문 -->
-																		<div class="modal_body" style="height: 800px;">
-																			<div class="progress_loading">
-																				<div id="modal_ruleMappingLoading">
-																					<img src="/targetai_publish/images/ajax-loader1.gif" />
-																				</div>
-																			</div>
-																			<div class="modal_wrap">
-																				<div class="row">
-																					<div class="col" style="overflow:auto; height: 430px;">
-																						<!-- 본문페이지 -->
-																						<div class="card-body body-header">
-																							<header class="card-header card-header-pd-mobile">
-																								<div class="card-actions card-header-position-mobile"></div>
-																								<div class="form_group">
-																									<h2 class="card-title_txt" id="">연결 가능한 RULE : 
-																										<input type="text" onkeypress="javascript:if(event.keyCode==13) {fnConRuleSearch(this.value);}" name="ruleSearch" class="wd150px" value="" />
-																									</h2>
-																								</div>
-																							</header>
-																							<div class="card-body">
-																								<div class="panel bd_b_none nobordertop">
-																								<table class="tb_type01 tablesorter">
-																									<colgroup>
-																										<col style="width: 10%;" />
-																										<col style="width: auto;" />
-																									</colgroup>
-																									<thead>
-																										<tr>
-																											<th></th>
-																											<th>RULE 명</th>
-																										</tr>
-																									</thead>
-																									<tbody id="conRuleList"></tbody>
-																									</table>
-																								</div>
-																							</div>
-																						</div>
-																					</div>
-																					<div class="col" style="overflow:auto; height: 430px;">
-																						<!-- 본문페이지 -->
-																						<div class="card-body body-header">
-																							<header class="card-header card-header-pd-mobile">
-																								<div class="card-actions card-header-position-mobile"></div>
-																								<h2 class="card-title_txt" id="">연결 예정인 RULE : 
-																									<input type="text" onkeypress="javascript:if(event.keyCode==13) {fnMappingRuleSearch(this.value);}" name="ruleSearch" class="wd150px" value="" />
-																								</h2>
-																							</header>
-																							<div class="card-body">
-																								<div class="panel bd_b_none nobordertop">
-																								<table class="tb_type01 tablesorter">
-																									<colgroup>
-																										<col style="width: 10%;" />
-																										<col style="width: 25%;" />
-																										<col style="width: auto;" />
-																									</colgroup>
-																									<thead>
-																										<tr>
-																											<th></th>
-																											<th>순서<label class="_sortable"></label></th>
-																											<th>RULE 명</th>
-																										</tr>
-																									</thead>
-																									<tbody id="mappingRuleList"></tbody>
-																									</table>
-																								</div>
-																							</div>
-																						</div>
-																						<!-- //본문페이지 -->
-																					</div>
-																				</div>
-																				<div class="row">
-																					<!-- 버튼 -->
-																					<div class="modal-footer" style="justify-content: center !important;">
-																						<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('modal_ruleMapping');"><i class="far fa-times-circle custom-btn-i"></i> 닫기</button>
-																						<button type="button" class="btn btn-sm btn-green" id="ruleMappingSaveBtn"><i class="far fa-check-circle custom-btn-i"></i> 적용</button>
-																					</div>
-																					<!-- //버튼 -->
-																				</div>
-																				<!-- when 컨디션 ROW -->
-																				<div class="row">
-																					<div class="col">
-																						<div class="card-body body-header">
-																							<header class="card-header card-header-pd-mobile">
-																								<div class="card-actions card-header-position-mobile"></div>
-																								<div class="form_group">
-																									<h2 class="card-title_txt" id="ruleMappingRuleNm"> 
-																									</h2>
-																								</div>
-																							</header>
-																							<div class="card-body" style="height: 230px;">
-																								<textarea rows="9" cols="7" class="txtsize_100 wd100" id="ruleMappingWhen" readonly="readonly" placeholder=""></textarea>
-																							</div>
-																						</div>
-																					</div>
-																				</div>
-																				<!-- // when 컨디션 ROW -->
-																			</div>
-																		</div>
-																		<!-- //본문 -->
-																	</div>
-																	<!-- //팝업항상중앙띄우기 -->
-																</div>
-															</div>
-															<!-- //outPut Value 선택 팝업 팝업 -->
 														</td>
 													</tr>
 													<tr>

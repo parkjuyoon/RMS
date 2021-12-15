@@ -89,10 +89,6 @@ function fnGetSvcList(searchObj) {
 					html += "	<td class='t_center'><a href='#' class='_svcNmLink' data-svcId='"+ svc.SVC_ID +"'>" + svc.SVC_NM + "</a></td>";
 					html += "	<td class='t_center'>" + (typeof svc.PKG_NM == 'undefined' ? '-' : svc.PKG_NM) + "</td>";
 					html += "	<td class='t_center'>" + svc.SVC_ACT_YN + "</td>";
-					html += "	<td class='t_center'>" + (typeof svc.UDT_DT == 'undefined' ? '-' : svc.UDT_DT) + "</td>";
-					html += "	<td class='t_center'>" + (typeof svc.UDT_USRNM == 'undefined' ? '-' : svc.UDT_USRNM) + "</td>";
-					html += "	<td class='t_center'>" + svc.REG_DT + "</td>";
-					html += "	<td class='t_center'>" + svc.REG_USRNM + "</td>";
 					html += "</tr>";
 				});
 			}

@@ -6,7 +6,8 @@ $(document).on("click", "a[href='#']", function(e) {
 	e.stopPropagation();
 });
 
-$(document).on("click", "td", function(e) {
+// a링크를 가지고 있는 td 를 클릭시 a 링크 클릭
+$(document).on("click", "td:has(>a)", function(e) {
 	$(this).find("a").click();
 });
 

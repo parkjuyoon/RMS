@@ -68,7 +68,7 @@
 		
 		<!-- RULE 연결 선택 팝업 -->
 		<div id="modal_ruleMapping" class="modal_pop">
-			<div class="modal_content" style="width: 800px;">
+			<div class="modal_content" style="width: 1100px;">
 				<!-- 팝업항상중앙띄우기 -->
 				<div class="modla_center">
 					<div class="modal_header">
@@ -100,11 +100,13 @@
 											<table class="tb_type01 tablesorter">
 												<colgroup>
 													<col style="width: 10%;" />
+													<col style="width: 15%;" />
 													<col style="width: auto;" />
 												</colgroup>
 												<thead>
 													<tr>
 														<th></th>
+														<th>아이디</th>
 														<th>RULE 명</th>
 													</tr>
 												</thead>
@@ -130,13 +132,15 @@
 												<table class="tb_type01 tablesorter">
 													<colgroup>
 														<col style="width: 10%;" />
-														<col style="width: 25%;" />
+														<col style="width: 17%;" />
+														<col style="width: 15%;" />
 														<col style="width: auto;" />
 													</colgroup>
 													<thead>
 														<tr>
 															<th></th>
 															<th>순서<label class="_sortable"></label></th>
+															<th>아이디</th>
 															<th>RULE 명</th>
 														</tr>
 													</thead>

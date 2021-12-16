@@ -390,6 +390,7 @@ function drawGridConRuleList(conRuleList) {
 		$.each(conRuleList, function(idx, rule){
 			html += "<tr>";
 			html += "	<td class='t_center'><button type='button' class='btn-add _ruleAdd' data-bs-dismiss='alert' aria-label='Close'></button></td>";
+			html += "	<td class='t_center'>" + rule.RULE_ID + "</td>";
 			html += "	<td class='t_center'><a href='#' class='_cmRuleLink' data-ruleId='"+ rule.RULE_ID +"'>" + rule.RULE_NM + "</a></td>";
 			html += "</tr>";
 		});
@@ -417,6 +418,7 @@ function drawGridMappingRuleList(mappingRuleList) {
 			html += "<tr>";
 			html += "	<td class='t_center'><button type='button' class='btn-del _ruleDel' data-bs-dismiss='alert' aria-label='Close'></button></td>";
 			html += "	<td class='t_center'><input type='text' class='_salience' value='"+ (typeof rule.SALIENCE == 'undefined' ? '' : rule.SALIENCE) +"' /></td>";
+			html += "	<td class='t_center'>" + rule.RULE_ID + "</td>";
 			html += "	<td class='t_center'><a href='#' class='_cmRuleLink' data-ruleId='"+ rule.RULE_ID +"'>" + rule.RULE_NM + "</a></td>";
 			html += "</tr>";
 		});

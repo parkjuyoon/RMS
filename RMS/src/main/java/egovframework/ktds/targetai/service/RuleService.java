@@ -11,8 +11,6 @@ public interface RuleService {
 	
 	HashMap<String, Object> getRule(HashMap<String, Object> param);
 	
-	int ruleNmCheck(HashMap<String, Object> param);
-	
 	List<HashMap<String, Object>> getFactorList(HashMap<String, Object> param);
 	
 	HashMap<String, Object> getFactorById(HashMap<String, Object> param);

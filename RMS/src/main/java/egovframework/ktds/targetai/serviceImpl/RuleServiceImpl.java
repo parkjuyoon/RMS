@@ -43,11 +43,6 @@ public class RuleServiceImpl extends ApiServiceImpl implements RuleService {
 	}
 	
 	@Override
-	public int ruleNmCheck(HashMap<String, Object> param) {
-		return ruleDao.ruleNmCheck(param);
-	}
-	
-	@Override
 	public List<HashMap<String, Object>> getFactorList(HashMap<String, Object> param) {
 		return ruleDao.getFactorList(param);
 	}

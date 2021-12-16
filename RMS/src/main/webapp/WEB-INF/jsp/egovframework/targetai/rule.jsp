@@ -493,11 +493,7 @@
 													</tr>
 													<tr>
 														<th class="t_left">RULE 명</th>
-														<td class="t_left"><input type="text" class="wd250px" id="ruleNm" value="" />
-															<button type="button" data-isDup="N" id="ruleNmDupBtn" class="btn btn-sm btn-gray">중복체크</button> 
-															<span class="custom-red mg_l15" style="display: none;" id="ruleDupN"><i class="el el-idea"></i> 중복된 RULE 명이 있습니다.</span> 
-															<span class="custom-green mg_l15" style="display: none;" id="ruleDupY"><i class="el el-idea"></i> 사용가능 RULE 명입니다.</span>
-														</td>
+														<td class="t_left"><input type="text" class="wd250px" id="ruleNm" value="" /></td>
 													</tr>
 													<tr style="display: none;">
 														<th class="t_left">NO-LOOP</th>

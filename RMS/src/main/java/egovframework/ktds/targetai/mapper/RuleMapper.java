@@ -16,8 +16,6 @@ public interface RuleMapper {
 	
 	List<HashMap<String, Object>> getWhenList(int ruleId);
 	
-	int ruleNmCheck(HashMap<String, Object> param);
-	
 	List<HashMap<String, Object>> getFactorList(HashMap<String, Object> param);
 
 	List<HashMap<String, Object>> getFactorFuncArgs(HashMap<String, Object> param);

@@ -48,7 +48,7 @@ public class RuleController {
 	public HashMap<String, Object> deleteRuleById(@RequestBody HashMap<String, Object> param) {
 		// RULE 삭제
 		ruleService.deleteRuleById(param);
-		// PKG_RULE_MAPPING 삭제
+		// RULE_PKG 맵핑정보도 삭제
 		ruleService.delRuleMappingByRuleIds(param);
 		
 		// 해당 패키지에 등록된 RULE 개수 조회
@@ -95,23 +95,6 @@ public class RuleController {
 		}
 		
 		return resultMap;
-	}
-	
-	/**
-	 * Rule name 중복 체크
-	 * @param param
-	 * @return boolean
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/ruleNmCheck.do", method = RequestMethod.POST)
-	public boolean ruleNmCheck(@RequestBody HashMap<String, Object> map) {
-		int ruleNameCnt = ruleService.ruleNmCheck(map);
-		
-		if(ruleNameCnt > 0) {
-			return false;
-		}
-		
-		return true;
 	}
 	
 	/**

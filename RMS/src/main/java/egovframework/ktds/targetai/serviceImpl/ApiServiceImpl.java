@@ -18,8 +18,8 @@ public class ApiServiceImpl extends EgovAbstractServiceImpl implements ApiServic
 	private ApiMapper dao;
 
 	@Override
-	public HashMap<String, Object> getPkgBySvcId(String svc_id) {
-		return dao.getPkgBySvcId(svc_id);
+	public HashMap<String, Object> getPkgBySvcId(HashMap<String, Object> param) {
+		return dao.getPkgBySvcId(param);
 	}
 
 	@Override

@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface ApiService {
 
-	HashMap<String, Object> getPkgBySvcId(String svc_id);
+	HashMap<String, Object> getPkgBySvcId(HashMap<String, Object> param);
 
 	void addSvclogIn(HashMap<String, Object> responseMap);
 

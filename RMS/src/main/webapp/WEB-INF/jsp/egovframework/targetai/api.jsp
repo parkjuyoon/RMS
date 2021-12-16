@@ -62,16 +62,21 @@
 											<div class="mg_t20 panel bd_b_none nobordertop">
 												<table class="tb_type01">
 													<colgroup>
-														<col style="width:8%;" />
+														<col style="width:5%;" />
+														<col style="width:11%;" />
 														<col style="width:15%;" />
-														<col style="width:30%;" />
 														<col style="width:auto;" />
+														<col style="width:auto%;" />
+														<col style="width:5%;" />
+														<col style="width:20%;" />
 													</colgroup>
 													<thead>
 														<tr>
 															<th></th>
 															<th>서비스 아이디</th>
+															<th>채널 명</th>
 															<th>서비스 명</th>
+															<th>패키지명</th>
 															<th>버전</th>
 															<th>DRL</th>
 														</tr>
@@ -180,9 +185,9 @@
 														<tr>
 															<th class="t_left">서비스 아이디</th>
 															<td class="t_left">
-																<select name="selectSvcStatus" class="wd150px">
-																	<option value="dev" selected>개발중</option>
-																	<option value="real">운영중</option>
+																<select name="selectVerStatus" class="wd150px">
+																	<option value="D" selected>개발중</option>
+																	<option value="R">운영중</option>
 																</select>
 																<input type="text" class="wd250px" name="selectedSvcNm" readonly="readonly" placeholder="서비스를 선택하세요." />
 																<button type="button" id="selectSvcBtn" class="btn btn-sm btn-green">서비스 선택</button>

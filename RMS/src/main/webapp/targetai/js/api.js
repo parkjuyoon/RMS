@@ -21,10 +21,10 @@ $(document).ready(function() {
 			return;
 		}
 		
-		var svc_id = $("input[name='svc_id']").val();
+		var svc_id = $("input[name='selectedSvcNm']").attr("data-svcId");
 		
-		if(svc_id == '') {
-			messagePop("warning","서비스 아이디를 입력하세요.","응답받을 서비스 아이디를 입력하세요.","input[name='svc_id']");
+		if(typeof svc_id == 'undefined') {
+			messagePop("warning","서비스를 선택하세요","","");
 			return;
 		}
 		
@@ -33,6 +33,7 @@ $(document).ready(function() {
 		param.api_type = api_type;
 		param.param_val = param_val; 
 		param.svc_id = svc_id;
+		param.ver_status = $("select[name='selectVerStatus']").val();
 		
 		fnRequestApi(param);
 	});
@@ -43,8 +44,63 @@ $(document).ready(function() {
 		// 서비스 목록 조회
 		var searchObj = {};
 		searchObj.svcNm_search = $("#selectSvcPop_svcNm").val();
+		searchObj.verStatus = $("select[name='selectVerStatus']").val();
 		searchObj.currentPage = 1;
 		fnGetSvcList(searchObj);
+	});
+	
+	// 서비스 리스트 페이지 번호 클릭
+	$("#selectSvcPop_paging").on("click", "._paging", function(e) {
+		var cls = $(this).attr("class");
+		const pageNum = $(this).attr("data-page_num");
+		
+		var searchObj = {};
+		searchObj.svcNm_search = $("#selectSvcPop_svcNm").val();
+		searchObj.verStatus = $("select[name='selectVerStatus']").val();
+		searchObj.currentPage = pageNum;
+		
+		fnGetSvcList(searchObj);
+	});
+	
+	// 서비스 선택 팝업 > 조회버튼
+	$("#selectSvcPop_SearchBtn").click(function() {
+		var searchObj = {};
+		searchObj.svcNm_search = $("#selectSvcPop_svcNm").val();
+		searchObj.verStatus = $("select[name='selectVerStatus']").val();
+		searchObj.currentPage = 1;
+		
+		fnGetSvcList(searchObj);
+	});
+	
+	// 서비스 선택 팝업 > 적용버튼
+	$("#selectSvcPop_saveBtn").click(function() {
+		var selectedSvc = $("input[name='svcListRadio']:checked");
+		var svcId = selectedSvc.attr("data-svcId") * 1;
+		var svcNm = selectedSvc.closest("tr").find("._tdSvcNm").text();
+		var pkgNm = selectedSvc.closest("tr").find("._tdPkgNm").text();
+		var ver = selectedSvc.closest("tr").find("._tdVer").text();
+		
+		// 서비스 선택했는지 확인
+		if(isNaN(svcId)) {
+			messagePop("warning","서비스를 선택하세요.","","");
+			return;
+		}
+		
+		// 연결된 패키지 확인
+		if(pkgNm == '-') {
+			messagePop("warning","연결된 패키지가 없습니다.","","");
+			return;
+		}
+		
+		// 실행 버전 확인
+		if(ver == '-') {
+			messagePop("warning","실행할 수 있는 버전이 없습니다.","","");
+			return;
+		}
+		
+		$("input[name='selectedSvcNm']").val(svcNm);
+		$("input[name='selectedSvcNm']").attr("data-svcId", svcId);
+		close_layerPop('selectSvcPop');
 	});
 });
 
@@ -72,7 +128,7 @@ function fnGetSvcList(searchObj) {
 			
 			if(svcList.length == 0) {
 				html += "<tr>";
-				html += "	<td colspan='10' class='t_center'>조회된 내용이 없습니다.</td>";
+				html += "	<td colspan='7' class='t_center'>조회된 내용이 없습니다.</td>";
 				html += "</tr>";
 				
 			} else {
@@ -80,25 +136,22 @@ function fnGetSvcList(searchObj) {
 					html += "<tr>";
 					html += "	<td class='t_center'>";
 					html += "		<div class='checkbox-container'>";
-					html += "			<input type='checkbox' class='_svcListChkBox' data-svc_id='"+ svc.SVC_ID +"'/>";
-					html += "			<label for='_svcListChkBox'></label>";
+					html += "			<input type='radio' class='_svcListRadio' name='svcListRadio' data-svcId='"+ svc.SVC_ID +"'/>";
+					html += "			<label for='_svcListRadio'></label>";
 					html += "		</div>";
 					html += "	</td>";
-					html += "	<td class='t_center'>" + svc.SVC_ID + "</td>";
-//					html += "	<td class='t_center'>" + (typeof svc.CHANNEL_NM == 'undefined' ? '-' : svc.CHANNEL_NM) + "</td>";
-					html += "	<td class='t_center'><a href='#' class='_svcNmLink' data-svcId='"+ svc.SVC_ID +"'>" + svc.SVC_NM + "</a></td>";
-					html += "	<td class='t_center'>" + (typeof svc.PKG_NM == 'undefined' ? '-' : svc.PKG_NM) + "</td>";
-					html += "	<td class='t_center'>" + svc.SVC_ACT_YN + "</td>";
+					html += "	<td class='t_center _tdSvcId'>" + svc.SVC_ID + "</td>";
+					html += "	<td class='t_center _tdChannelNm'>" + (typeof svc.CHANNEL_NM == 'undefined' ? '-' : svc.CHANNEL_NM) + "</td>";
+					html += "	<td class='t_center _tdSvcNm'>" + svc.SVC_NM + "</td>";
+					html += "	<td class='t_center _tdPkgNm'>" + (typeof svc.PKG_NM == 'undefined' ? '-' : svc.PKG_NM) + "</td>";
+					html += "	<td class='t_center _tdVer'>" + (typeof svc.VER == 'undefined' ? '-' : svc.VER) + "</td>";
+					html += "	<td class='t_center _tdDrlNm'>" + (typeof svc.DRL_NM == 'undefined' ? '-' : "<a href='#' class='_drlNmLink' data-pkgId='"+ svc.PKG_ID +"' data-ver='"+ svc.VER +"'>" + svc.DRL_NM + "</a>") + "</td>";
 					html += "</tr>";
 				});
 			}
 			
 			$("#selectSvcPop_svcList").html(html);
-//			$("#svcCountBySearch").text(searchObj.totalCount);
 			fnPaging("#selectSvcPop_paging", searchObj);
-			
-			// 전체 체크 해제
-//			$("#svcListAllChkBox").prop("checked", false);
 			
 		},
 		beforeSend : function() {

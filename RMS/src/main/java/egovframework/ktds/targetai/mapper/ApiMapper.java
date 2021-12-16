@@ -8,7 +8,7 @@ import egovframework.rte.psl.dataaccess.mapper.Mapper;
 @Mapper("apiMapper")
 public interface ApiMapper {
 
-	HashMap<String, Object> getPkgBySvcId(String svc_id);
+	HashMap<String, Object> getPkgBySvcId(HashMap<String, Object> param);
 
 	void addSvclogIn(HashMap<String, Object> responseMap);
 

@@ -125,9 +125,16 @@ public class ApiController {
 			String param_custId = (String) params.get("param_val");
 			// 서비스 아이디
 			String param_svcId = (String) params.get("svc_id");
+			// 버전 상태
+			String param_verStatus = (String) params.get("ver_status");
+			
+			
+			HashMap<String, Object> map1 = new HashMap<>();
+			map1.put("svc_id", param_svcId);
+			map1.put("ver_status", param_verStatus);
 			
 			// PKG 내 DRL 파일 정보 조회
-			HashMap<String, Object> pkg = apiService.getPkgBySvcId(param_svcId);
+			HashMap<String, Object> pkg = apiService.getPkgBySvcId(map1);
 			
 			if(pkg == null) {
 				responseMap.put("CODE", 404);

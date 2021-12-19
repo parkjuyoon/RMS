@@ -38,14 +38,14 @@
 			IO_FLAG,
 			SEQ,
 			SVC_ID,
-			PARAM,
-			VAL
+			INPUT_PARAM,
+			INPUT_VAL
 		) VALUES (
 			"IN",
 			1,
 			#{SVC_ID},
-			#{PARAM},
-			#{VAL}
+			#{INPUT_PARAM},
+			#{INPUT_VAL}
 		)
 	<selectKey order="AFTER" keyProperty="SVCLOG_ID" resultType="INT">
 		SELECT LAST_INSERT_ID()
@@ -58,8 +58,8 @@
 			IO_FLAG,
 			SEQ,
 			SVC_ID,
-			PARAM,
-			VAL,
+			INPUT_PARAM,
+			INPUT_VAL,
 			RULE_ID
 		) VALUES 
 		<foreach collection="RESULT" separator="," item="res">
@@ -68,8 +68,8 @@
 			"OUT",
 			#{res.ORDER},
 			#{SVC_ID},
-			#{PARAM},
-			#{VAL},
+			#{INPUT_PARAM},
+			#{INPUT_VAL},
 			#{res.RULE_ID}
 		)
 		</foreach>

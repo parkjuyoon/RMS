@@ -293,8 +293,8 @@ public class ApiController {
 			HashMap<String, Object> logMap = new HashMap<>();
 			logMap.put("RESULT", respList);
 			logMap.put("SVC_ID", param_svcId);
-			logMap.put("PARAM", "CUST_NO");	// pk 중복 에러
-			logMap.put("VAL", param_custId);
+			logMap.put("INPUT_PARAM", "CUST_NO");	// pk 중복 에러
+			logMap.put("INPUT_VAL", param_custId);
 			
 			apiService.addSvclogIn(logMap);
 			

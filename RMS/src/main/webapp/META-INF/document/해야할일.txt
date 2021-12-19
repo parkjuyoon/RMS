@@ -106,5 +106,5 @@ API 개발중/운영중 선택해서 CALL 할 수 있도록(완)
 ---- 추가작업
 SVCLOG 테이블 PARAM -> INPUT_PARAM
 SVCLOG 테이블 VAL -> INPUT_VAL
-으로 컬럼명 변경
+으로 컬럼명 변경(완)
 

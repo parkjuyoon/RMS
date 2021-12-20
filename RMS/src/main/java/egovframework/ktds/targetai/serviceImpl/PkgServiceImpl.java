@@ -104,8 +104,8 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 		boolean ruleMappingEditTF = Arrays.deepEquals(mappingRuleIds1.toArray(), mappingRuleIds2.toArray());
 		
 		// RULE 연결 정보가 변경되었으면 패키지 버전 업데이트
+		param.put("currentTime", LocalDateTime.now());
 		if(!ruleMappingEditTF) {
-			param.put("currentTime", LocalDateTime.now());
 			// 개발중인 패키지가 있는지 확인
 			param.put("VER_STATUS", "D");
 			HashMap<String, Object> pkgDevVer = dao.getPkgVerByStatus(param);

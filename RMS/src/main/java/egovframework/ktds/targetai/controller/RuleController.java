@@ -156,8 +156,24 @@ public class RuleController {
 	@ResponseBody
 	@RequestMapping(value = "/ruleSave.do", method = RequestMethod.POST)
 	public HashMap<String, Object> ruleSave(@RequestBody HashMap<String, Object> param, HttpSession session) {
+		HashMap<String, Object> resultMap = new HashMap<>();
+		
 		String ruleId = (String) param.get("ruleId");
 		String regUserId = (String) session.getAttribute("member_id");
+		
+		String dupCheck = (String) param.get("dupCheck");
+		
+		// RULE 명 중복체크
+		if("Y".equals(dupCheck)) {
+			int dupCount = ruleService.ruleNmDupCheck(param);
+			
+			if(dupCount > 0) {
+				resultMap.put("dupCount", dupCount);
+				return resultMap;
+			}
+		}
+		
+		resultMap.put("dupCount", 0);
 		
 		param.put("REG_USER_ID", regUserId);
 		
@@ -227,7 +243,6 @@ public class RuleController {
 		ruleService.updateAttrThen(param);
 		
 		// RULE 개수 조회
-		HashMap<String, Object> resultMap = new HashMap<>();
 		int ruleCount = ruleService.getRuleCount(resultMap);
 		resultMap.put("ruleCount", ruleCount);
 		resultMap.put("ruleId", param.get("ruleId"));

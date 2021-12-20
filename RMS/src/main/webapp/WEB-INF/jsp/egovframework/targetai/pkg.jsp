@@ -100,12 +100,14 @@
 											<table class="tb_type01 tablesorter">
 												<colgroup>
 													<col style="width: 10%;" />
+													<col style="width: 22%;" />
 													<col style="width: 15%;" />
 													<col style="width: auto;" />
 												</colgroup>
 												<thead>
 													<tr>
 														<th></th>
+														<th>기본 우선순위</th>
 														<th>아이디</th>
 														<th>RULE 명</th>
 													</tr>
@@ -132,14 +134,14 @@
 												<table class="tb_type01 tablesorter">
 													<colgroup>
 														<col style="width: 10%;" />
-														<col style="width: 17%;" />
+														<col style="width: 22%;" />
 														<col style="width: 15%;" />
 														<col style="width: auto;" />
 													</colgroup>
 													<thead>
 														<tr>
 															<th></th>
-															<th>순서<label class="_sortable"></label></th>
+															<th>우선순위 <label class="_sortable"></label></th>
 															<th>아이디</th>
 															<th>RULE 명</th>
 														</tr>
@@ -414,7 +416,7 @@
 
 									<!-- 버튼 -->
 									<div class="card-actions-foot">
-										<button type="button" class="btn btn-sm btn-green" id="savePkgBtn">
+										<button type="button" class="btn btn-sm btn-gray" id="savePkgBtn">
 											<i class="fas fa-save custom-btn-i"></i> 저장
 										</button>
 									</div>
@@ -518,7 +520,7 @@
 												<tr>
 													<th>이벤트 버전</th>
 													<th>이벤트 명</th>
-													<th>순서</th>
+													<th>우선순위</th>
 													<th>등록일</th>
 													<th>등록자</th>
 												</tr>

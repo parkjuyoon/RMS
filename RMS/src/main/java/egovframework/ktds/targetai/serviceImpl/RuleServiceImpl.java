@@ -236,4 +236,9 @@ public class RuleServiceImpl extends ApiServiceImpl implements RuleService {
 		
 		return rtnMap;
 	}
+
+	@Override
+	public int ruleNmDupCheck(HashMap<String, Object> param) {
+		return ruleDao.ruleNmDupCheck(param);
+	}
 }

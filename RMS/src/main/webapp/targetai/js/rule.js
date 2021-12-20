@@ -52,10 +52,6 @@ $(document).ready(function() {
 		}
 	});
 	
-	$(document).on("click", "._ruleListChkBoxNot", function() {
-		messagePop("warning","연결중인 패키지는 삭제할 수 없습니다.","","");
-	});
-	
 	// RULE 목록 > 신규 RULE 생성 버튼 클릭
 	$("#addNewRuleBtn").click(function() {
 		// RULE 속성 Obj 초기화
@@ -449,7 +445,15 @@ $(document).ready(function() {
 	
 	// RULE 상세 > 저장 버튼 클릭
 	$("#saveRuleBtn").click(function() {
-		 fnSaveRule();
+		var refRuleId = $(this).attr("data-refRuleId") * 1;
+		var refRuleNm = $(this).attr("data-ruleNm");
+		
+		var map = {};
+		map.refRuleId = refRuleId;
+		map.refRuleNm = refRuleNm;
+
+		fnSaveRule(map);
+		
 	})
 	
 	// RULE 목록 > 삭제 버튼 클릭
@@ -458,11 +462,19 @@ $(document).ready(function() {
 		var ruleListChkBox = $("._ruleListChkBox:checked");
 		
 		var ruleIdArr = [];
-		$.each(ruleListChkBox, function(idx, ruleChkBox){
-			var ruleId = ruleListChkBox.eq(idx).attr("data-ruleId");
 		
+		for(var i=0; i<ruleListChkBox.length; i++) {
+			var ruleId = ruleListChkBox.eq(i).attr("data-ruleId");
+			// 연결중인 상태일 경우 삭제 하지말아야 함
+			var rulePkgCount = ruleListChkBox.eq(i).attr("data-rulePkgCount") * 1;
+			
+			if(!(rulePkgCount == 0)) {
+				messagePop("warning","연결중인 RULE은 삭제할 수 없습니다.","","");
+				return;
+			}
+			
 			ruleIdArr.push(ruleId);
-		});
+		}
 		
 		if(ruleIdArr.length > 0) {
 			if(confirm(ruleIdArr.length + "건의 RULE이 삭제됩니다.\n정말 삭제하시겠습니까?")) {
@@ -478,7 +490,7 @@ $(document).ready(function() {
 			}
 			
 		} else {
-			messagePop("warning", "RULE 삭제", "삭제할 RULE을 선택하세요.", "");
+			messagePop("warning", "삭제할 RULE을 선택하세요.", "", "");
 		}
 	});
 	
@@ -574,6 +586,25 @@ $(document).ready(function() {
 		// RULE 단위 테스트 실행.
 		fnRuleTest(param);
 	});
+	
+	// RULE 목록 > 복사 버튼 클릭
+	$("#copyRuleBtn").click(function() {
+		var chkedItm = $("._ruleListChkBox:checked");
+		
+		if(!(chkedItm.length == 1)) {
+			messagePop("warning","1개의 복사할 RULE을 선택하세요.","","");
+			return;
+		}
+		
+		var ruleId = chkedItm.attr("data-ruleId");
+		
+		var param = {};
+		param.ruleId = ruleId;
+		param.rulePkgCount = $(this).attr("data-rulePkgCount") * 1;
+		param.copyNm = "_복사";
+		
+		fnGetRule(param);
+	});
 });
 
 /**
@@ -593,8 +624,10 @@ function fnGetRule(param) {
 			var rule = res.rule;
 			
 			// -- RULE 상세페이지 초기화 시작 --
-			$("#ruleId").text(rule.RULE_ID);
-			$("#ruleNm").val(rule.RULE_NM);
+			$("#ruleId").text((typeof param.copyNm == 'undefined' ? rule.RULE_ID : ""));
+			$("#refRuleInfo").text((typeof rule.REF_RULE_ID == 'undefined' ? "-" : "(" + rule.REF_RULE_ID + ") " + rule.REF_RULE_NM));
+			$("#ruleNm").val(rule.RULE_NM + (typeof param.copyNm == 'undefined' ? "" : param.copyNm));
+			$("#dfltSalience").val(rule.DFLT_SALIENCE);
 			$("input:radio[name='noLoop']:radio[value='"+ rule.NO_LOOP +"']").prop("checked", true);
 			$("input:radio[name='lockOnActive']:radio[value='"+ rule.LOCK_ON_ACTIVE +"']").prop("checked", true);
 			$("#ruleCard").removeClass("card-collapsed");
@@ -660,8 +693,9 @@ function fnGetRule(param) {
 			// 단위 테스트 팝업 > RULE 속성영역
 			$("#ruleAttrPreView").html(ruleTestHtml);
 			
-			// RULE 저장시 연결중인 RULE 을 수정하면 복사기능 제공하기 위한 변수
-			$("#saveRuleBtn").attr("data-rulePkgCount", param.rulePkgCount);
+			// RULE 저장시 복사기능 제공하기 위한 변수
+			$("#saveRuleBtn").attr("data-ruleNm", rule.RULE_NM);
+			$("#saveRuleBtn").attr("data-refRuleId", rule.RULE_ID);
 			
 		},
 		beforeSend : function() {
@@ -780,12 +814,7 @@ function getRuleList(searchObj) {
 					html += "<tr>";
 					html += "	<td class='t_center'>";
 					html += "		<div class='checkbox-container'>";
-					if(ruleList[i].RULE_PKG_COUNT > 0) {
-						html += "			<input type='checkbox' class='_ruleListChkBoxNot' data-ruleId='"+ ruleList[i].RULE_ID +"' onClick='return false;'/>";
-						
-					} else {
-						html += "			<input type='checkbox' class='_ruleListChkBox' data-ruleId='"+ ruleList[i].RULE_ID +"'/>";
-					}
+					html += "			<input type='checkbox' class='_ruleListChkBox' data-rulePkgCount='"+ ruleList[i].RULE_PKG_COUNT +"' data-ruleId='"+ ruleList[i].RULE_ID +"'/>";
 					html += "		</div>";
 					html += "	</td>";
 					html += "	<td class='t_center'>" + ruleList[i].RULE_ID + "</td>";
@@ -976,7 +1005,16 @@ function getFactorVal(event, treeId, treeNode) {
 			
 			$("#factorVal").attr("data-type", dataType);
 			$("#factorVal").show();
-			$("#factorVal_direct").hide();
+			
+			$("#factorVal_direct").val("");
+			if(factorVal.length > 0) {
+				$("#factorVal_direct").hide();
+				
+			} else {
+				$("#factorVal_direct").show();
+				$("#factorVal").html("");
+				$("#factorVal").attr("data-type", "INPUT");
+			}
 		},
 		beforeSend : function() {
 			$("#factorTreeLoading").show();
@@ -997,30 +1035,33 @@ function getFactorVal(event, treeId, treeNode) {
  * RULE 상세 > RULE 저장
  * @returns
  */
-function fnSaveRule() {
+function fnSaveRule(map) {
 	var param = {};
 	// rule 저장값
 	param.ruleId = $("#ruleId").text();
 	param.ruleNm = $("#ruleNm").val();
+	param.dfltSalience = $("#dfltSalience").val();
 	param.targetType = $("#targetType").val();
 	param.noLoop = $("input:radio[name='noLoop']").prop("checked") + "";
 	param.lockOnActive = $("input:radio[name='lockOnActive']").prop("checked") + "";
 	
-	// 연결중인 RULE을 수정할때 복사 여부 물어본다
-	var rulePkgCount = $("#saveRuleBtn").attr("data-rulePkgCount") * 1;
+	param.refRuleId = map.refRuleId;
+	param.refRuleNm = map.refRuleNm;
 	
-	if(rulePkgCount > 0) {
-		if(confirm("현재 RULE은 패키지에 연결되어 있어 복사됩니다.\n복사하시겠습니까?")) {
-			param.refRuleId = $("#ruleId").text();
-			param.ruleId = "";
-			
-		} else {
-			return;
-		}
+	// RULE 명 중복체크 필요성
+	if(param.refRuleId != param.ruleId || param.ruleNm != param.refRuleNm) {
+		param.dupCheck = "Y";
+	} else {
+		param.dupCheck = "N";
 	}
 	
 	// ruleAttr 저장값
 	param.ruleObjArr = ruleObjArr;
+	
+	if($("#ruleNm").val() == '') {
+		messagePop("warning", "RULE 명을 입력하세요.", "", "");
+		return;
+	}
 	
 	if($("#ruleWhenCont").val() == '') {
 		messagePop("warning", "조건 내용을 추가하세요.", "", "");
@@ -1035,11 +1076,17 @@ function fnSaveRule() {
 		contentType:'application/json; charset=utf-8',
 		dataType : "json",
 		success : function(res) {
+			var dupCount = res.dupCount;
+			
+			if(dupCount > 0) {
+				messagePop("warning", "RULE 명이 중복되었습니다.", "", "");
+				return;
+			}
+			
 			var ruleCount = res.ruleCount;
 			messagePop("success", "RULE 저장 했습니다.", "", "");
 			
 			$("#ruleId").text(res.ruleId);
-			$("#saveRuleBtn").attr("data-rulePkgCount", 0);
 			
 			var searchObj = {};
 			searchObj.currentPage = 1;
@@ -1092,7 +1139,8 @@ function initRuleDetail() {
 	$("input:radio[name='noLoop']:radio[value='true']").prop("checked", true);
 	$("input:radio[name='lockOnActive']:radio[value='true']").prop("checked", true);
 	$("#ruleWhenCont").val("");
-	$("#saveRuleBtn").removeAttr("data-rulePkgCount");
+	$("#saveRuleBtn").removeAttr("data-ruleNm");
+	$("#saveRuleBtn").removeAttr("data-refRuleId");
 }
 
 /**

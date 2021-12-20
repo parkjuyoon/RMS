@@ -44,6 +44,11 @@ $(document).ready(function() {
 	$("#saveFuncSettingBtn").click(function() {
 		fnSaveFuncSetting();
 	});
+	
+	// FUNCTION 설정 > DATA_TYPE 선택 변경 이벤트
+	$(document).on("change", "._paramTypeSelect", function() {
+		
+	});
 });
 
 /**
@@ -119,9 +124,15 @@ function fnGetFuncInfo(factorId) {
 				if(paramInfo.DATA_TYPE == 'String') {
 					html += "		<option value='String' selected>String</option>";
 					html += "		<option value='int'>int</option>";
+					html += "		<option value='Object'>Object</option>";
 				} else if(paramInfo.DATA_TYPE == 'int'){
 					html += "		<option value='String'>String</option>";
 					html += "		<option value='int' selected>int</option>";
+					html += "		<option value='Object'>Object</option>";
+				} else if(paramInfo.DATA_TYPE == 'Object') {
+					html += "		<option value='String'>String</option>";
+					html += "		<option value='int'>int</option>";
+					html += "		<option value='Object' selected>Object</option>";
 				}
 					html += "	</select>";
 					html += "	<input type='text' class='wd300px _paramVal' value='"+ paramInfo.ARG_NM +"' />";

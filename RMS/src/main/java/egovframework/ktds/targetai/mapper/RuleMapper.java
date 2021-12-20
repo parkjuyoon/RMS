@@ -37,4 +37,6 @@ public interface RuleMapper {
 	void deleteRuleById(HashMap<String, Object> param);
 
 	void delRuleMappingByRuleIds(HashMap<String, Object> param);
+
+	int ruleNmDupCheck(HashMap<String, Object> param);
 }

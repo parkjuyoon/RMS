@@ -209,6 +209,7 @@
 	<select id="getConRuleList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT 
 			RULE_ID,
+			DFLT_SALIENCE,
 			RULE_NM
 		FROM
 			targetai.RULE
@@ -229,6 +230,7 @@
 		SELECT 
 			R.RULE_ID,
 			R.RULE_NM,
+			R.DFLT_SALIENCE,
 			RP.SALIENCE
 		FROM
 			targetai.RULE R

@@ -249,6 +249,7 @@
 																<select class="wd150px _paramTypeSelect">
 																	<option value="String">String</option>
 																	<option value="int">int</option>
+																	<option value="Object">Object</option>
 																</select>
 																<input type="text" class="wd300px _paramVal" value="" />
 																<button type="button" id="" class="btn btn-sm btn-gray _paramPlusBtn">+</button>

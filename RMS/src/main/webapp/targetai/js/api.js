@@ -102,7 +102,55 @@ $(document).ready(function() {
 		$("input[name='selectedSvcNm']").attr("data-svcId", svcId);
 		close_layerPop('selectSvcPop');
 	});
+	
+	// DRL 파일명 클릭
+	$(document).on("click", "._drlNmLink", function(e) {
+		e.preventDefault();	// a링크 클릭이벤트 제거
+		var param = {};
+		param.pkgId = $(this).attr("data-pkgId");
+		param.ver = $(this).attr("data-ver");
+		
+		$("#drlSourcePop_contents").text("");
+		$("#drlSourcePop").show();
+		fnGetDrlSouce(param);
+	});
 });
+
+/**
+ * 패키지 목록 > DRL 소스 보기
+ * @param param
+ * @returns
+ */
+function fnGetDrlSouce(param) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/getDrlSouce.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			if(typeof res.DRL_SOURCE == 'undefined' || res.DRL_SOURCE == '') {
+				res.DRL_SOURCE = "내용이 없습니다.";
+			}
+			
+			$("#drlSourcePop_title").text(res.DRL_NM);
+			$("#drlSourcePop_contents").text(res.DRL_SOURCE);
+		},
+		beforeSend : function() {
+			$("#drlSourcePopLoading").show();
+		},
+		complete : function() {
+			$("#drlSourcePopLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
 
 /**
  * 서비스 리스트 조회

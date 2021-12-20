@@ -1,6 +1,5 @@
 package egovframework.ktds.targetai.controller;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
@@ -8,16 +7,12 @@ import java.util.Properties;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import egovframework.ktds.targetai.service.SettingService;
 import egovframework.ktds.targetai.util.DynamicClassBuilder;

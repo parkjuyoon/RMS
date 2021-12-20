@@ -449,6 +449,9 @@
 
 									<!-- 버튼 -->
 									<div class="card-actions-foot">
+										<button type="button" class="btn btn-sm btn-red" id="copyRuleBtn">
+											<i class="el el-file-new custom-btn-i"></i> 복사
+										</button>
 										<button type="button" class="btn btn-sm btn-gray" id="delRuleBtn">
 											<i class="far fa-trash-alt custom-btn-i"></i> 삭제
 										</button>
@@ -488,12 +491,20 @@
 												</colgroup>
 												<tbody>
 													<tr>
-														<th class="t_left">RULE ID</th>
+														<th class="t_left">RULE 아이디</th>
 														<td class="t_left" id="ruleId"></td>
+													</tr>
+													<tr>
+														<th class="t_left">참조 정보</th>
+														<td class="t_left" id="refRuleInfo"></td>
 													</tr>
 													<tr>
 														<th class="t_left">RULE 명</th>
 														<td class="t_left"><input type="text" class="wd250px" id="ruleNm" value="" /></td>
+													</tr>
+													<tr>
+														<th class="t_left">기본 우선 순위</th>
+														<td class="t_left"><input type="text" class="wd150px" id="dfltSalience" value="1" /></td>
 													</tr>
 													<tr style="display: none;">
 														<th class="t_left">NO-LOOP</th>
@@ -514,7 +525,7 @@
 														</td>
 													</tr>
 													<tr>
-														<th class="t_left">타켓 유형</th>
+														<th class="t_left">타겟 유형</th>
 														<td class="t_left">
 															<select id="targetType" class="wd150px">
 																<option value="CUST">고객</option>

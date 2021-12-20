@@ -11,6 +11,60 @@
 		<%@ include file="../targetai/comm/navbar.jsp"%>
 		<%@ include file="../targetai/comm/side_menu.jsp"%>
 		<%@ include file="../targetai/comm/alertPop.jsp"%>
+		
+		<!-- DRL 소스 보기 modal_pop -->
+		<div id="drlSourcePop" class="modal_pop" style="z-index: 99999;">
+			<div class="modal_content" style="width: 800px;">
+				<!-- 팝업항상중앙띄우기 -->
+				<div class="modla_center">
+					<div class="modal_header">
+						<span class="close" onclick="close_layerPop('drlSourcePop');" data-focusId="" id="messagePop_close">&times;</span>
+						<h2>DRL Source 확인</h2>
+					</div>
+					<!-- 본문 -->
+					<div class="modal_body" style="height: calc(100% - 25vh); overflow-x: hidden; overflow-y: auto;">
+						<div class="modal_wrap">
+							<!-- 상세영역 -->
+							<div class="row">
+								<div class="col">
+									<div class="card mg_b0">
+										<!-- 본문페이지 -->
+										<div class="card-body body-header" style="">
+											<div class="progress_loading">
+												<div id="drlSourcePopLoading">
+													<img src="/targetai_publish/images/ajax-loader1.gif" />
+												</div>
+											</div>
+											<header class="card-header card-header-pd-mobile">
+												<div class="card-actions card-header-position-mobile"></div>
+												<h2 class="card-title_txt" id="drlSourcePop_title">drl 파일명</h2>
+											</header>
+											<!-- 경고 -->
+											<div class="card-body">
+												<textarea rows="30" cols="60" class="txtsize_100 wd100" id="drlSourcePop_contents" readonly="readonly"></textarea>
+												<!-- 버튼 -->
+												<div class="card-actions-foot">
+													<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('drlSourcePop');">
+														<i class="far fa-times-circle custom-btn-i"></i> 닫기
+													</button>
+												</div>
+												<!-- //버튼 -->
+											</div>
+											<!-- //경고 -->
+										</div>
+										<!-- //본문페이지 -->
+									</div>
+								</div>
+							</div>
+							<!-- //상세영역 -->
+						</div>
+					</div>
+					<!-- //본문 -->
+				</div>
+				<!-- //팝업항상중앙띄우기 -->
+			</div>
+		</div>
+		<!-- //modal_pop -->
 
 		<!-- 서비스 선택 팝업 -->
 		<div id="selectSvcPop" class="modal_pop">
@@ -185,11 +239,11 @@
 														<tr>
 															<th class="t_left">서비스 아이디</th>
 															<td class="t_left">
+																<input type="text" class="wd250px" name="selectedSvcNm" readonly="readonly" placeholder="서비스를 선택하세요." />
 																<select name="selectVerStatus" class="wd150px">
 																	<option value="D" selected>개발중</option>
 																	<option value="R">운영중</option>
 																</select>
-																<input type="text" class="wd250px" name="selectedSvcNm" readonly="readonly" placeholder="서비스를 선택하세요." />
 																<button type="button" id="selectSvcBtn" class="btn btn-sm btn-green">서비스 선택</button>
 															</td>
 														</tr>

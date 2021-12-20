@@ -20,7 +20,7 @@ public interface RuleService {
 	List<HashMap<String, Object>> getFactorFuncArgs(HashMap<String, Object> param);
 
 	String saveDRL(HashMap<String, Object> pkg);
-	
+
 	void ruleSave(HashMap<String, Object> param);
 
 	void ruleUpdate(HashMap<String, Object> param);
@@ -32,4 +32,6 @@ public interface RuleService {
 	void delRuleMappingByRuleIds(HashMap<String, Object> param);
 
 	HashMap<String, Object> ruleTest(HashMap<String, Object> param);
+
+	int ruleNmDupCheck(HashMap<String, Object> param);
 }

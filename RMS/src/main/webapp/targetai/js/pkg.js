@@ -169,6 +169,8 @@ $(document).ready(function() {
 				fnAddPkg(param);
 			}
 			
+			$(this).removeClass("btn-green");
+			$(this).addClass("btn-gray");
 		}
 	});
 	
@@ -222,10 +224,12 @@ $(document).ready(function() {
 	$(document).on("click", "._ruleAdd", function() {
 		var ruleNm = $(this).closest("tr").find("a").text();
 		var ruleId = $(this).closest("tr").find("a").attr("data-ruleId");
+		var dfltSalience = $(this).closest("tr").find("input").val();
 		
 		var rule = {};
 		rule.RULE_ID = ruleId * 1;
 		rule.RULE_NM = ruleNm;
+		rule.SALIENCE = dfltSalience * 1;
 		
 		// 선택된 index
 		var idx = $(this).closest("tr").index();
@@ -241,10 +245,12 @@ $(document).ready(function() {
 	$(document).on("click", "._ruleDel", function(e) {
 		var ruleNm = $(this).closest("tr").find("a").text();
 		var ruleId = $(this).closest("tr").find("a").attr("data-ruleId");
+		var salience = $(this).closest("tr").find("input").val();
 		
 		var rule = {};
 		rule.RULE_ID = ruleId * 1;
 		rule.RULE_NM = ruleNm;
+		rule.DFLT_SALIENCE = salience * 1;
 		
 		// 선택된 index
 		var idx = $(this).closest("tr").index();
@@ -276,6 +282,8 @@ $(document).ready(function() {
 			
 			close_layerPop('modal_ruleMapping');
 			$(this).attr("data-update", "Y");
+			$("#savePkgBtn").removeClass("btn-gray");
+			$("#savePkgBtn").addClass("btn-green");
 		}
 	});
 	
@@ -383,13 +391,14 @@ function drawGridConRuleList(conRuleList) {
 	var html = "";
 	if(conRuleList.length == 0) {
 		html += "<tr>";
-		html += "	<td colspan='3' class='t_center'>조회된 내용이 없습니다.</td>";
+		html += "	<td colspan='4' class='t_center'>조회된 내용이 없습니다.</td>";
 		html += "</tr>";
 		
 	} else {
 		$.each(conRuleList, function(idx, rule){
 			html += "<tr>";
 			html += "	<td class='t_center'><button type='button' class='btn-add _ruleAdd' data-bs-dismiss='alert' aria-label='Close'></button></td>";
+			html += "	<td class='t_center'><input type='text' class='_dfltSalience' value='"+ (typeof rule.DFLT_SALIENCE == 'undefined' ? '' : rule.DFLT_SALIENCE) +"' /></td>";
 			html += "	<td class='t_center'>" + rule.RULE_ID + "</td>";
 			html += "	<td class='t_center'><a href='#' class='_cmRuleLink' data-ruleId='"+ rule.RULE_ID +"'>" + rule.RULE_NM + "</a></td>";
 			html += "</tr>";
@@ -819,7 +828,7 @@ function fnUpdatePkg(param) {
 			getPkgList(searchObj);
 			
 			messagePop("success", "Package가 수정되었습니다.", "", "");
-			$("#pkgUdtDt").text(res.UDT_DT + "에 " + res.UDT_USRNM + "(님)이 등록함.");
+			
 			fnGetPkg(param);
 			
 			// 패키지 버전 목록 조회

@@ -2687,4 +2687,13 @@ td .alert {padding:0 0 0 20px !important;}
 .overflow_rule {max-width:469px; max-height:395px; overflow:auto;}
 
 /* 패키지 상세 > RULE 연결 테이블 안의 input */
-._salience {width: 70px; float: left; border: 1px solid #98a6ad; text-align: center; border-radius: 5px;}
+._salience {width: 70px; border: 1px solid #98a6ad; text-align: center; border-radius: 5px;}
+
+/* 패키지 상세 > RULE 연결 테이블 안의 input */
+._dfltSalience {width: 70px; border: 1px solid #98a6ad; text-align: center; border-radius: 5px;}
+
+
+
+
+
+

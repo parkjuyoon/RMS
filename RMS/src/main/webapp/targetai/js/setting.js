@@ -47,7 +47,7 @@ $(document).ready(function() {
 	
 	// FUNCTION 설정 > DATA_TYPE 선택 변경 이벤트
 	$(document).on("change", "._paramTypeSelect", function() {
-		
+		console.log("hi");
 	});
 });
 
@@ -146,6 +146,7 @@ function fnGetFuncInfo(factorId) {
 				html += "	<select id='' class='wd150px _paramTypeSelect'>";
 				html += "		<option value='String'>String</option>";
 				html += "		<option value='int'>int</option>";
+				html += "		<option value='Object' selected>Object</option>";
 				html += "	</select>";
 				html += "	<input type='text' class='wd300px _paramVal' id='' value='' />";
 				html += "	<button type='button' id='' class='btn btn-sm btn-gray _paramPlusBtn'>+</button>";

@@ -8,30 +8,25 @@ $(document).ready(function() {
 	// FUNCTION 설정 > parameter 입력부분 다이나믹 HTML 적용
 	var p1 = {};
 	var h1 = fnGetParamHTML(p1);
-	$("#sourceCodeEditorTr").before(h1);
+	$("#parameterTd").html(h1);
 	
 	// FUNCTION 설정 > parameter + 버튼
 	$(document).on("click", "._paramPlusBtn", function() {
 		var param = {};
 		var html = fnGetParamHTML(param);
 		
-		$(this).closest("._parameterTr").after(html);
+		$(this).closest("._selectAttributeDiv").after(html);
 	});
 	
 	// FUNCTION 설정 > parameter - 버튼
 	$(document).on("click", "._paramMinusBtn", function() {
 		var param = {};
 		
-		$(this).closest("._parameterTr").remove();
+		$(this).closest("._selectAttributeDiv").remove();
 
-		if($("._parameterTr").length < 1) {
-			$("#sourceCodeEditorTr").before(fnGetParamHTML(param));
+		if($("._selectAttributeDiv").length < 1) {
+			$("#parameterTd").html(fnGetParamHTML(param));
 		}
-	});
-	
-	// FUNCTION 설정 > 파일 찾아보기
-	$("#funcFileUploadBtn").click(function(){
-		$("input[name='funcFileUpload']").click();
 	});
 	
 	// FUNCTION 설정 > 함수 선택 변경이벤트
@@ -49,7 +44,7 @@ $(document).ready(function() {
 	// FUNCTION 설정 > DATA_TYPE 선택 변경 이벤트
 	$(document).on("change", "._paramTypeSelect", function() {
 		var paramType = $(this).val();
-		var selectAttributeDiv = $(this).parent("div").siblings("div");
+		var selectAttributeDiv = $(this).siblings("div");
 		
 		if(paramType == "Object") {
 			selectAttributeDiv.show();
@@ -211,8 +206,8 @@ function fnGetFuncInfo(factorId) {
 				param = {};
 			}
 			
-			$("._parameterTr").remove();
-			$("#sourceCodeEditorTr").before(fnGetParamHTML(param));
+			$("._selectAttributeDiv").remove();
+			$("#parameterTd").html(fnGetParamHTML(param));
 		},
 		beforeSend : function() {
 			$("#loadingIcon").show();
@@ -247,12 +242,13 @@ function fnSaveFuncSetting() {
 	param.sourceCode = $("#funcSourceArea").val();
 	
 	// parameter 객체
-	var paramArray1 = $("._parameterTr");
+	var paramArray1 = $("._selectAttributeDiv");
 	
 	var paramArray2 = [];
 	for(var i=0; i<paramArray1.length; i++) {
 		var paramType = paramArray1.eq(i).find("._paramTypeSelect").val();
 		var paramVal = paramArray1.eq(i).find("._paramVal").val();
+//		var defalutValue = 
 		var paramObj = {};
 		
 		paramObj.paramType = paramType;
@@ -263,8 +259,7 @@ function fnSaveFuncSetting() {
 	}
 	param.paramArray = paramArray2;
 
-	console.log(param)
-	/*
+	// 함수 저장
 	$.ajax({
 		method : "POST",
 		url : "/targetai/saveFuncSetting.do",
@@ -294,7 +289,6 @@ function fnSaveFuncSetting() {
 			console.log(errorThrown);
 		}
 	});
-	*/
 }
 
 /**
@@ -308,11 +302,8 @@ function fnGetParamHTML(param) {
 		var paramInfoList = param.paramInfoList;
 		
 		$.each(paramInfoList, function(idx, paramInfo) {
-			parameterTdHtml += "<tr class='_parameterTr'>";
-			parameterTdHtml += "<th class='t_left'>Parameter</th>";
-			parameterTdHtml += "<td class='t_left' class='_parameterTd'>";
 			parameterTdHtml += "	<div class='_selectAttributeDiv'>";
-			parameterTdHtml += "		<div>";
+			parameterTdHtml += "		<div style='display: -webkit-inline-box;'>";
 			parameterTdHtml += "			<select class='wd88px _paramTypeSelect'>";
 			if(paramInfo.DATA_TYPE == 'String') {
 				parameterTdHtml += "			<option value='String' selected>String</option>";
@@ -333,24 +324,19 @@ function fnGetParamHTML(param) {
 			parameterTdHtml += "			<input type='text' class='wd300px _paramVal' value='"+ paramInfo.ARG_NM +"' />";
 			parameterTdHtml += "			<button type='button' class='btn btn-sm btn-gray _paramPlusBtn'>+</button>";
 			parameterTdHtml += "			<button type='button' class='btn btn-sm btn-red _paramMinusBtn'>-</button>";
-			parameterTdHtml += "		</div>";
-			parameterTdHtml += "		<div style='display: none;'>";
-			parameterTdHtml += "			<button type='button' class='btn btn-sm btn-green _selectAttributeBtn'>";
-			parameterTdHtml += "				<i class='far fa-check-circle custom-btn-i'></i> 속성선택";
-			parameterTdHtml += "			</button>";
-			parameterTdHtml += "			<input type='text' class='wd300px' value='"+ paramInfo.factorNmEn +"' readonly='readonly' />";
+			parameterTdHtml += "			<div style='display: none; margin-left: 10px;'>";
+			parameterTdHtml += "				<button type='button' class='btn btn-sm btn-green _selectAttributeBtn'>";
+			parameterTdHtml += "					<i class='far fa-check-circle custom-btn-i'></i> 속성선택";
+			parameterTdHtml += "				</button>";
+			parameterTdHtml += "				<input type='text' class='wd300px' value='"+ paramInfo.factorNmEn +"' readonly='readonly' />";
+			parameterTdHtml += "			</div>";
 			parameterTdHtml += "		</div>";
 			parameterTdHtml += "	</div>";
-			parameterTdHtml += "</td>";
-			parameterTdHtml += "</tr>";
 		});
 		
 	} else {
-		parameterTdHtml += "<tr class='_parameterTr'>";
-		parameterTdHtml += "<th class='t_left'>Parameter</th>";
-		parameterTdHtml += "<td class='t_left' class='_parameterTd'>";
 		parameterTdHtml += "	<div class='_selectAttributeDiv'>";
-		parameterTdHtml += "		<div>";
+		parameterTdHtml += "		<div style='display: -webkit-inline-box;'>";
 		parameterTdHtml += "			<select class='wd88px _paramTypeSelect'>";
 		parameterTdHtml += "				<option value='String'>String</option>";
 		parameterTdHtml += "				<option value='int'>int</option>";
@@ -359,18 +345,15 @@ function fnGetParamHTML(param) {
 		parameterTdHtml += "			<input type='text' class='wd300px _paramVal' value='' />";
 		parameterTdHtml += "			<button type='button' class='btn btn-sm btn-gray _paramPlusBtn'>+</button>";
 		parameterTdHtml += "			<button type='button' class='btn btn-sm btn-red _paramMinusBtn'>-</button>";
-		parameterTdHtml += "		</div>";
-		parameterTdHtml += "		<div style='display: none;'>";
-		parameterTdHtml += "			<button type='button' class='btn btn-sm btn-green _selectAttributeBtn'>";
-		parameterTdHtml += "				<i class='far fa-check-circle custom-btn-i'></i> 속성선택";
-		parameterTdHtml += "			</button>";
-		parameterTdHtml += "			<input type='text' class='wd300px' value='' readonly='readonly' />";
+		parameterTdHtml += "			<div style='display: none; margin-left: 10px;'>";
+		parameterTdHtml += "				<button type='button' class='btn btn-sm btn-green _selectAttributeBtn'>";
+		parameterTdHtml += "					<i class='far fa-check-circle custom-btn-i'></i> 속성선택";
+		parameterTdHtml += "				</button>";
+		parameterTdHtml += "				<input type='text' class='wd300px' value='' readonly='readonly' />";
+		parameterTdHtml += "			</div>";
 		parameterTdHtml += "		</div>";
 		parameterTdHtml += "	</div>";
-		parameterTdHtml += "</td>";
-		parameterTdHtml += "</tr>";
 	}
-	
 	
 	return parameterTdHtml;
 }

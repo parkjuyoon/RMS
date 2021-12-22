@@ -296,6 +296,11 @@
 															</div>
 														</td>
 													</tr>
+													<tr id="parameterTr">
+														<th class="t_left">Parameter</th>
+														<td class='t_left' id="parameterTd">
+														</td>
+													</tr>
 													<tr id="sourceCodeEditorTr">
 														<th class="t_left">Source Code Editor</th>
 														<td class="t_left">

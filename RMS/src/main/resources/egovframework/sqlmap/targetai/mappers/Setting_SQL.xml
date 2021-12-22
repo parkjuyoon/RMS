@@ -30,7 +30,7 @@
 			AND PID = 0
 	</select>
 	
-	<select id=" " parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	<select id="getParamInfo" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT
 			FACTOR_FUNC_ARGS_ID,
 			FACTOR_ID,

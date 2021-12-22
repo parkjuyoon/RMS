@@ -3,6 +3,12 @@
 <html lang="ko">
 <head>
 <%@ include file="../targetai/comm/header.jsp"%>
+
+<style type="text/css">
+	.card::-webkit-scrollbar {
+		display: none;
+	}
+</style>
 </head>
 <body class="loading" data-layout-mode="two-column"
 	data-layout='{"mode": "light", "width": "fluid", "menuPosition": "fixed", "sidebar": { "color": "light", "size": "default", "showuser": false}, "topbar": {"color": "light"}, "showRightSidebarOnPageLoad": false}'>
@@ -426,7 +432,7 @@
 						</div>
 						<div class="col">
 							<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
-							<div class="card card-collapsed" id="pkgVerCardList">
+							<div class="card card-collapsed" id="pkgVerCardList" style="overflow: auto;">
 								<header class="card-header card-header-pd-mobile">
 									<div class="card-actions card-header-position-mobile">
 										<span class="infonum"> <span class="txt_color_blue mg_l5 mg_r5" id="pkgVerCount"></span>건
@@ -436,7 +442,7 @@
 									<h2 class="card-title_txt">패키지 버전 목록</h2>
 								</header>
 								<!-- 본문페이지 -->
-								<div class="card-body" id="pkgVerCardListBody" style="display:none;">
+								<div class="card-body" id="pkgVerCardListBody" style="display:none; height: 379px;">
 									<div class="progress_loading">
 										<div id="pkgVerListLoading" style="display: none;">
 											<img src="/targetai_publish/images/ajax-loader1.gif" />
@@ -490,7 +496,7 @@
 					<div class="row">
 						<div class="col">
 							<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
-							<div class="card card-collapsed" id="eventCardList">
+							<div class="card card-collapsed" id="eventCardList" style="overflow: auto;">
 								<header class="card-header card-header-pd-mobile">
 									<div class="card-actions card-header-position-mobile">
 										<span class="infonum"> <span class="txt_color_blue mg_l5 mg_r5" id="eventCount"></span>건

@@ -201,6 +201,21 @@ $(document).ready(function() {
 		getPkgList(searchObj);
 	});
 	
+	// 이벤트 리스트 페이지 번호 클릭
+	$("#eventListPaging").on("click", "._paging", function(e) {
+		var cls = $(this).attr("class");
+		const pageNum = $(this).attr("data-page_num");
+		var pkgId = $("#eventListPaging").attr("data-pkgId");
+		var ver = $("#eventListPaging").attr("data-ver");
+		
+		var searchObj = {};
+		searchObj.currentPage = pageNum;
+		searchObj.pkgId = pkgId;
+		searchObj.ver = ver;
+		
+		fnGetEventList(searchObj);
+	});
+	
 	// 패키지 검색 > 초기화 버튼 클릭
 	$("#pkgResetBtn").click(function() {
 		fnInitPkgSearch();
@@ -512,6 +527,8 @@ function fnGetEventList(searchObj) {
 			$("#eventList").html(html);
 			$("#eventCount").text(res.eventCount);
 			fnPaging("#eventListPaging", searchObj);
+			$("#eventListPaging").attr("data-pkgId", searchObj.pkgId);
+			$("#eventListPaging").attr("data-ver", searchObj.ver);
 		},
 		beforeSend : function() {
 			$("#eventListLoading").show();

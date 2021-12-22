@@ -715,7 +715,7 @@ function fnPkgList(searchObj) {
 			
 			if(pkgList.length == 0) {
 				html += "<tr>";
-				html += "	<td colspan='4' class='t_center'>조회된 내용이 없습니다.</td>";
+				html += "	<td colspan='5' class='t_center'>조회된 내용이 없습니다.</td>";
 				html += "</tr>";
 				
 			} else {

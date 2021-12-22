@@ -209,9 +209,9 @@
 		FROM 
 			targetai.PKG
 		WHERE VER IS NOT NULL
-		<if test="pkgId_search != null and pkgId_search != ''">AND P.PKG_ID = #{pkgId_search}</if>
-		<if test="pkgNm_search != null and pkgNm_search != ''">AND P.PKG_NM LIKE CONCAT('%', #{pkgNm_search}, '%')</if>
-		<if test="pkgRegUsrId_search != null and pkgRegUsrId_search != ''">AND P.REG_USRID = #{pkgRegUsrId_search}</if>
+		<if test="pkgId_search != null and pkgId_search != ''">AND PKG_ID = #{pkgId_search}</if>
+		<if test="pkgNm_search != null and pkgNm_search != ''">AND PKG_NM LIKE CONCAT('%', #{pkgNm_search}, '%')</if>
+		<if test="pkgRegUsrId_search != null and pkgRegUsrId_search != ''">AND REG_USRID = #{pkgRegUsrId_search}</if>
 		ORDER BY PKG_ID DESC
 		LIMIT #{limit}
 		OFFSET #{offset}
@@ -222,7 +222,7 @@
 		SELECT 
 			COUNT(*) AS CNT
 		FROM targetai.PKG
-		WHERE 1=1
+		WHERE VER IS NOT NULL
 		<if test="pkgId_search != null and pkgId_search != ''">AND PKG_ID = #{pkgId_search}</if>
 		<if test="pkgNm_search != null and pkgNm_search != ''">AND PKG_NM LIKE CONCAT('%', #{pkgNm_search}, '%')</if>
 		<if test="pkgRegUsrId_search != null and pkgRegUsrId_search != ''">AND REG_USRID = #{pkgRegUsrId_search}</if>

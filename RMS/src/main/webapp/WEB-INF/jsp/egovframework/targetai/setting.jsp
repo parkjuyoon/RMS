@@ -25,6 +25,60 @@
 		<%@ include file="../targetai/comm/side_menu.jsp"%>
 		<%@ include file="../targetai/comm/alertPop.jsp"%>
 		
+		<!-- 속성선택 modal_pop -->
+		<div id="selectAttribute" class="modal_pop">
+			<div class="modal_content" style="width: 400px;">
+				<!-- 팝업항상중앙띄우기 -->
+				<div class="modla_center">
+					<div class="modal_header">
+						<span class="close" onclick="close_layerPop('selectAttribute');" data-focusId="" id="messagePop_close">&times;</span>
+						<h2>속성 선택</h2>
+					</div>
+					<!-- 본문 -->
+					<div class="modal_body" style="height: calc(100% - 25vh); overflow-x: hidden; overflow-y: auto;">
+						<div class="modal_wrap">
+							<!-- 상세영역 -->
+							<div class="row">
+								<div class="col">
+									<div class="card mg_b0">
+										<!-- 본문페이지 -->
+										<div class="card-body body-header" style="">
+											<div class="progress_loading">
+												<div id="selectAttributeLoading">
+													<img src="/targetai_publish/images/ajax-loader1.gif" />
+												</div>
+											</div>
+											<header class="card-header card-header-pd-mobile">
+												<div class="card-actions card-header-position-mobile"></div>
+												<h2 class="card-title_txt" id="drlSourcePop_title">drl 파일명</h2>
+											</header>
+											<!-- 경고 -->
+											<div class="card-body">
+												<ul id="selectFactorTree" class="ztree treewrap" style="width: 100%;"></ul>
+												<!-- 버튼 -->
+												<div class="card-actions-foot">
+													<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('selectAttribute');">
+														<i class="far fa-times-circle custom-btn-i"></i> 닫기
+													</button>
+												</div>
+												<!-- //버튼 -->
+											</div>
+											<!-- //경고 -->
+										</div>
+										<!-- //본문페이지 -->
+									</div>
+								</div>
+							</div>
+							<!-- //상세영역 -->
+						</div>
+					</div>
+					<!-- //본문 -->
+				</div>
+				<!-- //팝업항상중앙띄우기 -->
+			</div>
+		</div>
+		<!-- //modal_pop -->
+		
 		<div class="progress_loading">
 			<div id="loadingIcon">
 				<img src="/targetai_publish/images/ajax-loader1.gif" />
@@ -242,22 +296,7 @@
 															</div>
 														</td>
 													</tr>
-													<tr>
-														<th class="t_left">Parameter</th>
-														<td class="t_left" id="parameterTd">
-															<div>
-																<select class="wd150px _paramTypeSelect">
-																	<option value="String">String</option>
-																	<option value="int">int</option>
-																	<option value="Object">Object</option>
-																</select>
-																<input type="text" class="wd300px _paramVal" value="" />
-																<button type="button" id="" class="btn btn-sm btn-gray _paramPlusBtn">+</button>
-																<button type="button" id="" class="btn btn-sm btn-red _paramMinusBtn">-</button>
-															</div>
-														</td>
-													</tr>
-													<tr>
+													<tr id="sourceCodeEditorTr">
 														<th class="t_left">Source Code Editor</th>
 														<td class="t_left">
 															<textarea rows="10" cols="7" class="txtsize_100 wd100" id="funcSourceArea" placeholder="Method 내  JAVA 코드만 입력하세요."

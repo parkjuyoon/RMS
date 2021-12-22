@@ -242,11 +242,6 @@ $(document).ready(function() {
 		fnPkgList(searchObj);
 	});
 	
-	// 서비스 상세 > OutPut Value 선택
-	$("#svcOutPutPopBtn").click(function() {
-		availableFactorGrpList();
-	});
-	
 	// output value 선택 > output add 버튼.
 	$("#outPutAddBtn").click(function() {
 		var treeObj = $.fn.zTree.getZTreeObj("availableFactor");
@@ -339,8 +334,13 @@ $(document).ready(function() {
 		close_layerPop('modal_svcOutPut');
 	});
 	
+	// 서비스 상세 > OutPut Value 선택
+	$("#svcOutPutPopBtn").click(function(e) {
+		availableFactorGrpList();
+	});
+	
 	// output value 선택 > 링크 클릭
-	$("#svcOutPutPopLink").click(function() {
+	$("#svcOutPutPopLink").click(function(e) {
 		availableFactorGrpList();
 		$("#modal_svcOutPut").show();
 	});
@@ -374,7 +374,6 @@ function availableFactorGrpList() {
 		contentType:'application/json; charset=utf-8',
 		dataType : "json",
 		success : function(res) {
-			console.log(res)
 			var factorList = res.factorList;
 			var factorArr = [];
 			

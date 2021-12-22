@@ -8,6 +8,10 @@ $(document).on("click", "a[href='#']", function(e) {
 
 // a링크를 가지고 있는 td 를 클릭시 a 링크 클릭
 $(document).on("click", "td:has(>a)", function(e) {
+	if($(this).children().length > 1) {
+		return;
+	}
+	
 	$(this).find("a").click();
 });
 

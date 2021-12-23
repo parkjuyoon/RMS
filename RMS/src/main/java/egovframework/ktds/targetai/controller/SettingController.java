@@ -148,7 +148,7 @@ public class SettingController {
 				// 파라미터 추가
 				settingService.addFunctionParameter(paramMap);
 			}
-			
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

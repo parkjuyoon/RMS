@@ -323,36 +323,43 @@ function fnGetParamHTML(param) {
 		var paramInfoList = param.paramInfoList;
 		
 		$.each(paramInfoList, function(idx, paramInfo) {
-			parameterTdHtml += "	<div class='_selectAttributeDiv'>";
-			parameterTdHtml += "		<div style='display: -webkit-inline-box;'>";
-			parameterTdHtml += "			<select class='wd88px _paramTypeSelect'>";
+				parameterTdHtml += "<div class='_selectAttributeDiv'>";
+				parameterTdHtml += "<div style='display: -webkit-inline-box;'>";
+				parameterTdHtml += "<select class='wd88px _paramTypeSelect'>";
+				
 			if(paramInfo.DATA_TYPE == 'String') {
-				parameterTdHtml += "			<option value='String' selected>String</option>";
-				parameterTdHtml += "			<option value='int'>int</option>";
-				parameterTdHtml += "			<option value='Object'>Object</option>";
+				parameterTdHtml += "<option value='String' selected>String</option>";
+				parameterTdHtml += "<option value='int'>int</option>";
+				parameterTdHtml += "<option value='Object'>Object</option>";
 				
 			} else if(paramInfo.DATA_TYPE == 'int') {
-				parameterTdHtml += "			<option value='String'>String</option>";
-				parameterTdHtml += "			<option value='int' selected>int</option>";
-				parameterTdHtml += "			<option value='Object'>Object</option>";
+				parameterTdHtml += "<option value='String'>String</option>";
+				parameterTdHtml += "<option value='int' selected>int</option>";
+				parameterTdHtml += "<option value='Object'>Object</option>";
 				
 			} else if(paramInfo.DATA_TYPE == 'Object') {
-				parameterTdHtml += "			<option value='String'>String</option>";
-				parameterTdHtml += "			<option value='int'>int</option>";
-				parameterTdHtml += "			<option value='Object' selected>Object</option>";
+				parameterTdHtml += "<option value='String'>String</option>";
+				parameterTdHtml += "<option value='int'>int</option>";
+				parameterTdHtml += "<option value='Object' selected>Object</option>";
 			}
-			parameterTdHtml += "			</select>";
-			parameterTdHtml += "			<input type='text' class='wd300px _paramVal' value='"+ paramInfo.ARG_NM +"' />";
-			parameterTdHtml += "			<button type='button' class='btn btn-sm btn-gray _paramPlusBtn'>+</button>";
-			parameterTdHtml += "			<button type='button' class='btn btn-sm btn-red _paramMinusBtn'>-</button>";
-			parameterTdHtml += "			<div style='display: none; margin-left: 10px;'>";
-			parameterTdHtml += "				<button type='button' class='btn btn-sm btn-green _selectAttributeBtn'>";
-			parameterTdHtml += "					<i class='far fa-check-circle custom-btn-i'></i> 속성선택";
-			parameterTdHtml += "				</button>";
-			parameterTdHtml += "				<input type='text' class='wd300px' value='"+ paramInfo.factorNmEn +"' readonly='readonly' />";
-			parameterTdHtml += "			</div>";
-			parameterTdHtml += "		</div>";
-			parameterTdHtml += "	</div>";
+				parameterTdHtml += "</select>";
+				parameterTdHtml += "<input type='text' class='wd300px _paramVal' value='"+ paramInfo.ARG_NM +"' />";
+				parameterTdHtml += "<button type='button' class='btn btn-sm btn-gray _paramPlusBtn'>+</button>";
+				parameterTdHtml += "<button type='button' class='btn btn-sm btn-red _paramMinusBtn'>-</button>";
+				
+			if(paramInfo.DATA_TYPE == 'Object') {
+				parameterTdHtml += "<div style='margin-left: 10px;'>";
+				
+			} else {
+				parameterTdHtml += "<div style='display: none; margin-left: 10px;'>";
+			}
+				parameterTdHtml += "<button type='button' class='btn btn-sm btn-green _selectAttributeBtn'>";
+				parameterTdHtml += "<i class='far fa-check-circle custom-btn-i'></i> 속성선택";
+				parameterTdHtml += "</button>";
+				parameterTdHtml += "<input type='text' class='wd300px' value='"+ paramInfo.factorNmEn +"' readonly='readonly' />";
+				parameterTdHtml += "</div>";
+				parameterTdHtml += "</div>";
+				parameterTdHtml += "</div>";
 		});
 		
 	} else {

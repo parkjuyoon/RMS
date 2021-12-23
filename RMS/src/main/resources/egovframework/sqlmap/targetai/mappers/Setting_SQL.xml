@@ -32,15 +32,18 @@
 	
 	<select id="getParamInfo" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT
-			FACTOR_FUNC_ARGS_ID,
-			FACTOR_ID,
-			ARG_NM,
-			`ORDER`,
-			DATA_TYPE
+			FFA.FACTOR_FUNC_ARGS_ID,
+			FFA.FACTOR_ID,
+			FFA.ARG_NM,
+			FFA.`ORDER`,
+			FFA.DATA_TYPE,
+			F.DEFAUT_VALUE,
+			F.FACTOR_NM
 		FROM
-			targetai.FACTOR_FUNC_ARGS
+			targetai.FACTOR_FUNC_ARGS FFA
+			LEFT JOIN targetai.FACTOR F ON (FFA.DEFAULT_VALUE = F.FACTOR_ID)
 		WHERE
-			FACTOR_ID = #{factorId}
+			FFA.FACTOR_ID = #{factorId}
 		ORDER BY `ORDER` ASC
 	</select>
 	
@@ -84,6 +87,7 @@
  	<insert id="addFunctionParameter" parameterType="java.util.HashMap">
  		INSERT INTO targetai.FACTOR_FUNC_ARGS (
  			FACTOR_ID,
+ 			DEFAULT_VALUE,
  			ARG_NM,
  			`ORDER`,
  			DATA_TYPE
@@ -91,6 +95,7 @@
  		<foreach collection="parameterList" item="parameter" separator=",">
  		(
  			#{factorId},
+ 			#{parameter.defalutValue},
  			#{parameter.paramVal},
  			#{parameter.order},
  			#{parameter.paramType}

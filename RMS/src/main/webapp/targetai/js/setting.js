@@ -38,6 +38,26 @@ $(document).ready(function() {
 	
 	// FUNCTION 설정 > 저장 버튼 클릭
 	$("#saveFuncSettingBtn").click(function() {
+		var funcNm = $("#funcNm").val();
+		var funcNmEn = $("#funcNmEn").val();
+		
+		if(funcNm == '') {
+			messagePop("warning","함수명(KOR)을 입력하세요.","","");
+			return;
+		}
+		
+		if(funcNmEn == '') {
+			messagePop("warning","함수명(ENG)은 입력하세요.","","");
+			return;
+		}
+		
+		var regExp = /^[a-z]+$/; //영문
+		
+		if(!regExp.test(funcNmEn)) {
+			messagePop("warning","함수명(ENG)은 영문 소문자만 가능합니다.","","");
+			return;
+		}
+		
 		fnSaveFuncSetting();
 	});
 	
@@ -248,12 +268,13 @@ function fnSaveFuncSetting() {
 	for(var i=0; i<paramArray1.length; i++) {
 		var paramType = paramArray1.eq(i).find("._paramTypeSelect").val();
 		var paramVal = paramArray1.eq(i).find("._paramVal").val();
-//		var defalutValue = 
+		var defalutValue = paramArray1.eq(i).find("._paramVal").attr("data-factorId");
 		var paramObj = {};
 		
 		paramObj.paramType = paramType;
 		paramObj.paramVal = paramVal;
 		paramObj.order = i+1;
+		paramObj.defalutValue = (typeof defalutValue == 'undefined' ? null : defalutValue);
 		
 		paramArray2.push(paramObj);
 	}

@@ -138,6 +138,7 @@
 		SELECT 
 		    FACTOR_FUNC_ARGS_ID,
 		    FACTOR_ID,
+		    DEFAULT_VALUE,
 		    ARG_NM,
 		    `ORDER`,
 		    DATA_TYPE,

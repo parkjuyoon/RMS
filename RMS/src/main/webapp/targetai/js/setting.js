@@ -51,10 +51,10 @@ $(document).ready(function() {
 			return;
 		}
 		
-		var regExp = /^[a-z]+$/; //영문
+		var regExp = /^[A-Za-z][A-Za-z0-9+]*$/;	// 영문+숫자
 		
 		if(!regExp.test(funcNmEn)) {
-			messagePop("warning","함수명(ENG)은 영문 소문자만 가능합니다.","","");
+			messagePop("warning","함수명(ENG)은 영문+숫자만 가능합니다.","","");
 			return;
 		}
 		
@@ -125,9 +125,20 @@ $(document).ready(function() {
 								messagePop("warning","속성을 다시선택하세요.","","");
 								return;
 							} else {
+								var paramVal = $("._paramVal");
+								
+								for(var i=0; i<paramVal.length; i++) {
+									var val = paramVal.eq(i).val();
+									
+									if(val.toLowerCase() == factorNmEn.toLowerCase()) {
+										messagePop("warning","동일한 변수명으로 설정할 수 없습니다.","","");
+										return;
+									}
+								}
+								
 								$this.siblings("input").val(factorNm);
 								$this.closest("._selectAttributeDiv").find("._paramVal").val(factorNmEn.toLowerCase());
-								$this.closest("._selectAttributeDiv").find("._paramVal").attr("data-factorId", factorId);
+								$this.closest("._selectAttributeDiv").find("._paramVal").attr("data-defaultValue", factorId);
 								close_layerPop('selectAttribute');
 							}
 						}
@@ -268,13 +279,13 @@ function fnSaveFuncSetting() {
 	for(var i=0; i<paramArray1.length; i++) {
 		var paramType = paramArray1.eq(i).find("._paramTypeSelect").val();
 		var paramVal = paramArray1.eq(i).find("._paramVal").val();
-		var defalutValue = paramArray1.eq(i).find("._paramVal").attr("data-factorId");
+		var defalutValue = paramArray1.eq(i).find("._paramVal").attr("data-defaultValue");
 		var paramObj = {};
 		
 		paramObj.paramType = paramType;
 		paramObj.paramVal = paramVal;
 		paramObj.order = i+1;
-		paramObj.defalutValue = (typeof defalutValue == 'undefined' ? null : defalutValue);
+		paramObj.defalutValue = (defalutValue == 'undefined' ? null : defalutValue);
 		
 		paramArray2.push(paramObj);
 	}
@@ -343,7 +354,7 @@ function fnGetParamHTML(param) {
 				parameterTdHtml += "<option value='Object' selected>Object</option>";
 			}
 				parameterTdHtml += "</select>";
-				parameterTdHtml += "<input type='text' class='wd300px _paramVal' value='"+ paramInfo.ARG_NM +"' />";
+				parameterTdHtml += "<input type='text' class='wd300px _paramVal' value='"+ paramInfo.ARG_NM +"' data-defaultValue='"+ paramInfo.DEFAULT_VALUE +"'/>";
 				parameterTdHtml += "<button type='button' class='btn btn-sm btn-gray _paramPlusBtn'>+</button>";
 				parameterTdHtml += "<button type='button' class='btn btn-sm btn-red _paramMinusBtn'>-</button>";
 				
@@ -356,7 +367,7 @@ function fnGetParamHTML(param) {
 				parameterTdHtml += "<button type='button' class='btn btn-sm btn-green _selectAttributeBtn'>";
 				parameterTdHtml += "<i class='far fa-check-circle custom-btn-i'></i> 속성선택";
 				parameterTdHtml += "</button>";
-				parameterTdHtml += "<input type='text' class='wd300px' value='"+ paramInfo.factorNmEn +"' readonly='readonly' />";
+				parameterTdHtml += "<input type='text' class='wd300px' value='"+ paramInfo.FACTOR_NM +"' readonly='readonly' />";
 				parameterTdHtml += "</div>";
 				parameterTdHtml += "</div>";
 				parameterTdHtml += "</div>";

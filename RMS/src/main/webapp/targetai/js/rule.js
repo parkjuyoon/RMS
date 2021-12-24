@@ -534,7 +534,86 @@ $(document).ready(function() {
 		
 		fnGetRule(param);
 	});
+	
+	// RULE EDITOR > 요소값 > 함수선택시 > 값선택 버튼
+	$(document).on("click", "._selectValueBtn", function() {
+		$("#selectValuePop").show();
+		
+		var param = {};
+		param.factorId = $(this).attr("data-defaultValue");
+		
+		var idx = $(this).siblings("input").attr("data-idx");
+		$("#selectValuePop_saveBtn").attr("data-idx", idx);
+		
+		fnGetSelectFactorVal(param);
+	});
+	
+	// RULE EDITOR > 요소값 > 함수선택시 > 값선택 팝업 > 적용버튼
+	$("#selectValuePop_saveBtn").click(function() {
+		var valTxt = $("input[type='radio'][name='valChk']:checked").val();
+		
+		var idx = $(this).attr("data-idx");
+		
+		var inputTxt;
+		var ix;
+		
+		var ipt = $("input[type='text'][name='detAttrChk']");
+		for(var i=0; i<ipt.length; i++) {
+			var svbIdx = ipt.eq(i).attr("data-idx");
+			
+			if(idx == svbIdx) {
+				inputTxt = $("input[type='text'][name='detAttrChk']").eq(i);
+				ix=i;
+				break;
+			}
+		}
+		
+		inputTxt.val(valTxt);
+		close_layerPop('selectValuePop');
+	});
 });
+
+/**
+ * RULE EDITOR > 요소값 > 함수선택시 > 값선택 버튼
+ * @returns
+ */
+function fnGetSelectFactorVal(param) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/getFactorVal.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			var factor = res.factor;
+			var factorValList = res.factorVal;
+			
+			$("#selectValuePop_title").text(factor.FACTOR_NM + " ("+ factor.FACTOR_NM_EN +")");
+			var html = "";
+			
+			$.each(factorValList, function(idx, factorVal) {
+				html += "<input type='radio' name='valChk' value='"+ factorVal.VAL +"'/>";
+				html += "<label for='detAttrChk' class='mg_l10'>"+ factorVal.VAL +"</label>";
+				html += "<br/>";
+			});
+			
+			$("#selectValuePop_ValList").html(html);
+		},
+		beforeSend : function() {
+			$("#selectValuePopLoading").show();
+		},
+		complete : function() {
+			$("#selectValuePopLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
 
 /**
  * RULE 상세조회
@@ -916,10 +995,16 @@ function getFactorVal(event, treeId, treeNode) {
 					html += "	<span for='' class='mg_r10 factorValSpanTitle'>"+ func.ARG_NM +"("+ func.DATA_TYPE +")</span>";
 					html += "</div>";
 					html += "<div>";
-					html += "	<input type='text' class='wd250px' name='detAttrChk' data-dataType='"+ func.DATA_TYPE +"' value=''/>";
-					html += "	<button type='button' class='btn btn-sm btn-green _selectAttributeBtn' data-dataType='"+ func.DATA_TYPE +"'>";
-					html += "		<i class='far fa-check-circle custom-btn-i'></i> 속성선택";
-					html += "	</button>";
+					if(func.DATA_TYPE == 'Object') {
+						html += "	<input type='text' class='wd250px' name='detAttrChk' data-idx='"+ idx +"' data-dataType='"+ func.DATA_TYPE +"' value='#{"+ func.ARG_NM +"}'/>";
+						html += "	<button type='button' class='btn btn-sm btn-green _selectValueBtn' data-defaultValue='"+ func.DEFAULT_VALUE +"' data-dataType='"+ func.DATA_TYPE +"'>";
+						html += "		<i class='far fa-check-circle custom-btn-i'></i> 값 선택";
+						html += "	</button>";
+						
+					} else {
+						html += "	<input type='text' class='wd250px' name='detAttrChk' data-idx='"+ idx +"' data-dataType='"+ func.DATA_TYPE +"' value=''/>";
+					}
+					
 					html += "</div>";
 				});
 				

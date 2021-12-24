@@ -19,13 +19,13 @@
 		<%@ include file="../targetai/comm/alertPop.jsp"%>
 
 		<!-- 속성선택 modal_pop -->
-		<div id="selectAttribute" class="modal_pop" style="z-index: 99999;">
-			<div class="modal_content" style="width: 400px;">
+		<div id="selectValuePop" class="modal_pop" style="z-index: 99999;">
+			<div class="modal_content" style="width: 500px;">
 				<!-- 팝업항상중앙띄우기 -->
 				<div class="modla_center">
 					<div class="modal_header">
-						<span class="close" onclick="close_layerPop('selectAttribute');" data-focusId="" id="messagePop_close">&times;</span>
-						<h2>속성 선택</h2>
+						<span class="close" onclick="close_layerPop('selectValuePop');">&times;</span>
+						<h2>값 선택</h2>
 					</div>
 					<!-- 본문 -->
 					<div class="modal_body" style="height: calc(100% - 25vh); overflow-x: hidden; overflow-y: auto;">
@@ -37,20 +37,23 @@
 										<!-- 본문페이지 -->
 										<div class="card-body body-header" style="">
 											<div class="progress_loading">
-												<div id="selectAttributeLoading">
+												<div id="selectValuePopLoading">
 													<img src="/targetai_publish/images/ajax-loader1.gif" />
 												</div>
 											</div>
 											<header class="card-header card-header-pd-mobile">
 												<div class="card-actions card-header-position-mobile"></div>
-												<h2 class="card-title_txt" id="drlSourcePop_title">drl 파일명</h2>
+												<h2 class="card-title_txt" id="selectValuePop_title"></h2>
 											</header>
 											<!-- 경고 -->
 											<div class="card-body">
-												<ul id="selectFactorTree" class="ztree treewrap" style="width: 100%;"></ul>
+												<div id="selectValuePop_ValList" style="max-height: 500px; overflow: auto;"></div>
 												<!-- 버튼 -->
 												<div class="card-actions-foot">
-													<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('selectAttribute');">
+													<button type="button" class="btn btn-sm btn-green" id="selectValuePop_saveBtn">
+														<i class="far fa-times-circle custom-btn-i"></i> 적용
+													</button>
+													<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('selectValuePop');">
 														<i class="far fa-times-circle custom-btn-i"></i> 닫기
 													</button>
 												</div>

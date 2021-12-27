@@ -78,7 +78,7 @@ $(document).ready(function() {
 		
 		$("#ruleAttrData").html(html);
 		
-		fngetFactorListTree();	// RULE EDITOR 트리 생성
+		fngetFactorListTree("factorTree");	// RULE EDITOR 트리 생성
 		
 		$("#modal_ruleEditor").show();
 		if($("#ruleCardBody").css("display") == "none") {
@@ -539,13 +539,11 @@ $(document).ready(function() {
 	$(document).on("click", "._selectValueBtn", function() {
 		$("#selectValuePop").show();
 		
-		var param = {};
-		param.factorId = $(this).attr("data-defaultValue");
-		
 		var idx = $(this).siblings("input").attr("data-idx");
 		$("#selectValuePop_saveBtn").attr("data-idx", idx);
 		
-		fnGetSelectFactorVal(param);
+		// 값선택
+		fnGetSelectFactorVal();
 	});
 	
 	// RULE EDITOR > 요소값 > 함수선택시 > 값선택 팝업 > 적용버튼
@@ -577,28 +575,94 @@ $(document).ready(function() {
  * RULE EDITOR > 요소값 > 함수선택시 > 값선택 버튼
  * @returns
  */
-function fnGetSelectFactorVal(param) {
+function fnGetSelectFactorVal() {
+	$("#selectFactorTree").html("");
+	$("#selectAttribute").show();
+	var param = {};
+	param.notIn = "FUNC";
+	
 	$.ajax({
 		method : "POST",
-		url : "/targetai/getFactorVal.do",
+		url : "/targetai/getFactorList.do",
 		traditional: true,
 		data : JSON.stringify(param),
 		contentType:'application/json; charset=utf-8',
 		dataType : "json",
 		success : function(res) {
-			var factor = res.factor;
-			var factorValList = res.factorVal;
+			var factorList = res.factorList;
+			var factorArr = [];
 			
-			$("#selectValuePop_title").text(factor.FACTOR_NM + " ("+ factor.FACTOR_NM_EN +")");
-			var html = "";
-			
-			$.each(factorValList, function(idx, factorVal) {
-				html += "<input type='radio' name='valChk' value='"+ factorVal.VAL +"'/>";
-				html += "<label for='detAttrChk' class='mg_l10'>"+ factorVal.VAL +"</label>";
-				html += "<br/>";
+			$.each(factorList, function(idx, factor) {
+				var factorObj = {};
+				factorObj.id = factor.FACTOR_ID;
+				factorObj.pId = factor.PID;
+				factorObj.name = factor.FACTOR_NM;
+				factorObj.name_en = factor.FACTOR_NM_EN;
+				if(factor.FACTOR_TYPE == 'GROUP') {
+					factorObj.isParent = true;
+					factorObj.open = false;
+				}
+				
+				factorArr.push(factorObj);
 			});
 			
-			$("#selectValuePop_ValList").html(html);
+			// zTree 설정 
+			var setting = {
+				data: {
+					simpleData: {
+						enable: true
+					}
+				},
+				callback: {
+					onClick: function(event, treeId, treeNode) {
+						var factorNm = treeNode.name;
+						var factorNmEn = treeNode.name_en;
+						var factorId = treeNode.id;
+						
+						var param = {};
+						param.factorId = factorId;
+						
+						$.ajax({
+							method : "POST",
+							url : "/targetai/getFactorVal.do",
+							traditional: true,
+							data : JSON.stringify(param),
+							contentType:'application/json; charset=utf-8',
+							dataType : "json",
+							success : function(res) {
+								var factor = res.factor;
+								var factorValList = res.factorVal;
+								
+								$("#selectValuePop_title").text(factor.FACTOR_NM + " ("+ factor.FACTOR_NM_EN +")");
+								var html = "";
+								
+								$.each(factorValList, function(idx, factorVal) {
+									html += "<input type='radio' name='valChk' value='"+ factorVal.VAL +"'/>";
+									html += "<label for='detAttrChk' class='mg_l10'>"+ factorVal.VAL +"</label>";
+									html += "<br/>";
+								});
+								
+								$("#selectValuePop_valList").html(html);
+							},
+							beforeSend : function() {
+								$("#selectValuePopLoading").show();
+							},
+							complete : function() {
+								$("#selectValuePopLoading").hide();
+							},
+							error : function(jqXHR, textStatus, errorThrown) {
+								messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+								console.log(jqXHR);
+								console.log(textStatus);
+								console.log(errorThrown);
+							}
+						});
+					}
+				}
+			};
+			
+			// zTree 초기화 후 생성
+			$.fn.zTree.init($("#selectValuePop_factorTree"), setting, factorArr);
 		},
 		beforeSend : function() {
 			$("#selectValuePopLoading").show();
@@ -865,7 +929,7 @@ function getRuleList(searchObj) {
  * Factor Group List 조회 후 트리 생성
  * @returns
  */
-function fngetFactorListTree() {
+function fngetFactorListTree(elementId) {
 	var param = {};
 	
 	$.ajax({
@@ -907,9 +971,9 @@ function fngetFactorListTree() {
 			
 			// zTree 초기화 후 생성
 			$.fn.zTree.init($("#factorTree"), setting, factorArr);
+			
 			$("#factorVal").html("");
 			$("#changeInputBtn").css("display", "none");
-			
 		},
 		beforeSend : function() {
 			$("#factorTreeLoading").show();
@@ -995,14 +1059,14 @@ function getFactorVal(event, treeId, treeNode) {
 					html += "	<span for='' class='mg_r10 factorValSpanTitle'>"+ func.ARG_NM +"("+ func.DATA_TYPE +")</span>";
 					html += "</div>";
 					html += "<div>";
-					if(func.DATA_TYPE == 'Object') {
-						html += "	<input type='text' class='wd250px' name='detAttrChk' data-idx='"+ idx +"' data-dataType='"+ func.DATA_TYPE +"' value='#{"+ func.ARG_NM +"}'/>";
-						html += "	<button type='button' class='btn btn-sm btn-green _selectValueBtn' data-defaultValue='"+ func.DEFAULT_VALUE +"' data-dataType='"+ func.DATA_TYPE +"'>";
+					if(func.DATA_TYPE != 'Object') {
+						html += "	<input type='text' class='wd250px' name='detAttrChk' data-idx='"+ idx +"' data-dataType='"+ func.DATA_TYPE +"' value=''/>";
+						html += "	<button type='button' class='btn btn-sm btn-green _selectValueBtn' data-dataType='"+ func.DATA_TYPE +"'>";
 						html += "		<i class='far fa-check-circle custom-btn-i'></i> 값 선택";
 						html += "	</button>";
 						
 					} else {
-						html += "	<input type='text' class='wd250px' name='detAttrChk' data-idx='"+ idx +"' data-dataType='"+ func.DATA_TYPE +"' value=''/>";
+						html += "	<input type='text' class='wd250px' name='detAttrChk' data-idx='"+ idx +"' data-dataType='"+ func.DATA_TYPE +"' value='#{"+ func.ARG_NM +"}' readonly='readonly'/>";
 					}
 					
 					html += "</div>";

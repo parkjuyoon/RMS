@@ -20,7 +20,7 @@
 
 		<!-- 속성선택 modal_pop -->
 		<div id="selectValuePop" class="modal_pop" style="z-index: 99999;">
-			<div class="modal_content" style="width: 500px;">
+			<div class="modal_content" style="width: 600px;">
 				<!-- 팝업항상중앙띄우기 -->
 				<div class="modla_center">
 					<div class="modal_header">
@@ -36,7 +36,7 @@
 									<div class="card mg_b0">
 										<!-- 본문페이지 -->
 										<div class="card-body body-header" style="">
-											<div class="progress_loading">
+											<div class="progress_loading" style="z-index: 99999;">
 												<div id="selectValuePopLoading">
 													<img src="/targetai_publish/images/ajax-loader1.gif" />
 												</div>
@@ -47,7 +47,26 @@
 											</header>
 											<!-- 경고 -->
 											<div class="card-body">
-												<div id="selectValuePop_ValList" style="max-height: 500px; overflow: auto;"></div>
+												<div class="row">
+													<div class="col">
+														<div class="card mg_b0">
+															<!-- 트리메뉴 -->
+															<div class="card-body body-header" style="">
+																<!-- 트리메뉴 -->
+																<ul id="selectValuePop_factorTree" style="height: 500px;" class="ztree treewrap"></ul>
+															</div>
+														</div>
+													</div>
+													<div class="col">
+														<div class="card mg_b0">
+															<!-- 트리메뉴 -->
+															<div class="card-body body-header" style="">
+																<div id="selectValuePop_valList" style="height:500px; overflow: auto;"></div>
+															</div>
+														</div>
+													</div>
+												</div>
+												
 												<!-- 버튼 -->
 												<div class="card-actions-foot">
 													<button type="button" class="btn btn-sm btn-green" id="selectValuePop_saveBtn">

@@ -32,8 +32,6 @@
 	
 	<select id="getParamInfo" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT
-			FFA.FACTOR_FUNC_ARGS_ID,
-			FFA.FACTOR_ID,
 			FFA.ARG_NM,
 			FFA.`ORDER`,
 			FFA.DATA_TYPE,

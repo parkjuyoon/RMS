@@ -367,7 +367,8 @@ function fnGetParamHTML(param) {
 				parameterTdHtml += "<button type='button' class='btn btn-sm btn-green _selectAttributeBtn'>";
 				parameterTdHtml += "<i class='far fa-check-circle custom-btn-i'></i> 속성선택";
 				parameterTdHtml += "</button>";
-				parameterTdHtml += "<input type='text' class='wd300px' value='"+ paramInfo.FACTOR_NM +"' readonly='readonly' />";
+				
+				parameterTdHtml += "<input type='text' class='wd300px' value='"+ (typeof paramInfo.FACTOR_NM == 'undefined'? '' : paramInfo.FACTOR_NM) +"' readonly='readonly' />";
 				parameterTdHtml += "</div>";
 				parameterTdHtml += "</div>";
 				parameterTdHtml += "</div>";

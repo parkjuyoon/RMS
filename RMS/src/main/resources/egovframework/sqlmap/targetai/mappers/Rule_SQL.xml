@@ -49,6 +49,55 @@
 	    <if test="ruleNm_search != null and ruleNm_search != ''">AND RULE_NM LIKE CONCAT('%', #{ruleNm_search}, '%')</if>
 	</select>
 	
+	<!-- RULE 버전 목록 조회 -->
+	<select id="getRuleVerList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 
+			R.RULE_ID,
+			R.RULE_VER,
+			(SELECT COUNT(*) FROM targetai.RULE_PKG WHERE RULE_ID = R.RULE_ID) AS RULE_PKG_COUNT,
+		    R.RULE_NM,
+		    R.DFLT_SALIENCE,
+		    CASE
+				WHEN R.VER_STATUS = 'R' THEN '운영중'
+				WHEN R.VER_STATUS = 'D' THEN '개발중'
+				WHEN R.VER_STATUS = 'T' THEN '종료'
+			END AS VER_STATUS,
+		    R.NO_LOOP,
+		    R.LOCK_ON_ACTIVE,
+		    R.AGENDA_GRP,
+		    R.EFFECTIVE_DT,
+		    R.EXPIRES_DT,
+		    R.ENABLED,
+		    R.DURATION,
+		    R.RULE_THEN,
+		    R.NUM_OF_TGT,
+		    R.CAMP_ID,
+		    DATE_FORMAT(R.REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
+		    R.REG_USRID,
+		    M.MEMBER_NAME REG_USRNM,
+		    DATE_FORMAT(R.UDT_DT, '%Y-%m-%d %h:%i:%s') AS UDT_DT,
+		    R.UDT_USRID,
+		    M1.MEMBER_NAME UDT_USRNM
+		FROM 
+			targetai.RULE R
+			LEFT JOIN targetai.MEMBER M ON (R.REG_USRID = M.MEMBER_ID)
+		    LEFT JOIN targetai.MEMBER M1 ON (R.UDT_USRID = M1.MEMBER_ID)
+		WHERE 
+			R.RULE_ID = #{ruleId}
+	    ORDER BY RULE_ID DESC
+		LIMIT #{limit}
+		OFFSET #{offset}
+	</select>
+	
+	<!-- RULE 버전 목록 개수 조회 -->
+	<select id="getRuleVerCount"  parameterType="java.util.HashMap" resultType="int">
+		SELECT 
+			COUNT(*) AS CNT
+		FROM targetai.RULE
+		WHERE 
+			RULE_ID = #{ruleId}
+	</select>
+	
 	<!-- RULE 상세 조회 -->
 	<select id="getRule" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT 
@@ -136,7 +185,6 @@
 	<!-- FACTOR 함수 선택시 ARGUMENT 조회 -->
 	<select id="getFactorFuncArgs" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT 
-		    FACTOR_FUNC_ARGS_ID,
 		    FACTOR_ID,
 		    DEFAULT_VALUE,
 		    ARG_NM,

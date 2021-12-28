@@ -34,4 +34,8 @@ public interface RuleService {
 	HashMap<String, Object> ruleTest(HashMap<String, Object> param);
 
 	int ruleNmDupCheck(HashMap<String, Object> param);
+
+	List<HashMap<String, Object>> getRuleVerList(HashMap<String, Object> param);
+
+	int getRuleVerCount(HashMap<String, Object> param);
 }

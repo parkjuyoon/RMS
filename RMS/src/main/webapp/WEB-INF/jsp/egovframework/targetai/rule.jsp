@@ -18,6 +18,72 @@
 		<%@ include file="../targetai/comm/side_menu.jsp"%>
 		<%@ include file="../targetai/comm/alertPop.jsp"%>
 
+		<!-- 영향도 체크 modal_pop -->
+		<div id="effectChkPop" class="modal_pop" style="z-index: 99999;">
+			<div class="modal_content" style="width: 600px;">
+				<!-- 팝업항상중앙띄우기 -->
+				<div class="modla_center">
+					<div class="modal_header">
+						<span class="close" onclick="close_layerPop('effectChkPop');">&times;</span>
+						<h2>영향도 체크</h2>
+					</div>
+					<!-- 본문 -->
+					<div class="modal_body" style="height: calc(100% - 25vh); overflow-x: hidden; overflow-y: auto;">
+						<div class="modal_wrap">
+							<!-- 상세영역 -->
+							<div class="row">
+								<div class="col">
+									<div class="card mg_b0">
+										<!-- 본문페이지 -->
+										<div class="card-body body-header" style="">
+											<div class="progress_loading" style="z-index: 99999;">
+												<div id="effectChkPopLoading">
+													<img src="/targetai_publish/images/ajax-loader1.gif" />
+												</div>
+											</div>
+											<header class="card-header card-header-pd-mobile">
+												<div class="card-actions card-header-position-mobile"></div>
+												<h2 class="card-title_txt" id="effectChkPop_title"></h2>
+											</header>
+											<!-- 경고 -->
+											<div class="card-body">
+												<div class="row">
+													<div class="col">
+														<div class="card mg_b0">
+															<!-- 트리메뉴 -->
+															<div class="card-body body-header" style="">
+															</div>
+														</div>
+													</div>
+												</div>
+												
+												<!-- 버튼 -->
+												<div class="card-actions-foot">
+													<button type="button" class="btn btn-sm btn-green" id="">
+														<i class="far fa-times-circle custom-btn-i"></i> 저장
+													</button>
+													<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('effectChkPop');">
+														<i class="far fa-times-circle custom-btn-i"></i> 닫기
+													</button>
+												</div>
+												<!-- //버튼 -->
+											</div>
+											<!-- //경고 -->
+										</div>
+										<!-- //본문페이지 -->
+									</div>
+								</div>
+							</div>
+							<!-- //상세영역 -->
+						</div>
+					</div>
+					<!-- //본문 -->
+				</div>
+				<!-- //팝업항상중앙띄우기 -->
+			</div>
+		</div>
+		<!-- //영향도 체크 modal_pop -->
+		
 		<!-- 속성선택 modal_pop -->
 		<div id="selectValuePop" class="modal_pop" style="z-index: 99999;">
 			<div class="modal_content" style="width: 600px;">
@@ -491,24 +557,25 @@
 
 					<!-- 상세영역 -->
 					<div class="row">
+						<!-- RULE 상세 -->
 						<div class="col">
 							<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
 							<div class="card card-collapsed" id="ruleCard">
 								<header class="card-header card-header-pd-mobile">
 									<div class="card-actions card-header-position-mobile">
 										<button type="button" class="btn btn-sm btn-sky btnModal" id="ruleEditorPopUp" data-ruleId="">RULE EDITOR</button>
-										<a href="#" id="ruleDetailCardOpen" class="card-action card-action-toggle"></a>
+										<a href="#" id="ruleDetailCardOpen" class="card-action card-action-toggle" data-card-toggle></a>
 									</div>
 									<h2 class="card-title_txt">RULE 상세</h2>
 								</header>
 								<!-- 본문페이지 -->
-								<div class="card-body" id="ruleCardBody" style="display: none;">
+								<div class="card-body" id="ruleCardBody" style="display: none; height: 379px;">
 									<!-- 테이블 -->
 									<div class="panel nobordertop">
 										<div class="sform_head">
 											<table class="sform_type">
 												<colgroup>
-													<col style="width: 180px" />
+													<col style="width: 120px" />
 													<col style="width: auto" />
 												</colgroup>
 												<tbody>
@@ -517,7 +584,7 @@
 														<td class="t_left" id="ruleId"></td>
 													</tr>
 													<tr>
-														<th class="t_left">참조 정보</th>
+														<th class="t_left">참조 RULE 정보</th>
 														<td class="t_left" id="refRuleInfo"></td>
 													</tr>
 													<tr>
@@ -583,6 +650,70 @@
 								<!-- //본문페이지 -->
 							</div>
 						</div>
+						<!-- // RULE 상세 -->
+						<!-- RULE 버전 목록 -->
+						<div class="col">
+							<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
+							<div class="card card-collapsed" id="ruleVerListCard" style="overflow: auto;">
+								<header class="card-header card-header-pd-mobile">
+									<div class="card-actions card-header-position-mobile">
+										<span class="infonum"> <span class="txt_color_blue mg_l5 mg_r5" id="ruleVerCount"></span>건
+										</span>
+										<a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+									</div>
+									<h2 class="card-title_txt">RULE 버전 목록</h2>
+								</header>
+								<!-- 본문페이지 -->
+								<div class="card-body" id="ruleVerListCardBody" style="display:none; height: 379px;">
+									<div class="progress_loading">
+										<div id="ruleVerListLoading" style="display: none;">
+											<img src="/targetai_publish/images/ajax-loader1.gif" />
+										</div>
+									</div>
+									<!-- 테이블 -->
+									<div class="panel bd_b_none nobordertop">
+										<table class="tb_type01 tablesorter">
+											<colgroup>
+												<col style="width: 8%;" />
+												<col style="width: auto;" />
+												<col style="width: 10%;" />
+												<col style="width: 20%;" />
+												<col style="width: 20%;" />
+											</colgroup>
+											<thead>
+												<tr>
+													<th>No.</th>
+													<th>RULE 버전</th>
+													<th>상태</th>
+													<th>등록일</th>
+													<th>수정일</th>
+												</tr>
+											</thead>
+											<tbody id="ruleVerList">
+												<tr>
+													<td colspan="4" class="t_center">조회된 내용이 없습니다.</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<!-- //테이블 -->
+
+									<!-- 페이징 -->
+									<div class="custom-paging" id="ruleVerListPaging"></div>
+									<!-- //페이징 -->
+									
+									<!-- 버튼 -->
+									<div class="card-actions-foot">
+										<button type="button" class="btn btn-sm btn-green" id="ruleDeployBtn">
+											<i class="el el-file-new custom-btn-i"></i>개발중인 RULE 배포
+										</button>
+									</div>
+									<!-- //버튼 -->
+								</div>
+								<!-- //본문페이지 -->
+							</div>
+						</div>
+						<!-- //RULE 버전 목록 -->
 					</div>
 					<!-- //상세영역 -->
 				</div>

@@ -32,7 +32,11 @@ $(document).ready(function() {
 		param.ruleId = $(this).attr("data-ruleId");
 		param.rulePkgCount = $(this).attr("data-rulePkgCount") * 1;
 		
+		// RULE 상세 조회
 		fnGetRule(param);
+		// RULE 버전 목록 조회
+		param.currentPage = 1;
+		fnGetRuleVerList(param);
 	});
 	
 	// RULE 검색 > 초기화 버튼 클릭
@@ -443,6 +447,18 @@ $(document).ready(function() {
 		getRuleList(searchObj);
 	});
 	
+	// RULE 버전 목록 페이지 번호 클릭
+	$("#ruleVerListPaging").on("click", "._paging", function(e) {
+		var cls = $(this).attr("class");
+		const pageNum = $(this).attr("data-page_num");
+		
+		var searchObj = {};
+		searchObj.ruleId = $("#ruleId").text();
+		searchObj.currentPage = pageNum;
+		
+		fnGetRuleVerList(searchObj);
+	});
+	
 	// RULE 상세 > 저장 버튼 클릭
 	$("#saveRuleBtn").click(function() {
 		var refRuleId = $(this).attr("data-refRuleId") * 1;
@@ -451,10 +467,10 @@ $(document).ready(function() {
 		var map = {};
 		map.refRuleId = refRuleId;
 		map.refRuleNm = refRuleNm;
+		map.ruleId = $("#ruleId").text();
 
 		fnSaveRule(map);
-		
-	})
+	});
 	
 	// RULE 목록 > 삭제 버튼 클릭
 	$("#delRuleBtn").click(function() {
@@ -569,7 +585,70 @@ $(document).ready(function() {
 		inputTxt.val(valTxt);
 		close_layerPop('selectValuePop');
 	});
+	
+	// RULE 버전 목록 > 개발중인 RULE 배포 버튼 클릭
+	$("#ruleDeployBtn").click(function() {
+		$("#effectChkPop").show();
+	});
 });
+
+/**
+ * RULE 버전 목록 조회
+ * @param param
+ * @returns
+ */
+function fnGetRuleVerList(searchObj) {
+	searchObj.limit = 10;
+	searchObj.offset = searchObj.currentPage*searchObj.limit-searchObj.limit;
+	
+	$.ajax({
+		method : "POST",
+		url : "/targetai/getRuleVerList.do",
+		traditional: true,
+		data : JSON.stringify(searchObj),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			var verList = res.ruleVerList;
+			searchObj.totalCount = res.ruleVerCount;
+			
+			var html = "";
+			
+			if(verList.length == 0) {
+				html += "<tr>";
+				html += "	<td colspan='5' class='t_center'>조회된 내용이 없습니다.</td>";
+				html += "</tr>";
+				
+			} else {
+				$.each(verList, function(idx, ver){
+					html += "<tr>";
+					html += "	<td class='t_center'>"+ (idx+1) +"</td>";
+					html += "	<td class='t_center'><a href='#' class='' data-ver='"+ ver.RULE_VER +"' data-ruleId='"+ ver.RULE_ID +"'>" + ver.RULE_NM + "_v" + ver.RULE_VER +"</a></td>";
+					html += "	<td class='t_center'><a href='#' class='' data-ver='"+ ver.RULE_VER +"' data-ruleId='"+ ver.RULE_ID +"'>" + ver.VER_STATUS + "</td>";
+					html += "	<td class='t_center'>" + (typeof ver.REG_DT == "undefined" ? "-" : ver.REG_DT) + "</td>";
+					html += "	<td class='t_center'>" + (typeof ver.UDT_DT == "undefined" ? "-" : ver.UDT_DT) + "</td>";
+					html += "</tr>";
+				});
+			}
+			
+			$("#ruleVerList").html(html);
+			$("#ruleVerCount").text(res.ruleVerCount);
+			fnPaging("#ruleVerListPaging", searchObj);
+		},
+		beforeSend : function() {
+			$("#ruleVerListLoading").show();
+		},
+		complete : function() {
+			$("#ruleVerListLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
 
 /**
  * RULE EDITOR > 요소값 > 함수선택시 > 값선택 버튼
@@ -703,7 +782,9 @@ function fnGetRule(param) {
 			$("input:radio[name='noLoop']:radio[value='"+ rule.NO_LOOP +"']").prop("checked", true);
 			$("input:radio[name='lockOnActive']:radio[value='"+ rule.LOCK_ON_ACTIVE +"']").prop("checked", true);
 			$("#ruleCard").removeClass("card-collapsed");
-			$("#ruleCardBody").css("display", "");
+			$("#ruleCardBody").show();
+			$("#ruleVerListCard").removeClass("card-collapsed");
+			$("#ruleVerListCardBody").show();
 			$("#ruleTestRunBtn").attr("data-ruleId", rule.RULE_ID);
 			$("#ruleTestCustNo").val("");
 			$("#ruleTestResult").val("");
@@ -768,7 +849,6 @@ function fnGetRule(param) {
 			// RULE 저장시 복사기능 제공하기 위한 변수
 			$("#saveRuleBtn").attr("data-ruleNm", rule.RULE_NM);
 			$("#saveRuleBtn").attr("data-refRuleId", rule.RULE_ID);
-			
 		},
 		beforeSend : function() {
 			$("#ruleLoading").show();

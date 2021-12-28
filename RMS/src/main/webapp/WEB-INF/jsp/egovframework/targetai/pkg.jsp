@@ -4,11 +4,6 @@
 <head>
 <%@ include file="../targetai/comm/header.jsp"%>
 
-<style type="text/css">
-	.card::-webkit-scrollbar {
-		display: none;
-	}
-</style>
 </head>
 <body class="loading" data-layout-mode="two-column"
 	data-layout='{"mode": "light", "width": "fluid", "menuPosition": "fixed", "sidebar": { "color": "light", "size": "default", "showuser": false}, "topbar": {"color": "light"}, "showRightSidebarOnPageLoad": false}'>
@@ -492,7 +487,7 @@
 							</div>
 						</div>
 					</div>
-					<!-- 이벤트 목록 그리드영역 -->
+					<!-- RULE 목록 그리드영역 -->
 					<div class="row">
 						<div class="col">
 							<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
@@ -503,7 +498,7 @@
 										</span>
 										<a href="#" class="card-action card-action-toggle" data-card-toggle></a>
 									</div>
-									<h2 class="card-title_txt">이벤트 목록</h2>
+									<h2 class="card-title_txt">RULE 목록</h2>
 								</header>
 								<!-- 본문페이지 -->
 								<div class="card-body" id="eventCardListBody" style="display:none; height: 379px;">
@@ -524,8 +519,8 @@
 											</colgroup>
 											<thead>
 												<tr>
-													<th>이벤트 버전</th>
-													<th>이벤트 명</th>
+													<th>RULE 버전</th>
+													<th>RULE 명</th>
 													<th>우선순위</th>
 													<th>등록일</th>
 													<th>등록자</th>

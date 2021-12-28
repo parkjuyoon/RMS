@@ -87,8 +87,34 @@ public class RuleController {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		
 		try {
+			// RULE 상세 정보 조회
 			HashMap<String, Object> rule = ruleService.getRule(param);
 			resultMap.put("rule", rule);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return resultMap;
+	}
+	
+	/**
+	 * RULE 상세 조회
+	 * @param RULE_ID
+	 * @return rule
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getRuleVerList.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getRuleVerList(@RequestBody HashMap<String, Object> param) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		try {
+			// RULE 버전 목록 조회
+			List<HashMap<String, Object>> ruleVerList = ruleService.getRuleVerList(param);
+			int ruleVerCount = ruleService.getRuleVerCount(param);
+			
+			resultMap.put("ruleVerList", ruleVerList);
+			resultMap.put("ruleVerCount", ruleVerCount);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

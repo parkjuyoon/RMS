@@ -241,4 +241,14 @@ public class RuleServiceImpl extends ApiServiceImpl implements RuleService {
 	public int ruleNmDupCheck(HashMap<String, Object> param) {
 		return ruleDao.ruleNmDupCheck(param);
 	}
+
+	@Override
+	public List<HashMap<String, Object>> getRuleVerList(HashMap<String, Object> param) {
+		return ruleDao.getRuleVerList(param);
+	}
+
+	@Override
+	public int getRuleVerCount(HashMap<String, Object> param) {
+		return ruleDao.getRuleVerCount(param);
+	}
 }

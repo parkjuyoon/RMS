@@ -43,4 +43,6 @@ public interface RuleMapper {
 	List<HashMap<String, Object>> getRuleVerList(HashMap<String, Object> param);
 
 	int getRuleVerCount(HashMap<String, Object> param);
+
+	int getRuleDevVer(HashMap<String, Object> param);
 }

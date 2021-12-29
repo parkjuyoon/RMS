@@ -69,7 +69,16 @@ public class RuleServiceImpl extends ApiServiceImpl implements RuleService {
 	
 	@Override
 	public void ruleUpdate(HashMap<String, Object> param) {
-		ruleDao.ruleUpdate(param);		
+		// 개발버전이 있는지 확인한다.
+		int cnt = ruleDao.getRuleDevVer(param);
+		// 개발버전이 있으면 개발버전을 수정하고
+		if(cnt > 0) {
+			ruleDao.ruleUpdate(param);		
+			
+		// 운영버전만 있을때 개발버전을 추가한다.
+		} else {
+			ruleDao.ruleSave(param);
+		}
 	}
 
 	@Override

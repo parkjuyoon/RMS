@@ -131,6 +131,17 @@
 			R.RULE_ID = #{ruleId}
 	</select>
 	
+	<!-- RULE 의 개발버전조회 -->
+	<select id="getRuleDevVer" parameterType="java.util.HashMap" resultType="int">
+		SELECT
+			count(*)
+		FROM
+			targetai.RULE R
+		WHERE
+			R.RULE_ID = #{ruleId}
+			AND R.VER_STATUS = 'D'
+	</select>
+	
 	<!-- 속성 view 리스트 조회 -->
 	<select id="getFactorList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
 		SELECT 
@@ -233,6 +244,8 @@
 		INSERT INTO targetai.RULE (
 			REF_RULE_ID,
 			RULE_NM,
+			DFLT_SALIENCE,
+			VER_STATUS,
 			NO_LOOP,
 			LOCK_ON_ACTIVE,
 			FUNC_NMS,
@@ -244,6 +257,8 @@
 		) VALUES (
 			#{refRuleId},
 			#{ruleNm},
+			#{dfltSalience},
+			'D',
 			#{noLoop},
 			#{lockOnActive},
 			#{FUNC_NMS},
@@ -284,6 +299,7 @@
 			UDT_USRID = #{USER_ID}
 		WHERE
 			RULE_ID = #{ruleId}
+			AND VER_STATUS = 'D'
 	</update>	
 	
 	<!-- RULE 삭제 -->

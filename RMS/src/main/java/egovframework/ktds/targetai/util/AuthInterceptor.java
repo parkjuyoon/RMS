@@ -13,9 +13,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter{
 			throws Exception {
 		
 		boolean rs = true;
+		HttpSession session = request.getSession();
 		
 		try {
-			HttpSession session = request.getSession();
 			String member_id = (String) session.getAttribute("member_id");
 		
 			if(member_id == null) {

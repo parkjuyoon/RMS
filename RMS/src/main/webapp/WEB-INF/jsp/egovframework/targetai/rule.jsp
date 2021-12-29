@@ -86,7 +86,7 @@
 		
 		<!-- 속성선택 modal_pop -->
 		<div id="selectValuePop" class="modal_pop" style="z-index: 99999;">
-			<div class="modal_content" style="width: 600px;">
+			<div class="modal_content" style="width: 700px;">
 				<!-- 팝업항상중앙띄우기 -->
 				<div class="modla_center">
 					<div class="modal_header">
@@ -119,7 +119,7 @@
 															<!-- 트리메뉴 -->
 															<div class="card-body body-header" style="">
 																<!-- 트리메뉴 -->
-																<ul id="selectValuePop_factorTree" style="height: 500px;" class="ztree treewrap"></ul>
+																<ul id="selectValuePop_factorTree" style="height: 500px; width: 100%;" class="ztree treewrap"></ul>
 															</div>
 														</div>
 													</div>
@@ -127,7 +127,7 @@
 														<div class="card mg_b0">
 															<!-- 트리메뉴 -->
 															<div class="card-body body-header" style="">
-																<div id="selectValuePop_valList" style="height:500px; overflow: auto;"></div>
+																<div id="selectValuePop_valList" style="height:500px; width: 100%; overflow: auto;"></div>
 															</div>
 														</div>
 													</div>

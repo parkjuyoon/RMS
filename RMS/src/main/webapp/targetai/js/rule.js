@@ -461,15 +461,58 @@ $(document).ready(function() {
 	
 	// RULE 상세 > 저장 버튼 클릭
 	$("#saveRuleBtn").click(function() {
-		var refRuleId = $(this).attr("data-refRuleId") * 1;
-		var refRuleNm = $(this).attr("data-ruleNm");
+		var param = {};
+		param.ruleId = $("#ruleId").text();
 		
-		var map = {};
-		map.refRuleId = refRuleId;
-		map.refRuleNm = refRuleNm;
-		map.ruleId = $("#ruleId").text();
-
-		fnSaveRule(map);
+		// 값의 변경 여부 확인
+		$.ajax({
+			method : "POST",
+			url : "/targetai/getRule.do",
+			traditional: true,
+			data : JSON.stringify(param),
+			contentType:'application/json; charset=utf-8',
+			dataType : "json",
+			success : function(res) {
+				var rule = res.rule;
+				
+				
+				// 해야할곳
+				a!~
+				// 현재 RULE 명과 비교
+				var curRuleNm = $("#ruleNm").val();
+				
+				if(curRuleNm == '') {
+					messagePop("warning", "RULE 명을 입력하세요.", "", "");
+					return;
+				}
+				
+				if(rule.RULE_NM != curRuleNm) {
+					$("#saveRuleBtn").attr("data-dupCheck", "Y");
+					messagePop("warning", "RULE 명을 입력하세요.", "", "");
+					return;
+				}
+				// 현재 기본우선순위와 비교
+				var curDfltSalience = $("#dfltSalience").val();
+				// 현재 타겟 유형과 비교
+				var curTargetType = $("#targetType").val();
+				// 현재 조건내용과 비교
+				var curRuleWhenCont = $("#ruleWhenCont").val();
+				// RULE 저장
+				fnSaveRule(map);
+			},
+			beforeSend : function() {
+				$("#ruleLoading").show();
+			},
+			complete : function() {
+				$("#ruleLoading").hide();
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+				console.log(jqXHR);
+				console.log(textStatus);
+				console.log(errorThrown);
+			}
+		});
 	});
 	
 	// RULE 목록 > 삭제 버튼 클릭
@@ -589,6 +632,8 @@ $(document).ready(function() {
 	// RULE 버전 목록 > 개발중인 RULE 배포 버튼 클릭
 	$("#ruleDeployBtn").click(function() {
 		$("#effectChkPop").show();
+		
+		fnGetEffectChkPop();
 	});
 });
 
@@ -631,9 +676,13 @@ function fnGetRuleVerList(searchObj) {
 				});
 			}
 			
+			$("#ruleVerListCard>header>h2").text(verList[0].RULE_NM + "("+ searchObj.ruleId +") 의 버전 목록");
 			$("#ruleVerList").html(html);
 			$("#ruleVerCount").text(res.ruleVerCount);
 			fnPaging("#ruleVerListPaging", searchObj);
+			
+			// 개발중인 RULE 배포하기 위한 RULE_ID 설정
+			$("#ruleDeployBtn").attr("data-ruleId", searchObj.ruleId);
 		},
 		beforeSend : function() {
 			$("#ruleVerListLoading").show();
@@ -788,6 +837,7 @@ function fnGetRule(param) {
 			$("#ruleTestRunBtn").attr("data-ruleId", rule.RULE_ID);
 			$("#ruleTestCustNo").val("");
 			$("#ruleTestResult").val("");
+			$("#saveRuleBtn").attr("data-dupCheck", "N");
 			// -- RULE 상세페이지 초기화 끝 --
 			
 			$("#ruleNm").focus();
@@ -845,10 +895,6 @@ function fnGetRule(param) {
 			
 			// 단위 테스트 팝업 > RULE 속성영역
 			$("#ruleAttrPreView").html(ruleTestHtml);
-			
-			// RULE 저장시 복사기능 제공하기 위한 변수
-			$("#saveRuleBtn").attr("data-ruleNm", rule.RULE_NM);
-			$("#saveRuleBtn").attr("data-refRuleId", rule.RULE_ID);
 		},
 		beforeSend : function() {
 			$("#ruleLoading").show();
@@ -1203,15 +1249,8 @@ function fnSaveRule(map) {
 	param.noLoop = $("input:radio[name='noLoop']").prop("checked") + "";
 	param.lockOnActive = $("input:radio[name='lockOnActive']").prop("checked") + "";
 	
-	param.refRuleId = map.refRuleId;
-	param.refRuleNm = map.refRuleNm;
-	
 	// RULE 명 중복체크 필요성
-	if(param.refRuleId != param.ruleId || param.ruleNm != param.refRuleNm) {
-		param.dupCheck = "Y";
-	} else {
-		param.dupCheck = "N";
-	}
+	param.dupCheck = $("#saveRuleBtn").attr("data-dupCheck");
 	
 	// ruleAttr 저장값
 	param.ruleObjArr = ruleObjArr;
@@ -1247,8 +1286,20 @@ function fnSaveRule(map) {
 			$("#ruleId").text(res.ruleId);
 			
 			var searchObj = {};
+			// RULE 목록 업데이트
 			searchObj.currentPage = 1;
 			getRuleList(searchObj);
+			
+			// RULE 상세 업데이트
+			searchObj = {};
+			searchObj.ruleId = res.ruleId;
+			fnGetRule(param);
+			
+			// RULE 버전 목록 업데이트
+			searchObj = {};
+			searchObj.currentPage = 1;
+			searchObj.ruleId = res.ruleId;
+			fnGetRuleVerList(searchObj);
 		},
 		beforeSend : function() {
 			$("#ruleLoading").show();
@@ -1299,6 +1350,7 @@ function initRuleDetail() {
 	$("#ruleWhenCont").val("");
 	$("#saveRuleBtn").removeAttr("data-ruleNm");
 	$("#saveRuleBtn").removeAttr("data-refRuleId");
+	$("#refRuleInfo").text("");
 }
 
 /**

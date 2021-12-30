@@ -4,31 +4,40 @@
 
 	<!-- RULE 리스트 조회 -->
 	<select id="getRuleList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
-		SELECT 
+		SELECT
 			R.RULE_ID,
+			R.RULE_VER,
+		    R.VER_STATUS,
 			(SELECT COUNT(*) FROM targetai.RULE_PKG WHERE RULE_ID = R.RULE_ID) AS RULE_PKG_COUNT,
-		    R.RULE_NM,
-		    R.DFLT_SALIENCE,
-		    R.NO_LOOP,
-		    R.LOCK_ON_ACTIVE,
-		    R.AGENDA_GRP,
-		    R.EFFECTIVE_DT,
-		    R.EXPIRES_DT,
-		    R.ENABLED,
-		    R.DURATION,
-		    R.RULE_THEN,
-		    R.NUM_OF_TGT,
-		    R.CAMP_ID,
-		    DATE_FORMAT(R.REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
-		    R.REG_USRID,
-		    M.MEMBER_NAME REG_USRNM,
-		    DATE_FORMAT(R.UDT_DT, '%Y-%m-%d %h:%i:%s') AS UDT_DT,
-		    R.UDT_USRID,
-		    M1.MEMBER_NAME UDT_USRNM
-		FROM 
-			targetai.RULE R
-			LEFT JOIN targetai.MEMBER M ON (R.REG_USRID = M.MEMBER_ID)
-		    LEFT JOIN targetai.MEMBER M1 ON (R.UDT_USRID = M1.MEMBER_ID)
+			R.RULE_NM,
+			R.DFLT_SALIENCE,
+			R.NO_LOOP,
+			R.LOCK_ON_ACTIVE,
+			R.AGENDA_GRP,
+			R.EFFECTIVE_DT,
+			R.EXPIRES_DT,
+			R.ENABLED,
+			R.DURATION,
+			R.RULE_THEN,
+			R.NUM_OF_TGT,
+			R.CAMP_ID,
+			DATE_FORMAT(R.REG_DT, '%Y-%m-%d %h:%i:%s') AS REG_DT,
+			R.REG_USRID,
+			M.MEMBER_NAME REG_USRNM,
+			DATE_FORMAT(R.UDT_DT, '%Y-%m-%d %h:%i:%s') AS UDT_DT,
+			R.UDT_USRID,
+			M1.MEMBER_NAME UDT_USRNM
+		FROM (
+			SELECT 
+				RULE_ID,
+				MAX(RULE_VER) RULE_VER
+			FROM
+				targetai.RULE R
+			GROUP BY RULE_ID
+		) A
+		LEFT JOIN targetai.RULE R ON (A.RULE_ID = R.RULE_ID AND A.RULE_VER = R.RULE_VER)
+		LEFT JOIN targetai.MEMBER M ON (R.REG_USRID = M.MEMBER_ID)
+		LEFT JOIN targetai.MEMBER M1 ON (R.UDT_USRID = M1.MEMBER_ID)
 		WHERE 1=1
 		<if test="ruleId_search != null and ruleId_search != ''">AND RULE_ID = #{ruleId_search}</if>
 	    <if test="ruleRegUsrId_search != null and ruleRegUsrId_search != ''">AND REG_USRID = #{ruleRegUsrId_search}</if>
@@ -42,7 +51,15 @@
 	<select id="getRuleCount"  parameterType="java.util.HashMap" resultType="int">
 		SELECT 
 			COUNT(*) AS CNT
-		FROM targetai.RULE
+		FROM (
+			SELECT 
+				RULE_ID,
+				MAX(RULE_VER) RULE_VER
+			FROM
+				targetai.RULE R
+			GROUP BY RULE_ID
+		) A
+		LEFT JOIN targetai.RULE R ON (A.RULE_ID = R.RULE_ID AND A.RULE_VER = R.RULE_VER)
 		WHERE 1=1
 		<if test="ruleId_search != null and ruleId_search != ''">AND RULE_ID = #{ruleId_search}</if>
 	    <if test="ruleRegUsrId_search != null and ruleRegUsrId_search != ''">AND REG_USRID = #{ruleRegUsrId_search}</if>
@@ -84,7 +101,7 @@
 		    LEFT JOIN targetai.MEMBER M1 ON (R.UDT_USRID = M1.MEMBER_ID)
 		WHERE 
 			R.RULE_ID = #{ruleId}
-	    ORDER BY RULE_ID DESC
+	    ORDER BY RULE_VER DESC
 		LIMIT #{limit}
 		OFFSET #{offset}
 	</select>
@@ -102,6 +119,7 @@
 	<select id="getRule" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 		SELECT 
 			R.RULE_ID,
+			R.RULE_VER,
 			R.REF_RULE_ID,
 			(SELECT RULE_NM FROM targetai.RULE WHERE RULE_ID = R.REF_RULE_ID) AS REF_RULE_NM,
 			(SELECT COUNT(*) FROM targetai.RULE_PKG WHERE RULE_ID = R.RULE_ID) AS RULE_PKG_COUNT,
@@ -129,6 +147,7 @@
 		FROM targetai.RULE R
 		WHERE
 			R.RULE_ID = #{ruleId}
+			AND R.RULE_VER = #{ruleVer}
 	</select>
 	
 	<!-- RULE 의 개발버전조회 -->
@@ -236,7 +255,7 @@
 		    LEFT JOIN targetai.RULE R ON (RP.RULE_ID = R.RULE_ID)
 		WHERE
 			RP.PKG_ID = #{PKG_ID}
-			AND RP.VER = #{VER}
+			AND RP.PKG_VER = #{VER}
 	</select>
 	
 	<!-- RULE 저장 -->
@@ -328,5 +347,44 @@
 			targetai.RULE
 		WHERE
 			RULE_NM = #{ruleNm}
+	</select>
+	
+	<!-- RULE 의 연결된 패키지가 있는지 확인 -->
+	<select id="getConPkgList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 
+		    R.RULE_ID,
+		    R.RULE_NM,
+		    RP.PKG_ID,
+		    P.PKG_NM,
+		    RP.VER,
+		    CASE
+				WHEN PV.VER_STATUS = 'R' THEN '운영중'
+				WHEN PV.VER_STATUS = 'D' THEN '개발중'
+				WHEN PV.VER_STATUS = 'T' THEN '종료'
+			END AS VER_STATUS,
+			DATE_FORMAT(PV.RUN_START_DATE, '%Y-%m-%d %h:%i:%s') AS RUN_START_DATE,
+    		DATE_FORMAT(PV.RUN_END_DATE, '%Y-%m-%d %h:%i:%s') AS RUN_END_DATE
+		FROM
+		    targetai.RULE R
+		    LEFT JOIN targetai.RULE_PKG RP ON (R.RULE_ID = RP.RULE_ID)
+		    LEFT JOIN targetai.PKG_VER PV ON (RP.PKG_ID = PV.PKG_ID AND RP.VER = PV.VER)
+		    LEFT JOIN targetai.PKG P ON (RP.PKG_ID = P.PKG_ID)
+		WHERE
+			R.RULE_ID = #{ruleId}
+		    AND PV.VER_STATUS != 'T'
+	</select>
+	
+	<!-- RULE 의 연결된 패키지가 있는지 확인한것의 개수 -->
+	<select id="getConPkgListCnt" parameterType="java.util.HashMap" resultType="int">
+		SELECT 
+		    count(*)
+		FROM
+		    targetai.RULE R
+		    LEFT JOIN targetai.RULE_PKG RP ON (R.RULE_ID = RP.RULE_ID)
+		    LEFT JOIN targetai.PKG_VER PV ON (RP.PKG_ID = PV.PKG_ID AND RP.VER = PV.VER)
+		    LEFT JOIN targetai.PKG P ON (RP.PKG_ID = P.PKG_ID)
+		WHERE
+			R.RULE_ID = #{ruleId}
+		    AND PV.VER_STATUS != 'T'
 	</select>
 </mapper>

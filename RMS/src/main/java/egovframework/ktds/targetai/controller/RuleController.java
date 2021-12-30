@@ -305,4 +305,17 @@ public class RuleController {
 			
 			return rtnMap;
 	}
+	
+	/**
+	 * 영향도 체크(연결된 패키지 조회)
+	 * @param param
+	 * @return resultMap
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getConPkg.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getConPkg(@RequestBody HashMap<String, Object> param, HttpSession session) {
+		HashMap<String, Object> rtnMap = ruleService.getConPkg(param);
+		
+		return rtnMap;
+	}
 }

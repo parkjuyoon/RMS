@@ -77,7 +77,7 @@ public class PkgController {
 			// 맵핑된 RULE 목록 조회 
 			List<HashMap<String, Object>> mappingRuleList = pkgService.getMappingRuleList(param);
 			param.put("mappingRuleList", mappingRuleList);
-			// 패키지와 연결 가능한 RULE 목록 조회
+			// 패키지와 연결 가능한 RULE 목록 조회(운영중인 RULE만 나온다)
 			List<HashMap<String, Object>> conRuleList = pkgService.getConRuleList(param);
 			// 최근 수정 중인 패키지 상세 조회
 			HashMap<String, Object> pkg = pkgService.getPkg(param);

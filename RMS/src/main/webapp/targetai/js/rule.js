@@ -30,6 +30,7 @@ $(document).ready(function() {
 		e.preventDefault(); // a링크 클릭이벤트 제거
 		var param = {};
 		param.ruleId = $(this).attr("data-ruleId");
+		param.ruleVer = $(this).attr("data-ruleVer");
 		param.rulePkgCount = $(this).attr("data-rulePkgCount") * 1;
 		
 		// RULE 상세 조회
@@ -462,57 +463,86 @@ $(document).ready(function() {
 	// RULE 상세 > 저장 버튼 클릭
 	$("#saveRuleBtn").click(function() {
 		var param = {};
-		param.ruleId = $("#ruleId").text();
+		var ruleId = $("#ruleId").text();
 		
-		// 값의 변경 여부 확인
-		$.ajax({
-			method : "POST",
-			url : "/targetai/getRule.do",
-			traditional: true,
-			data : JSON.stringify(param),
-			contentType:'application/json; charset=utf-8',
-			dataType : "json",
-			success : function(res) {
-				var rule = res.rule;
-				
-				
-				// 해야할곳
-				a!~
-				// 현재 RULE 명과 비교
-				var curRuleNm = $("#ruleNm").val();
-				
-				if(curRuleNm == '') {
-					messagePop("warning", "RULE 명을 입력하세요.", "", "");
-					return;
+		// ruleId 가 없으면 신규등록
+		if(ruleId == '') {
+			// RULE 저장
+			$("#saveRuleBtn").attr("data-dupCheck", "Y");
+			param.ruleVer = 1;
+			fnSaveRule(param);
+			
+		} else {
+			param.ruleId = ruleId;
+			param.ruleVer = $(this).attr("data-ruleVer");
+			
+			// 값의 변경 여부 확인
+			$.ajax({
+				method : "POST",
+				url : "/targetai/getRule.do",
+				traditional: true,
+				data : JSON.stringify(param),
+				contentType:'application/json; charset=utf-8',
+				dataType : "json",
+				success : function(res) {
+					var rule = res.rule;
+					
+					var curRuleNm = $("#ruleNm").val();
+					
+					// 현재 RULE 명이 입력되었는지 확인
+					if(curRuleNm == '') {
+						messagePop("warning", "RULE 명을 입력하세요.", "", "");
+						return;
+					}
+					
+					// 현재 RULE 명과 비교
+					if(rule.RULE_NM != curRuleNm) {
+						$("#saveRuleBtn").attr("data-dupCheck", "Y");
+						$("#saveRuleBtn").attr("data-isChng", "Y");
+					} else {
+						$("#saveRuleBtn").attr("data-dupCheck", "N");
+						$("#saveRuleBtn").attr("data-isChng", "N");
+					}
+					// 현재 기본우선순위와 비교
+					var curDfltSalience = $("#dfltSalience").val();
+					if(rule.DFLT_SALIENCE != curDfltSalience) {
+						$("#saveRuleBtn").attr("data-isChng", "Y");
+					}
+					// 현재 타겟 유형과 비교
+					var curTargetType = $("#targetType").val();
+					if(rule.TARGET_TYPE != curTargetType) {
+						$("#saveRuleBtn").attr("data-isChng", "Y");
+					}
+					// 현재 조건내용과 비교
+					var curRuleWhenCont = $("#ruleWhenCont").val();
+					if(rule.RULE_WHEN_KOR != curRuleWhenCont) {
+						$("#saveRuleBtn").attr("data-isChng", "Y");
+					}
+					
+					var isChng = $("#saveRuleBtn").attr("data-isChng");
+					
+					if(isChng == 'Y') {
+						// RULE 저장
+						fnSaveRule(param);
+						
+					} else {
+						messagePop("warning", "변경된 내용이 없습니다.", "", "");
+					}
+				},
+				beforeSend : function() {
+					$("#ruleLoading").show();
+				},
+				complete : function() {
+					$("#ruleLoading").hide();
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+					console.log(jqXHR);
+					console.log(textStatus);
+					console.log(errorThrown);
 				}
-				
-				if(rule.RULE_NM != curRuleNm) {
-					$("#saveRuleBtn").attr("data-dupCheck", "Y");
-					messagePop("warning", "RULE 명을 입력하세요.", "", "");
-					return;
-				}
-				// 현재 기본우선순위와 비교
-				var curDfltSalience = $("#dfltSalience").val();
-				// 현재 타겟 유형과 비교
-				var curTargetType = $("#targetType").val();
-				// 현재 조건내용과 비교
-				var curRuleWhenCont = $("#ruleWhenCont").val();
-				// RULE 저장
-				fnSaveRule(map);
-			},
-			beforeSend : function() {
-				$("#ruleLoading").show();
-			},
-			complete : function() {
-				$("#ruleLoading").hide();
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-				messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
-				console.log(jqXHR);
-				console.log(textStatus);
-				console.log(errorThrown);
-			}
-		});
+			});
+		}
 	});
 	
 	// RULE 목록 > 삭제 버튼 클릭
@@ -631,11 +661,83 @@ $(document).ready(function() {
 	
 	// RULE 버전 목록 > 개발중인 RULE 배포 버튼 클릭
 	$("#ruleDeployBtn").click(function() {
-		$("#effectChkPop").show();
-		
-		fnGetEffectChkPop();
+		var param = {};
+		param.ruleId = $(this).attr("data-ruleId");
+		param.currentPage = 1;
+		fnGetEffectChkPop(param);
 	});
 });
+
+/**
+ * 개발중인 RULE 배포시 영향도 체크(연결된 패키지가 있는지 확인)
+ * @returns
+ */
+function fnGetEffectChkPop(searchObj) {
+	searchObj.limit = 10;
+	searchObj.offset = searchObj.currentPage*searchObj.limit-searchObj.limit;
+	
+	$.ajax({
+		method : "POST",
+		url : "/targetai/getConPkg.do",
+		traditional: true,
+		data : JSON.stringify(searchObj),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			var conPkgList = res.conPkgList;
+			var conPkgListCnt = res.conPkgListCnt;
+			
+			// 패키지가 연결된 RULE의 운영배포 -> 영향도 체크
+			if(conPkgList.length > 0) {
+				$("#effectChkPop").show();
+				
+				var html = "";
+				
+				if(conPkgList.length == 0) {
+					html += "<tr>";
+					html += "	<td colspan='6' class='t_center'>조회된 내용이 없습니다1.</td>";
+					html += "</tr>";
+					
+				} else {
+					$.each(conPkgList, function(idx, conPkg){
+						html += "<tr>";
+						html += "	<td class='t_center'>"+ conPkg.PKG_ID +"</td>";
+						html += "	<td class='t_center'>"+ conPkg.PKG_NM +"</td>";
+						html += "	<td class='t_center'>"+ conPkg.VER +"</td>";
+						html += "	<td class='t_center'>"+ conPkg.VER_STATUS +"</td>";
+						html += "	<td class='t_center'>" + (typeof conPkg.RUN_START_DATE == "undefined" ? "-" : conPkg.RUN_START_DATE) + "</td>";
+						html += "	<td class='t_center'>" + (typeof conPkg.RUN_END_DATE == "undefined" ? "-" : conPkg.RUN_END_DATE) + "</td>";
+						html += "</tr>";
+					});
+				}
+				
+				$("#effectChkPopList").html(html);
+				$("#effectChkPopCntBySearch").text(conPkgListCnt);
+				
+				fnPaging("#effectChkPopPaging", searchObj);
+				
+			// 패키지가 연결되지 않은 RULE의 운영배포
+			} else {
+				
+			}
+			
+		},
+		beforeSend : function() {
+			$("#ruleVerListLoading").show();
+			$("#effectChkPopLoading").show();
+		},
+		complete : function() {
+			$("#ruleVerListLoading").hide();
+			$("#effectChkPopLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
 
 /**
  * RULE 버전 목록 조회
@@ -661,7 +763,7 @@ function fnGetRuleVerList(searchObj) {
 			
 			if(verList.length == 0) {
 				html += "<tr>";
-				html += "	<td colspan='5' class='t_center'>조회된 내용이 없습니다.</td>";
+				html += "	<td colspan='5' class='t_center'>조회된 내용이 없습니다1.</td>";
 				html += "</tr>";
 				
 			} else {
@@ -830,6 +932,7 @@ function fnGetRule(param) {
 			$("#dfltSalience").val(rule.DFLT_SALIENCE);
 			$("input:radio[name='noLoop']:radio[value='"+ rule.NO_LOOP +"']").prop("checked", true);
 			$("input:radio[name='lockOnActive']:radio[value='"+ rule.LOCK_ON_ACTIVE +"']").prop("checked", true);
+			$("#targetType").val(rule.TARGET_TYPE);
 			$("#ruleCard").removeClass("card-collapsed");
 			$("#ruleCardBody").show();
 			$("#ruleVerListCard").removeClass("card-collapsed");
@@ -838,6 +941,8 @@ function fnGetRule(param) {
 			$("#ruleTestCustNo").val("");
 			$("#ruleTestResult").val("");
 			$("#saveRuleBtn").attr("data-dupCheck", "N");
+			$("#saveRuleBtn").attr("data-isChng", "N");
+			$("#saveRuleBtn").attr("data-ruleVer", rule.RULE_VER);
 			// -- RULE 상세페이지 초기화 끝 --
 			
 			$("#ruleNm").focus();
@@ -1016,7 +1121,7 @@ function getRuleList(searchObj) {
 					html += "		</div>";
 					html += "	</td>";
 					html += "	<td class='t_center'>" + ruleList[i].RULE_ID + "</td>";
-					html += "	<td class='t_center'><a href='#' class='_ruleNmLink' data-ruleId='"+ ruleList[i].RULE_ID +"' data-rulePkgCount='"+ ruleList[i].RULE_PKG_COUNT +"'>" + ruleList[i].RULE_NM + "</a></td>";
+					html += "	<td class='t_center'><a href='#' class='_ruleNmLink' data-ruleId='"+ ruleList[i].RULE_ID +"' data-rulePkgCount='"+ ruleList[i].RULE_PKG_COUNT +"' data-ruleVer='"+ ruleList[i].RULE_VER +"'>" + ruleList[i].RULE_NM + "</a></td>";
 					html += "	<td class='t_center'>"+ (ruleList[i].RULE_PKG_COUNT > 0 ? "연결중" : "미연결") +"</td>";
 					html += "	<td class='t_center'>" + (typeof ruleList[i].UDT_DT == 'undefined' ? "-" : ruleList[i].UDT_DT) + "</td>";
 					html += "	<td class='t_center'>" + (typeof ruleList[i].UDT_USRNM == 'undefined' ? "-" : ruleList[i].UDT_USRNM) + "</td>";
@@ -1239,8 +1344,7 @@ function getFactorVal(event, treeId, treeNode) {
  * RULE 상세 > RULE 저장
  * @returns
  */
-function fnSaveRule(map) {
-	var param = {};
+function fnSaveRule(param) {
 	// rule 저장값
 	param.ruleId = $("#ruleId").text();
 	param.ruleNm = $("#ruleNm").val();
@@ -1293,7 +1397,7 @@ function fnSaveRule(map) {
 			// RULE 상세 업데이트
 			searchObj = {};
 			searchObj.ruleId = res.ruleId;
-			fnGetRule(param);
+			fnGetRule(searchObj);
 			
 			// RULE 버전 목록 업데이트
 			searchObj = {};

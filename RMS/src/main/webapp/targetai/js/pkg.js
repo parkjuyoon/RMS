@@ -240,11 +240,13 @@ $(document).ready(function() {
 		var ruleNm = $(this).closest("tr").find("a").text();
 		var ruleId = $(this).closest("tr").find("a").attr("data-ruleId");
 		var dfltSalience = $(this).closest("tr").find("input").val();
+		var ruleVer = $(this).closest("tr").find("a").attr("data-ruleVer");
 		
 		var rule = {};
 		rule.RULE_ID = ruleId * 1;
 		rule.RULE_NM = ruleNm;
 		rule.SALIENCE = dfltSalience * 1;
+		rule.RULE_VER = ruleVer * 1;
 		
 		// 선택된 index
 		var idx = $(this).closest("tr").index();
@@ -261,11 +263,13 @@ $(document).ready(function() {
 		var ruleNm = $(this).closest("tr").find("a").text();
 		var ruleId = $(this).closest("tr").find("a").attr("data-ruleId");
 		var salience = $(this).closest("tr").find("input").val();
+		var ruleVer = $(this).closest("tr").find("a").attr("data-ruleVer");
 		
 		var rule = {};
 		rule.RULE_ID = ruleId * 1;
 		rule.RULE_NM = ruleNm;
 		rule.DFLT_SALIENCE = salience * 1;
+		rule.RULE_VER = ruleVer * 1;
 		
 		// 선택된 index
 		var idx = $(this).closest("tr").index();
@@ -415,7 +419,7 @@ function drawGridConRuleList(conRuleList) {
 			html += "	<td class='t_center'><button type='button' class='btn-add _ruleAdd' data-bs-dismiss='alert' aria-label='Close'></button></td>";
 			html += "	<td class='t_center'><input type='text' class='_dfltSalience' value='"+ (typeof rule.DFLT_SALIENCE == 'undefined' ? '' : rule.DFLT_SALIENCE) +"' /></td>";
 			html += "	<td class='t_center'>" + rule.RULE_ID + "</td>";
-			html += "	<td class='t_center'><a href='#' class='_cmRuleLink' data-ruleId='"+ rule.RULE_ID +"'>" + rule.RULE_NM + "</a></td>";
+			html += "	<td class='t_center'><a href='#' class='_cmRuleLink' data-ruleId='"+ rule.RULE_ID +"' data-ruleVer='"+ rule.RULE_VER +"'>" + rule.RULE_NM + "</a></td>";
 			html += "</tr>";
 		});
 	}
@@ -443,7 +447,7 @@ function drawGridMappingRuleList(mappingRuleList) {
 			html += "	<td class='t_center'><button type='button' class='btn-del _ruleDel' data-bs-dismiss='alert' aria-label='Close'></button></td>";
 			html += "	<td class='t_center'><input type='text' class='_salience' value='"+ (typeof rule.SALIENCE == 'undefined' ? '' : rule.SALIENCE) +"' /></td>";
 			html += "	<td class='t_center'>" + rule.RULE_ID + "</td>";
-			html += "	<td class='t_center'><a href='#' class='_cmRuleLink' data-ruleId='"+ rule.RULE_ID +"'>" + rule.RULE_NM + "</a></td>";
+			html += "	<td class='t_center'><a href='#' class='_cmRuleLink' data-ruleId='"+ rule.RULE_ID +"' data-ruleVer='"+ rule.RULE_VER +"'>" + rule.RULE_NM + "</a></td>";
 			html += "</tr>";
 		});
 	}
@@ -516,7 +520,7 @@ function fnGetEventList(searchObj) {
 				$.each(eventList, function(idx, event){
 					html += "<tr>";
 					html += "	<td class='t_center'>" + event.RULE_ID + "</td>";
-					html += "	<td class='t_center'><a href='#' class='_eventNmLink' data-ruleId='"+ event.RULE_ID +"' data-pkgId='"+ event.PKG_ID +"' data-ver='"+ event.VER +"'>" + event.RULE_NM + "</a></td>";
+					html += "	<td class='t_center'><a href='#' class='_eventNmLink' data-ruleId='"+ event.RULE_ID +"' data-pkgId='"+ event.PKG_ID +"' data-ver='"+ event.PKG_VER +"'>" + event.RULE_NM + "</a></td>";
 					html += "	<td class='t_center'>" + event.SALIENCE + "</td>";
 					html += "	<td class='t_center'>" + event.REG_DT + "</td>";
 					html += "	<td class='t_center'>" + event.MEMBER_NAME + "</td>";
@@ -614,9 +618,9 @@ function fnGetPkgVerList(searchObj) {
 			} else {
 				$.each(verList, function(idx, ver){
 					html += "<tr>";
-					html += "	<td class='t_center'>" + ver.VER + "</td>";
-					html += "	<td class='t_center'><a href='#' class='_drlNmLink' data-ver='"+ ver.VER +"' data-pkgId='"+ ver.PKG_ID +"'>" + ver.DRL_NM + "</a></td>";
-					html += "	<td class='t_center'><a href='#' class='_showEventLink' data-ver='"+ ver.VER +"' data-pkgId='"+ ver.PKG_ID +"'>" + ver.VER_STATUS + "</td>";
+					html += "	<td class='t_center'>" + ver.PKG_VER + "</td>";
+					html += "	<td class='t_center'><a href='#' class='_drlNmLink' data-ver='"+ ver.PKG_VER +"' data-pkgId='"+ ver.PKG_ID +"'>" + ver.DRL_NM + "</a></td>";
+					html += "	<td class='t_center'><a href='#' class='_showEventLink' data-ver='"+ ver.PKG_VER +"' data-pkgId='"+ ver.PKG_ID +"'>" + ver.VER_STATUS + "</td>";
 					html += "	<td class='t_center'>" + (typeof ver.RUN_START_DATE == "undefined" ? "-" : ver.RUN_START_DATE) + "</td>";
 					html += "	<td class='t_center'>" + (typeof ver.RUN_END_DATE == "undefined" ? "-" : ver.RUN_END_DATE) + "</td>";
 					html += "</tr>";

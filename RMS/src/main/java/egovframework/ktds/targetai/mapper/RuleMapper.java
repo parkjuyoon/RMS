@@ -45,4 +45,8 @@ public interface RuleMapper {
 	int getRuleVerCount(HashMap<String, Object> param);
 
 	int getRuleDevVer(HashMap<String, Object> param);
+
+	List<HashMap<String, Object>> getConPkgList(HashMap<String, Object> param);
+
+	int getConPkgListCnt(HashMap<String, Object> param);
 }

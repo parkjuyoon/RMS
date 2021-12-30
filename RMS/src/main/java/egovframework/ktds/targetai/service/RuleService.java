@@ -38,4 +38,6 @@ public interface RuleService {
 	List<HashMap<String, Object>> getRuleVerList(HashMap<String, Object> param);
 
 	int getRuleVerCount(HashMap<String, Object> param);
+
+	HashMap<String, Object> getConPkg(HashMap<String, Object> param);
 }

@@ -117,7 +117,7 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 				param.put("VER_STATUS", "R");
 				HashMap<String, Object> pkgRealVer = dao.getPkgVerByStatus(param);
 				
-				ver = (int) pkgRealVer.get("VER") + 1;
+				ver = (int) Math.round((double) pkgRealVer.get("PKG_VER")) + 1;
 				drlNm += ver + ".drl";
 				param.put("DRL_NM", drlNm);
 				param.put("VER_STATUS", "D");
@@ -131,7 +131,7 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 			if(param_mappingRules.size() > 0) {
 				// 개발중인 버전이 있을경우
 				if(pkgDevVer != null) {
-					ver = (int) pkgDevVer.get("VER");
+					ver = (int) Math.round((double) pkgDevVer.get("PKG_VER"));
 					drlNm += ver + ".drl";
 					param.put("DRL_NM", drlNm);
 					param.put("VER", ver);
@@ -163,27 +163,6 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 		dao.updatePkg(param);		
 	}
 	
-	/**
-	 * RULE 테이블의 THEN 조건 업데이트
-	 */
-	public void ruleThenUpdate(HashMap<String, Object> param) {
-		/* 패키지 저장시점으로 변경
-		// RULE 의 RULE_THEN 업데이트
-		HashMap<String, Object> ruleMap = ruleService.getRule(param);
-		String attrThen = "$map.put(\"res_"+ ruleMap.get("RULE_ID") +"_"+ ruleMap.get("CAMP_ID") +"_"+ ruleMap.get("SALIENCE") +"\", \""+ ruleMap.get("RULE_NM") +"\");\n";
-		
-		attrThen = "";
-		attrThen += "$map.put(\"ruleId_"+ ruleMap.get("RULE_ID") + "\", " + ruleMap.get("RULE_ID") +");\n";
-		attrThen += "		$map.put(\"campId_"+ ruleMap.get("RULE_ID") + "\", " + ruleMap.get("CAMP_ID") +");\n";
-		attrThen += "		$map.put(\"salience_"+ ruleMap.get("RULE_ID") + "\", " + ruleMap.get("SALIENCE") +");\n";
-		attrThen += "		$map.put(\"ruleNm_"+ ruleMap.get("RULE_ID") + "\", \"" + ruleMap.get("RULE_NM") +"\");\n";
-		attrThen += "		$map.put(\"targetType_"+ ruleMap.get("RULE_ID") + "\", \"" + ruleMap.get("TARGET_TYPE") +"\");";
-		
-		param.put("RULE_THEN", attrThen);
-		ruleService.updateAttrThen(param);
-		*/
-	}
-
 	@Override
 	public List<HashMap<String, Object>> getConRuleList(HashMap<String, Object> param) {
 		return dao.getConRuleList(param);

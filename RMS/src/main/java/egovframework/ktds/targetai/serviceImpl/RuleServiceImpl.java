@@ -260,4 +260,16 @@ public class RuleServiceImpl extends ApiServiceImpl implements RuleService {
 	public int getRuleVerCount(HashMap<String, Object> param) {
 		return ruleDao.getRuleVerCount(param);
 	}
+
+	@Override
+	public HashMap<String, Object> getConPkg(HashMap<String, Object> param) {
+		List<HashMap<String, Object>> conPkgList = ruleDao.getConPkgList(param);
+		int conPkgListCnt = ruleDao.getConPkgListCnt(param);
+		
+		HashMap<String, Object> rtnMap = new HashMap<>();
+		rtnMap.put("conPkgList", conPkgList);
+		rtnMap.put("conPkgListCnt", conPkgListCnt);
+		
+		return rtnMap;
+	}
 }

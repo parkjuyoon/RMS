@@ -20,7 +20,7 @@
 
 		<!-- 영향도 체크 modal_pop -->
 		<div id="effectChkPop" class="modal_pop" style="z-index: 99999;">
-			<div class="modal_content" style="width: 600px;">
+			<div class="modal_content" style="width: 900px;">
 				<!-- 팝업항상중앙띄우기 -->
 				<div class="modla_center">
 					<div class="modal_header">
@@ -30,51 +30,71 @@
 					<!-- 본문 -->
 					<div class="modal_body" style="height: calc(100% - 25vh); overflow-x: hidden; overflow-y: auto;">
 						<div class="modal_wrap">
-							<!-- 상세영역 -->
+							<!-- 그리드영역 -->
 							<div class="row">
 								<div class="col">
-									<div class="card mg_b0">
+									<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
+									<div class="card">
+										<header class="card-header card-header-pd-mobile">
+											<div class="card-actions card-header-position-mobile">
+												<span class="infonum"> <span class="txt_color_blue mg_l5 mg_r5" id="effectChkPopCntBySearch"></span>건
+												</span>
+											</div>
+											<h2 class="card-title_txt">패키지 연결 상태</h2>
+										</header>
 										<!-- 본문페이지 -->
-										<div class="card-body body-header" style="">
-											<div class="progress_loading" style="z-index: 99999;">
+										<div class="card-body">
+											<div class="progress_loading">
 												<div id="effectChkPopLoading">
 													<img src="/targetai_publish/images/ajax-loader1.gif" />
 												</div>
 											</div>
-											<header class="card-header card-header-pd-mobile">
-												<div class="card-actions card-header-position-mobile"></div>
-												<h2 class="card-title_txt" id="effectChkPop_title"></h2>
-											</header>
-											<!-- 경고 -->
-											<div class="card-body">
-												<div class="row">
-													<div class="col">
-														<div class="card mg_b0">
-															<!-- 트리메뉴 -->
-															<div class="card-body body-header" style="">
-															</div>
-														</div>
-													</div>
-												</div>
-												
-												<!-- 버튼 -->
-												<div class="card-actions-foot">
-													<button type="button" class="btn btn-sm btn-green" id="">
-														<i class="far fa-times-circle custom-btn-i"></i> 저장
-													</button>
-													<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('effectChkPop');">
-														<i class="far fa-times-circle custom-btn-i"></i> 닫기
-													</button>
-												</div>
-												<!-- //버튼 -->
+											<!-- 테이블 -->
+											<div class="panel bd_b_none nobordertop">
+												<table class="tb_type01">
+													<colgroup>
+														<col style="width: 11%;" />
+														<col style="width: auto;" />
+														<col style="width: 8%;" />
+														<col style="width: 10%;" />
+														<col style="width: 20%;" />
+														<col style="width: 20%;" />
+													</colgroup>
+													<thead>
+														<tr>
+															<th>패키지 ID</th>
+															<th>패키지 명</th>
+															<th>버전</th>
+															<th>상태</th>
+															<th>운영 시작일</th>
+															<th>운영 종료일</th>
+														</tr>
+													</thead>
+													<tbody id="effectChkPopList"></tbody>
+												</table>
 											</div>
-											<!-- //경고 -->
+											<!-- //테이블 -->
+		
+											<!-- 페이징 -->
+											<div class="custom-paging" id="effectChkPopPaging"></div>
+											<!-- //페이징 -->
+		
+											<!-- 버튼 -->
+											<div class="card-actions-foot">
+												<button type="button" class="btn btn-sm btn-red" id="effectChkPopDeployBtn">
+													<i class="el el-file-new custom-btn-i"></i> 운영배포
+												</button>
+												<button type="button" class="btn btn-sm btn-gray" onclick="close_layerPop('effectChkPop');">
+													<i class="far fa-times-circle custom-btn-i"></i> 취소
+												</button>
+											</div>
+											<!-- //버튼 -->
 										</div>
 										<!-- //본문페이지 -->
 									</div>
 								</div>
 							</div>
-							<!-- //상세영역 -->
+							<!-- //그리드영역 -->
 						</div>
 					</div>
 					<!-- //본문 -->
@@ -691,7 +711,7 @@
 											</thead>
 											<tbody id="ruleVerList">
 												<tr>
-													<td colspan="4" class="t_center">조회된 내용이 없습니다.</td>
+													<td colspan="5" class="t_center">조회된 내용이 없습니다.</td>
 												</tr>
 											</tbody>
 										</table>
@@ -705,7 +725,7 @@
 									<!-- 버튼 -->
 									<div class="card-actions-foot">
 										<button type="button" class="btn btn-sm btn-green" id="ruleDeployBtn">
-											<i class="el el-file-new custom-btn-i"></i>개발중인 RULE 배포
+											<i class="el el-file-new custom-btn-i"></i>RULE 운영배포
 										</button>
 									</div>
 									<!-- //버튼 -->

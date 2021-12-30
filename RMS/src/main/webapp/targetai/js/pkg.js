@@ -353,12 +353,14 @@ $(document).ready(function() {
 	$(document).on("click", "._eventNmLink", function(e) {
 		var pkgId = $(this).attr("data-pkgId");
 		var ruleId = $(this).attr("data-ruleId");
-		var ver = $(this).attr("data-ver");
+		var pkgVer = $(this).attr("data-pkgVer");
+		var ruleVer = $(this).attr("data-ruleVer");
 		
 		var param = {};
 		param.pkgId = pkgId;
 		param.ruleId = ruleId;
-		param.ver = ver;
+		param.pkgVer = pkgVer;
+		param.ruleVer = ruleVer;
 		
 		// 해당 이벤트(RULE)의 상세내용 조회
 		fnGetEvent(param);
@@ -369,6 +371,7 @@ $(document).ready(function() {
 	$(document).on("click", "._cmRuleLink", function() {
 		var param = {};
 		param.ruleId = $(this).attr("data-ruleId");
+		param.ruleVer = $(this).attr("data-ruleVer");
 		
 		$.ajax({
 			method : "POST",
@@ -520,7 +523,7 @@ function fnGetEventList(searchObj) {
 				$.each(eventList, function(idx, event){
 					html += "<tr>";
 					html += "	<td class='t_center'>" + event.RULE_ID + "</td>";
-					html += "	<td class='t_center'><a href='#' class='_eventNmLink' data-ruleId='"+ event.RULE_ID +"' data-pkgId='"+ event.PKG_ID +"' data-ver='"+ event.PKG_VER +"'>" + event.RULE_NM + "</a></td>";
+					html += "	<td class='t_center'><a href='#' class='_eventNmLink' data-ruleId='"+ event.RULE_ID +"' data-pkgId='"+ event.PKG_ID +"' data-pkgVer='"+ event.PKG_VER +"' data-ruleVer='"+ event.RULE_VER +"'>" + event.RULE_NM + "</a></td>";
 					html += "	<td class='t_center'>" + event.SALIENCE + "</td>";
 					html += "	<td class='t_center'>" + event.REG_DT + "</td>";
 					html += "	<td class='t_center'>" + event.MEMBER_NAME + "</td>";

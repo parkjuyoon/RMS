@@ -659,15 +659,46 @@ $(document).ready(function() {
 		close_layerPop('selectValuePop');
 	});
 	
-	// RULE 버전 목록 > 개발중인 RULE 배포 버튼 클릭
+	// RULE 버전 목록 > 개발중인 RULE 운영배포 버튼 클릭
 	$("#ruleDeployBtn").click(function() {
+		var isDevVer = $(this).attr("data-isDevVer");
+		
+		// 현재 개발버전이 있을경우
+		if(isDevVer == 'Y') {
+			var param = {};
+			param.ruleId = $(this).attr("data-ruleId");
+			param.currentPage = 1;
+			
+			fnGetEffectChkPop(param);
+			
+		// 현재 개발버전이 없을경우
+		} else if(isDevVer == 'N') {
+			messagePop("warning","현재 개발중인 버전이 없습니다.","","");
+		} else {
+			messagePop("warning","RULE을 먼저 선택하세요.","","");
+		}
+	}); 
+	
+	// RULE 버전 목록 > RULE 운영배포 버튼 클릭 > 영향도체크 목록 > 페이징 버튼
+	$("#effectChkPopPaging").on("click", "._paging", function() {
 		var param = {};
-		param.ruleId = $(this).attr("data-ruleId");
-		param.currentPage = 1;
+		param.currentPage = $(this).attr("data-page_num");
+		param.ruleId = $("#ruleDeployBtn").attr("data-ruleId");
 		fnGetEffectChkPop(param);
+	});
+	
+	// RULE 버전 목록 > RULE 운영배포 버튼 클릭 > 영향도체크 목록 > 운영배포 버튼
+	$("#effectChkPopDeployBtn").click(function() {
+		if(confirm("연결된 모든 패키지에 운영 배포 됩니다.\n진행하시겠습니까?")) {
+			var param = {};
+			param.ruleId = $("#ruleDeployBtn").attr("data-ruleId");
+			param.conPkgList = conPkgList;
+			fnRuleDeploy(param);
+		}
 	});
 });
 
+var conPkgList;	// RULE 버전 목록 > RULE 운영배포 버튼 클릭 > 영향도체크 목록 > 운영배포시 연결된 패키지 목록정보
 /**
  * 개발중인 RULE 배포시 영향도 체크(연결된 패키지가 있는지 확인)
  * @returns
@@ -684,8 +715,9 @@ function fnGetEffectChkPop(searchObj) {
 		contentType:'application/json; charset=utf-8',
 		dataType : "json",
 		success : function(res) {
-			var conPkgList = res.conPkgList;
+			conPkgList = res.conPkgList;
 			var conPkgListCnt = res.conPkgListCnt;
+			searchObj.totalCount = conPkgListCnt;
 			
 			// 패키지가 연결된 RULE의 운영배포 -> 영향도 체크
 			if(conPkgList.length > 0) {
@@ -695,7 +727,7 @@ function fnGetEffectChkPop(searchObj) {
 				
 				if(conPkgList.length == 0) {
 					html += "<tr>";
-					html += "	<td colspan='6' class='t_center'>조회된 내용이 없습니다1.</td>";
+					html += "	<td colspan='6' class='t_center'>조회된 내용이 없습니다.</td>";
 					html += "</tr>";
 					
 				} else {
@@ -703,8 +735,8 @@ function fnGetEffectChkPop(searchObj) {
 						html += "<tr>";
 						html += "	<td class='t_center'>"+ conPkg.PKG_ID +"</td>";
 						html += "	<td class='t_center'>"+ conPkg.PKG_NM +"</td>";
-						html += "	<td class='t_center'>"+ conPkg.VER +"</td>";
-						html += "	<td class='t_center'>"+ conPkg.VER_STATUS +"</td>";
+						html += "	<td class='t_center'>"+ conPkg.PKG_VER +"</td>";
+						html += "	<td class='t_center'>"+ conPkg.PKG_VER_STATUS +"</td>";
 						html += "	<td class='t_center'>" + (typeof conPkg.RUN_START_DATE == "undefined" ? "-" : conPkg.RUN_START_DATE) + "</td>";
 						html += "	<td class='t_center'>" + (typeof conPkg.RUN_END_DATE == "undefined" ? "-" : conPkg.RUN_END_DATE) + "</td>";
 						html += "</tr>";
@@ -713,14 +745,16 @@ function fnGetEffectChkPop(searchObj) {
 				
 				$("#effectChkPopList").html(html);
 				$("#effectChkPopCntBySearch").text(conPkgListCnt);
-				
 				fnPaging("#effectChkPopPaging", searchObj);
 				
 			// 패키지가 연결되지 않은 RULE의 운영배포
 			} else {
-				
+				if(confirm("개발중인 RULE을 운영배포 하시겠습니까?")) {
+					var param = {};
+					param.ruleId = searchObj.ruleId;
+					fnRuleDeploy(param);
+				}
 			}
-			
 		},
 		beforeSend : function() {
 			$("#ruleVerListLoading").show();
@@ -729,6 +763,36 @@ function fnGetEffectChkPop(searchObj) {
 		complete : function() {
 			$("#ruleVerListLoading").hide();
 			$("#effectChkPopLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
+
+/**
+ * RULE의 운영 배포
+ * @param param
+ * @returns
+ */
+function fnRuleDeploy(param) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/ruleDeploy.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			messagePop("success", "개발중인 RULE을 운영배포 하였습니다.", "", "");
+			// RULE 버전 목록 갱신
+			var searchObj = {};
+			searchObj.ruleId = param.ruleId;
+			searchObj.currentPage = 1;
+			fnGetRuleVerList(searchObj);
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
@@ -760,6 +824,7 @@ function fnGetRuleVerList(searchObj) {
 			searchObj.totalCount = res.ruleVerCount;
 			
 			var html = "";
+			var isDevVer = 'N';
 			
 			if(verList.length == 0) {
 				html += "<tr>";
@@ -775,10 +840,15 @@ function fnGetRuleVerList(searchObj) {
 					html += "	<td class='t_center'>" + (typeof ver.REG_DT == "undefined" ? "-" : ver.REG_DT) + "</td>";
 					html += "	<td class='t_center'>" + (typeof ver.UDT_DT == "undefined" ? "-" : ver.UDT_DT) + "</td>";
 					html += "</tr>";
+					
+					if(ver.VER_STATUS == '개발중') {
+						isDevVer = 'Y';
+					}
 				});
 			}
 			
 			$("#ruleVerListCard>header>h2").text(verList[0].RULE_NM + "("+ searchObj.ruleId +") 의 버전 목록");
+			$("#ruleDeployBtn").attr("data-isDevVer", isDevVer);
 			$("#ruleVerList").html(html);
 			$("#ruleVerCount").text(res.ruleVerCount);
 			fnPaging("#ruleVerListPaging", searchObj);
@@ -1397,6 +1467,7 @@ function fnSaveRule(param) {
 			// RULE 상세 업데이트
 			searchObj = {};
 			searchObj.ruleId = res.ruleId;
+			searchObj.ruleVer = res.ruleVer;
 			fnGetRule(searchObj);
 			
 			// RULE 버전 목록 업데이트

@@ -245,16 +245,19 @@ public class RuleController {
 		param.put("RULE_WHEN", ruleWhen);
 		param.put("RULE_WHEN_KOR", ruleWhenKor);
 		
+		int ruleVer = 1;
+		
 		if("".equals(ruleId)) {	// 신규 등록
 			// RULE 저장
 			ruleService.ruleSave(param);
 			ruleId = String.valueOf((int) param.get("RULE_ID"));
+			param.put("ruleVer", ruleVer);
 			param.put("ruleId", (int) param.get("RULE_ID"));
 			
 		} else {	// 수정
 			param.put("ruleId", Integer.parseInt(ruleId));
 			// RULE 수정
-			ruleService.ruleUpdate(param);
+			ruleVer = ruleService.ruleUpdate(param);
 		}
 		
 		// RULE 의 RULE_THEN 업데이트
@@ -272,6 +275,7 @@ public class RuleController {
 		int ruleCount = ruleService.getRuleCount(resultMap);
 		resultMap.put("ruleCount", ruleCount);
 		resultMap.put("ruleId", param.get("ruleId"));
+		resultMap.put("ruleVer", ruleVer);
 		
 		return resultMap;
 	}
@@ -315,6 +319,22 @@ public class RuleController {
 	@RequestMapping(value = "/getConPkg.do", method = RequestMethod.POST)
 	public HashMap<String, Object> getConPkg(@RequestBody HashMap<String, Object> param, HttpSession session) {
 		HashMap<String, Object> rtnMap = ruleService.getConPkg(param);
+		
+		return rtnMap;
+	}
+	
+	/**
+	 * RULE 운영 배포
+	 * @param param
+	 * @return resultMap
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/ruleDeploy.do", method = RequestMethod.POST)
+	public HashMap<String, Object> ruleDeploy(@RequestBody HashMap<String, Object> param, HttpSession session) {
+		String regUserId = (String) session.getAttribute("member_id");
+		param.put("REG_USER_ID", regUserId);
+		// 운영중인 버전 종료하고 개발중인 버전을 운영버전으로 변경
+		HashMap<String, Object> rtnMap = ruleService.ruleDeploy(param);
 		
 		return rtnMap;
 	}

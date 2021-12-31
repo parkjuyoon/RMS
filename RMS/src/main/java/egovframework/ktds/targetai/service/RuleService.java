@@ -23,7 +23,7 @@ public interface RuleService {
 
 	void ruleSave(HashMap<String, Object> param);
 
-	void ruleUpdate(HashMap<String, Object> param);
+	int ruleUpdate(HashMap<String, Object> param);
 
 	void updateAttrThen(HashMap<String, Object> param);
 
@@ -40,4 +40,6 @@ public interface RuleService {
 	int getRuleVerCount(HashMap<String, Object> param);
 
 	HashMap<String, Object> getConPkg(HashMap<String, Object> param);
+
+	HashMap<String, Object> ruleDeploy(HashMap<String, Object> param);
 }

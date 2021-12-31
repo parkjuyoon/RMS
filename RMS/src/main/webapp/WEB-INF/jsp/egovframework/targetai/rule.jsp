@@ -19,7 +19,7 @@
 		<%@ include file="../targetai/comm/alertPop.jsp"%>
 
 		<!-- 영향도 체크 modal_pop -->
-		<div id="effectChkPop" class="modal_pop" style="z-index: 99999;">
+		<div id="effectChkPop" class="modal_pop">
 			<div class="modal_content" style="width: 900px;">
 				<!-- 팝업항상중앙띄우기 -->
 				<div class="modla_center">
@@ -40,7 +40,7 @@
 												<span class="infonum"> <span class="txt_color_blue mg_l5 mg_r5" id="effectChkPopCntBySearch"></span>건
 												</span>
 											</div>
-											<h2 class="card-title_txt">패키지 연결 상태</h2>
+											<h2 class="card-title_txt">운영중인 RULE의 패키지 연결 상태</h2>
 										</header>
 										<!-- 본문페이지 -->
 										<div class="card-body">
@@ -56,7 +56,7 @@
 														<col style="width: 11%;" />
 														<col style="width: auto;" />
 														<col style="width: 8%;" />
-														<col style="width: 10%;" />
+														<col style="width: 8%;" />
 														<col style="width: 20%;" />
 														<col style="width: 20%;" />
 													</colgroup>
@@ -64,8 +64,8 @@
 														<tr>
 															<th>패키지 ID</th>
 															<th>패키지 명</th>
-															<th>버전</th>
-															<th>상태</th>
+															<th>패키지 버전</th>
+															<th>패키지 상태</th>
 															<th>운영 시작일</th>
 															<th>운영 종료일</th>
 														</tr>

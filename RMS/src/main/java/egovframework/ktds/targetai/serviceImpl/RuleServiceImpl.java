@@ -1,6 +1,7 @@
 package egovframework.ktds.targetai.serviceImpl;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
@@ -68,17 +69,23 @@ public class RuleServiceImpl extends ApiServiceImpl implements RuleService {
 	}
 	
 	@Override
-	public void ruleUpdate(HashMap<String, Object> param) {
+	public int ruleUpdate(HashMap<String, Object> param) {
 		// 개발버전이 있는지 확인한다.
 		int cnt = ruleDao.getRuleDevVer(param);
+		int ruleVer = 0;
 		// 개발버전이 있으면 개발버전을 수정하고
 		if(cnt > 0) {
-			ruleDao.ruleUpdate(param);		
+			ruleDao.ruleUpdate(param);	
+			ruleVer = Integer.parseInt((String) param.get("ruleVer"));
 			
 		// 운영버전만 있을때 개발버전을 추가한다.
 		} else {
+			ruleVer = Integer.parseInt((String) param.get("ruleVer")) + 1;
+			param.put("ruleVer", ruleVer);
 			ruleDao.ruleSave(param);
 		}
+		
+		return ruleVer;
 	}
 
 	@Override
@@ -263,6 +270,7 @@ public class RuleServiceImpl extends ApiServiceImpl implements RuleService {
 
 	@Override
 	public HashMap<String, Object> getConPkg(HashMap<String, Object> param) {
+		// 현재 RULE 의 운영버전이 패키지에 연결되어있는지 확인하고 연결되어 있으면 연결정보 조회한다.
 		List<HashMap<String, Object>> conPkgList = ruleDao.getConPkgList(param);
 		int conPkgListCnt = ruleDao.getConPkgListCnt(param);
 		
@@ -272,4 +280,47 @@ public class RuleServiceImpl extends ApiServiceImpl implements RuleService {
 		
 		return rtnMap;
 	}
+
+	@Override
+	public HashMap<String, Object> ruleDeploy(HashMap<String, Object> param) {
+		
+		List<HashMap<String, Object>> conPkgList = (List<HashMap<String, Object>>) param.get("conPkgList");
+		
+		// 연결된 패키지가 있는 RULE의 배포
+		if(conPkgList.size() > 0) {
+			// 운영중인 패키지에 적용
+			// 운영중인 패키지는 0.1 마이너 개발버전 생성 후 개발중인 RULE을 적용한다
+			// 기존 운영중인 패키지 종료처리
+			
+			// 개발중인 패키지에 적용
+			
+			
+		// 연결된 패키지가 없는 RULE의 배포
+		} else {
+			// 운영 배포버전 가동종료
+			param.put("VER_STATUS", "D");
+			param.put("currentTime", LocalDateTime.now());
+			ruleDao.endRuleDeploy(param);
+			// 개발 배포버전으로 가동시작
+			ruleDao.startRuleDeploy(param);
+		}
+	
+		return param;
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

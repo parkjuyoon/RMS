@@ -261,8 +261,10 @@
 	<!-- RULE 저장 -->
 	<insert id="ruleSave" parameterType="java.util.HashMap">
 		INSERT INTO targetai.RULE (
+			RULE_ID,
 			REF_RULE_ID,
 			RULE_NM,
+			RULE_VER,
 			DFLT_SALIENCE,
 			VER_STATUS,
 			NO_LOOP,
@@ -274,8 +276,10 @@
 			TARGET_TYPE,
 			REG_USRID
 		) VALUES (
+			#{ruleId},
 			#{refRuleId},
 			#{ruleNm},
+			#{ruleVer},
 			#{dfltSalience},
 			'D',
 			#{noLoop},
@@ -347,6 +351,7 @@
 			targetai.RULE
 		WHERE
 			RULE_NM = #{ruleNm}
+			AND RULE_ID != #{ruleId}
 	</select>
 	
 	<!-- RULE 의 연결된 패키지가 있는지 확인 -->
@@ -354,24 +359,33 @@
 		SELECT 
 		    R.RULE_ID,
 		    R.RULE_NM,
+		    R.RULE_VER,
+		    CASE
+				WHEN R.VER_STATUS = 'R' THEN '운영중'
+				WHEN R.VER_STATUS = 'D' THEN '개발중'
+				WHEN R.VER_STATUS = 'T' THEN '종료'
+			END AS RULE_VER_STATUS,
 		    RP.PKG_ID,
+		    RP.PKG_VER,
 		    P.PKG_NM,
-		    RP.VER,
 		    CASE
 				WHEN PV.VER_STATUS = 'R' THEN '운영중'
 				WHEN PV.VER_STATUS = 'D' THEN '개발중'
 				WHEN PV.VER_STATUS = 'T' THEN '종료'
-			END AS VER_STATUS,
-			DATE_FORMAT(PV.RUN_START_DATE, '%Y-%m-%d %h:%i:%s') AS RUN_START_DATE,
-    		DATE_FORMAT(PV.RUN_END_DATE, '%Y-%m-%d %h:%i:%s') AS RUN_END_DATE
+			END AS PKG_VER_STATUS,
+		    DATE_FORMAT(PV.RUN_START_DATE, '%Y-%m-%d %h:%i:%s') AS RUN_START_DATE,
+			DATE_FORMAT(PV.RUN_END_DATE, '%Y-%m-%d %h:%i:%s') AS RUN_END_DATE
 		FROM
 		    targetai.RULE R
-		    LEFT JOIN targetai.RULE_PKG RP ON (R.RULE_ID = RP.RULE_ID)
-		    LEFT JOIN targetai.PKG_VER PV ON (RP.PKG_ID = PV.PKG_ID AND RP.VER = PV.VER)
-		    LEFT JOIN targetai.PKG P ON (RP.PKG_ID = P.PKG_ID)
+		    LEFT JOIN targetai.RULE_PKG RP ON (R.RULE_ID = RP.RULE_ID AND R.RULE_VER = RP.RULE_VER)
+			LEFT JOIN targetai.PKG_VER PV ON (RP.PKG_ID = PV.PKG_ID AND RP.PKG_VER = PV.PKG_VER AND PV.VER_STATUS != 'T')
+		    LEFT JOIN targetai.PKG P ON (PV.PKG_ID = P.PKG_ID)
 		WHERE
 			R.RULE_ID = #{ruleId}
-		    AND PV.VER_STATUS != 'T'
+		    AND R.VER_STATUS = 'R'
+		    AND PV.VER_STATUS IS NOT NULL
+		    LIMIT #{limit}
+			OFFSET #{offset}
 	</select>
 	
 	<!-- RULE 의 연결된 패키지가 있는지 확인한것의 개수 -->
@@ -380,11 +394,32 @@
 		    count(*)
 		FROM
 		    targetai.RULE R
-		    LEFT JOIN targetai.RULE_PKG RP ON (R.RULE_ID = RP.RULE_ID)
-		    LEFT JOIN targetai.PKG_VER PV ON (RP.PKG_ID = PV.PKG_ID AND RP.VER = PV.VER)
-		    LEFT JOIN targetai.PKG P ON (RP.PKG_ID = P.PKG_ID)
+		    LEFT JOIN targetai.RULE_PKG RP ON (R.RULE_ID = RP.RULE_ID AND R.RULE_VER = RP.RULE_VER)
+			LEFT JOIN targetai.PKG_VER PV ON (RP.PKG_ID = PV.PKG_ID AND RP.PKG_VER = PV.PKG_VER AND PV.VER_STATUS != 'T')
+		    LEFT JOIN targetai.PKG P ON (PV.PKG_ID = P.PKG_ID)
 		WHERE
 			R.RULE_ID = #{ruleId}
-		    AND PV.VER_STATUS != 'T'
+		    AND R.VER_STATUS = 'R'
+		    AND PV.VER_STATUS IS NOT NULL
 	</select>
+	
+	<!-- 운영 버전 종료처리 -->
+	<update id="endRuleDeploy" parameterType="java.util.HashMap">
+		UPDATE targetai.RULE
+		SET
+			VER_STATUS = 'T'
+		WHERE
+			RULE_ID = #{ruleId}
+			AND VER_STATUS = 'R'
+	</update>
+	
+	<!-- 개발버전 운영배포 -->
+	<update id="startRuleDeploy" parameterType="java.util.HashMap">
+		UPDATE targetai.RULE
+		SET
+			VER_STATUS = 'R'
+		WHERE
+			RULE_ID = #{ruleId}
+			AND VER_STATUS = 'D'
+	</update>
 </mapper>

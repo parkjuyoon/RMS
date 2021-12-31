@@ -49,4 +49,8 @@ public interface RuleMapper {
 	List<HashMap<String, Object>> getConPkgList(HashMap<String, Object> param);
 
 	int getConPkgListCnt(HashMap<String, Object> param);
+
+	void endRuleDeploy(HashMap<String, Object> param);
+
+	void startRuleDeploy(HashMap<String, Object> param);
 }

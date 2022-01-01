@@ -54,8 +54,8 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 		
 		// PKG_VER 저장 (신규버전은 1 부터 시작하고, 개발버전('D')으로 생성)
 		param.put("pkgId", param.get("PKG_ID"));	// updatePkg.do 에서도 사용
-		param.put("VER", 1);
-		String drlNm = param.get("pkgNm") + "_" + param.get("PKG_ID") + "_v" + param.get("VER") +".drl";
+		param.put("PKG_VER", 1);
+		String drlNm = param.get("pkgNm") + "_" + param.get("PKG_ID") + "_v" + param.get("PKG_VER") +".drl";
 		param.put("DRL_NM", drlNm);
 		param.put("PATH", "/drl_files");
 		param.put("VER_STATUS", "D");
@@ -65,13 +65,15 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 		// 연결된 Rule 맵핑 정보 삭제
 		int delRes = dao.delRuleMappingByPkgId(param);
 		// 새로운 Rule 맵핑 연결
-		List<String> ruleIds = (List<String>) param.get("mappingRuleIds");
-		if(ruleIds.size() > 0) {
-			dao.addRuleMappingByPkgId(param);
-			
-			// DRL 파일 수정
-			// RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
-			saveDRL(param);
+		if(param.get("mappingRuleIds") != null) {
+			List<String> ruleIds = (List<String>) param.get("mappingRuleIds");
+			if(ruleIds.size() > 0) {
+				dao.addRuleMappingByPkgId(param);
+				
+				// DRL 파일 수정
+				// RULE 파일 생성 및 PKG > DRL_SOURCE 업데이트
+				saveDRL(param);
+			}
 		}
 	}
 
@@ -121,7 +123,7 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 				drlNm += ver + ".drl";
 				param.put("DRL_NM", drlNm);
 				param.put("VER_STATUS", "D");
-				param.put("VER", ver);
+				param.put("PKG_VER", ver);
 				
 				dao.addPkgVer(param);
 			}
@@ -134,7 +136,7 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 					ver = (int) Math.round((double) pkgDevVer.get("PKG_VER"));
 					drlNm += ver + ".drl";
 					param.put("DRL_NM", drlNm);
-					param.put("VER", ver);
+					param.put("PKG_VER", ver);
 				}
 				
 				// 연결된 RULE 연결 정보 삭제
@@ -146,8 +148,8 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 			} else {
 				// 개발중인 버전이 있을경우
 				if(pkgDevVer != null) {
-					ver = (int) pkgDevVer.get("VER");
-					param.put("VER", ver);
+					ver = (int) Math.round((double) pkgDevVer.get("PKG_VER"));
+					param.put("PKG_VER", ver);
 					
 					// 연결된 RULE 연결 정보 삭제
 					dao.delRuleMappingByPkgId(param);

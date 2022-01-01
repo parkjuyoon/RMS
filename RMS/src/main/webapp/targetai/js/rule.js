@@ -618,6 +618,7 @@ $(document).ready(function() {
 		
 		var param = {};
 		param.ruleId = ruleId;
+		param.ruleVer = 1;
 		param.rulePkgCount = $(this).attr("data-rulePkgCount") * 1;
 		param.copyNm = "_복사";
 		
@@ -696,6 +697,8 @@ $(document).ready(function() {
 			fnRuleDeploy(param);
 		}
 	});
+	
+	// 
 });
 
 var conPkgList;	// RULE 버전 목록 > RULE 운영배포 버튼 클릭 > 영향도체크 목록 > 운영배포시 연결된 패키지 목록정보
@@ -793,6 +796,7 @@ function fnRuleDeploy(param) {
 			searchObj.ruleId = param.ruleId;
 			searchObj.currentPage = 1;
 			fnGetRuleVerList(searchObj);
+			$("#effectChkPop").hide();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
@@ -835,8 +839,8 @@ function fnGetRuleVerList(searchObj) {
 				$.each(verList, function(idx, ver){
 					html += "<tr>";
 					html += "	<td class='t_center'>"+ (idx+1) +"</td>";
-					html += "	<td class='t_center'><a href='#' class='' data-ver='"+ ver.RULE_VER +"' data-ruleId='"+ ver.RULE_ID +"'>" + ver.RULE_NM + "_v" + ver.RULE_VER +"</a></td>";
-					html += "	<td class='t_center'><a href='#' class='' data-ver='"+ ver.RULE_VER +"' data-ruleId='"+ ver.RULE_ID +"'>" + ver.VER_STATUS + "</td>";
+					html += "	<td class='t_center'><a href='#' class='_ruleVerNmLink' data-ver='"+ ver.RULE_VER +"' data-ruleId='"+ ver.RULE_ID +"'>" + ver.RULE_NM + "_v" + ver.RULE_VER +"</a></td>";
+					html += "	<td class='t_center'>" + ver.VER_STATUS + "</td>";
 					html += "	<td class='t_center'>" + (typeof ver.REG_DT == "undefined" ? "-" : ver.REG_DT) + "</td>";
 					html += "	<td class='t_center'>" + (typeof ver.UDT_DT == "undefined" ? "-" : ver.UDT_DT) + "</td>";
 					html += "</tr>";

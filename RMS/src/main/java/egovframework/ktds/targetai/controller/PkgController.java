@@ -103,6 +103,7 @@ public class PkgController {
 	public HashMap<String, Object> getDrlSouce(@RequestBody HashMap<String, Object> param) {
 		// DRL 소스 업데이트
 		HashMap<String, Object> pkg = pkgService.getPkgVer(param);
+		pkg.put("VER", param.get("ver"));
 		ruleService.saveDRL(pkg);
 		
 		return pkg;

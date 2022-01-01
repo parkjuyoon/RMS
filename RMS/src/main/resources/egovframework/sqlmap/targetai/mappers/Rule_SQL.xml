@@ -292,7 +292,7 @@
 			#{REG_USER_ID}
 		)
 		<selectKey keyProperty="RULE_ID" resultType="int" order="AFTER">
-			SELECT LAST_INSERT_ID()
+			SELECT #{ruleId} AS RULE_ID FROM DUAL
 		</selectKey>
 	</insert>	
 	
@@ -415,6 +415,15 @@
 	
 	<!-- 개발버전 운영배포 -->
 	<update id="startRuleDeploy" parameterType="java.util.HashMap">
+		<selectKey keyProperty="ruleDeployVer" resultType="int" order="AFTER">
+			SELECT
+				RULE_VER AS ruleDeployVer
+			FROM
+				targetai.RULE
+			WHERE
+				RULE_ID = #{ruleId}
+				AND VER_STATUS = 'R'
+		</selectKey>
 		UPDATE targetai.RULE
 		SET
 			VER_STATUS = 'R'
@@ -422,4 +431,25 @@
 			RULE_ID = #{ruleId}
 			AND VER_STATUS = 'D'
 	</update>
+	
+	<!-- RULE_PKG 의 RULE 버전을 운영중인 RULE 버전으로 변경한다 -->
+	<update id="updateRuleVerInRulePkg" parameterType="java.util.HashMap">
+		UPDATE targetai.RULE_PKG
+		SET
+			RULE_VER = #{ruleDeployVer}
+		WHERE
+			PKG_ID = #{pkgId}
+			AND RULE_ID = #{ruleId}
+			AND PKG_VER = #{pkgVer}
+	</update>
+	
+	<!-- 마지막 RULE 아이디 조회 -->
+	<select id="getLastRule" resultType="int">
+		SELECT
+			RULE_ID
+		FROM
+			targetai.RULE
+		ORDER BY RULE_ID DESC
+		LIMIT 1
+	</select>
 </mapper>

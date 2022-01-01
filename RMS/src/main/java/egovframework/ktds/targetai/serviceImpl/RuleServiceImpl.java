@@ -90,6 +90,9 @@ public class RuleServiceImpl extends ApiServiceImpl implements RuleService {
 
 	@Override
 	public void ruleSave(HashMap<String, Object> param) {
+		// 마지막 RULE 아이디 조회해서 param 에 넣은 후 신규룰 저장한다.
+		int lastRuleId = ruleDao.getLastRule();
+		param.put("ruleId", lastRuleId + 1);
 		ruleDao.ruleSave(param);
 	}
 
@@ -283,44 +286,74 @@ public class RuleServiceImpl extends ApiServiceImpl implements RuleService {
 
 	@Override
 	public HashMap<String, Object> ruleDeploy(HashMap<String, Object> param) {
-		
-		List<HashMap<String, Object>> conPkgList = (List<HashMap<String, Object>>) param.get("conPkgList");
-		
-		// 연결된 패키지가 있는 RULE의 배포
-		if(conPkgList.size() > 0) {
-			// 운영중인 패키지에 적용
-			// 운영중인 패키지는 0.1 마이너 개발버전 생성 후 개발중인 RULE을 적용한다
-			// 기존 운영중인 패키지 종료처리
-			
-			// 개발중인 패키지에 적용
-			
-			
-		// 연결된 패키지가 없는 RULE의 배포
-		} else {
+		try {
+			// ----------------------- RULE 에 대한 처리 -----------------------
 			// 운영 배포버전 가동종료
 			param.put("VER_STATUS", "D");
 			param.put("currentTime", LocalDateTime.now());
 			ruleDao.endRuleDeploy(param);
-			// 개발 배포버전으로 가동시작
+			// 개발 배포버전으로 가동시작,  selectKey 해서 param 안에 ruleDeployVer 이 들어옴.
 			ruleDao.startRuleDeploy(param);
-		}
 	
+			
+			// ----------------------- 패키지에 대한 처리 -----------------------
+			// 연결된 패키지가 있는 RULE의 배포
+			if(param.get("conPkgList") == null) {
+				return param;
+			}
+			
+			List<HashMap<String, Object>> conPkgList = (List<HashMap<String, Object>>) param.get("conPkgList");
+			
+			for(HashMap<String, Object> conPkg : conPkgList) {
+				
+				HashMap<String, Object> pMap = new HashMap<>();
+				// 운영중인 패키지에 적용
+				// 기존 운영중인 패키지 종료처리
+				int pkgId = (int) conPkg.get("PKG_ID");
+				int ruleId = (int) conPkg.get("RULE_ID");
+				
+				// 패키지 버전이 1(integer) 일경우와 1.01(double)형일 경우 두개다 오기때문에 아래와 같이 처리함.
+				String pkgVerType = conPkg.get("PKG_VER").getClass().getName();
+				if("java.lang.Double".equals(pkgVerType)) {
+					double pkgMinerVer = (double) conPkg.get("PKG_VER")  + 0.01;
+					pMap.put("pkgMinerVer", pkgMinerVer);
+					
+				} else {
+					double pkgMinerVer = (int) conPkg.get("PKG_VER")  + 0.01;
+					pMap.put("pkgMinerVer", pkgMinerVer);
+				}
+				
+				pMap.put("pkgId", pkgId);
+				pMap.put("ruleId", ruleId);
+				pMap.put("pkgVer", conPkg.get("PKG_VER"));
+				pMap.put("ruleDeployVer", param.get("ruleDeployVer"));
+				pMap.put("currentTime", LocalDateTime.now());
+				pMap.put("REG_USER_ID", param.get("REG_USER_ID"));
+				
+				String pkgVerStatus = (String) conPkg.get("PKG_VER_STATUS");
+				
+				// 운영중인 패키지에 연결되어있을 경우
+				if("운영중".equals(pkgVerStatus)) {
+					// 기존 운영중인 패키지를 종료처리한다
+					pkgDao.endDeployVer(pMap);
+					// 패키지 운영버전을 마이너 +0.1로 추가한다.
+					pkgDao.saveDeployMinerVer(pMap);
+					// RULE_PKG 에 RULE 과 PKG 의 연결정보도 저장한다
+					pkgDao.saveRulePkgConInfo(pMap);
+					// PKG 의 VER(현재 운영중인 버전) 을 마이너 버전으로 업데이트 한다.
+					pkgDao.updatePkgMinerVer(pMap);
+					
+				// 개발중인 패키지에 연결되어있을 경우
+				} else {
+					// RULE_PKG 의 RULE 버전을 운영중인 RULE 버전으로 변경한다.
+					ruleDao.updateRuleVerInRulePkg(pMap);
+				}
+			}
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		return param;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

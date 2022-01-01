@@ -53,4 +53,8 @@ public interface RuleMapper {
 	void endRuleDeploy(HashMap<String, Object> param);
 
 	void startRuleDeploy(HashMap<String, Object> param);
+
+	void updateRuleVerInRulePkg(HashMap<String, Object> pMap);
+
+	int getLastRule();
 }

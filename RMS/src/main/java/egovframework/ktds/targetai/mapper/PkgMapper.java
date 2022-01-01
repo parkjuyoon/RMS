@@ -61,4 +61,10 @@ public interface PkgMapper {
 	List<HashMap<String, Object>> getEventList(HashMap<String, Object> param);
 
 	int getEventListCount(HashMap<String, Object> param);
+
+	void saveDeployMinerVer(HashMap<String, Object> pMap);
+
+	void saveRulePkgConInfo(HashMap<String, Object> pMap);
+
+	void updatePkgMinerVer(HashMap<String, Object> pMap);
 }

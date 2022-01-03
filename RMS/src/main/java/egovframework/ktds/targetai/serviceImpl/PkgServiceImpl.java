@@ -65,8 +65,8 @@ public class PkgServiceImpl extends RuleServiceImpl implements PkgService {
 		// 연결된 Rule 맵핑 정보 삭제
 		int delRes = dao.delRuleMappingByPkgId(param);
 		// 새로운 Rule 맵핑 연결
-		if(param.get("mappingRuleIds") != null) {
-			List<String> ruleIds = (List<String>) param.get("mappingRuleIds");
+		if(param.get("mappingRuleList") != null) {
+			List<String> ruleIds = (List<String>) param.get("mappingRuleList");
 			if(ruleIds.size() > 0) {
 				dao.addRuleMappingByPkgId(param);
 				

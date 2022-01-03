@@ -338,8 +338,11 @@ public class RuleServiceImpl extends ApiServiceImpl implements RuleService {
 					pkgDao.endDeployVer(pMap);
 					// 패키지 운영버전을 마이너 +0.1로 추가한다.
 					pkgDao.saveDeployMinerVer(pMap);
+					
+					// 수정해줘야함
 					// RULE_PKG 에 RULE 과 PKG 의 연결정보도 저장한다
 					pkgDao.saveRulePkgConInfo(pMap);
+					
 					// PKG 의 VER(현재 운영중인 버전) 을 마이너 버전으로 업데이트 한다.
 					pkgDao.updatePkgMinerVer(pMap);
 					

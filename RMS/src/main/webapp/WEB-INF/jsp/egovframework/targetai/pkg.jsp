@@ -511,7 +511,8 @@
 									<div class="panel bd_b_none nobordertop">
 										<table class="tb_type01 tablesorter">
 											<colgroup>
-												<col style="width: 15%;" />
+												<col style="width: 12%;" />
+												<col style="width: 11%;" />
 												<col style="width: auto;" />
 												<col style="width: 10%;" />
 												<col style="width: 20%;" />
@@ -519,6 +520,7 @@
 											</colgroup>
 											<thead>
 												<tr>
+													<th>RULE 아이디</th>
 													<th>RULE 버전</th>
 													<th>RULE 명</th>
 													<th>우선순위</th>

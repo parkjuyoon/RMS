@@ -516,13 +516,14 @@ function fnGetEventList(searchObj) {
 			
 			if(eventList.length == 0) {
 				html += "<tr>";
-				html += "	<td colspan='5' class='t_center'>조회된 내용이 없습니다.</td>";
+				html += "	<td colspan='6' class='t_center'>조회된 내용이 없습니다.</td>";
 				html += "</tr>";
 				
 			} else {
 				$.each(eventList, function(idx, event){
 					html += "<tr>";
 					html += "	<td class='t_center'>" + event.RULE_ID + "</td>";
+					html += "	<td class='t_center'>" + event.RULE_VER + "</td>";
 					html += "	<td class='t_center'><a href='#' class='_eventNmLink' data-ruleId='"+ event.RULE_ID +"' data-pkgId='"+ event.PKG_ID +"' data-pkgVer='"+ event.PKG_VER +"' data-ruleVer='"+ event.RULE_VER +"'>" + event.RULE_NM + "</a></td>";
 					html += "	<td class='t_center'>" + event.SALIENCE + "</td>";
 					html += "	<td class='t_center'>" + event.REG_DT + "</td>";

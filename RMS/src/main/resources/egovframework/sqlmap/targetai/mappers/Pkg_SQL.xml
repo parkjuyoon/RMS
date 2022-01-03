@@ -381,7 +381,7 @@
 		SET
 			DRL_NM = #{DRL_NM}
 			,PATH = #{PATH}
-			,VER = #{VER}
+			,VER = #{PKG_VER}
 			,UDT_USRID	 = #{REG_USER_ID}
 			,UDT_DT	 = #{currentTime}
 		WHERE
@@ -428,7 +428,7 @@
 		    COUNT(*)
 		FROM
 		    targetai.RULE_PKG RP
-		    LEFT JOIN targetai.RULE R ON (RP.RULE_ID = R.RULE_ID)
+		    LEFT JOIN targetai.RULE R ON (RP.RULE_ID = R.RULE_ID AND RP.RULE_VER = R.RULE_VER)
 		    LEFT JOIN targetai.MEMBER M ON (R.REG_USRID = M.MEMBER_ID)
 		WHERE
 		    RP.PKG_ID = #{pkgId}
@@ -472,18 +472,28 @@
 	<insert id="saveRulePkgConInfo" parameterType="java.util.HashMap">
 		INSERT INTO targetai.RULE_PKG (
 			PKG_ID,
-			RULE_ID,
-			PKG_VER,
-			RULE_VER,
-			CREATE_DT,
-			CREATOR_ID
-		) VALUES (
-			#{pkgId},
-			#{ruleId},
-			#{pkgMinerVer},
-			#{ruleDeployVer},
-			#{currentTime},
-			#{REG_USER_ID}
+		    RULE_ID,
+		    PKG_VER,
+		    RULE_VER,
+		    SALIENCE,
+		    CREATE_DT,
+		    CREATOR_ID
 		)
+		SELECT 
+		    PKG_ID,
+		    RULE_ID,
+		    #{pkgMinerVer} AS PKG_VER,
+		    CASE
+				WHEN RULE_ID = #{ruleId} THEN #{ruleDeployVer}
+		        ELSE RULE_VER
+			END AS RULE_VER,
+		    SALIENCE,
+		    CREATE_DT,
+		    CREATOR_ID
+		FROM
+		    targetai.RULE_PKG RP
+		WHERE
+			RP.PKG_ID = #{pkgId}
+		    AND RP.PKG_VER = #{pkgVer}
 	</insert>
 </mapper>

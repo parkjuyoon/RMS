@@ -576,6 +576,9 @@ $(document).ready(function() {
 				ruleObjArr = [];	tmpArr = [];
 				initRuleDetail();	// RULE 상세 초기화
 				initRuleEditor();	// RULE EDITOR 초기화
+				fnGetRuleVerList(searchObj);
+				$("#ruleVerListCard").removeClass("card-collapsed");
+				$("#ruleVerListCardBody").hide();
 			}
 			
 		} else {
@@ -600,6 +603,7 @@ $(document).ready(function() {
 		var param = {};
 		param.custNo = $("#ruleTestCustNo").val();
 		param.ruleId = $(this).attr("data-ruleId");
+		param.ruleVer = $(this).attr("data-ruleVer");
 		
 		// RULE 단위 테스트 실행.
 		fnRuleTest(param);
@@ -832,9 +836,10 @@ function fnGetRuleVerList(searchObj) {
 			
 			if(verList.length == 0) {
 				html += "<tr>";
-				html += "	<td colspan='5' class='t_center'>조회된 내용이 없습니다1.</td>";
+				html += "	<td colspan='5' class='t_center'>조회된 내용이 없습니다.</td>";
 				html += "</tr>";
 				
+				$("#ruleVerListCard>header>h2").text("버전 목록");
 			} else {
 				$.each(verList, function(idx, ver){
 					html += "<tr>";
@@ -849,9 +854,10 @@ function fnGetRuleVerList(searchObj) {
 						isDevVer = 'Y';
 					}
 				});
+				
+				$("#ruleVerListCard>header>h2").text(verList[0].RULE_NM + "("+ searchObj.ruleId +") 의 버전 목록");
 			}
 			
-			$("#ruleVerListCard>header>h2").text(verList[0].RULE_NM + "("+ searchObj.ruleId +") 의 버전 목록");
 			$("#ruleDeployBtn").attr("data-isDevVer", isDevVer);
 			$("#ruleVerList").html(html);
 			$("#ruleVerCount").text(res.ruleVerCount);
@@ -1018,6 +1024,7 @@ function fnGetRule(param) {
 			$("#saveRuleBtn").attr("data-dupCheck", "N");
 			$("#saveRuleBtn").attr("data-isChng", "N");
 			$("#saveRuleBtn").attr("data-ruleVer", rule.RULE_VER);
+			$("#ruleTestRunBtn").attr("data-ruleVer", rule.RULE_VER);
 			// -- RULE 상세페이지 초기화 끝 --
 			
 			$("#ruleNm").focus();

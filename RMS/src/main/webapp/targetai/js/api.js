@@ -192,8 +192,8 @@ function fnGetSvcList(searchObj) {
 					html += "	<td class='t_center _tdChannelNm'>" + (typeof svc.CHANNEL_NM == 'undefined' ? '-' : svc.CHANNEL_NM) + "</td>";
 					html += "	<td class='t_center _tdSvcNm'>" + svc.SVC_NM + "</td>";
 					html += "	<td class='t_center _tdPkgNm'>" + (typeof svc.PKG_NM == 'undefined' ? '-' : svc.PKG_NM) + "</td>";
-					html += "	<td class='t_center _tdVer'>" + (typeof svc.VER == 'undefined' ? '-' : svc.VER) + "</td>";
-					html += "	<td class='t_center _tdDrlNm'>" + (typeof svc.DRL_NM == 'undefined' ? '-' : "<a href='#' class='_drlNmLink' data-pkgId='"+ svc.PKG_ID +"' data-ver='"+ svc.VER +"'>" + svc.DRL_NM + "</a>") + "</td>";
+					html += "	<td class='t_center _tdVer'>" + (typeof svc.PKG_VER == 'undefined' ? '-' : svc.PKG_VER) + "</td>";
+					html += "	<td class='t_center _tdDrlNm'>" + (typeof svc.DRL_NM == 'undefined' ? '-' : "<a href='#' class='_drlNmLink' data-pkgId='"+ svc.PKG_ID +"' data-ver='"+ svc.PKG_VER +"'>" + svc.DRL_NM + "</a>") + "</td>";
 					html += "</tr>";
 				});
 			}

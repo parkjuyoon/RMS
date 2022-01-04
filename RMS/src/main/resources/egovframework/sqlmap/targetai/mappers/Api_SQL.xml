@@ -18,7 +18,7 @@
 			S.SVC_ID,
 			P.PKG_ID,
 			PV.PATH,
-			PV.VER,
+			PV.PKG_VER,
 			CAST(PV.DRL_SOURCE AS CHAR(10000) CHARACTER SET utf8) AS DRL_SOURCE,
 			P.PKG_NM,
 			PV.DRL_NM,
@@ -94,7 +94,7 @@
     		LEFT JOIN targetai.RULE R ON (RP.RULE_ID = R.RULE_ID)
 		WHERE
 			S.SVC_ID = #{SVC_ID}
-			AND RP.VER = #{VER}
+			AND RP.PKG_VER = #{VER}
 		ORDER BY RP.SALIENCE ASC, R.RULE_ID ASC
 	</select>
 	
@@ -123,7 +123,7 @@
 			C.CHANNEL_NM,
 			S.PKG_ID,
 			P.PKG_NM,
-			PV.VER,
+			PV.PKG_VER,
 			PV.DRL_NM
 		FROM
 			targetai.SVC S
@@ -141,7 +141,11 @@
 	<select id="getSvcCount" parameterType="java.util.HashMap" resultType="int">
 		SELECT 
 			COUNT(*) AS CNT
-		FROM targetai.SVC
+		FROM 
+			targetai.SVC S
+			LEFT JOIN targetai.PKG P ON (S.PKG_ID = P.PKG_ID)
+			LEFT JOIN targetai.`CHANNEL` C ON (S.CHANNEL_ID = C.CHANNEL_ID)
+			LEFT JOIN targetai.PKG_VER PV ON (P.PKG_ID = PV.PKG_ID AND PV.VER_STATUS = #{verStatus})
 		WHERE 1=1
 		<if test="svcNm_search != null and svcNm_search != ''">AND SVC_NM LIKE CONCAT('%', #{svcNm_search}, '%')</if>
 	</select>

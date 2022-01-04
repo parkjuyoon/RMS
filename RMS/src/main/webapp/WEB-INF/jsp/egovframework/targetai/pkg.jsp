@@ -530,7 +530,7 @@
 											</thead>
 											<tbody id="eventList">
 												<tr>
-													<td colspan="5" class="t_center">조회된 내용이 없습니다.</td>
+													<td colspan="6" class="t_center">조회된 내용이 없습니다.</td>
 												</tr>
 											</tbody>
 										</table>

@@ -56,5 +56,5 @@ public interface RuleMapper {
 
 	void updateRuleVerInRulePkg(HashMap<String, Object> pMap);
 
-	int getLastRule();
+	HashMap<String, Object> getLastRule();
 }

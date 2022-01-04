@@ -444,7 +444,7 @@
 	</update>
 	
 	<!-- 마지막 RULE 아이디 조회 -->
-	<select id="getLastRule" resultType="int">
+	<select id="getLastRule" resultType="java.util.HashMap">
 		SELECT
 			RULE_ID
 		FROM

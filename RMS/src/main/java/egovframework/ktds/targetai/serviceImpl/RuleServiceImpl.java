@@ -91,8 +91,15 @@ public class RuleServiceImpl extends ApiServiceImpl implements RuleService {
 	@Override
 	public void ruleSave(HashMap<String, Object> param) {
 		// 마지막 RULE 아이디 조회해서 param 에 넣은 후 신규룰 저장한다.
-		int lastRuleId = ruleDao.getLastRule();
-		param.put("ruleId", lastRuleId + 1);
+		HashMap<String, Object> lastRule = ruleDao.getLastRule();
+		
+		if(lastRule != null) {
+			param.put("ruleId", ((int)lastRule.get("RULE_ID")) + 1);
+			
+		} else {
+			param.put("ruleId", 1);
+		}
+		
 		ruleDao.ruleSave(param);
 	}
 

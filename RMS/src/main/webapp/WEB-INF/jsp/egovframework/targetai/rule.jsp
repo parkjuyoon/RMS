@@ -589,7 +589,7 @@
 									<h2 class="card-title_txt">RULE 상세</h2>
 								</header>
 								<!-- 본문페이지 -->
-								<div class="card-body" id="ruleCardBody" style="display: none; height: 379px;">
+								<div class="card-body" id="ruleCardBody" style="display: none; height: 402px;">
 									<!-- 테이블 -->
 									<div class="panel nobordertop">
 										<div class="sform_head">
@@ -602,6 +602,10 @@
 													<tr>
 														<th class="t_left">RULE 아이디</th>
 														<td class="t_left" id="ruleId"></td>
+													</tr>
+													<tr>
+														<th class="t_left">RULE 버전</th>
+														<td class="t_left" id="ruleVer"></td>
 													</tr>
 													<tr>
 														<th class="t_left">참조 RULE 정보</th>
@@ -684,7 +688,7 @@
 									<h2 class="card-title_txt">RULE 버전 목록</h2>
 								</header>
 								<!-- 본문페이지 -->
-								<div class="card-body" id="ruleVerListCardBody" style="display:none; height: 379px;">
+								<div class="card-body" id="ruleVerListCardBody" style="display:none; height: 402px;">
 									<div class="progress_loading">
 										<div id="ruleVerListLoading" style="display: none;">
 											<img src="/targetai_publish/images/ajax-loader1.gif" />

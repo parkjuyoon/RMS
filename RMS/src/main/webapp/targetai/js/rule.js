@@ -1001,6 +1001,7 @@ function fnGetRule(param) {
 			
 			// -- RULE 상세페이지 초기화 시작 --
 			$("#ruleId").text((typeof param.copyNm == 'undefined' ? rule.RULE_ID : ""));
+			$("#ruleVer").text((typeof rule.RULE_VER == 'undefined' ? "-" : rule.RULE_VER));
 			$("#refRuleInfo").text((typeof rule.REF_RULE_ID == 'undefined' ? "-" : "(" + rule.REF_RULE_ID + ") " + rule.REF_RULE_NM));
 			$("#ruleNm").val(rule.RULE_NM + (typeof param.copyNm == 'undefined' ? "" : param.copyNm));
 			$("#dfltSalience").val(rule.DFLT_SALIENCE);

@@ -629,6 +629,26 @@ $(document).ready(function() {
 		fnGetRule(param);
 	});
 	
+	// RULE 목록 > 상속 버튼
+	$("#inherRuleBtn").click(function() {
+		var chkedItm = $("._ruleListChkBox:checked");
+		
+		if(!(chkedItm.length == 1)) {
+			messagePop("warning","1개의 상속할 RULE을 선택하세요.","","");
+			return;
+		}
+		
+		var ruleId = chkedItm.attr("data-ruleId");
+		
+		var param = {};
+		param.ruleId = ruleId;
+		param.ruleVer = 1;
+		param.rulePkgCount = $(this).attr("data-rulePkgCount") * 1;
+		param.copyNm = "_상속";
+
+		fnGetRule(param);
+	});
+	
 	// RULE EDITOR > 요소값 > 함수선택시 > 값선택 버튼
 	$(document).on("click", "._selectValueBtn", function() {
 		$("#selectValuePop").show();
@@ -701,8 +721,6 @@ $(document).ready(function() {
 			fnRuleDeploy(param);
 		}
 	});
-	
-	// 
 });
 
 var conPkgList;	// RULE 버전 목록 > RULE 운영배포 버튼 클릭 > 영향도체크 목록 > 운영배포시 연결된 패키지 목록정보
@@ -1007,6 +1025,9 @@ function fnGetRule(param) {
 			
 			// -- RULE 상세페이지 초기화 시작 --
 			$("#ruleId").text((typeof param.copyNm == 'undefined' ? rule.RULE_ID : ""));
+			if(param.copyNm == '_상속') {
+				
+			}
 			$("#ruleVer").text((typeof rule.RULE_VER == 'undefined' ? "-" : rule.RULE_VER));
 			$("#refRuleInfo").text((typeof rule.REF_RULE_ID == 'undefined' ? "-" : "(" + rule.REF_RULE_ID + ") " + rule.REF_RULE_NM));
 			$("#ruleNm").val(rule.RULE_NM + (typeof param.copyNm == 'undefined' ? "" : param.copyNm));
@@ -1531,6 +1552,7 @@ function fnInitRuleSearch() {
  */
 function initRuleDetail() {
 	$("#ruleId").text("");
+	$("#ruleVer").text("");
 	$("#ruleNm").val("");
 	$("input:radio[name='noLoop']:radio[value='true']").prop("checked", true);
 	$("input:radio[name='lockOnActive']:radio[value='true']").prop("checked", true);

@@ -557,6 +557,9 @@
 
 									<!-- 버튼 -->
 									<div class="card-actions-foot">
+										<button type="button" class="btn btn-sm btn-sky" id="inherRuleBtn">
+											<i class="el el-file-new custom-btn-i"></i> 상속
+										</button>
 										<button type="button" class="btn btn-sm btn-red" id="copyRuleBtn">
 											<i class="el el-file-new custom-btn-i"></i> 복사
 										</button>

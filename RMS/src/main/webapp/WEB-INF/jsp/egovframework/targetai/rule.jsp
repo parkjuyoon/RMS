@@ -592,35 +592,37 @@
 									<h2 class="card-title_txt">RULE 상세</h2>
 								</header>
 								<!-- 본문페이지 -->
-								<div class="card-body" id="ruleCardBody" style="display: none; height: 402px;">
+								<div class="card-body" id="ruleCardBody" style="display: none; height: 379px;">
 									<!-- 테이블 -->
 									<div class="panel nobordertop">
 										<div class="sform_head">
 											<table class="sform_type">
 												<colgroup>
-													<col style="width: 120px" />
-													<col style="width: auto" />
+													<col style="width: 17%" />
+													<col style="width: 35%" />
+													<col style="width: 17%" />
+													<col style="width: 35%" />
 												</colgroup>
 												<tbody>
 													<tr>
 														<th class="t_left">RULE 아이디</th>
 														<td class="t_left" id="ruleId"></td>
+														<th class="t_left">참조 RULE 아이디</th>
+														<td class="t_left" id="refRuleInfo"></td>
 													</tr>
 													<tr>
 														<th class="t_left">RULE 버전</th>
 														<td class="t_left" id="ruleVer"></td>
-													</tr>
-													<tr>
-														<th class="t_left">참조 RULE 정보</th>
-														<td class="t_left" id="refRuleInfo"></td>
+														<th class="t_left">참조 RULE 버전</th>
+														<td class="t_left" id="refRuleInfo2"></td>
 													</tr>
 													<tr>
 														<th class="t_left">RULE 명</th>
-														<td class="t_left"><input type="text" class="wd250px" id="ruleNm" value="" /></td>
+														<td class="t_left" colspan="4"><input type="text" class="wd250px" id="ruleNm" value="" /></td>
 													</tr>
 													<tr>
 														<th class="t_left">기본 우선 순위</th>
-														<td class="t_left"><input type="text" class="wd150px" id="dfltSalience" value="1" /></td>
+														<td class="t_left" colspan="4"><input type="text" class="wd150px" id="dfltSalience" value="1" /></td>
 													</tr>
 													<tr style="display: none;">
 														<th class="t_left">NO-LOOP</th>
@@ -642,7 +644,7 @@
 													</tr>
 													<tr>
 														<th class="t_left">타겟 유형</th>
-														<td class="t_left">
+														<td class="t_left" colspan="4">
 															<select id="targetType" class="wd150px">
 																<option value="CUST">고객</option>
 																<option value="CONT">계약</option>
@@ -651,13 +653,13 @@
 													</tr>
 													<tr>
 														<th class="t_left">단위 테스트</th>
-														<td class="t_left">
+														<td class="t_left" colspan="4">
 															<button type="button" id="ruleTestPopBtn" class="btn btn-sm btn-green">실행</button> 
 														</td>
 													</tr>
 													<tr>
 														<th class="t_left">조건 내용</th>
-														<td class="t_left"><textarea rows="4" cols="7" class="txtsize_100 wd100" id="ruleWhenCont" placeholder="RULE EDITOR를 통해 생성하세요."
+														<td class="t_left" colspan="4"><textarea rows="4" cols="7" class="txtsize_100 wd100" id="ruleWhenCont" placeholder="RULE EDITOR를 통해 생성하세요."
 																readonly="readonly"></textarea></td>
 													</tr>
 												</tbody>
@@ -691,7 +693,7 @@
 									<h2 class="card-title_txt">RULE 버전 목록</h2>
 								</header>
 								<!-- 본문페이지 -->
-								<div class="card-body" id="ruleVerListCardBody" style="display:none; height: 402px;">
+								<div class="card-body" id="ruleVerListCardBody" style="display:none; height: 379px;">
 									<div class="progress_loading">
 										<div id="ruleVerListLoading" style="display: none;">
 											<img src="/targetai_publish/images/ajax-loader1.gif" />

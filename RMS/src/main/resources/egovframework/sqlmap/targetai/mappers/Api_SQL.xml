@@ -94,7 +94,7 @@
     		LEFT JOIN targetai.RULE R ON (RP.RULE_ID = R.RULE_ID)
 		WHERE
 			S.SVC_ID = #{SVC_ID}
-			AND RP.PKG_VER = #{VER}
+			AND RP.PKG_VER = #{PKG_VER}
 		ORDER BY RP.SALIENCE ASC, R.RULE_ID ASC
 	</select>
 	

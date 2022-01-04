@@ -643,9 +643,10 @@ $(document).ready(function() {
 		var param = {};
 		param.ruleId = ruleId;
 		param.ruleVer = 1;
+		param.refRuleId = ruleId;
 		param.rulePkgCount = $(this).attr("data-rulePkgCount") * 1;
 		param.copyNm = "_상속";
-
+		
 		fnGetRule(param);
 	});
 	
@@ -1026,10 +1027,21 @@ function fnGetRule(param) {
 			// -- RULE 상세페이지 초기화 시작 --
 			$("#ruleId").text((typeof param.copyNm == 'undefined' ? rule.RULE_ID : ""));
 			if(param.copyNm == '_상속') {
-				
+				// 운영버전만 상속을 할 수 있다.
+				if(typeof rule.RULE_REAL_VER != 'undefined') {
+					$("#refRuleInfo").text(param.refRuleId);
+					$("#refRuleInfo2").text(rule.RULE_REAL_VER);
+					$("#saveRuleBtn").attr("data-refRuleId", param.refRuleId);
+					$("#saveRuleBtn").attr("data-refRuleVer", rule.RULE_REAL_VER);
+				} else {
+					messagePop("warning", "운영중인 RULE 이 존재하지 않습니다.", "운영중인 RULE 이 있을경우 상속할 수 있습니다.", "");
+					return;
+				}
+			} else {
+				$("#refRuleInfo").text((typeof rule.REF_RULE_ID == 'undefined' ? "-" : rule.REF_RULE_ID));
+				$("#refRuleInfo2").text((typeof rule.REF_RULE_VER == 'undefined' ? "-" : rule.REF_RULE_VER));
 			}
 			$("#ruleVer").text((typeof rule.RULE_VER == 'undefined' ? "-" : rule.RULE_VER));
-			$("#refRuleInfo").text((typeof rule.REF_RULE_ID == 'undefined' ? "-" : "(" + rule.REF_RULE_ID + ") " + rule.REF_RULE_NM));
 			$("#ruleNm").val(rule.RULE_NM + (typeof param.copyNm == 'undefined' ? "" : param.copyNm));
 			$("#dfltSalience").val(rule.DFLT_SALIENCE);
 			$("input:radio[name='noLoop']:radio[value='"+ rule.NO_LOOP +"']").prop("checked", true);
@@ -1451,6 +1463,8 @@ function fnSaveRule(param) {
 	// rule 저장값
 	param.ruleId = $("#ruleId").text();
 	param.ruleNm = $("#ruleNm").val();
+	param.refRuleId = $("#saveRuleBtn").attr("data-refRuleId");
+	param.refRuleVer = $("#saveRuleBtn").attr("data-refRuleVer");
 	param.dfltSalience = $("#dfltSalience").val();
 	param.targetType = $("#targetType").val();
 	param.noLoop = $("input:radio[name='noLoop']").prop("checked") + "";

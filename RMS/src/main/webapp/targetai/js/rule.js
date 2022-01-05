@@ -1029,17 +1029,24 @@ function fnGetRule(param) {
 			if(param.copyNm == '_상속') {
 				// 운영버전만 상속을 할 수 있다.
 				if(typeof rule.RULE_REAL_VER != 'undefined') {
-					$("#refRuleInfo").text(param.refRuleId);
-					$("#refRuleInfo2").text(rule.RULE_REAL_VER);
-					$("#saveRuleBtn").attr("data-refRuleId", param.refRuleId);
-					$("#saveRuleBtn").attr("data-refRuleVer", rule.RULE_REAL_VER);
+					if(typeof rule.REF_RULE_ID == 'undefined') {
+						$("#refRuleId").text(param.refRuleId);
+						$("#refRuleVer").text(rule.RULE_REAL_VER);
+						$("#saveRuleBtn").attr("data-refRuleId", param.refRuleId);
+						$("#saveRuleBtn").attr("data-refRuleVer", rule.RULE_REAL_VER);
+						
+					} else {
+						messagePop("warning", "이미 상속받은 RULE은 상속할 수 없습니다.", "", "");
+						return;
+					}
+					
 				} else {
 					messagePop("warning", "운영중인 RULE 이 존재하지 않습니다.", "운영중인 RULE 이 있을경우 상속할 수 있습니다.", "");
 					return;
 				}
 			} else {
-				$("#refRuleInfo").text((typeof rule.REF_RULE_ID == 'undefined' ? "-" : rule.REF_RULE_ID));
-				$("#refRuleInfo2").text((typeof rule.REF_RULE_VER == 'undefined' ? "-" : rule.REF_RULE_VER));
+				$("#refRuleId").text((typeof rule.REF_RULE_ID == 'undefined' ? "-" : rule.REF_RULE_ID));
+				$("#refRuleVer").text((typeof rule.REF_RULE_VER == 'undefined' ? "-" : rule.REF_RULE_VER));
 			}
 			$("#ruleVer").text((typeof rule.RULE_VER == 'undefined' ? "-" : rule.RULE_VER));
 			$("#ruleNm").val(rule.RULE_NM + (typeof param.copyNm == 'undefined' ? "" : param.copyNm));
@@ -1567,13 +1574,14 @@ function fnInitRuleSearch() {
 function initRuleDetail() {
 	$("#ruleId").text("");
 	$("#ruleVer").text("");
+	$("#refRuleId").text("");
+	$("#refRuleVer").text("");
 	$("#ruleNm").val("");
 	$("input:radio[name='noLoop']:radio[value='true']").prop("checked", true);
 	$("input:radio[name='lockOnActive']:radio[value='true']").prop("checked", true);
 	$("#ruleWhenCont").val("");
 	$("#saveRuleBtn").removeAttr("data-ruleNm");
 	$("#saveRuleBtn").removeAttr("data-refRuleId");
-	$("#refRuleInfo").text("");
 }
 
 /**

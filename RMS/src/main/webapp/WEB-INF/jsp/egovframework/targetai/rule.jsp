@@ -599,22 +599,16 @@
 											<table class="sform_type">
 												<colgroup>
 													<col style="width: 17%" />
-													<col style="width: 35%" />
-													<col style="width: 17%" />
-													<col style="width: 35%" />
+													<col style="width: auto" />
 												</colgroup>
 												<tbody>
 													<tr>
 														<th class="t_left">RULE 아이디</th>
-														<td class="t_left" id="ruleId"></td>
-														<th class="t_left">참조 RULE 아이디</th>
-														<td class="t_left" id="refRuleInfo"></td>
+														<td class="t_left"><span id="ruleId"></span> ( 버전 : <span id="ruleVer"></span>)</td>
 													</tr>
 													<tr>
-														<th class="t_left">RULE 버전</th>
-														<td class="t_left" id="ruleVer"></td>
-														<th class="t_left">참조 RULE 버전</th>
-														<td class="t_left" id="refRuleInfo2"></td>
+														<th class="t_left">참조 RULE 아이디</th>
+														<td class="t_left"><span id="refRuleId"></span> ( 버전 : <span  id="refRuleVer"></span>)</td>
 													</tr>
 													<tr>
 														<th class="t_left">RULE 명</th>
@@ -644,7 +638,7 @@
 													</tr>
 													<tr>
 														<th class="t_left">타겟 유형</th>
-														<td class="t_left" colspan="4">
+														<td class="t_left">
 															<select id="targetType" class="wd150px">
 																<option value="CUST">고객</option>
 																<option value="CONT">계약</option>
@@ -653,13 +647,13 @@
 													</tr>
 													<tr>
 														<th class="t_left">단위 테스트</th>
-														<td class="t_left" colspan="4">
+														<td class="t_left">
 															<button type="button" id="ruleTestPopBtn" class="btn btn-sm btn-green">실행</button> 
 														</td>
 													</tr>
 													<tr>
 														<th class="t_left">조건 내용</th>
-														<td class="t_left" colspan="4"><textarea rows="4" cols="7" class="txtsize_100 wd100" id="ruleWhenCont" placeholder="RULE EDITOR를 통해 생성하세요."
+														<td class="t_left"><textarea rows="4" cols="7" class="txtsize_100 wd100" id="ruleWhenCont" placeholder="RULE EDITOR를 통해 생성하세요."
 																readonly="readonly"></textarea></td>
 													</tr>
 												</tbody>

@@ -863,7 +863,8 @@ function fnGetRuleVerList(searchObj) {
 				$.each(verList, function(idx, ver){
 					html += "<tr>";
 					html += "	<td class='t_center'>"+ (idx+1) +"</td>";
-					html += "	<td class='t_center'><a href='#' class='_ruleVerNmLink' data-ver='"+ ver.RULE_VER +"' data-ruleId='"+ ver.RULE_ID +"'>" + ver.RULE_NM + "_v" + ver.RULE_VER +"</a></td>";
+//					html += "	<td class='t_center'><a href='#' class='_ruleVerNmLink' data-ver='"+ ver.RULE_VER +"' data-ruleId='"+ ver.RULE_ID +"'>" + ver.RULE_NM + "_v" + ver.RULE_VER +"</a></td>";
+					html += "	<td class='t_center'>" + ver.RULE_NM + "_v" + ver.RULE_VER +"</td>";
 					html += "	<td class='t_center'>" + ver.VER_STATUS + "</td>";
 					html += "	<td class='t_center'>" + (typeof ver.REG_DT == "undefined" ? "-" : ver.REG_DT) + "</td>";
 					html += "	<td class='t_center'>" + (typeof ver.UDT_DT == "undefined" ? "-" : ver.UDT_DT) + "</td>";

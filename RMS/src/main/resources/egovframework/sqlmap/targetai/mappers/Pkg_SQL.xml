@@ -202,7 +202,7 @@
 			DRL_SOURCE = #{DRL_SOURCE}
 		WHERE
 			PKG_ID = #{PKG_ID}
-			AND PKG_VER = #{VER}
+			AND PKG_VER = #{PKG_VER}
 	</update>
 	
 	<!-- 패키지와 연결 가능한 RULE 목록 조회 -->

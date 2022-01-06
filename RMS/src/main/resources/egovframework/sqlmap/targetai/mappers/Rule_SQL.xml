@@ -257,7 +257,7 @@
 		    LEFT JOIN targetai.RULE R ON (RP.RULE_ID = R.RULE_ID AND RP.RULE_VER = R.RULE_VER)
 		WHERE
 			RP.PKG_ID = #{PKG_ID}
-			AND RP.PKG_VER = #{VER}
+			AND RP.PKG_VER = #{PKG_VER}
 	</select>
 	
 	<!-- RULE 저장 -->

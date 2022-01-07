@@ -42,7 +42,7 @@
 									<a class="nav-link" href="/targetai/rule.do">Rule</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" href="/targetai/inheritance.do">Inheritance</a>
+									<a class="nav-link" href="/targetai/inheritance.do">상속 정보</a>
 								</li>
 								<li class="nav-item">
 									<a class="nav-link" href="/targetai/api.do" id="">API</a>

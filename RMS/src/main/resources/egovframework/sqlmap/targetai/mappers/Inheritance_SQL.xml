@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.ktds.targetai.mapper.InheritanceMapper">
+
+	<!-- 상속정보 목록 조회  -->
+	<select id="getInheritanceList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 
+			`SLAVE`.RULE_ID AS SLAVE_RULE_ID,
+		    `SLAVE`.RULE_VER AS SLAVE_RULE_VER,
+		    `SLAVE`.RULE_NM AS SLAVE_RULE_NM,
+			`MASTER`.RULE_ID AS MASTER_RULE_ID,
+		    `MASTER`.RULE_VER AS MASTER_RULE_VER,
+		    `MASTER`.RULE_NM AS MASTER_RULE_NM,
+			CASE
+				WHEN `MASTER`.VER_STATUS = 'R' THEN `MASTER`.RULE_ID
+		        ELSE (SELECT RULE_VER FROM targetai.RULE WHERE RULE_ID = `MASTER`.RULE_ID AND VER_STATUS = 'R')
+			END AS MASTER_RULE_REAL_VER,
+			DATE_FORMAT(`SLAVE`.REG_DT, '%Y-%m-%d %h:%i:%s') AS IH_REG_DT,
+		    M.MEMBER_NAME AS IH_USER
+		FROM
+		    targetai.RULE `SLAVE`
+		    LEFT JOIN targetai.RULE `MASTER` ON (`SLAVE`.REF_RULE_ID = `MASTER`.RULE_ID AND `SLAVE`.REF_RULE_VER = `MASTER`.RULE_VER)
+		    LEFT JOIN targetai.MEMBER M ON (`SLAVE`.REG_USRID = M.MEMBER_ID)
+		WHERE
+			`SLAVE`.REF_RULE_ID IS NOT NULL
+		LIMIT #{limit}
+		OFFSET #{offset}
+	</select>
+	
+	<!-- 상속정보 총개수 조회 -->
+	<select id="getInheritanceListCount" parameterType="java.util.HashMap" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM
+		    targetai.RULE `SLAVE`
+		    LEFT JOIN targetai.RULE `MASTER` ON (`SLAVE`.REF_RULE_ID = `MASTER`.RULE_ID AND `SLAVE`.REF_RULE_VER = `MASTER`.RULE_VER)
+		    LEFT JOIN targetai.MEMBER M ON (`SLAVE`.REG_USRID = M.MEMBER_ID)
+		WHERE
+			`SLAVE`.REF_RULE_ID IS NOT NULL
+	</select>
+</mapper>

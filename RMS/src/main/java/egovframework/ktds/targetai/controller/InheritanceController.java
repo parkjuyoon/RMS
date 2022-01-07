@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import egovframework.ktds.targetai.service.DashboardService;
+import egovframework.ktds.targetai.service.InheritanceService;
 
 /**
  * @since 2021.05.25
@@ -24,13 +25,13 @@ import egovframework.ktds.targetai.service.DashboardService;
 @Controller
 public class InheritanceController {
 	
-	@Resource(name = "dashboardService")
-	protected DashboardService dashboardService;
+	@Resource(name = "inheritanceService")
+	protected InheritanceService inheritanceService;
 
 	/**
-	 * package 관리 화면 이동
+	 * RULE 상속 화면 이동
 	 * @param model
-	 * @return /targetai/pkg.jsp
+	 * @return /targetai/inheritance.jsp
 	 */
 	@RequestMapping(value = "/inheritance.do")
 	public String main(ModelMap model) {
@@ -43,10 +44,16 @@ public class InheritanceController {
 	 * @return resultMap
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/getInheritanceList.do", method = RequestMethod.POST)
+	@RequestMapping(value = "/getIhList.do", method = RequestMethod.POST)
 	public HashMap<String, Object> getInheritanceList(@RequestBody HashMap<String, Object> param, HttpSession session) {
-		HashMap<String, Object> resultMap = new HashMap<>();
 		
-		return resultMap;
+		List<HashMap<String, Object>> ihList = inheritanceService.getInheritanceList(param);
+		int ihListCount = inheritanceService.getInheritanceListCount(param);
+		
+		HashMap<String, Object> rtnMap = new HashMap<>();
+		rtnMap.put("ihList", ihList);
+		rtnMap.put("ihListCount", ihListCount);
+		
+		return rtnMap;
 	}
 }

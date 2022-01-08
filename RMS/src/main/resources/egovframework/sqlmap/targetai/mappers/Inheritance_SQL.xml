@@ -23,6 +23,9 @@
 		    LEFT JOIN targetai.MEMBER M ON (`SLAVE`.REG_USRID = M.MEMBER_ID)
 		WHERE
 			`SLAVE`.REF_RULE_ID IS NOT NULL
+			<if test="slaveRuleNm_search != null and slaveRuleNm_search != ''">AND `SLAVE`.RULE_NM LIKE CONCAT('%', #{slaveRuleNm_search}, '%')</if>
+		    <if test="masterRuleNm_search != null and masterRuleNm_search != ''">AND `MASTER`.RULE_NM LIKE CONCAT('%', #{masterRuleNm_search}, '%')</if>
+		    <if test="ihRegUsrNm_search != null and ihRegUsrNm_search != ''">AND M.MEMBER_NAME LIKE CONCAT('%', #{ihRegUsrNm_search}, '%')</if>
 		LIMIT #{limit}
 		OFFSET #{offset}
 	</select>
@@ -35,6 +38,9 @@
 		    targetai.RULE `SLAVE`
 		    LEFT JOIN targetai.RULE `MASTER` ON (`SLAVE`.REF_RULE_ID = `MASTER`.RULE_ID AND `SLAVE`.REF_RULE_VER = `MASTER`.RULE_VER)
 		    LEFT JOIN targetai.MEMBER M ON (`SLAVE`.REG_USRID = M.MEMBER_ID)
+			<if test="slaveRuleNm_search != null and slaveRuleNm_search != ''">AND `SLAVE`.RULE_NM LIKE CONCAT('%', #{slaveRuleNm_search}, '%')</if>
+		    <if test="masterRuleNm_search != null and masterRuleNm_search != ''">AND `MASTER`.RULE_NM LIKE CONCAT('%', #{masterRuleNm_search}, '%')</if>
+		    <if test="ihRegUsrNm_search != null and ihRegUsrNm_search != ''">AND M.MEMBER_NAME LIKE CONCAT('%', #{ihRegUsrNm_search}, '%')</if>
 		WHERE
 			`SLAVE`.REF_RULE_ID IS NOT NULL
 	</select>

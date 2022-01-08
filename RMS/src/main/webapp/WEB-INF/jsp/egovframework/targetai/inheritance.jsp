@@ -7,6 +7,9 @@
 		font-weight: bold;
 		font-style: italic;
 	}
+	.search_input .form_group {
+		width: 355px !important;
+	}
 </style>
 <%@ include file="../targetai/comm/header.jsp"%>
 </head>
@@ -129,30 +132,30 @@
 									<div class="card-actions">
 										<a href="#" class="card-action card-action-toggle" data-card-toggle></a>
 									</div>
-									<h2 class="card-title_txt">RULE 검색</h2>
+									<h2 class="card-title_txt">RULE 상속 검색</h2>
 								</header>
 								<!-- 본문페이지 -->
 								<div class="card-body">
 									<!-- 조회 -->
 									<div class="searcharea">
 										<div class="reset_btn-bottom">
-											<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-gray" id="ruleResetBtn">초기화</button>
+											<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-gray" id="ihResetBtn">초기화</button>
 										</div>
 										<div class="search_btn-bottom">
-											<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-darkblue" id="ruleSearchBtn">
+											<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-darkblue" id="ihSearchBtn">
 												<i class="fas fa-search custom-btn-i"></i>조회
 											</button>
 										</div>
 										<div class="search_input">
 											<div class="search_col">
 												<div class="form_group">
-													<label for="">RULE ID</label> <input type="text" class="wd150px" id="ruleId_search" value="" />
+													<label for="">슬레이브 RULE 명</label> <input type="text" class="wd150px" id="slaveRuleNm_search" value="" />
 												</div>
 												<div class="form_group">
-													<label for="">등록자</label> <input type="text" class="wd150px" id="ruleRegUsrId_search" value="" />
+													<label for="">마스터 RULE 명</label> <input type="text" class="wd150px" id="masterRuleNm_search" value="" />
 												</div>
-												<div class="oneline_group">
-													<label for="">RULE 명</label> <input type="text" class="wd90" id="ruleNm_search" value="" />
+												<div class="form_group">
+													<label for="">등록자</label> <input type="text" class="wd150px" id="ihRegUsrNm_search" value="" />
 												</div>
 											</div>
 										</div>

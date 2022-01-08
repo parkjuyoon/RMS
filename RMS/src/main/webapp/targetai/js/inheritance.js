@@ -14,6 +14,28 @@ $(document).ready(function() {
 	$("#ihListPaging").on("click", "._paging", function() {
 		fnGetIhList(searchObj);
 	});
+	
+	// RULE 상속 검색 > 조회 버튼
+	$("#ihSearchBtn").click(function() {
+		var slaveRuleNm_search = $("#slaveRuleNm_search").val();
+		var masterRuleNm_search = $("#masterRuleNm_search").val();
+		var ihRegUsrNm_search = $("#ihRegUsrNm_search").val();
+		
+		var searchObj = {};
+		searchObj.slaveRuleNm_search = slaveRuleNm_search;
+		searchObj.masterRuleNm_search = masterRuleNm_search;
+		searchObj.ihRegUsrNm_search = ihRegUsrNm_search;
+		searchObj.currentPage = 1;
+		// RULE 상속정보 목록 조회
+		fnGetIhList(searchObj);
+	});
+	
+	// RULE 상속 검색 > 초기화 버튼
+	$("#ihResetBtn").click(function() {
+		$("#slaveRuleNm_search").val("");
+		$("#masterRuleNm_search").val("");
+		$("#ihRegUsrNm_search").val("");
+	});
 });
 
 /**

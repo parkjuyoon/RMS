@@ -22,13 +22,13 @@
 		<%@ include file="../targetai/comm/alertPop.jsp"%>
 
 		<!-- RULE 테스트 팝업 -->
-		<div id="modal_ruleTest" class="modal_pop">
+		<div id="modal_serialize" class="modal_pop">
 			<div class="modal_content" style="width: 800px;">
 				<!-- 팝업항상중앙띄우기 -->
 				<div class="modla_center">
 					<div class="modal_header">
-						<span class="close _ruleTestPop_close" onclick="close_layerPop('modal_ruleTest');" data-focusId="">&times;</span>
-						<h2>단위 테스트</h2>
+						<span class="close _ruleTestPop_close" onclick="close_layerPop('modal_serialize');" data-focusId="">&times;</span>
+						<h2>현행화 처리</h2>
 					</div>
 					<!-- 본문 -->
 					<div class="modal_body" style="height: calc(100% - 25vh); overflow-x: hidden; overflow-y: auto;">
@@ -48,7 +48,9 @@
 												<h2 class="card-title_txt">RULE 속성</h2>
 											</header>
 											<!-- 경고 -->
-											<div class="card-body" id="ruleAttrPreView" style="white-space: pre; height: 240px; overflow: auto;"></div>
+											<div class="card-body" id="ruleAttrPreView" style="white-space: pre; height: 240px; overflow: auto;">
+												현재 개발중입니다.
+											</div>
 											<!-- //경고 -->
 										</div>
 									</div>
@@ -62,12 +64,12 @@
 										<div class="card-body body-header" style="">
 											<header class="card-header card-header-pd-mobile">
 												<div class="card-actions card-header-position-mobile"></div>
-												<h2 class="card-title_txt">테스트 실행</h2>
+												<h2 class="card-title_txt"></h2>
 											</header>
 											<div class="card-body" style="height: 100px;">
 												<div class="form_group" style="width: 100%;">
-													<label for="">고객 아이디</label> <input type="text" class="wd300px" id="ruleTestCustNo" value="" /><br/><br/>
-													<label for="">결과</label> <input type="text" class="wd300px" id="ruleTestResult" value="" readonly="readonly" />
+													<label for=""></label> <input type="text" class="wd300px" id="ruleTestCustNo" value="" /><br/><br/>
+													<label for=""></label> <input type="text" class="wd300px" id="ruleTestResult" value="" readonly="readonly" />
 												</div>
 											</div>
 											
@@ -76,7 +78,7 @@
 												<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-green" id="ruleTestRunBtn">
 													<i class="far fa-times-circle custom-btn-i"></i> 실행
 												</button>
-												<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-gray" onclick="close_layerPop('modal_ruleTest');">
+												<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-gray" onclick="close_layerPop('modal_serialize');">
 													<i class="far fa-check-circle custom-btn-i"></i> 닫기
 												</button>
 											</div>
@@ -149,13 +151,22 @@
 										<div class="search_input">
 											<div class="search_col">
 												<div class="form_group">
-													<label for="">슬레이브 RULE 명</label> <input type="text" class="wd150px" id="slaveRuleNm_search" value="" />
+													<label for="">M / S</label> 
+													<select class="wd150px" id="msSelect_search">
+														<option value="master">마스터</option>
+														<option value="slave">슬레이브</option>
+													</select>
 												</div>
-												<div class="form_group">
-													<label for="">마스터 RULE 명</label> <input type="text" class="wd150px" id="masterRuleNm_search" value="" />
-												</div>
-												<div class="form_group">
-													<label for="">등록자</label> <input type="text" class="wd150px" id="ihRegUsrNm_search" value="" />
+												<div class="oneline_group">
+													<div class="form_group">
+														<label for="">RULE ID</label> <input type="text" class="wd160px" id="ruleId_search" value="" />
+													</div>
+													<div class="form_group">
+														<label for="">상속자</label> <input type="text" class="wd160px" id="ihRegUsrNm_search" value="" />
+													</div>
+													<div class="oneline_group">
+														<label for="">RULE 명</label> <input type="text" class="wd90" id="ruleNm_search" value="" />
+													</div>
 												</div>
 											</div>
 										</div>
@@ -192,27 +203,29 @@
 									<div class="panel bd_b_none nobordertop">
 										<table class="tb_type01">
 											<colgroup>
-												<col style="width: 8%;" />
-												<col style="width: 7%;" />
 												<col style="width: auto;" />
-												<col style="width: 7%;" />
-												<col style="width: 6%;" />
-												<col style="width: 8%;" />
+												<col style="width: 15%;" />
+												<col style="width: 15%;" />
 												<col style="width: auto;" />
+												<col style="width: 8%;" />
 												<col style="width: 10%;" />
+												<col style="width: 5%;" />
 												<col style="width: 5%;" />
 											</colgroup>
 											<thead>
 												<tr>
-													<th>슬레이브 아이디</th>
-													<th>슬레이브 버전</th>
-													<th>슬레이브 RULE 명</th>
-													<th>마스터 아이디</th>
-													<th>마스터 버전</th>
-													<th>마스터 운영버전</th>
+													<th colspan="2">마스터</th>
+													<th colspan="3">슬레이브</th>
+													<th rowspan="2">상속일시</th>
+													<th rowspan="2">상속자</th>
+													<th rowspan="2">현행화</th>
+												</tr>
+												<tr>
 													<th>마스터 RULE 명</th>
-													<th>상속일시</th>
-													<th>상속자</th>
+													<th>마스터 아이디 / 버전</th>
+													<th>슬레이브 아이디 / 버전</th>
+													<th>슬레이브 RULE 명</th>
+													<th style="border-right: 1px solid #bababa;">마스터 버전</th>
 												</tr>
 											</thead>
 											<tbody id="ihList"></tbody>

@@ -12,7 +12,7 @@
 		    `MASTER`.RULE_VER AS MASTER_RULE_VER,
 		    `MASTER`.RULE_NM AS MASTER_RULE_NM,
 			CASE
-				WHEN `MASTER`.VER_STATUS = 'R' THEN `MASTER`.RULE_ID
+				WHEN `MASTER`.VER_STATUS = 'R' THEN `MASTER`.RULE_VER
 		        ELSE (SELECT RULE_VER FROM targetai.RULE WHERE RULE_ID = `MASTER`.RULE_ID AND VER_STATUS = 'R')
 			END AS MASTER_RULE_REAL_VER,
 			DATE_FORMAT(`SLAVE`.REG_DT, '%Y-%m-%d %h:%i:%s') AS IH_REG_DT,
@@ -23,8 +23,16 @@
 		    LEFT JOIN targetai.MEMBER M ON (`SLAVE`.REG_USRID = M.MEMBER_ID)
 		WHERE
 			`SLAVE`.REF_RULE_ID IS NOT NULL
-			<if test="slaveRuleNm_search != null and slaveRuleNm_search != ''">AND `SLAVE`.RULE_NM LIKE CONCAT('%', #{slaveRuleNm_search}, '%')</if>
-		    <if test="masterRuleNm_search != null and masterRuleNm_search != ''">AND `MASTER`.RULE_NM LIKE CONCAT('%', #{masterRuleNm_search}, '%')</if>
+			<choose>
+				<when test="msSelect_search == 'master'">
+					<if test="ruleId_search != null and ruleId_search != ''">AND `MASTER`.RULE_ID LIKE CONCAT('%', #{ruleId_search}, '%')</if>
+				    <if test="ruleNm_search != null and ruleNm_search != ''">AND `MASTER`.RULE_NM LIKE CONCAT('%', #{ruleNm_search}, '%')</if>
+				</when>
+				<otherwise>
+					<if test="ruleId_search != null and ruleId_search != ''">AND `SLAVE`.RULE_ID LIKE CONCAT('%', #{ruleId_search}, '%')</if>
+				    <if test="ruleNm_search != null and ruleNm_search != ''">AND `SLAVE`.RULE_NM LIKE CONCAT('%', #{ruleNm_search}, '%')</if>
+				</otherwise>
+			</choose>
 		    <if test="ihRegUsrNm_search != null and ihRegUsrNm_search != ''">AND M.MEMBER_NAME LIKE CONCAT('%', #{ihRegUsrNm_search}, '%')</if>
 		LIMIT #{limit}
 		OFFSET #{offset}
@@ -38,8 +46,16 @@
 		    targetai.RULE `SLAVE`
 		    LEFT JOIN targetai.RULE `MASTER` ON (`SLAVE`.REF_RULE_ID = `MASTER`.RULE_ID AND `SLAVE`.REF_RULE_VER = `MASTER`.RULE_VER)
 		    LEFT JOIN targetai.MEMBER M ON (`SLAVE`.REG_USRID = M.MEMBER_ID)
-			<if test="slaveRuleNm_search != null and slaveRuleNm_search != ''">AND `SLAVE`.RULE_NM LIKE CONCAT('%', #{slaveRuleNm_search}, '%')</if>
-		    <if test="masterRuleNm_search != null and masterRuleNm_search != ''">AND `MASTER`.RULE_NM LIKE CONCAT('%', #{masterRuleNm_search}, '%')</if>
+			<choose>
+				<when test="msSelect_search == 'master'">
+					<if test="ruleId_search != null and ruleId_search != ''">AND `MASTER`.RULE_ID LIKE CONCAT('%', #{ruleId_search}, '%')</if>
+				    <if test="ruleNm_search != null and ruleNm_search != ''">AND `MASTER`.RULE_NM LIKE CONCAT('%', #{ruleNm_search}, '%')</if>
+				</when>
+				<otherwise>
+					<if test="ruleId_search != null and ruleId_search != ''">AND `SLAVE`.RULE_ID LIKE CONCAT('%', #{ruleId_search}, '%')</if>
+				    <if test="ruleNm_search != null and ruleNm_search != ''">AND `SLAVE`.RULE_NM LIKE CONCAT('%', #{ruleNm_search}, '%')</if>
+				</otherwise>
+			</choose>
 		    <if test="ihRegUsrNm_search != null and ihRegUsrNm_search != ''">AND M.MEMBER_NAME LIKE CONCAT('%', #{ihRegUsrNm_search}, '%')</if>
 		WHERE
 			`SLAVE`.REF_RULE_ID IS NOT NULL

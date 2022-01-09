@@ -17,13 +17,15 @@ $(document).ready(function() {
 	
 	// RULE 상속 검색 > 조회 버튼
 	$("#ihSearchBtn").click(function() {
-		var slaveRuleNm_search = $("#slaveRuleNm_search").val();
-		var masterRuleNm_search = $("#masterRuleNm_search").val();
+		var msSelect_search = $("#msSelect_search").val();
+		var ruleId_search = $("#ruleId_search").val();
+		var ruleNm_search = $("#ruleNm_search").val();
 		var ihRegUsrNm_search = $("#ihRegUsrNm_search").val();
 		
 		var searchObj = {};
-		searchObj.slaveRuleNm_search = slaveRuleNm_search;
-		searchObj.masterRuleNm_search = masterRuleNm_search;
+		searchObj.msSelect_search = msSelect_search;
+		searchObj.ruleId_search = ruleId_search;
+		searchObj.ruleNm_search = ruleNm_search;
 		searchObj.ihRegUsrNm_search = ihRegUsrNm_search;
 		searchObj.currentPage = 1;
 		// RULE 상속정보 목록 조회
@@ -32,9 +34,15 @@ $(document).ready(function() {
 	
 	// RULE 상속 검색 > 초기화 버튼
 	$("#ihResetBtn").click(function() {
-		$("#slaveRuleNm_search").val("");
-		$("#masterRuleNm_search").val("");
+		$("#ruleId_search").val("");
 		$("#ihRegUsrNm_search").val("");
+		$("#ruleNm_search").val("");
+		$("#msSelect_search").val("master");
+	});
+	
+	// RULE 상속 정보 목록 > 현행화 > 처리 버튼
+	$(document).on("click", "._serializeBtn", function() {
+		$("#modal_serialize").show();
 	});
 });
 
@@ -62,21 +70,24 @@ function fnGetIhList(searchObj) {
 			
 			if(ihList.length == 0) {
 				html += "<tr>";
-				html += "	<td colspan='9' class='t_center'>조회된 내용이 없습니다.</td>";
+				html += "	<td colspan='8' class='t_center'>조회된 내용이 없습니다.</td>";
 				html += "</tr>";
 				
 			} else {
 				$.each(ihList, function(idx, ih){
 					html += "<tr>";
-					html += "	<td class='t_center'>"+ ih.SLAVE_RULE_ID +"</td>";
-					html += "	<td class='t_center'>"+ ih.SLAVE_RULE_VER +"</td>";
-					html += "	<td class='t_center'>"+ ih.SLAVE_RULE_NM +"</td>";
-					html += "	<td class='t_center'>"+ ih.MASTER_RULE_ID +"</td>";
-					html += "	<td class='t_center'>"+ ih.MASTER_RULE_VER +"</td>";
-					html += "	<td class='t_center'>"+ ih.MASTER_RULE_REAL_VER +"</td>";
 					html += "	<td class='t_center'>"+ ih.MASTER_RULE_NM +"</td>";
+					html += "	<td class='t_center'>"+ ih.MASTER_RULE_ID + "_v" + ih.MASTER_RULE_REAL_VER + "</td>";
+					html += "	<td class='t_center'>"+ ih.SLAVE_RULE_ID + "_v" + ih.SLAVE_RULE_VER + "</td>";
+					html += "	<td class='t_center'>"+ ih.SLAVE_RULE_NM +"</td>";
+					html += "	<td class='t_center'>v"+ ih.MASTER_RULE_VER +"</td>";
 					html += "	<td class='t_center'>"+ ih.IH_REG_DT +"</td>";
 					html += "	<td class='t_center'>"+ ih.IH_USER +"</td>";
+					html += "	<td class='t_center'>";
+					if(ih.MASTER_RULE_VER != ih.MASTER_RULE_REAL_VER) {
+						html += "		<button type='button' class='btn btn-sm btn-green _serializeBtn'><i class='far fa-check-circle custom-btn-i'></i>  처리</button>";
+					}
+					html += "	</td>";
 					html += "</tr>";
 				});
 			}

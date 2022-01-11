@@ -43,8 +43,48 @@ $(document).ready(function() {
 	// RULE 상속 정보 목록 > 현행화 > 처리 버튼
 	$(document).on("click", "._serializeBtn", function() {
 		$("#modal_serialize").show();
+		
+		var param = {};
+		param.masterRuleId = $(this).attr("data-mri");
+		param.masterRuleRealVer = $(this).attr("data-mrrv");
+		param.slaveRuleId = $(this).attr("data-sri");
+		param.slaveRuleVer = $(this).attr("data-srv");
+		param.masterRuleVer = $(this).attr("data-mrv");
+		
+		fnGetSerializeInfo(param);
 	});
 });
+
+/**
+ * 
+ * @param param
+ * @returns
+ */
+function fnGetSerializeInfo(param) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/getSerializeInfo.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			console.log(res);
+		},
+		beforeSend : function() {
+			$("#modal_serializeLoading").show();
+		},
+		complete : function() {
+			$("#modal_serializeLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
 
 /**
  * RULE 상속정보 목록
@@ -85,7 +125,7 @@ function fnGetIhList(searchObj) {
 					html += "	<td class='t_center'>"+ ih.IH_USER +"</td>";
 					html += "	<td class='t_center'>";
 					if(ih.MASTER_RULE_VER != ih.MASTER_RULE_REAL_VER) {
-						html += "	<button type='button' class='btn btn-sm btn-green _serializeBtn'>";
+						html += "	<button type='button' class='btn btn-sm btn-green _serializeBtn' data-mri='"+ ih.MASTER_RULE_ID +"' data-mrrv='"+ ih.MASTER_RULE_REAL_VER +"' data-sri='"+ ih.SLAVE_RULE_ID +"' data-srv='"+ ih.SLAVE_RULE_VER +"' data-mrv='"+ ih.MASTER_RULE_VER +"'>";
 						html += "		<i class='far fa-check-circle custom-btn-i'></i>  처리";
 						html += "	</button>";
 					}

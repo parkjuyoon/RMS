@@ -10,6 +10,15 @@
 	.search_input .form_group {
 		width: 355px !important;
 	}
+	.serializeHeader {
+		position: unset !important;
+	    height: 0% !important;
+	}
+	.serializeImg {
+		float: right;
+		width: 30px;
+    	cursor: pointer;
+	}	
 </style>
 <%@ include file="../targetai/comm/header.jsp"%>
 </head>
@@ -33,7 +42,7 @@
 					<!-- 본문 -->
 					<div class="modal_body" style="height: calc(100% - 25vh); overflow-x: hidden; overflow-y: auto;">
 						<div class="progress_loading">
-							<div id="" style="display: none;">
+							<div id="modal_serializeLoading" style="display: none;">
 								<img src="/targetai_publish/images/ajax-loader1.gif" />
 							</div>
 						</div>
@@ -44,12 +53,14 @@
 									<!-- 마스터 RULE 영역 -->
 									<div class="card-body body-header" style="">
 										<header class="card-header card-header-pd-mobile">
-											<div class="card-actions card-header-position-mobile"></div>
-											<h2 class="card-title_txt">마스터 RULE</h2>
+											<img alt="" src="/targetai_publish/images/icons/right.png" class="serializeImg">
+											<div class="card-actions card-header-position-mobile serializeHeader">
+												<h2 class="card-title_txt">Master Rule</h2>
+											</div>
 										</header>
 										<!-- 경고 -->
 										<div class="card-body" id="" style="white-space: pre; height: 240px; overflow: auto;">
-											<div style="white-space: pre;">현재 개발중입니다.</div>
+											<div style="white-space: pre;">조건 1 and<br/>조건2 and<br/>조건3</div>
 										</div>
 									</div>
 									<!-- //마스터 RULE 영역 -->
@@ -59,11 +70,41 @@
 									<div class="card-body body-header" style="">
 										<header class="card-header card-header-pd-mobile">
 											<div class="card-actions card-header-position-mobile"></div>
-											<h2 class="card-title_txt">슬레이브 RULE</h2>
+											<h2 class="card-title_txt">My Rule</h2>
 										</header>
 										<!-- 경고 -->
 										<div class="card-body" id="" style="white-space: pre; height: 240px; overflow: auto;">
-											<div style="white-space: pre;">현재 개발중입니다.</div>
+											<div style="white-space: pre;">조건 1 and<br/>조건2 and<br/>조건3</div>
+										</div>
+									</div>
+									<!-- //슬레이브 RULE 영역 -->
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<!-- 마스터 RULE 영역 -->
+									<div class="card-body body-header" style="">
+										<header class="card-header card-header-pd-mobile">
+											<div class="card-actions card-header-position-mobile"></div>
+											<h2 class="card-title_txt">Applied Master Version</h2>
+										</header>
+										<!-- 경고 -->
+										<div class="card-body" id="" style="white-space: pre; height: 240px; overflow: auto;">
+											<div style="white-space: pre;">조건 1 and<br/>조건2 and<br/>조건3</div>
+										</div>
+									</div>
+									<!-- //마스터 RULE 영역 -->
+								</div>
+								<div class="col">
+									<!-- 슬레이브 RULE 영역 -->
+									<div class="card-body body-header" style="">
+										<header class="card-header card-header-pd-mobile">
+											<div class="card-actions card-header-position-mobile"></div>
+											<h2 class="card-title_txt">My rule</h2>
+										</header>
+										<!-- 경고 -->
+										<div class="card-body" id="" style="white-space: pre; height: 240px; overflow: auto;">
+											<div style="white-space: pre;">조건 1 and<br/>조건2 and<br/>조건3</div>
 										</div>
 									</div>
 									<!-- //슬레이브 RULE 영역 -->
@@ -75,7 +116,7 @@
 								<div class="col">
 									<div class="card-actions-foot">
 										<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-green" id="">
-											<i class="far fa-times-circle custom-btn-i"></i> 실행
+											<i class="far fa-times-circle custom-btn-i"></i> 현행화
 										</button>
 										<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-gray" onclick="close_layerPop('modal_serialize');">
 											<i class="far fa-check-circle custom-btn-i"></i> 닫기

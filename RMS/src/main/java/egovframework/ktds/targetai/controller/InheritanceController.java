@@ -39,7 +39,7 @@ public class InheritanceController {
 	}
 	
 	/**
-	 * 상속정보 조회
+	 * 상속정보 목록 조회
 	 * @param param
 	 * @return resultMap
 	 */
@@ -53,6 +53,22 @@ public class InheritanceController {
 		HashMap<String, Object> rtnMap = new HashMap<>();
 		rtnMap.put("ihList", ihList);
 		rtnMap.put("ihListCount", ihListCount);
+		
+		return rtnMap;
+	}
+	
+	/**
+	 * 상속정보 조회
+	 * @param param
+	 * @return resultMap
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getSerializeInfo.do", method = RequestMethod.POST)
+	public HashMap<String, Object> getSerializeInfo(@RequestBody HashMap<String, Object> param, HttpSession session) {
+		
+//		HashMap<String, Object> 
+		
+		HashMap<String, Object> rtnMap = new HashMap<>();
 		
 		return rtnMap;
 	}

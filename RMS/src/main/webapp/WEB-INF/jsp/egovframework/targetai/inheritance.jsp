@@ -21,7 +21,7 @@
 		<%@ include file="../targetai/comm/side_menu.jsp"%>
 		<%@ include file="../targetai/comm/alertPop.jsp"%>
 
-		<!-- RULE 테스트 팝업 -->
+		<!-- 현행화 팝업 -->
 		<div id="modal_serialize" class="modal_pop">
 			<div class="modal_content" style="width: 800px;">
 				<!-- 팝업항상중앙띄우기 -->
@@ -32,62 +32,58 @@
 					</div>
 					<!-- 본문 -->
 					<div class="modal_body" style="height: calc(100% - 25vh); overflow-x: hidden; overflow-y: auto;">
+						<div class="progress_loading">
+							<div id="" style="display: none;">
+								<img src="/targetai_publish/images/ajax-loader1.gif" />
+							</div>
+						</div>
 						<div class="modal_wrap">
-							<!-- RULE 속성영역  -->
+							<!-- RULE 상속 속성 정보  -->
 							<div class="row">
 								<div class="col">
-									<div class="card mg_b0">
-										<div class="card-body body-header" style="">
-											<div class="progress_loading">
-												<div id="ruleTestLoading" style="display: none;">
-													<img src="/targetai_publish/images/ajax-loader1.gif" />
-												</div>
-											</div>
-											<header class="card-header card-header-pd-mobile">
-												<div class="card-actions card-header-position-mobile"></div>
-												<h2 class="card-title_txt">RULE 속성</h2>
-											</header>
-											<!-- 경고 -->
-											<div class="card-body" id="ruleAttrPreView" style="white-space: pre; height: 240px; overflow: auto;">
-												현재 개발중입니다.
-											</div>
-											<!-- //경고 -->
+									<!-- 마스터 RULE 영역 -->
+									<div class="card-body body-header" style="">
+										<header class="card-header card-header-pd-mobile">
+											<div class="card-actions card-header-position-mobile"></div>
+											<h2 class="card-title_txt">마스터 RULE</h2>
+										</header>
+										<!-- 경고 -->
+										<div class="card-body" id="" style="white-space: pre; height: 240px; overflow: auto;">
+											<div style="white-space: pre;">현재 개발중입니다.</div>
 										</div>
+									</div>
+									<!-- //마스터 RULE 영역 -->
+								</div>
+								<div class="col">
+									<!-- 슬레이브 RULE 영역 -->
+									<div class="card-body body-header" style="">
+										<header class="card-header card-header-pd-mobile">
+											<div class="card-actions card-header-position-mobile"></div>
+											<h2 class="card-title_txt">슬레이브 RULE</h2>
+										</header>
+										<!-- 경고 -->
+										<div class="card-body" id="" style="white-space: pre; height: 240px; overflow: auto;">
+											<div style="white-space: pre;">현재 개발중입니다.</div>
+										</div>
+									</div>
+									<!-- //슬레이브 RULE 영역 -->
+								</div>
+							</div>
+							<!-- // RULE 상속 속성 정보 -->
+							<!-- 버튼 -->
+							<div class="row">
+								<div class="col">
+									<div class="card-actions-foot">
+										<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-green" id="">
+											<i class="far fa-times-circle custom-btn-i"></i> 실행
+										</button>
+										<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-gray" onclick="close_layerPop('modal_serialize');">
+											<i class="far fa-check-circle custom-btn-i"></i> 닫기
+										</button>
 									</div>
 								</div>
 							</div>
-							<!-- // RULE 속성영역 -->
-							<!-- 파라미터 및 결과 영역 -->
-							<div class="row">
-								<div class="col">
-									<div class="card mg_b0">
-										<div class="card-body body-header" style="">
-											<header class="card-header card-header-pd-mobile">
-												<div class="card-actions card-header-position-mobile"></div>
-												<h2 class="card-title_txt"></h2>
-											</header>
-											<div class="card-body" style="height: 100px;">
-												<div class="form_group" style="width: 100%;">
-													<label for=""></label> <input type="text" class="wd300px" id="ruleTestCustNo" value="" /><br/><br/>
-													<label for=""></label> <input type="text" class="wd300px" id="ruleTestResult" value="" readonly="readonly" />
-												</div>
-											</div>
-											
-											<!-- 버튼 -->
-											<div class="card-actions-foot">
-												<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-green" id="ruleTestRunBtn">
-													<i class="far fa-times-circle custom-btn-i"></i> 실행
-												</button>
-												<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-gray" onclick="close_layerPop('modal_serialize');">
-													<i class="far fa-check-circle custom-btn-i"></i> 닫기
-												</button>
-											</div>
-											<!-- //버튼 -->
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- // 파라미터 및 결과 영역 -->
+							<!-- //버튼 -->
 						</div>
 					</div>
 					<!-- //본문 -->
@@ -95,7 +91,7 @@
 				<!-- //팝업항상중앙띄우기 -->
 			</div>
 		</div>
-		<!-- //RULE 테스트 팝업 -->
+		<!-- //현행화 팝업 -->
 		
 		<!-- 본문영역 -->
 		<div class="content-page">

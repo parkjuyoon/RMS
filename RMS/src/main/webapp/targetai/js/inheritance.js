@@ -85,7 +85,9 @@ function fnGetIhList(searchObj) {
 					html += "	<td class='t_center'>"+ ih.IH_USER +"</td>";
 					html += "	<td class='t_center'>";
 					if(ih.MASTER_RULE_VER != ih.MASTER_RULE_REAL_VER) {
-						html += "		<button type='button' class='btn btn-sm btn-green _serializeBtn'><i class='far fa-check-circle custom-btn-i'></i>  처리</button>";
+						html += "	<button type='button' class='btn btn-sm btn-green _serializeBtn'>";
+						html += "		<i class='far fa-check-circle custom-btn-i'></i>  처리";
+						html += "	</button>";
 					}
 					html += "	</td>";
 					html += "</tr>";

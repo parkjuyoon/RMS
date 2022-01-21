@@ -9,4 +9,6 @@ public interface InheritanceService {
 
 	int getInheritanceListCount(HashMap<String, Object> param);
 
+	HashMap<String, Object> getSerializeInfo(HashMap<String, Object> param);
+
 }

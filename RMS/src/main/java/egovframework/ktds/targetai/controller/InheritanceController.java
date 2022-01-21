@@ -66,10 +66,8 @@ public class InheritanceController {
 	@RequestMapping(value = "/getSerializeInfo.do", method = RequestMethod.POST)
 	public HashMap<String, Object> getSerializeInfo(@RequestBody HashMap<String, Object> param, HttpSession session) {
 		
-//		HashMap<String, Object> 
+		HashMap<String, Object> serializeInfo = inheritanceService.getSerializeInfo(param);
 		
-		HashMap<String, Object> rtnMap = new HashMap<>();
-		
-		return rtnMap;
+		return serializeInfo;
 	}
 }

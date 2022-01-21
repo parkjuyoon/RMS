@@ -19,6 +19,9 @@
 		width: 30px;
     	cursor: pointer;
 	}	
+	._factorVal {
+		height: 295px;
+	}
 </style>
 <%@ include file="../targetai/comm/header.jsp"%>
 </head>
@@ -32,7 +35,7 @@
 
 		<!-- 현행화 팝업 -->
 		<div id="modal_serialize" class="modal_pop">
-			<div class="modal_content" style="width: 800px;">
+			<div class="modal_content" style="width: 1366px;">
 				<!-- 팝업항상중앙띄우기 -->
 				<div class="modla_center">
 					<div class="modal_header">
@@ -53,14 +56,15 @@
 									<!-- 마스터 RULE 영역 -->
 									<div class="card-body body-header" style="">
 										<header class="card-header card-header-pd-mobile">
-											<img alt="" src="/targetai_publish/images/icons/right.png" class="serializeImg">
-											<div class="card-actions card-header-position-mobile serializeHeader">
-												<h2 class="card-title_txt">Master Rule</h2>
+											<div class="card-actions card-header-position-mobile">
+												<button type="button" class="btn btn-sm btn-green _ruleSelectBtn" id="">
+													<i class="far fa-times-circle custom-btn-i"></i> 선택
+												</button>
 											</div>
+											<h2 class="card-title_txt">Master Rule</h2>
 										</header>
 										<!-- 경고 -->
-										<div class="card-body" id="" style="white-space: pre; height: 240px; overflow: auto;">
-											<div style="white-space: pre;">조건 1 and<br/>조건2 and<br/>조건3</div>
+										<div class="card-body" id="masterRuleArea" style="white-space: pre; height: 240px; overflow: auto;">
 										</div>
 									</div>
 									<!-- //마스터 RULE 영역 -->
@@ -69,48 +73,142 @@
 									<!-- 슬레이브 RULE 영역 -->
 									<div class="card-body body-header" style="">
 										<header class="card-header card-header-pd-mobile">
-											<div class="card-actions card-header-position-mobile"></div>
+											<div class="card-actions card-header-position-mobile">
+												<button type="button" class="btn btn-sm btn-green _ruleSelectBtn" id="">
+													<i class="far fa-times-circle custom-btn-i"></i> 선택
+												</button>
+											</div>
 											<h2 class="card-title_txt">My Rule</h2>
 										</header>
 										<!-- 경고 -->
-										<div class="card-body" id="" style="white-space: pre; height: 240px; overflow: auto;">
-											<div style="white-space: pre;">조건 1 and<br/>조건2 and<br/>조건3</div>
+										<div class="card-body" id="slaveRuleArea" style="white-space: pre; height: 240px; overflow: auto;">
 										</div>
 									</div>
 									<!-- //슬레이브 RULE 영역 -->
 								</div>
-							</div>
-							<div class="row">
 								<div class="col">
 									<!-- 마스터 RULE 영역 -->
 									<div class="card-body body-header" style="">
 										<header class="card-header card-header-pd-mobile">
-											<div class="card-actions card-header-position-mobile"></div>
+											<div class="card-actions card-header-position-mobile">
+												<button type="button" class="btn btn-sm btn-green _ruleSelectBtn" id="">
+													<i class="far fa-times-circle custom-btn-i"></i> 선택
+												</button>
+											</div>
 											<h2 class="card-title_txt">Applied Master Version</h2>
 										</header>
 										<!-- 경고 -->
-										<div class="card-body" id="" style="white-space: pre; height: 240px; overflow: auto;">
-											<div style="white-space: pre;">조건 1 and<br/>조건2 and<br/>조건3</div>
+										<div class="card-body" id="realMasterRuleArea" style="white-space: pre; height: 240px; overflow: auto;">
 										</div>
 									</div>
 									<!-- //마스터 RULE 영역 -->
 								</div>
-								<div class="col">
-									<!-- 슬레이브 RULE 영역 -->
-									<div class="card-body body-header" style="">
-										<header class="card-header card-header-pd-mobile">
-											<div class="card-actions card-header-position-mobile"></div>
-											<h2 class="card-title_txt">My rule</h2>
-										</header>
-										<!-- 경고 -->
-										<div class="card-body" id="" style="white-space: pre; height: 240px; overflow: auto;">
-											<div style="white-space: pre;">조건 1 and<br/>조건2 and<br/>조건3</div>
-										</div>
-									</div>
-									<!-- //슬레이브 RULE 영역 -->
-								</div>
 							</div>
 							<!-- // RULE 상속 속성 정보 -->
+							<!-- 상세영역 -->
+							<div class="row">
+								<div class="col">
+									<!-- ※닫힘(기본정의): 1.class="card card-collapsed", 2.class="card-body" style="display:none;" 등 정의합니다. -->
+									<div class="card mg_b0">
+										<header class="card-header card-header-pd-mobile">
+											<div class="card-actions card-header-position-mobile"></div>
+											<h2 class="card-title_txt">RULE EDITOR</h2>
+										</header>
+										<!-- 본문페이지 -->
+										<div class="card-body" style="">
+											<!-- 테이블 -->
+											<div class="panel nobordertop">
+												<div class="sform_head">
+													<table class="sform_type_pop modal_table">
+														<colgroup>
+															<col style="width: 25%" />
+															<col style="width: 25%" />
+															<col style="width: 15%" />
+															<col style="width: auto" />
+														</colgroup>
+														<tbody>
+															<tr>
+																<td class="t_left bd_b_none bg01 v_top" rowspan="4">
+																	<div class="progress_loading">
+																		<div id="factorTreeLoading" style="display: none;">
+																			<img src="/targetai_publish/images/ajax-loader1.gif" />
+																		</div>
+																	</div> 
+																	<!-- 트리메뉴 -->
+																	<ul id="factorTree" class="ztree treewrap" style="height: 370px; width: 320px;"></ul>
+																</td>
+																<th class="t_left icon02">요소 값
+																	<button type="button" class="btn btn-sm btn-green btn_left" id="changeInputBtn">직접 입력</button>
+																</th>
+																<th class="t_left icon01">논리 연산
+																	<button type="button" class="btn btn-sm btn-sky" id="addValBtn1">&gt;&gt;</button>
+																</th>
+																<th class="t_left icon03">RULE 속성</th>
+															</tr>
+															<tr>
+																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3">
+																	<div class="overflow_detail">
+																		<div class="alert fade show mg_b10 _factorVal" role="alert" id="factorVal" data-type="">
+																		</div>
+																	</div>
+																</td>
+																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top">
+																	<input type="radio" name="logicalRadios" id="logicalRadio1" value="logical1" checked /> 
+																	<label for="logicalRadio1" class="mg_r10">==</label> 
+																	<br /> 
+																	<input type="radio" name="logicalRadios" id="logicalRadio2" value="logical2" /> 
+																	<label for="logicalRadio2" class="mg_r10">&gt;</label> 
+																	<br /> 
+																	<input type="radio" name="logicalRadios" id="logicalRadio3" value="logical3" /> 
+																	<label for="logicalRadio3" class="mg_r10">&lt;</label>
+																	<br /> 
+																	<input type="radio" name="logicalRadios" id="logicalRadio4" value="logical4" /> 
+																	<label for="logicalRadio4" class="mg_r10">&gt;=</label> 
+																	<br /> 
+																	<input type="radio" name="logicalRadios" id="logicalRadio5" value="logical5" /> 
+																	<label for="logicalRadio5" class="mg_r10">&lt;=</label> 
+																	<br /> 
+																	<input type="radio" name="logicalRadios" id="logicalRadio6" value="logical6" /> 
+																	<label for="logicalRadio6" class="mg_r10">in</label> 
+																	<br /> 
+																	<input type="radio" name="logicalRadios" id="logicalRadio7" value="logical7" /> 
+																	<label for="logicalRadio7" class="mg_r10">not in</label>
+																</td>
+																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top" rowspan="3">
+																	<div class="" id="ruleAttrData"></div>
+																</td>
+															</tr>
+															<tr>
+																<th class="t_left icon04">관계 연산
+																	<button type="button" class="btn btn-sm btn-sky" id="addValBtn2">&gt;&gt;</button>
+																</th>
+															</tr>
+															<tr>
+																<td class="t_left pd_t15 pd_r15 pd_b15 pd_l15 v_top">
+																	<input type="radio" name="relationRadios" id="relationRadio1" value="relation1" /> 
+																	<label for="relationRadio1" class="mg_r10">AND</label> 
+																	<br /> 
+																	<input type="radio" name="relationRadios" id="relationRadio2" value="relation2" /> 
+																	<label for="relationRadio2" class="mg_r10">OR</label> 
+																	<br /> 
+																	<input type="radio" name="relationRadios" id="relationRadio3" value="relation3" /> 
+																	<label for="relationRadio3" class="mg_r10">(</label>
+																	<br /> 
+																	<input type="radio" name="relationRadios" id="relationRadio4" value="relation4" /> 
+																	<label for="relationRadio4" class="mg_r10">)</label>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+											<!-- //테이블 -->
+										</div>
+										<!-- //본문페이지 -->
+									</div>
+								</div>
+							</div>
+							<!-- //상세영역 -->
 							<!-- 버튼 -->
 							<div class="row">
 								<div class="col">

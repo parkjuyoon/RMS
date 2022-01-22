@@ -314,6 +314,8 @@
 		UPDATE targetai.RULE
 		SET
 			RULE_NM = #{ruleNm},
+			<if test="masterRuleRealVer != null and masterRuleRealVer != ''">REF_RULE_VER = #{masterRuleRealVer},</if>
+			<if test="refRuleId != null and refRuleId != ''">REF_RULE_ID = #{refRuleId},</if>
 			NO_LOOP = #{noLoop},
 			DFLT_SALIENCE = #{dfltSalience},
 			LOCK_ON_ACTIVE = #{lockOnActive},

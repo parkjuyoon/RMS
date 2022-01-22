@@ -74,7 +74,7 @@
 									<div class="card-body body-header" style="">
 										<header class="card-header card-header-pd-mobile">
 											<div class="card-actions card-header-position-mobile">
-												<button type="button" class="btn btn-sm btn-green _ruleSelectBtn" id="">
+												<button type="button" class="btn btn-sm btn-green _ruleSelectBtn">
 													<i class="far fa-times-circle custom-btn-i"></i> 선택
 												</button>
 											</div>
@@ -213,7 +213,7 @@
 							<div class="row">
 								<div class="col">
 									<div class="card-actions-foot">
-										<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-green" id="">
+										<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-green" id="serializeBtn">
 											<i class="far fa-times-circle custom-btn-i"></i> 현행화
 										</button>
 										<button type="button" class="mg_t4 mg_r4 btn btn-sm btn-gray" onclick="close_layerPop('modal_serialize');">

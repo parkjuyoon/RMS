@@ -2,6 +2,7 @@ package egovframework.ktds.targetai.serviceImpl;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 
 import javax.annotation.Resource;
 
@@ -19,7 +20,7 @@ public class InheritanceServiceImpl implements InheritanceService {
 	
 	@Resource(name = "ruleMapper")
 	private RuleMapper ruleDao;
-
+	
 	@Override
 	public List<HashMap<String, Object>> getInheritanceList(HashMap<String, Object> param) {
 		return ihDao.getInheritanceList(param);
@@ -56,4 +57,5 @@ public class InheritanceServiceImpl implements InheritanceService {
 		
 		return serializeInfo;
 	}
+
 }

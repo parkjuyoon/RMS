@@ -382,7 +382,7 @@ $(document).ready(function() {
 					
 					ruleHtml += "<div class='alert fade show mg_b10' role='alert'>";
 					ruleHtml += "	<button type='button' class='btn-del _ruleAttrMinus' data-bs-dismiss='alert' aria-label='Close'></button>";
-					ruleHtml += 		ruleAttrKorList[i];
+					ruleHtml += 		"<span>" + ruleAttrKorList[i] + "</span>";
 					ruleHtml += "</div>";
 					
 					ruleTestHtml += "	" + ruleAttrKorList[i] + "\n";
@@ -417,7 +417,66 @@ $(document).ready(function() {
 			}
 		});
 	});
+	
+	// 현행화 처리 팝업 > 현행화 버튼 클릭
+	$("#serializeBtn").click(function() {
+		if(confirm("선택한 슬레이브 RULE을 현행화 하시겠습니까?")) {
+			if($("#ruleAttrData").text() == '') {
+				messagePop("warning", "RULE 속성을 입력하세요.", "", "");
+				return;
+			}
+			
+			var param = {};
+			param.ruleId = $(this).attr("data-ruleId");
+			param.ruleVer = $(this).attr("data-ruleVer");
+			param.masterRuleId = $(this).attr("data-masterRuleId");
+			param.masterRuleVer = $(this).attr("data-masterRuleVer");
+			param.masterRuleRealVer = $(this).attr("data-masterRuleRealVer");
+			param.ruleObjArr = ruleObjArr;
+			
+			fnSerialize(param);
+		}
+	});
 });
+
+/**
+ * 현행화 처리
+ * @param param
+ * @returns
+ */
+function fnSerialize(param) {
+	$.ajax({
+		method : "POST",
+		url : "/targetai/serialize.do",
+		traditional: true,
+		data : JSON.stringify(param),
+		contentType:'application/json; charset=utf-8',
+		dataType : "json",
+		success : function(res) {
+			messagePop("success", "현행화 되었습니다.", "", "");
+			$("#modal_serialize").hide();
+			
+			var searchObj = {};
+			searchObj.currentPage = 1;
+			
+			// RULE 상속정보 목록 조회
+			fnGetIhList(searchObj);
+			
+		},
+		beforeSend : function() {
+			$("#factorTreeLoading").show();
+		},
+		complete : function() {
+			$("#factorTreeLoading").hide();
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			messagePop("warning", "에러발생", "관리자에게 문의하세요", "");
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		}
+	});
+}
 
 /**
  * Factor Group List 조회 후 트리 생성
@@ -627,6 +686,11 @@ function fnGetSerializeInfo(param) {
 			$("#slaveRuleArea").text(realMasterRule.RULE_WHEN_KOR);
 			$("#slaveRuleArea").parent(".card-body").find("._ruleSelectBtn").attr("data-ruleId", param.slaveRuleId);
 			$("#slaveRuleArea").parent(".card-body").find("._ruleSelectBtn").attr("data-ruleVer", param.slaveRuleVer);
+			$("#serializeBtn").attr("data-ruleId", param.slaveRuleId);
+			$("#serializeBtn").attr("data-ruleVer", param.slaveRuleVer);
+			$("#serializeBtn").attr("data-masterRuleId", param.masterRuleId);
+			$("#serializeBtn").attr("data-masterRuleVer", param.masterRuleVer);
+			$("#serializeBtn").attr("data-masterRuleRealVer", param.masterRuleRealVer);
 			
 			$("#realMasterRuleArea").text(slaveRule.RULE_WHEN_KOR);
 			$("#realMasterRuleArea").parent(".card-body").find("._ruleSelectBtn").attr("data-ruleId", param.masterRuleId);

@@ -17,8 +17,16 @@
 			END AS MASTER_RULE_REAL_VER,
 			DATE_FORMAT(`SLAVE`.REG_DT, '%Y-%m-%d %h:%i:%s') AS IH_REG_DT,
 		    M.MEMBER_NAME AS IH_USER
-		FROM
-		    targetai.RULE `SLAVE`
+		FROM (
+				SELECT
+					RULE_ID,
+		            MAX(RULE_VER) AS RULE_VER
+				FROM
+					targetai.RULE
+				GROUP BY
+					RULE_ID
+			) S1
+			LEFT JOIN targetai.RULE `SLAVE` ON (S1.RULE_ID = `SLAVE`.RULE_ID AND S1.RULE_VER = `SLAVE`.RULE_VER)
 		    LEFT JOIN targetai.RULE `MASTER` ON (`SLAVE`.REF_RULE_ID = `MASTER`.RULE_ID AND `SLAVE`.REF_RULE_VER = `MASTER`.RULE_VER)
 		    LEFT JOIN targetai.MEMBER M ON (`SLAVE`.REG_USRID = M.MEMBER_ID)
 		WHERE
@@ -34,6 +42,7 @@
 				</otherwise>
 			</choose>
 		    <if test="ihRegUsrNm_search != null and ihRegUsrNm_search != ''">AND M.MEMBER_NAME LIKE CONCAT('%', #{ihRegUsrNm_search}, '%')</if>
+		ORDER BY `SLAVE`.REG_DT DESC
 		LIMIT #{limit}
 		OFFSET #{offset}
 	</select>
@@ -42,8 +51,16 @@
 	<select id="getInheritanceListCount" parameterType="java.util.HashMap" resultType="int">
 		SELECT 
 			COUNT(*)
-		FROM
-		    targetai.RULE `SLAVE`
+		FROM (
+				SELECT
+					RULE_ID,
+		            MAX(RULE_VER) AS RULE_VER
+				FROM
+					targetai.RULE
+				GROUP BY
+					RULE_ID
+			) S1
+			LEFT JOIN targetai.RULE `SLAVE` ON (S1.RULE_ID = `SLAVE`.RULE_ID AND S1.RULE_VER = `SLAVE`.RULE_VER)
 		    LEFT JOIN targetai.RULE `MASTER` ON (`SLAVE`.REF_RULE_ID = `MASTER`.RULE_ID AND `SLAVE`.REF_RULE_VER = `MASTER`.RULE_VER)
 		    LEFT JOIN targetai.MEMBER M ON (`SLAVE`.REG_USRID = M.MEMBER_ID)
 			<choose>

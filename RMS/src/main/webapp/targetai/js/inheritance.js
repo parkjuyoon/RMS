@@ -418,13 +418,26 @@ $(document).ready(function() {
 		});
 	});
 	
+	// Rule 속성 minus 버튼 클릭 이벤트
+	$(document).on("click", "#ruleAttrData ._ruleAttrMinus", function() {
+		var delIdx = $("#ruleAttrData ._ruleAttrMinus").index(this);
+	
+		tmpArr.splice(delIdx, 1);
+		
+		$(this).closest("label").remove();
+		
+		tmpObj = {};
+	});
+	
 	// 현행화 처리 팝업 > 현행화 버튼 클릭
 	$("#serializeBtn").click(function() {
 		if(confirm("선택한 슬레이브 RULE을 현행화 하시겠습니까?")) {
-			if($("#ruleAttrData").text() == '') {
-				messagePop("warning", "RULE 속성을 입력하세요.", "", "");
+			if(tmpArr.length < 1) {
+				messagePop("warning", "RULE 속성을 추가하세요.", "", "");
 				return;
 			}
+		
+			ruleObjArr = cloneArr(tmpArr);
 			
 			var param = {};
 			param.ruleId = $(this).attr("data-ruleId");

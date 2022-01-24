@@ -679,10 +679,12 @@ function fnGetSerializeInfo(param) {
 			var realMasterRule = res.realMasterRule;
 			var slaveRule = res.slaveRule;
 			
+			$("#masterRuleIdVer").text(" (" + param.masterRuleId + "_v" + param.masterRuleVer + ")");
 			$("#masterRuleArea").text(masterRule.RULE_WHEN_KOR);
 			$("#masterRuleArea").parent(".card-body").find("._ruleSelectBtn").attr("data-ruleId", param.masterRuleId);
 			$("#masterRuleArea").parent(".card-body").find("._ruleSelectBtn").attr("data-ruleVer", param.masterRuleVer);
 			
+			$("#slaveRuleIdVer").text(" (" + param.slaveRuleId + "_v" + param.slaveRuleVer + ")");
 			$("#slaveRuleArea").text(realMasterRule.RULE_WHEN_KOR);
 			$("#slaveRuleArea").parent(".card-body").find("._ruleSelectBtn").attr("data-ruleId", param.slaveRuleId);
 			$("#slaveRuleArea").parent(".card-body").find("._ruleSelectBtn").attr("data-ruleVer", param.slaveRuleVer);
@@ -692,6 +694,7 @@ function fnGetSerializeInfo(param) {
 			$("#serializeBtn").attr("data-masterRuleVer", param.masterRuleVer);
 			$("#serializeBtn").attr("data-masterRuleRealVer", param.masterRuleRealVer);
 			
+			$("#realMasterRuleIdVer").text(" (" + param.masterRuleId + "_v" + param.masterRuleRealVer + ")");
 			$("#realMasterRuleArea").text(slaveRule.RULE_WHEN_KOR);
 			$("#realMasterRuleArea").parent(".card-body").find("._ruleSelectBtn").attr("data-ruleId", param.masterRuleId);
 			$("#realMasterRuleArea").parent(".card-body").find("._ruleSelectBtn").attr("data-ruleVer", param.masterRuleRealVer);

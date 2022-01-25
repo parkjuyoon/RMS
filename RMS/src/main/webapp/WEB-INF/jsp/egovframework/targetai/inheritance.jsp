@@ -61,10 +61,10 @@
 													<i class="far fa-times-circle custom-btn-i"></i> 선택
 												</button>
 											</div>
-											<h2 class="card-title_txt">Master Rule</h2>
+											<h2 class="card-title_txt">Master Rule<span id="realMasterRuleIdVer"></span></h2>
 										</header>
 										<!-- 경고 -->
-										<div class="card-body" id="masterRuleArea" style="white-space: pre; height: 240px; overflow: auto;">
+										<div class="card-body" id="realMasterRuleArea" style="white-space: pre; height: 240px; overflow: auto;">
 										</div>
 									</div>
 									<!-- //마스터 RULE 영역 -->
@@ -78,7 +78,7 @@
 													<i class="far fa-times-circle custom-btn-i"></i> 선택
 												</button>
 											</div>
-											<h2 class="card-title_txt">My Rule</h2>
+											<h2 class="card-title_txt">My Rule<span id="slaveRuleIdVer"></span></h2>
 										</header>
 										<!-- 경고 -->
 										<div class="card-body" id="slaveRuleArea" style="white-space: pre; height: 240px; overflow: auto;">
@@ -95,10 +95,10 @@
 													<i class="far fa-times-circle custom-btn-i"></i> 선택
 												</button>
 											</div>
-											<h2 class="card-title_txt">Applied Master Version</h2>
+											<h2 class="card-title_txt">Applied Master Version<span id="masterRuleIdVer"></span></h2>
 										</header>
 										<!-- 경고 -->
-										<div class="card-body" id="realMasterRuleArea" style="white-space: pre; height: 240px; overflow: auto;">
+										<div class="card-body" id="masterRuleArea" style="white-space: pre; height: 240px; overflow: auto;">
 										</div>
 									</div>
 									<!-- //마스터 RULE 영역 -->

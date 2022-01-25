@@ -1054,8 +1054,19 @@ function fnGetRule(param) {
 					return;
 				}
 			} else {
-				$("#refRuleId").text((typeof rule.REF_RULE_ID == 'undefined' ? "-" : rule.REF_RULE_ID));
-				$("#refRuleVer").text((typeof rule.REF_RULE_VER == 'undefined' ? "-" : rule.REF_RULE_VER));
+				if(typeof rule.REF_RULE_ID == 'undefined') {
+					$("#refRuleId").text("-");
+				} else {
+					$("#refRuleId").text(rule.REF_RULE_ID);
+					$("#saveRuleBtn").attr("data-refRuleId", rule.REF_RULE_ID);
+				}
+				
+				if(typeof rule.REF_RULE_VER == 'undefined') {
+					$("#refRuleVer").text("-");
+				} else {
+					$("#refRuleVer").text(rule.REF_RULE_VER);
+					$("#saveRuleBtn").attr("data-refRuleVer", rule.REF_RULE_VER);
+				}
 			}
 			$("#ruleVer").text((typeof rule.RULE_VER == 'undefined' ? "-" : rule.RULE_VER));
 			$("#ruleNm").val(rule.RULE_NM + (typeof param.copyNm == 'undefined' ? "" : param.copyNm));

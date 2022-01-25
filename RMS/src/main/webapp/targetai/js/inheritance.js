@@ -437,13 +437,26 @@ $(document).ready(function() {
 		});
 	});
 	
+	// Rule 속성 minus 버튼 클릭 이벤트
+	$(document).on("click", "#ruleAttrData ._ruleAttrMinus", function() {
+		var delIdx = $("#ruleAttrData ._ruleAttrMinus").index(this);
+	
+		tmpArr.splice(delIdx, 1);
+		
+		$(this).closest("label").remove();
+		
+		tmpObj = {};
+	});
+	
 	// 현행화 처리 팝업 > 현행화 버튼 클릭
 	$("#serializeBtn").click(function() {
 		if(confirm("선택한 슬레이브 RULE을 현행화 하시겠습니까?")) {
-			if($("#ruleAttrData").text() == '') {
-				messagePop("warning", "RULE 속성을 입력하세요.", "", "");
+			if(tmpArr.length < 1) {
+				messagePop("warning", "RULE 속성을 추가하세요.", "", "");
 				return;
 			}
+		
+			ruleObjArr = cloneArr(tmpArr);
 			
 			var param = {};
 			param.ruleId = $(this).attr("data-ruleId");
@@ -698,10 +711,12 @@ function fnGetSerializeInfo(param) {
 			var realMasterRule = res.realMasterRule;
 			var slaveRule = res.slaveRule;
 			
+			$("#masterRuleIdVer").text(" (" + param.masterRuleId + "_v" + param.masterRuleVer + ")");
 			$("#masterRuleArea").text(masterRule.RULE_WHEN_KOR);
 			$("#masterRuleArea").parent(".card-body").find("._ruleSelectBtn").attr("data-ruleId", param.masterRuleId);
 			$("#masterRuleArea").parent(".card-body").find("._ruleSelectBtn").attr("data-ruleVer", param.masterRuleVer);
 			
+			$("#slaveRuleIdVer").text(" (" + param.slaveRuleId + "_v" + param.slaveRuleVer + ")");
 			$("#slaveRuleArea").text(realMasterRule.RULE_WHEN_KOR);
 			$("#slaveRuleArea").parent(".card-body").find("._ruleSelectBtn").attr("data-ruleId", param.slaveRuleId);
 			$("#slaveRuleArea").parent(".card-body").find("._ruleSelectBtn").attr("data-ruleVer", param.slaveRuleVer);
@@ -711,6 +726,7 @@ function fnGetSerializeInfo(param) {
 			$("#serializeBtn").attr("data-masterRuleVer", param.masterRuleVer);
 			$("#serializeBtn").attr("data-masterRuleRealVer", param.masterRuleRealVer);
 			
+			$("#realMasterRuleIdVer").text(" (" + param.masterRuleId + "_v" + param.masterRuleRealVer + ")");
 			$("#realMasterRuleArea").text(slaveRule.RULE_WHEN_KOR);
 			$("#realMasterRuleArea").parent(".card-body").find("._ruleSelectBtn").attr("data-ruleId", param.masterRuleId);
 			$("#realMasterRuleArea").parent(".card-body").find("._ruleSelectBtn").attr("data-ruleVer", param.masterRuleRealVer);

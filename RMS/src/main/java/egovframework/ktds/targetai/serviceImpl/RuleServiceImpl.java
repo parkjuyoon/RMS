@@ -323,6 +323,7 @@ public class RuleServiceImpl extends ApiServiceImpl implements RuleService {
 				String pkgVerType = conPkg.get("PKG_VER").getClass().getName();
 				if("java.lang.Double".equals(pkgVerType)) {
 					double pkgMinerVer = (double) conPkg.get("PKG_VER")  + 0.01;
+					System.out.println((double) conPkg.get("PKG_VER"));
 					pMap.put("pkgMinerVer", pkgMinerVer);
 					
 				} else {

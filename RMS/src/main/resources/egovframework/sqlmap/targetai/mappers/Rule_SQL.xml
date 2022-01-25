@@ -39,9 +39,9 @@
 		LEFT JOIN targetai.MEMBER M ON (R.REG_USRID = M.MEMBER_ID)
 		LEFT JOIN targetai.MEMBER M1 ON (R.UDT_USRID = M1.MEMBER_ID)
 		WHERE 1=1
-		<if test="ruleId_search != null and ruleId_search != ''">AND RULE_ID = #{ruleId_search}</if>
-	    <if test="ruleRegUsrId_search != null and ruleRegUsrId_search != ''">AND REG_USRID = #{ruleRegUsrId_search}</if>
-	    <if test="ruleNm_search != null and ruleNm_search != ''">AND RULE_NM LIKE CONCAT('%', #{ruleNm_search}, '%')</if>
+		<if test="ruleId_search != null and ruleId_search != ''">AND R.RULE_ID = #{ruleId_search}</if>
+	    <if test="ruleRegUsrId_search != null and ruleRegUsrId_search != ''">AND R.REG_USRID = #{ruleRegUsrId_search}</if>
+	    <if test="ruleNm_search != null and ruleNm_search != ''">AND R.RULE_NM LIKE CONCAT('%', #{ruleNm_search}, '%')</if>
 	    ORDER BY RULE_ID DESC
 		LIMIT #{limit}
 		OFFSET #{offset}
@@ -61,9 +61,9 @@
 		) A
 		LEFT JOIN targetai.RULE R ON (A.RULE_ID = R.RULE_ID AND A.RULE_VER = R.RULE_VER)
 		WHERE 1=1
-		<if test="ruleId_search != null and ruleId_search != ''">AND RULE_ID = #{ruleId_search}</if>
-	    <if test="ruleRegUsrId_search != null and ruleRegUsrId_search != ''">AND REG_USRID = #{ruleRegUsrId_search}</if>
-	    <if test="ruleNm_search != null and ruleNm_search != ''">AND RULE_NM LIKE CONCAT('%', #{ruleNm_search}, '%')</if>
+		<if test="ruleId_search != null and ruleId_search != ''">AND R.RULE_ID = #{ruleId_search}</if>
+	    <if test="ruleRegUsrId_search != null and ruleRegUsrId_search != ''">AND R.REG_USRID = #{ruleRegUsrId_search}</if>
+	    <if test="ruleNm_search != null and ruleNm_search != ''">AND R.RULE_NM LIKE CONCAT('%', #{ruleNm_search}, '%')</if>
 	</select>
 	
 	<!-- RULE 버전 목록 조회 -->

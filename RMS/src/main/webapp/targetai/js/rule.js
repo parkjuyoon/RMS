@@ -369,6 +369,14 @@ $(document).ready(function() {
 				tmpObj.ruleAttr_source = tmpObj.ruleAttr_source + " " + relation_txt;
 				$minus.eq($minus.length-1).siblings("span").text(tmpObj.ruleAttr_txt);
 			}
+			
+		// 삭제 일때
+		} else if(relation == "relation5") {
+			delete tmpObj.relation;
+			delete tmpObj.relation_txt;
+			tmpObj.ruleAttr_txt = tmpObj.ruleAttr_txt.replaceAll(" AND", "").replaceAll(" OR","").replaceAll(")","");
+			tmpObj.ruleAttr_source = tmpObj.ruleAttr_source.replaceAll(" &&", "").replaceAll(" ||","").replaceAll(")","");
+			$minus.eq($minus.length-1).siblings("span").text(tmpObj.ruleAttr_txt);
 		}
 		
 //		if(!(relation == "relation4" || relation == "relation3" || Object.keys(tmpObj).length < 1)) {
@@ -866,8 +874,8 @@ function fnGetRuleVerList(searchObj) {
 //					html += "	<td class='t_center'><a href='#' class='_ruleVerNmLink' data-ver='"+ ver.RULE_VER +"' data-ruleId='"+ ver.RULE_ID +"'>" + ver.RULE_NM + "_v" + ver.RULE_VER +"</a></td>";
 					html += "	<td class='t_center'>" + ver.RULE_NM + "_v" + ver.RULE_VER +"</td>";
 					html += "	<td class='t_center'>" + ver.VER_STATUS + "</td>";
-					html += "	<td class='t_center'>" + (typeof ver.REG_DT == "undefined" ? "-" : ver.REG_DT) + "</td>";
-					html += "	<td class='t_center'>" + (typeof ver.UDT_DT == "undefined" ? "-" : ver.UDT_DT) + "</td>";
+					html += "	<td class='t_center'>" + (typeof ver.RUN_START_DATE == "undefined" ? "-" : ver.RUN_START_DATE) + "</td>";
+					html += "	<td class='t_center'>" + (typeof ver.RUN_END_DATE == "undefined" ? "-" : ver.RUN_END_DATE) + "</td>";
 					html += "</tr>";
 					
 					if(ver.VER_STATUS == '개발중') {

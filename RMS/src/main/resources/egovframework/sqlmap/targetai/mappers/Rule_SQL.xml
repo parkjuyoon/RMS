@@ -94,7 +94,9 @@
 		    M.MEMBER_NAME REG_USRNM,
 		    DATE_FORMAT(R.UDT_DT, '%Y-%m-%d %h:%i:%s') AS UDT_DT,
 		    R.UDT_USRID,
-		    M1.MEMBER_NAME UDT_USRNM
+		    M1.MEMBER_NAME UDT_USRNM,
+		    DATE_FORMAT(R.RUN_START_DATE, '%Y-%m-%d %h:%i:%s') AS RUN_START_DATE,
+		    DATE_FORMAT(R.RUN_END_DATE, '%Y-%m-%d %h:%i:%s') AS RUN_END_DATE
 		FROM 
 			targetai.RULE R
 			LEFT JOIN targetai.MEMBER M ON (R.REG_USRID = M.MEMBER_ID)
@@ -413,7 +415,8 @@
 	<update id="endRuleDeploy" parameterType="java.util.HashMap">
 		UPDATE targetai.RULE
 		SET
-			VER_STATUS = 'T'
+			VER_STATUS = 'T',
+			RUN_END_DATE = #{currentTime}
 		WHERE
 			RULE_ID = #{ruleId}
 			AND VER_STATUS = 'R'
@@ -432,7 +435,8 @@
 		</selectKey>
 		UPDATE targetai.RULE
 		SET
-			VER_STATUS = 'R'
+			VER_STATUS = 'R',
+			RUN_START_DATE = #{currentTime}
 		WHERE
 			RULE_ID = #{ruleId}
 			AND VER_STATUS = 'D'

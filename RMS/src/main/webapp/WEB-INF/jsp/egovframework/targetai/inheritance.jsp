@@ -196,6 +196,9 @@
 																	<br /> 
 																	<input type="radio" name="relationRadios" id="relationRadio4" value="relation4" /> 
 																	<label for="relationRadio4" class="mg_r10">)</label>
+																	<br />
+																	<input type="radio" name="relationRadios" id="relationRadio5" value="relation5" /> 
+																	<label for="relationRadio4" class="mg_r10">삭제</label>
 																</td>
 															</tr>
 														</tbody>

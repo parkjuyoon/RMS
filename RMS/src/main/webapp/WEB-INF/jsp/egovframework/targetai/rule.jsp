@@ -291,6 +291,9 @@
 																	<br /> 
 																	<input type="radio" name="relationRadios" id="relationRadio4" value="relation4" /> 
 																	<label for="relationRadio4" class="mg_r10">)</label>
+																	<br /> 
+																	<input type="radio" name="relationRadios" id="relationRadio5" value="relation5" /> 
+																	<label for="relationRadio4" class="mg_r10">삭제</label>
 																</td>
 															</tr>
 															<tr>
@@ -708,8 +711,8 @@
 													<th>No.</th>
 													<th>RULE 버전</th>
 													<th>상태</th>
-													<th>등록일</th>
-													<th>수정일</th>
+													<th>운영시작일</th>
+													<th>운영종료일</th>
 												</tr>
 											</thead>
 											<tbody id="ruleVerList">

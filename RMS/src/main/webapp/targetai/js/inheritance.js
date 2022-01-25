@@ -45,6 +45,17 @@ $(document).ready(function() {
 		$("#msSelect_search").val("master");
 	});
 	
+	// Rule 속성 minus 버튼 클릭 이벤트
+	$(document).on("click", "#ruleAttrData ._ruleAttrMinus", function() {
+		var delIdx = $("#ruleAttrData ._ruleAttrMinus").index(this);
+	
+		tmpArr.splice(delIdx, 1);
+		
+		$(this).closest("label").remove();
+		
+		tmpObj = {};
+	});
+	
 	// RULE 상속 정보 목록 > 현행화 > 처리 버튼
 	$(document).on("click", "._serializeBtn", function() {
 		initRuleEditor();
@@ -331,6 +342,14 @@ $(document).ready(function() {
 				tmpObj.ruleAttr_source = tmpObj.ruleAttr_source + " " + relation_txt;
 				$minus.eq($minus.length-1).siblings("span").text(tmpObj.ruleAttr_txt);
 			}
+			
+		// 삭제 일때
+		} else if(relation == "relation5") {
+			delete tmpObj.relation;
+			delete tmpObj.relation_txt;
+			tmpObj.ruleAttr_txt = tmpObj.ruleAttr_txt.replaceAll(" AND", "").replaceAll(" OR","").replaceAll(")","");
+			tmpObj.ruleAttr_source = tmpObj.ruleAttr_source.replaceAll(" &&", "").replaceAll(" ||","").replaceAll(")","");
+			$minus.eq($minus.length-1).siblings("span").text(tmpObj.ruleAttr_txt);
 		}
 		
 		if(tmpArr.length > 0) {

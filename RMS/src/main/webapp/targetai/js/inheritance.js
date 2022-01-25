@@ -45,17 +45,6 @@ $(document).ready(function() {
 		$("#msSelect_search").val("master");
 	});
 	
-	// Rule 속성 minus 버튼 클릭 이벤트
-	$(document).on("click", "#ruleAttrData ._ruleAttrMinus", function() {
-		var delIdx = $("#ruleAttrData ._ruleAttrMinus").index(this);
-	
-		tmpArr.splice(delIdx, 1);
-		
-		$(this).closest("label").remove();
-		
-		tmpObj = {};
-	});
-	
 	// RULE 상속 정보 목록 > 현행화 > 처리 버튼
 	$(document).on("click", "._serializeBtn", function() {
 		initRuleEditor();

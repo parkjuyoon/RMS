@@ -1034,6 +1034,7 @@ function fnGetRule(param) {
 			var rule = res.rule;
 			
 			// -- RULE 상세페이지 초기화 시작 --
+			initRuleDetail();
 			$("#ruleId").text((typeof param.copyNm == 'undefined' ? rule.RULE_ID : ""));
 			if(param.copyNm == '_상속') {
 				// 운영버전만 상속을 할 수 있다.
@@ -1602,6 +1603,7 @@ function initRuleDetail() {
 	$("#ruleWhenCont").val("");
 	$("#saveRuleBtn").removeAttr("data-ruleNm");
 	$("#saveRuleBtn").removeAttr("data-refRuleId");
+	$("#saveRuleBtn").removeAttr("data-refRuleVer");
 }
 
 /**

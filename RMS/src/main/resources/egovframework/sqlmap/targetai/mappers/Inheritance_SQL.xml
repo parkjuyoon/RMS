@@ -42,7 +42,7 @@
 				</otherwise>
 			</choose>
 		    <if test="ihRegUsrNm_search != null and ihRegUsrNm_search != ''">AND M.MEMBER_NAME LIKE CONCAT('%', #{ihRegUsrNm_search}, '%')</if>
-		ORDER BY `SLAVE`.REG_DT DESC
+		ORDER BY `MASTER`.RULE_ID DESC, `MASTER`.RULE_VER, `SLAVE`.RULE_ID, `SLAVE`.RULE_VER
 		LIMIT #{limit}
 		OFFSET #{offset}
 	</select>

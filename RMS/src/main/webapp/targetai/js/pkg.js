@@ -248,14 +248,21 @@ $(document).ready(function() {
 		rule.SALIENCE = dfltSalience * 1;
 		rule.RULE_VER = ruleVer * 1;
 		
-		// 선택된 index
-		var idx = $(this).closest("tr").index();
-		conRuleList.splice(idx, 1);	// 연결 가능한 RULE 목록에서 삭제
+		var idx = -1;
+		for(var i=0; i<conRuleList.length; i++) {
+			if(conRuleList[i].RULE_ID == ruleId) {
+				idx = i;
+				break;
+			}
+		}
+
 		mappingRuleList.push(rule);	// 연결 예정중인 RULE 목록에 추가
+		conRuleList.splice(idx, 1);	// 연결 가능한 RULE 목록에서 삭제
 		
 		// 적용될 배열에 있는 값으로 리스트 갱신
 		drawGridMappingRuleList(mappingRuleList);
 		drawGridConRuleList(conRuleList);
+		fnConRuleSearch($("input[name='ruleSearch']").eq(0).val());
 	});
 	
 	// 패키지 관리 > 패키지 상세 > RULE 연결 팝업 DEL 버튼
@@ -271,14 +278,22 @@ $(document).ready(function() {
 		rule.DFLT_SALIENCE = salience * 1;
 		rule.RULE_VER = ruleVer * 1;
 		
+		var idx = -1;
+		for(var i=0; i<mappingRuleList.length; i++) {
+			if(mappingRuleList[i].RULE_ID == ruleId) {
+				idx = i;
+				break;
+			}
+		}
+		
 		// 선택된 index
-		var idx = $(this).closest("tr").index();
-		mappingRuleList.splice(idx, 1);	// 연결 가능한 RULE 목록에서 삭제
 		conRuleList.push(rule);	// 연결 예정중인 RULE 목록에 추가
+		mappingRuleList.splice(idx, 1);	// 연결 가능한 RULE 목록에서 삭제
 		
 		// 적용될 배열에 있는 값으로 리스트 갱신
 		drawGridMappingRuleList(mappingRuleList);
 		drawGridConRuleList(conRuleList);
+		fnMappingRuleSearch($("input[name='ruleSearch']").eq(1).val());
 	});
 	
 	// 패키지 관리 > 패키지 상세 > RULE 연결 적용버튼

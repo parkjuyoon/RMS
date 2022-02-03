@@ -223,6 +223,7 @@ $(document).ready(function() {
 	
 	// 패키지 관리 > 패키지 상세 > RULE 연결 버튼 클릭
 	$("#ruleMappingBtn").click(function() {
+		fnInitRuleMappingPopDetail();
 		var isUpdate = $("#ruleMappingSaveBtn").attr("data-update");
 		if(isUpdate == 'Y') {
 			return;
@@ -1137,6 +1138,7 @@ function fnInitEventList() {
 function fnInitRuleMappingPopDetail() {
 	$("#ruleMappingRuleNm").text("");
 	$("#ruleMappingWhen").val("");
+	$("input[name='ruleSearch']").val("")
 }
 
 /**

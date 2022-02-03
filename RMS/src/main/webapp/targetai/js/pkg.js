@@ -263,6 +263,7 @@ $(document).ready(function() {
 		drawGridMappingRuleList(mappingRuleList);
 		drawGridConRuleList(conRuleList);
 		fnConRuleSearch($("input[name='ruleSearch']").eq(0).val());
+		fnMappingRuleSearch($("input[name='ruleSearch']").eq(1).val());
 	});
 	
 	// 패키지 관리 > 패키지 상세 > RULE 연결 팝업 DEL 버튼
@@ -293,6 +294,7 @@ $(document).ready(function() {
 		// 적용될 배열에 있는 값으로 리스트 갱신
 		drawGridMappingRuleList(mappingRuleList);
 		drawGridConRuleList(conRuleList);
+		fnConRuleSearch($("input[name='ruleSearch']").eq(0).val());
 		fnMappingRuleSearch($("input[name='ruleSearch']").eq(1).val());
 	});
 	
